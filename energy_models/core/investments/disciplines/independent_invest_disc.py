@@ -55,6 +55,9 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.BeverageCarbonation': ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.CarbonatedWater': ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.AlgaeCultivation': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
@@ -75,16 +78,24 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HeatPumpHighHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.GeothermalHighHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HydrogenBoilerHighHeat': (
+                                                             'float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.SofcgtHighHeat': (
+                                                             'float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.GeothermalLowHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.CHPLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HydrogenBoilerLowHeat': (
+                                                             'float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.ElectricBoilerMediumHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HeatPumpMediumHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.GeothermalMediumHeat': ('float', None, True),
                                                              f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.CHPMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HydrogenBoilerMediumHeat': (
+                                                             'float', None, True),
                                                              f'{GlossaryEnergy.biogas}.{GlossaryEnergy.AnaerobicDigestion}': ('float', None, True),
                                                              f'{GlossaryEnergy.syngas}.BiomassGasification': ('float', None, True),
                                                              f'{GlossaryEnergy.syngas}.SMR': ('float', None, True),
@@ -128,6 +139,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno': ('float', None, True),
                                                              }},
+
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',

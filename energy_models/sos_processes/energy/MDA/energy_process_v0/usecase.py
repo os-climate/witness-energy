@@ -35,7 +35,10 @@ from energy_models.core.energy_study_manager import (
 )
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
+
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.core.stream_type.carbon_models.food_storage import FoodStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -68,10 +71,29 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+
+from energy_models.sos_processes.energy.techno_mix.carbon_utilization_mix.usecase import (
+    DEFAULT_FOOD_STORAGE_LIST,
+)
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
-INVEST_DISC_NAME = "InvestmentDistribution"
+CCS_NAME = 'CCUS'
+OBJECTIVE = FunctionManagerDisc.OBJECTIVE
+INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
+EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
+OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
+AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
+AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
+AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
+AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
+FUNC_DF = FunctionManagerDisc.FUNC_DF
+CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
+CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
+TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
+INVEST_DISC_NAME = 'InvestmentDistribution'
+hydropower_name = Electricity.hydropower_name
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(EnergyStudyManager):
@@ -384,14 +406,18 @@ class Study(EnergyStudyManager):
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
-                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                CarbonUtilization.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+
             }
 
         else:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
                 CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
-                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                CarbonUtilization.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+
             }
 
         if self.bspline:
@@ -449,7 +475,7 @@ class Study(EnergyStudyManager):
                     self.year_start,
                     self.year_end,
                     bspline=self.bspline,
-                    main_study=False,
+                    main_study=True,
                     prefix_name=prefix_name,
                     execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline,
@@ -520,6 +546,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 40.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
                 Renewable.name: 90.0,
@@ -547,6 +574,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 0.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
                 Renewable.name: 0.0,
@@ -599,6 +627,9 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.DirectAirCapture,
                 GlossaryEnergy.FlueGasCapture,
             ]
+            techno_list_carbon_utilization = [
+                GlossaryEnergy.FoodStorageApplications
+            ]
             techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
             invest_percentage_per_techno = {GlossaryEnergy.Years: self.years}
             all_techno_list = [
@@ -606,6 +637,8 @@ class Study(EnergyStudyManager):
                 techno_list_renewable,
                 techno_list_carbon_capture,
                 techno_list_carbon_storage,
+                techno_list_carbon_utilization,
+
             ]
             invest_percentage_per_techno.update(
                 {
@@ -665,6 +698,15 @@ class Study(EnergyStudyManager):
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
+
+        food_storage_list = [
+            techno for techno in DEFAULT_FOOD_STORAGE_LIST if techno in possible_technos
+        ]
+        if CarbonUtilization.name in DEFAULT_TECHNO_DICT:
+            values_dict[
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonUtilization.name}.{FoodStorage.node_name}.{GlossaryEnergy.techno_list}"
+            ] = food_storage_list
+
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process
@@ -797,3 +839,4 @@ if "__main__" == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
+

@@ -19,7 +19,7 @@ import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 
@@ -28,11 +28,12 @@ class Amine(CCTechno):
 
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs which depends on the technology 
-
+        Compute primary costs which depends on the technology
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+        self.cost_details['heat_needs'] = self.get_heat_needs()
 
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
@@ -44,27 +45,28 @@ class Amine(CCTechno):
 
         self.cost_details['heat_needs'] = self.get_heat_needs()
 
-        self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
-                                               )
+        # self.cost_details[mediumtemperatureheat.name] = list(self.prices[mediumtemperatureheat.name] * self.cost_details['heat_needs']
+        #                                            )
 
-        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']] + \
-               self.cost_details[Methane.name]
+        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']]
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account  CO2 from Methane and electricity consumption
+        Need to take into account  CO2 from electricity consumption
         '''
 
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
 
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
             'elec_needs']
+
 
         self.carbon_intensity[ResourceGlossary.Amine['name']] = self.resources_CO2_emissions[
                                                                     ResourceGlossary.Amine['name']] * \
                                                                 self.cost_details['amine_needs']
-        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            ResourceGlossary.Amine['name']] - 1.0
+
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.Amine['name']] - 1.0
+
 
     def grad_price_vs_energy_price(self):
         '''
@@ -74,7 +76,7 @@ class Amine(CCTechno):
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Methane.name: np.identity(len(self.years)) * heat_needs
+                mediumtemperatureheat.name: np.identity(len(self.years)) * heat_needs
                 }
 
     def grad_price_vs_resources_price(self):
@@ -94,27 +96,35 @@ class Amine(CCTechno):
 
         # Consumption
 
+        self.compute_other_primary_energy_costs()
+
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                 self.production_detailed[
                                                                                     f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-                                                                            self.production_detailed[
-                                                                                f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.consumption_detailed[f'{mediumtemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                            self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] 
 
         self.consumption_detailed[f'amine ({self.mass_unit})'] = self.cost_details['amine_needs'] * \
                                                                  self.production_detailed[
                                                                      f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            'heat_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value']
+        # self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+        #                                                                                     'heat_needs'] * \
+        #                                                                                 self.production_detailed[
+        #                                                                                     f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+        #                                                                                 Methane.data_energy_dict[
+        #                                                                                     'CO2_per_use'] / \
+        #                                                                                 Methane.data_energy_dict[
+        #                                                                                     'calorific_value']
 
+
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                        self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        self.consumption_detailed[f'amine ({self.mass_unit})'] / \
+                                                                                        self.consumption_detailed[f'{mediumtemperatureheat.name} ({self.energy_unit})']
+        
     def compute_amine_need(self):
         """
         'reaction': 'RNH2(Amine) + CO2 <--> (RNHCOO-) + (H+)'

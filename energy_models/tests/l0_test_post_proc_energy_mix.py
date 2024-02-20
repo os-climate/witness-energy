@@ -55,8 +55,7 @@ class PostProcessEnergy(unittest.TestCase):
         # energylist= [GlossaryEnergy.methane]
         # for energ in energylist:
         #     self.namespace_list.append(f'{self.study_name}.EnergyMix.{energ}')
-
-        self.namespace_list.append(f'{self.study_name}.EnergyMix')
+        # self.namespace_list.append(f'{self.study_name}.EnergyMix')
 
     def test_post_processing_Table_plots(self):
         """
@@ -73,7 +72,8 @@ class PostProcessEnergy(unittest.TestCase):
                                                               as_json=False)
 
             # for graph in graph_list:
-            # graph.to_plotly().show()
+            #     graph.to_plotly().show()
+
             #     if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
             #         #if graph.chart_name == '':
             #         graph.to_plotly().show()

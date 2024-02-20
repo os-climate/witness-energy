@@ -64,6 +64,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'techno_evo_eff': 'yes',
                                  'techno_evo_time': 10,
                                  'efficiency evolution slope': 0.5,
+                                 'useful_heat_recovery_factor': 0.8,
                                  # electric efficiency that we will use to
                                  # compute elec needs
                                  'efficiency': 0.84,

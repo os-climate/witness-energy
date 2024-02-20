@@ -47,15 +47,15 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                  'reaction_part_1': 'CO2 + 2KOH --> H2O + K2CO3',
                                  'reaction_part_2': 'CaCO3 (calciner)--> CaO +CO2',
                                  'Opex_percentage': 0.04,
-                                 'elec_demand': 0.1,
-                                 'elec_demand_unit': 'kWh/kgCO2',
+                                 'elec_demand': 0.366,
+                                 'elec_demand_unit': 'kWh/kgCO2', # https://www.sciencedirect.com/science/article/pii/S2590174523001459
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
-                                 'heat_demand': 1.75,
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand': 1.42,
+                                 'heat_demand_unit': 'kWh/kgCO2', # https://www.sciencedirect.com/science/article/pii/S2590174523001459
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.5,

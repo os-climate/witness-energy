@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import pickle
 import unittest
 from os.path import join, dirname
@@ -40,24 +41,24 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
+
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
-            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat']]
-        # print(GlossaryEnergy.energy_list, self.energy_list)
+            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_utilization,]]
+
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
-        # print('streams_outputs_dict', streams_outputs_dict.keys())
-        # print('pkl_file', pkl_file)
+
         pkl_file.close()
-        self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+        self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_utilization]
 
         self.CO2_per_use = {}
         self.CH4_per_use = {}
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
+
         for i, energy in enumerate(self.energy_list):
-            # print('energy', energy)
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
             self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
@@ -131,7 +132,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
                 self.energy_consumption[energy]
             else:
-
+                #if energy != GlossaryEnergy.carbon_utilization:
                 inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]

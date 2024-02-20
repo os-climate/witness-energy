@@ -71,6 +71,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'low_heat_production': (41 / 46.016) * 1000 * 2.77778e-13,
                                  # CO+H2O→CO2+H2ΔH°=−41kJ/mol, Co2(44g/mol),H2(2.016g/mol)
                                  'low_heat_production_unit': 'TWh/kg',
+                                 'useful_heat_recovery_factor': 0.8,
                                  # Capex initial at year 2020
                                  'CO_conversion': [36.0, 100.0],
                                  'CO_conversion_unit': '%',

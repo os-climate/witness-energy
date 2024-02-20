@@ -286,7 +286,6 @@ class TechnoType:
         """
         Compute the power installed (W) of the technology for a given investment
         """
-
     def select_resources_ratios(self):
         """! Select the ratios to be added to ratio_df and convert it from % to normal
              This function is to be overloaded in specific techno_models
@@ -307,7 +306,7 @@ class TechnoType:
 
     def apply_resources_ratios(self, apply_ressources_ratio: bool = True):
         """! Select the most constraining ratio and apply it to production and consumption.
-        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
+        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios,
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
         A model variables is set in this method:
             -self.applied_ratio: the effective ratio applied for each year
@@ -378,11 +377,11 @@ class TechnoType:
         '''
         Compute Capital & loss of capital because of the unusability of the technology.
         When the applied ratio is below 1, the technology does not produce all the energy possible.
-        Investments on this technology is consequently non_use. 
-        This method computes the non_use of capital 
+        Investments on this technology is consequently non_use.
+        This method computes the non_use of capital
 
         Capex is in $/MWh
-        Prod in TWh 
+        Prod in TWh
         then capex*prod_wo_ratio is in $/MWh*(1e6MWh)= M$
 
         We divide by scaling_factor_invest_level to put non_use_capital in G$
@@ -417,7 +416,7 @@ class TechnoType:
 
     def compute_dnon_usecapital_dratio(self, dapplied_ratio_dratio):
         '''
-        Compute the non_use_capital gradient vs all_stream_demand_ratio 
+        Compute the non_use_capital gradient vs all_stream_demand_ratio
         In input we already have the gradient of applied_ratio on stream_demand_ratio
         '''
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
@@ -1012,8 +1011,8 @@ class TechnoType:
 
     def compute_carbon_emissions(self):
         '''
-        Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary resources 
+        Compute the carbon emissions from the technology taking into account
+        CO2 from production + CO2 from primary resources
         '''
 
         if 'CO2_from_production' not in self.techno_infos_dict:
@@ -1060,7 +1059,7 @@ class TechnoType:
 
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
+        '''
         Get the theoretical CO2 production for a given technology,
         Need to be overloaded in each technology model (example in SMR)
         '''
@@ -1069,7 +1068,7 @@ class TechnoType:
     def compute_primary_energy_production(self):
         '''
         Compute the primary energy production for each technology
-        (primary energy is H2 for H2 techno , Kero for Kero techno ...etc) 
+        (primary energy is H2 for H2 techno , Kero for Kero techno ...etc)
         '''
         # First compute the initial aging distribution with the initial
         # production found in the techno discipline
@@ -1195,7 +1194,7 @@ class TechnoType:
 
     def compute_dprod_dcapex(self, capex_list, invest_list, techno_dict, invest_before_year_start):
         '''
-        Compute the derivative of production over capex 
+        Compute the derivative of production over capex
         '''
         nb_years = len(capex_list)
         dprod_list_dcapex_list = np.zeros(
@@ -1264,7 +1263,7 @@ class TechnoType:
 
     def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
         '''! Select the most constraining ratio and apply it to production and consumption.
-        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
+        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios,
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
         @param prod: pandas Series, values of the production/consumption for which the gradient is calculated
         @param ratio_name: string, name of the ratio for which the gradient is calculated
@@ -1323,9 +1322,9 @@ class TechnoType:
     def compute_aging_distribution_production(self):
         '''
         Compute the aging distribution production of primary energy for years of study
-        Start with the initial distribution and add a year on the age each year 
+        Start with the initial distribution and add a year on the age each year
         Add also the yearly production regarding the investment
-        All productions older than the lifetime are removed from the dataframe  
+        All productions older than the lifetime are removed from the dataframe
         '''
         # To break the object link with initial distrib
         aging_distrib_year_df = pd.DataFrame(

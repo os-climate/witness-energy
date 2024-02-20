@@ -26,6 +26,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -70,23 +71,42 @@ class CCUS_Discipline(SoSWrapp):
                                          'namespace': GlossaryEnergy.NS_REFERENCE},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                         GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                        'CO2 from Food Storage (Mt)': ('float', None, True),
                                                                         GlossaryEnergy.carbon_storage: ('float', None, True),
+                                                                        GlossaryEnergy.carbon_utilization: ('float', None, True),
                                                                         'carbon_capture from energy mix (Gt)': (
                                                                         'float', None, True),
                                                                         'carbon_capture needed by energy mix (Gt)': (
                                                                             'float', None, True),
+                                                                        'heat.hightemperatureheat (TWh)': (
+                                                                        'float', None, True),
+                                                                        'heat.mediumtemperatureheat (TWh)': (
+                                                                        'float', None, True),
+                                                                        'heat.lowtemperatureheat (TWh)': (
+                                                                        'float', None, True),
                                                                         }, },
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                    'CO2 from Food Storage (Mt)': ('float', None, True),
                                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
+                                                                    GlossaryEnergy.carbon_utilization: ('float', None, True),
                                                                     'carbon_capture from energy mix (Gt)': (
-                                                                    'float', None, True), }, }
+                                                                    'float', None, True),
+                                                                    'heat.hightemperatureheat (TWh)': (
+                                                                        'float', None, True),
+                                                                    'heat.mediumtemperatureheat (TWh)': (
+                                                                        'float', None, True),
+                                                                    'heat.lowtemperatureheat (TWh)': (
+                                                                        'float', None, True),
+                                                                    }, }
+
     }
 
     DESC_OUT = {
@@ -136,7 +156,14 @@ class CCUS_Discipline(SoSWrapp):
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                 GlossaryEnergy.carbon_storage: ('float', None, True), }}
+                                                 'CO2 from Food Storage (Mt)': ('float', None, True),
+                                                 GlossaryEnergy.carbon_storage: ('float', None, True),
+                                                 GlossaryEnergy.carbon_utilization: ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                }}
+
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': GlossaryEnergy.NS_CCS,
@@ -144,7 +171,13 @@ class CCUS_Discipline(SoSWrapp):
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'carbon_capture_wotaxes': ('float', None, True),
                                                  GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                 'carbon_storage_wotaxes': ('float', None, True), }}
+                                                 GlossaryEnergy.carbon_utilization: ('float', None, True),
+                                                 'carbon_storage_wotaxes': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                }}
+
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': GlossaryEnergy.NS_CCS,
@@ -406,6 +439,11 @@ class CCUS_Discipline(SoSWrapp):
                 ('CCS_price', 'ccs_price_per_tCO2'),
                 (f'{CarbonStorage.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonStorage.name),
                 np.identity(len(years)))
+        if CarbonUtilization.name in ccs_list:
+            self.set_partial_derivative_for_other_types(
+                ('CCS_price', 'ccs_price_per_tCO2'),
+                (f'{CarbonUtilization.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonUtilization.name),
+                np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
@@ -554,6 +592,16 @@ class CCUS_Discipline(SoSWrapp):
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             f'CO2 storage limited by CO2 to store')
+        new_chart.add_series(serie)
+
+        # serie = InstanciatedSeries(
+        #     x_serie_1,
+        #     (co2_emissions[f'{CarbonUtilization.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+        # new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 storage by invest')
         new_chart.add_series(serie)
 
         return new_chart

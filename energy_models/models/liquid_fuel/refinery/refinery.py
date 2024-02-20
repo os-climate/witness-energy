@@ -24,7 +24,9 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 
 
 class Refinery(LiquidFuelTechno):
@@ -48,7 +50,7 @@ class Refinery(LiquidFuelTechno):
 
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs which depends on the technology 
+        Compute primary costs which depends on the technology
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
@@ -75,7 +77,7 @@ class Refinery(LiquidFuelTechno):
 
     def grad_price_vs_energy_price(self):
         '''
-        Compute the gradient of global price vs energy prices 
+        Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
@@ -101,6 +103,7 @@ class Refinery(LiquidFuelTechno):
 
         liquid_fuel is the total production
         the break down is made with self.production[GlossaryEnergy.kerosene] ... ect 
+
         """
 
         for energy in self.other_energy_dict:
@@ -132,13 +135,10 @@ class Refinery(LiquidFuelTechno):
                                                                                     self.production_detailed[
                                                                                         f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                                'hydrogen_demand'] * \
-                                                                                            self.production_detailed[
-                                                                                                f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWh
-
-        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
-        #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] * \
+                                                                                            self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.production_detailed[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['useful_heat_recovery_factor'] * \
+                                                                                          self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})']      # in kWh
 
     def compute_ch4_emissions(self):
         '''
@@ -156,6 +156,82 @@ class Refinery(LiquidFuelTechno):
         self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
                                                                                   self.production_detailed[
                                                                                       f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
+
+    def compute_price(self):
+        """
+        Compute the detail price of the technology
+        """
+
+        self.cost_details[GlossaryEnergy.InvestValue] = self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
+                                                                              <= self.cost_details[
+                                                                                  GlossaryEnergy.Years].max()][
+            GlossaryEnergy.InvestValue].values
+        # Maximize with smooth exponential
+        self.cost_details[GlossaryEnergy.InvestValue] = compute_func_with_exp_min(
+            self.cost_details[GlossaryEnergy.InvestValue].values, 1.0e-12)
+
+        self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
+            self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
+
+        crf = self.compute_crf(self.techno_infos_dict)
+
+        # Compute efficiency evolving in time or not
+        if self.techno_infos_dict['techno_evo_eff'] == 'yes':
+            self.cost_details['efficiency'] = self.configure_efficiency()
+        else:
+            self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
+
+        self.prices = self.prices.loc[self.prices[GlossaryEnergy.Years]
+                                      <= self.cost_details[GlossaryEnergy.Years].max()]
+        self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
+        )
+
+        # Factory cost including CAPEX OPEX
+        self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
+                                                    (crf + self.techno_infos_dict['Opex_percentage'])
+
+        # Compute transport and CO2 taxes
+        self.cost_details['transport'] = self.compute_transport()
+
+        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
+
+        # Add transport and CO2 taxes
+        self.cost_details[self.name] = self.cost_details[f'{self.name}_factory'] + self.cost_details['transport'] + \
+                                       self.cost_details['CO2_taxes_factory'] + \
+                                       self.cost_details['energy_costs']
+
+        # Add margin in %
+        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin[GlossaryEnergy.Years]
+                                                                           <= self.cost_details[
+                                                                               GlossaryEnergy.Years].max()][
+            GlossaryEnergy.MarginValue].values / 100.0
+
+        self.cost_details[GlossaryEnergy.MarginValue] = price_with_margin - self.cost_details[self.name]
+        self.cost_details[self.name] = price_with_margin
+
+        if 'CO2_taxes_factory' in self.cost_details:
+            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
+                                                        self.cost_details['CO2_taxes_factory'] * \
+                                                        self.margin.loc[self.margin[GlossaryEnergy.Years]
+                                                                        <= self.cost_details[
+                                                                            GlossaryEnergy.Years].max()][
+                                                            GlossaryEnergy.MarginValue].values / 100.0
+
+        else:
+            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
+
+        # CAPEX in ($/MWh)
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * crf
+
+        # Running OPEX in ($/MWh)
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+                                         (self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport'] + self.cost_details['energy_costs']
+        # CO2 Tax in ($/MWh)
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
+                                           self.cost_details[f'{self.name}_wotaxes']
+        return self.cost_details
+
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

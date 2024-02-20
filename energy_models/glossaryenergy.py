@@ -66,6 +66,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     wet_biomass = "wet_biomass"
     carbon_capture = "carbon_capture"
     carbon_storage = "carbon_storage"
+    carbon_utilization = "carbon_utilization"
     direct_air_capture = "direct_air_capture"
     flue_gas_capture = "flue_gas_capture"
     heat = "heat"
@@ -78,6 +79,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
+    FoodStorageMean = "food_storage_mean"
+    DirectAirMean = "direct_air_mean"
     MarginValue = "margin"
     CO2EmissionsValue = "CO2_emissions"
     EnergyCO2EmissionsValue = "energy_CO2_emissions"
@@ -102,6 +105,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
     CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
+    FoodStorageApplications = "food_storage_applications.FoodStorageApplicationsTechno"
+    food_storage_applications = 'food_storage_applications'
+
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
     CCSTechnoInvest = {
@@ -180,6 +186,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
     }
 
+    flue_gas_emission_techno_list = 'flue_gas_emission_techno_list'
     TechnoInvestPercentageName = "techno_invest_percentage"
     TechnoInvestPercentage = {
         "var_name": TechnoInvestPercentageName,

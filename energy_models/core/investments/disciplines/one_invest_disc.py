@@ -66,6 +66,12 @@ class OneInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
                                     'dataframe_descriptor': {
                                         GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                        'carbon_utilization.food_storage_applications.BeverageCarbonation': (
+                                        'float', None, True),
+                                        'carbon_utilization.food_storage_applications.CarbonatedWater': (
+                                        'float', None, True),
+                                        'carbon_utilization.food_storage_applications.AlgaeCultivation': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
@@ -84,16 +90,24 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HeatPumpHighHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.GeothermalHighHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HydrogenBoilerHighHeat': (
+                                        'float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.SofcgtHighHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.GeothermalLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.CHPLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HydrogenBoilerLowHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.NaturalGasBoilerMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.ElectricBoilerMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HeatPumpMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.GeothermalMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.CHPMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HydrogenBoilerMediumHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.PlasmaCracking': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.SOEC': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.PEM': ('float', None, True),
@@ -143,6 +157,7 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
                                         },
                                     'dataframe_edition_locked': False},
+
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',

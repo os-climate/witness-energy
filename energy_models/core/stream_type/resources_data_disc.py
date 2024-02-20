@@ -27,6 +27,9 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
+def get_static_CO2_emissions(years):
+    resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
+
 
 def get_static_CO2_emissions(years):
     resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
@@ -79,114 +82,124 @@ class ResourcesDisc(SoSWrapp):
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, 2100], False),
-                                                                             'uranium_resource': ('float', None, True),
-                                                                             'water_resource': ('float', None, True),
-                                                                             'sea_water_resource': (
-                                                                             'float', None, True),
-                                                                             'CO2_resource': ('float', None, True),
-                                                                             'biomass_dry_resource': (
-                                                                             'float', None, True),
-                                                                             'wet_biomass_resource': (
-                                                                             'float', None, True),
-                                                                             'natural_oil_resource': (
-                                                                             'float', None, True),
-                                                                             'methanol_resource': ('float', None, True),
-                                                                             'sodium_hydroxide_resource': (
-                                                                             'float', None, True),
-                                                                             'wood_resource': ('float', None, True),
-                                                                             'carbon_resource': ('float', None, True),
-                                                                             'managed_wood_resource': (
-                                                                             'float', None, True),
-                                                                             'oxygen_resource': ('float', None, True),
-                                                                             'dioxygen_resource': ('float', None, True),
-                                                                             'crude_oil_resource': (
-                                                                             'float', None, True),
-                                                                             'solid_fuel_resource': (
-                                                                             'float', None, True),
-                                                                             'calcium_resource': ('float', None, True),
-                                                                             'calcium_oxyde_resource': (
-                                                                             'float', None, True),
-                                                                             'potassium_resource': (
-                                                                             'float', None, True),
-                                                                             'potassium_hydroxide_resource': (
-                                                                             'float', None, True),
-                                                                             'amine_resource': ('float', None, True),
-                                                                             'ethanol_amine_resource': (
-                                                                             'float', None, True),
-                                                                             'mono_ethanol_amine_resource': (
-                                                                             'float', None, True),
-                                                                             'glycerol_resource': ('float', None, True),
-                                                                             'natural_gas_resource': (
-                                                                             'float', None, True),
-                                                                             'coal_resource': ('float', None, True),
-                                                                             'oil_resource': ('float', None, True),
-                                                                             'copper_resource': ('float', None, True),
-                                                                             'platinum_resource': (
-                                                                             'float', None, True), },
+                                                        'int', [1900, 2100], False),
+                                                        'uranium_resource': ('float', None, True),
+                                                        'water_resource': ('float', None, True),
+                                                        'sea_water_resource': (
+                                                            'float', None, True),
+                                                        'CO2_resource': ('float', None, True),
+                                                        'biomass_dry_resource': (
+                                                            'float', None, True),
+                                                        'wet_biomass_resource': (
+                                                            'float', None, True),
+                                                        'natural_oil_resource': (
+                                                            'float', None, True),
+                                                        'nitrogen_resource': ('float', None, True),
+                                                        'phosphorus_resource': ('float', None, True),
+                                                        'beverage_carbonation_resource': ('float', None, True),
+                                                        'carbonated_water_resource': ('float', None, True),
+                                                        'algae_cultivation_resource': ('float', None, True),
+                                                        'methanol_resource': ('float', None, True),
+                                                        'sodium_hydroxide_resource': (
+                                                            'float', None, True),
+                                                        'wood_resource': ('float', None, True),
+                                                        'carbon_resource': ('float', None, True),
+                                                        'managed_wood_resource': (
+                                                            'float', None, True),
+                                                        'oxygen_resource': ('float', None, True),
+                                                        'dioxygen_resource': ('float', None, True),
+                                                        'crude_oil_resource': (
+                                                            'float', None, True),
+                                                        'solid_fuel_resource': (
+                                                            'float', None, True),
+                                                        'calcium_resource': ('float', None, True),
+                                                        'calcium_oxyde_resource': (
+                                                            'float', None, True),
+                                                        'potassium_resource': (
+                                                            'float', None, True),
+                                                        'potassium_hydroxide_resource': (
+                                                            'float', None, True),
+                                                        'amine_resource': ('float', None, True),
+                                                        'ethanol_amine_resource': (
+                                                            'float', None, True),
+                                                        'mono_ethanol_amine_resource': (
+                                                            'float', None, True),
+                                                        'glycerol_resource': ('float', None, True),
+                                                        'natural_gas_resource': (
+                                                            'float', None, True),
+                                                        'coal_resource': ('float', None, True),
+                                                        'oil_resource': ('float', None, True),
+                                                        'copper_resource': ('float', None, True),
+                                                        'platinum_resource': (
+                                                            'float', None, True), },
                                                     'dataframe_edition_locked': False,
                                                     'default': get_static_prices(years)},
                GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
                                                             'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                            'int', [1900, 2100], False),
-                                                                                     'uranium_resource': (
-                                                                                     'float', None, True),
-                                                                                     'water_resource': (
-                                                                                     'float', None, True),
-                                                                                     'sea_water_resource': (
-                                                                                     'float', None, True),
-                                                                                     'CO2_resource': (
-                                                                                     'float', None, True),
-                                                                                     'biomass_dry_resource': (
-                                                                                     'float', None, True),
-                                                                                     'wet_biomass_resource': (
-                                                                                     'float', None, True),
-                                                                                     'natural_oil_resource': (
-                                                                                     'float', None, True),
-                                                                                     'methanol_resource': (
-                                                                                     'float', None, True),
-                                                                                     'sodium_hydroxide_resource': (
-                                                                                     'float', None, True),
-                                                                                     'wood_resource': (
-                                                                                     'float', None, True),
-                                                                                     'carbon_resource': (
-                                                                                     'float', None, True),
-                                                                                     'managed_wood_resource': (
-                                                                                     'float', None, True),
-                                                                                     'oxygen_resource': (
-                                                                                     'float', None, True),
-                                                                                     'dioxygen_resource': (
-                                                                                     'float', None, True),
-                                                                                     'crude_oil_resource': (
-                                                                                     'float', None, True),
-                                                                                     'solid_fuel_resource': (
-                                                                                     'float', None, True),
-                                                                                     'calcium_resource': (
-                                                                                     'float', None, True),
-                                                                                     'calcium_oxyde_resource': (
-                                                                                     'float', None, True),
-                                                                                     'potassium_resource': (
-                                                                                     'float', None, True),
-                                                                                     'potassium_hydroxide_resource': (
-                                                                                         'float', None, True),
-                                                                                     'amine_resource': (
-                                                                                     'float', None, True),
-                                                                                     'ethanol_amine_resource': (
-                                                                                     'float', None, True),
-                                                                                     'mono_ethanol_amine_resource': (
-                                                                                         'float', None, True),
-                                                                                     'glycerol_resource': (
-                                                                                     'float', None, True),
-                                                                                     'natural_gas_resource': (
-                                                                                     'float', None, True),
-                                                                                     'coal_resource': (
-                                                                                     'float', None, True),
-                                                                                     'oil_resource': (
-                                                                                     'float', None, True),
-                                                                                     'copper_resource': (
-                                                                                     'float', None, True),
-                                                                                     'platinum_resource': (
-                                                                                     'float', None, True), },
+                                                                'int', [1900, 2100], False),
+                                                                'uranium_resource': (
+                                                                    'float', None, True),
+                                                                'water_resource': (
+                                                                    'float', None, True),
+                                                                'sea_water_resource': (
+                                                                    'float', None, True),
+                                                                'CO2_resource': (
+                                                                    'float', None, True),
+                                                                'biomass_dry_resource': (
+                                                                    'float', None, True),
+                                                                'wet_biomass_resource': (
+                                                                    'float', None, True),
+                                                                'natural_oil_resource': (
+                                                                    'float', None, True),
+                                                                'nitrogen_resource': ('float', None, True),
+                                                                'phosphorus_resource': ('float', None, True),
+                                                                'beverage_carbonation_resource': ('float', None, True),
+                                                                'carbonated_water_resource': ('float', None, True),
+                                                                'algae_cultivation_resource': ('float', None, True),
+                                                                'methanol_resource': (
+                                                                    'float', None, True),
+                                                                'sodium_hydroxide_resource': (
+                                                                    'float', None, True),
+                                                                'wood_resource': (
+                                                                    'float', None, True),
+                                                                'carbon_resource': (
+                                                                    'float', None, True),
+                                                                'managed_wood_resource': (
+                                                                    'float', None, True),
+                                                                'oxygen_resource': (
+                                                                    'float', None, True),
+                                                                'dioxygen_resource': (
+                                                                    'float', None, True),
+                                                                'crude_oil_resource': (
+                                                                    'float', None, True),
+                                                                'solid_fuel_resource': (
+                                                                    'float', None, True),
+                                                                'calcium_resource': (
+                                                                    'float', None, True),
+                                                                'calcium_oxyde_resource': (
+                                                                    'float', None, True),
+                                                                'potassium_resource': (
+                                                                    'float', None, True),
+                                                                'potassium_hydroxide_resource': (
+                                                                    'float', None, True),
+                                                                'amine_resource': (
+                                                                    'float', None, True),
+                                                                'ethanol_amine_resource': (
+                                                                    'float', None, True),
+                                                                'mono_ethanol_amine_resource': (
+                                                                    'float', None, True),
+                                                                'glycerol_resource': (
+                                                                    'float', None, True),
+                                                                'natural_gas_resource': (
+                                                                    'float', None, True),
+                                                                'coal_resource': (
+                                                                    'float', None, True),
+                                                                'oil_resource': (
+                                                                    'float', None, True),
+                                                                'copper_resource': (
+                                                                    'float', None, True),
+                                                                'platinum_resource': (
+                                                                    'float', None, True), },
                                                             'dataframe_edition_locked': False,
                                                             'default': get_static_CO2_emissions(years)}}
 
@@ -229,7 +242,7 @@ class ResourcesDisc(SoSWrapp):
 
         outputs_dict = {GlossaryEnergy.ResourcesPriceValue: resources_price,
                         GlossaryEnergy.RessourcesCO2EmissionsValue: co2_emissions}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

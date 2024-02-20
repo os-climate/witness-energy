@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerLowHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -65,6 +65,10 @@ class Study(EnergyMixStudyManager):
             invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'HydrogenBoilerLowHeat' in self.technologies_list:
+            invest_low_heat_mix_dict['HydrogenBoilerLowHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_low_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
@@ -83,12 +87,15 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
+
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 148.0,
                                       GlossaryEnergy.syngas: 80.0,
                                       GlossaryEnergy.biogas: 70.0,
                                       GlossaryEnergy.methane: 100,
-                                      GlossaryEnergy.biomass_dry: 45})
+                                      GlossaryEnergy.biomass_dry: 45,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 220
+                                      })
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -118,6 +125,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoilerLowHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoilerLowHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HeatPumpLowHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.GeothermalLowHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.CHPLowHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoilerLowHeat.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

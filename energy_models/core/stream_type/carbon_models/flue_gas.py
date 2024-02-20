@@ -33,7 +33,7 @@ class FlueGas(BaseStream):
 
     def configure_parameters(self, inputs_dict):
         BaseStream.configure_parameters(self, inputs_dict)
-        self.subelements_list = inputs_dict[GlossaryEnergy.techno_list]
+        self.subelements_list = inputs_dict[GlossaryEnergy.flue_gas_emission_techno_list]
 
     def configure_parameters_update(self, inputs_dict):
         for techno in self.subelements_list:
@@ -46,7 +46,6 @@ class FlueGas(BaseStream):
         Compute energy production by summing all energy productions
         And compute the techno_mix_weights each year
         '''
-
         self.production[f'{self.name}'] = 0.
         for element in self.subelements_list:
             self.production[f'{self.name} {element} ({self.unit})'] = self.sub_production_dict[

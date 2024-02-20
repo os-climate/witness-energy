@@ -27,6 +27,7 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -96,7 +97,9 @@ class EnergyMix(BaseStream):
     only_energy_list = list(energy_class_dict.keys())
 
     stream_class_dict = {CarbonCapture.name: CarbonCapture,
-                         CarbonStorage.name: CarbonStorage, }
+                         CarbonStorage.name: CarbonStorage,
+                         CarbonUtilization.name: CarbonUtilization,
+                         }
     ccs_list = list(stream_class_dict.keys())
     stream_class_dict.update(energy_class_dict)
 
@@ -105,6 +108,7 @@ class EnergyMix(BaseStream):
     CO2_list = [f'{CarbonCapture.name} (Mt)',
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
+                f'{CarbonUtilization.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
     solidFuel_name = SolidFuel.name

@@ -50,6 +50,10 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                               'dataframe_descriptor': {
                                                                   GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                   'demand': ('float', None, True),
+                                                                  'production fuel.ethanol (TWh)': ('float', None, True),
+                                                                  'production heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                                  'production heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                                  'production heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
@@ -58,6 +62,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                                   f'production {GlossaryEnergy.biogas} (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': ('float', None, True),
                                                               },
+
                                                               'dataframe_edition_locked': False,
                                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                               'namespace': GlossaryEnergy.NS_ENERGY_MIX},

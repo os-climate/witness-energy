@@ -67,6 +67,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         streams_outputs_dict = pickle.load(pkl_file)
         pkl_file.close()
 
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict_old.pkl'), 'rb')
+        streams_outputs_dict_old = pickle.load(pkl_file)
+        pkl_file.close()
         self.CO2_per_use = {}
         self.CH4_per_use = {}
         self.N2O_per_use = {}
@@ -133,9 +137,8 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = \
-                self.energy_production[
-                    energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:

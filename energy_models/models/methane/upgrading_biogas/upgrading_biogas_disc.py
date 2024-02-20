@@ -59,7 +59,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
                                  'low_heat_production_unit': 'TWh/kg',
                                  # biogas demand represent needed biogas to obtain 1 m^3 of methane here 6201 t of biogas for 3.44
-                                 # p25 in graphs
+                                 'useful_heat_recovery_factor': 0.8,
                                  'biogas_demand': 6.46 / 3.44,
                                  'biogas_demand_unit': 'm^3/m^3',
                                  # MEA : MonoEthanolAmine

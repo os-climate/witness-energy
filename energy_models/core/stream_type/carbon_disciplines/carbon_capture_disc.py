@@ -85,9 +85,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()
 
     DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
-                     'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
+                     'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'},
+                     'production_fgc': {'type': 'dataframe', 'unit': 'TWh'},
+                     'consumption_fgc': {'type': 'dataframe', 'unit': 'TWh'},
+                     'production_dac': {'type': 'dataframe', 'unit': 'TWh'},
+                     'consumption_dac': {'type': 'dataframe', 'unit': 'TWh'},
+                     })
 
-    # DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -104,6 +108,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
+            'production_fgc': self.energy_model.production_fgc,
+            'consumption_fgc': self.energy_model.consumption_fgc,
+            'production_dac': self.energy_model.production_dac,
+            'consumption_dac': self.energy_model.consumption_dac,
         }
         
         self.store_sos_outputs_values(outputs_dict)
@@ -431,7 +439,9 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                       'Technology mix',
                       GlossaryEnergy.Capital,
                       'Consumption and production',
-                      'Flue gas or DAC capture']
+                      'Flue gas or DAC capture',
+                      'FGC',
+                      'DAC']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -469,6 +479,16 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in self.get_sosdisc_inputs(
                 'data_fuel_dict'):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'FGC' in charts:
+            new_chart = self.get_charts_FGC_consumption_and_production_energy()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'DAC' in charts:
+            new_chart = self.get_charts_DAC_consumption_and_production_energy()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -748,5 +768,121 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             carbon_captured_type[GlossaryEnergy.Years].values.tolist(),
             carbon_captured_type['DAC'].values.tolist(), 'CO2 captured by DAC', 'lines')
         new_chart.series.append(serie)
+
+        return new_chart
+
+
+    def get_charts_FGC_consumption_and_production_energy(self):
+
+        instanciated_charts = []
+
+        outputs_dict = self.get_sosdisc_outputs()
+
+        # Charts for consumption and prod
+        energy_consumption = outputs_dict['consumption_fgc']
+        energy_production = outputs_dict['production_fgc']
+        new_chart = None
+        # if energy_consumption != None and energy_production != None:
+        scaling_factor_energy_consumption = self.get_sosdisc_inputs(
+            'scaling_factor_energy_consumption')
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
+            'scaling_factor_energy_production')
+        cut_energy_name = self.energy_name.split(".")
+        display_energy_name = cut_energy_name[len(
+            cut_energy_name) - 1].replace("_", " ").capitalize()
+        chart_name = f'{display_energy_name} FGC Energy consumption for CO2 capture<br>with input investments'
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        for reactant in energy_consumption.columns:
+
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
+                energy_twh = - \
+                    energy_consumption[reactant].values * \
+                    scaling_factor_energy_consumption
+                legend_title = f'{reactant} consumption'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    energy_consumption[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+        for products in energy_production.columns:
+            # We do not plot technology H2 production on this graph
+            # Pie charts are here to see difference of production between
+            # technologies
+
+            if products != GlossaryEnergy.Years and products.endswith('(kWh)') and self.energy_name not in products:
+                energy_twh = energy_production[products].values * \
+                    scaling_factor_energy_production
+                legend_title = f'{products} production'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    energy_production[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+
+
+        instanciated_charts.append(new_chart)
+
+        return new_chart
+
+    def get_charts_DAC_consumption_and_production_energy(self):
+
+        instanciated_charts = []
+        outputs_dict = self.get_sosdisc_outputs()
+
+        # Charts for consumption and prod
+        energy_consumption = outputs_dict['consumption_dac']
+        energy_production = outputs_dict['production_dac']
+
+        new_chart = None
+        # if energy_consumption != None and energy_production != None:
+        scaling_factor_energy_consumption = self.get_sosdisc_inputs(
+            'scaling_factor_energy_consumption')
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
+            'scaling_factor_energy_production')
+        cut_energy_name = self.energy_name.split(".")
+        display_energy_name = cut_energy_name[len(
+            cut_energy_name) - 1].replace("_", " ").capitalize()
+        chart_name = f'{display_energy_name} DAC Energy consumption for CO2 capture<br>with input investments'
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
+                                             chart_name=chart_name, stacked_bar=True)
+        for reactant in energy_consumption.columns:
+
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
+                energy_twh = - \
+                    energy_consumption[reactant].values * \
+                    scaling_factor_energy_consumption
+                legend_title = f'{reactant} consumption'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    energy_consumption[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+        for products in energy_production.columns:
+            # We do not plot technology H2 production on this graph
+            # Pie charts are here to see difference of production between
+            # technologies
+
+            if products != GlossaryEnergy.Years and products.endswith('(kWh)') and self.energy_name not in products:
+                energy_twh = energy_production[products].values * \
+                    scaling_factor_energy_production
+                legend_title = f'{products} production'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    energy_production[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+        instanciated_charts.append(new_chart)
 
         return new_chart

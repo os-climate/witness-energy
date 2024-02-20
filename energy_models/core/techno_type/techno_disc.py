@@ -66,6 +66,7 @@ class TechnoDiscipline(SoSWrapp):
                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                  "dynamic_dataframe_columns": True
                                                  },
+
         GlossaryEnergy.MarginValue: {'type': 'dataframe', 'unit': '%',
                                      'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                               GlossaryEnergy.MarginValue: ('float', None, True)}
@@ -175,7 +176,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def update_default_dataframes_with_years(self):
         '''
-        Update all default dataframes with years 
+        Update all default dataframes with years
         '''
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -200,7 +201,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def run(self):
         '''
-        Generic run for all technologies 
+        Generic run for all technologies
         '''
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()

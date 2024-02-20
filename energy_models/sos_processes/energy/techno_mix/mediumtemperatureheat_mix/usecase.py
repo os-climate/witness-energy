@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerMediumHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -67,6 +67,10 @@ class Study(EnergyMixStudyManager):
             invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'HydrogenBoilerMediumHeat' in self.technologies_list:
+            invest_medium_heat_mix_dict['HydrogenBoilerMediumHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_medium_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
@@ -90,8 +94,9 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.syngas: 80.0,
                                       GlossaryEnergy.biogas: 70.0,
                                       GlossaryEnergy.methane: 100,
-                                      GlossaryEnergy.biomass_dry: 45})
-
+                                      GlossaryEnergy.biomass_dry: 45,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 220
+                                      })
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
@@ -120,6 +125,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoilerMediumHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoilerMediumHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HeatPumpMediumHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.GeothermalMediumHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.CHPMediumHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoilerMediumHeat.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

@@ -97,7 +97,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"
             techno_disc = execution_engine.dm.get_disciplines_with_name(f'{namespace}.{energyname}.{techno}')[0]
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
-
             techno_name_list.append(techno)
             year_list = price_details[GlossaryEnergy.Years].tolist()
             capex_list = price_details['CAPEX_Part'].tolist()
