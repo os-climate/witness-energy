@@ -540,7 +540,7 @@ class HeatDiscipline(SoSWrapp):
         #     new_chart.series.append(serie)
 
         instanciated_charts.append(new_chart)
-        
+
         return instanciated_charts
 
     def get_chart_technology_mix(self, years_list):
