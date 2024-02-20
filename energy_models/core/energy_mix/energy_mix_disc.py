@@ -585,7 +585,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TargetProductionConstraintValue,),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    - dtotal_prod_denergy_prod * 1e6 / target_production_constraint_ref)
+                    - dtotal_prod_denergy_prod * 1e3 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
@@ -688,7 +688,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             (GlossaryEnergy.TargetProductionConstraintValue,), (
                                 f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                 f'{energy} ({stream_class_dict[energy].unit})'),
-                            - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6 / target_production_constraint_ref)
+                            - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e3 / target_production_constraint_ref)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.EnergyProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
                             (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
