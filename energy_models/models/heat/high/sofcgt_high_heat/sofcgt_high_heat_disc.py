@@ -62,9 +62,9 @@ class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
         'efficiency': 0.73 , # consumptions and productions already have efficiency included
         #https://www.pure.ed.ac.uk/ws/portalfiles/portal/172039125/Ding_Energy_118804_Postprint.pdf
         
-        'fuel_demand': 1.08 ,  # at 100% efficiency
+        'hydrogen_demand': 1.08 ,  # at 100% efficiency
         #https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693
-        'fuel_demand_unit': 'kg/kWh',
+        'hydrogen_demand_unit': 'kg/kWh',
         #https://www.sciencedirect.com/science/article/abs/pii/S0360319921007849
         'water_demand': 0.0971 ,
         'water_demand_unit': 'kg/kWh',

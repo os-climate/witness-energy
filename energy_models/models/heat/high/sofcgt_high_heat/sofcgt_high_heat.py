@@ -20,7 +20,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.water import Water
 
 
@@ -35,19 +35,25 @@ class SofcgtHighHeat(highheattechno):
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
-        """
 
-        # in kwh of fuel by kwh of electricity
-        self.cost_details['solid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
-                                                self.cost_details['efficiency']
+        """
+        
+        self.cost_details['hydrogen_needs'] = self.get_theoretical_hydrogen_needs()
+        self.cost_details[GaseousHydrogen.name] = self.cost_details['hydrogen_needs'] / \
+        self.cost_details['efficiency']
+
+        # hydrogen_needs
+
+        # output needed in this method is in $/kwh of heat
+        # to do so I need to know how much hydrogen is used to produce 1kwh of heat (i need this information in kwh) : hydrogen_needs is in kwh of hydrogen/kwh of heat
+        # kwh/kwh * price of hydrogen ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of hydrogen is in self.prices[f'{GaseousHydrogen.name}']
+        # and then we divide by efficiency
+        
 
         # need in kg/kWh
         self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
         
-        # Cost of solid_fuel for 1 kWH of electricity - Efficiency removed as data is
-        # the process global solid_fuel consumption
-        self.cost_details[SolidFuel.name] = self.cost_details['solid_fuel_needs']
-      
+        
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
         
@@ -55,16 +61,9 @@ class SofcgtHighHeat(highheattechno):
             self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
         # + self.cost_details[GlossaryEnergy.electricity]
-        return self.cost_details[SolidFuel.name] + self.cost_details[Water.name]
+        return self.cost_details[GaseousHydrogen.name] + self.cost_details[Water.name]
 
-    # def grad_price_vs_energy_price(self):
-    #     '''
-    #     Compute the gradient of global price vs energy prices
-    #     '''
-    #     elec_needs = self.get_theoretical_electricity_needs()
-    #     efficiency = self.techno_infos_dict['efficiency']
-    #     return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-    #             }
+   
 
     def compute_consumption_and_production(self):
         """
@@ -75,8 +74,8 @@ class SofcgtHighHeat(highheattechno):
         #elec_needs = self.get_electricity_needs()
 
         # Consumption
-        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                          'solid_fuel_needs'] * \
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                          'hydrogen_needs'] * \
                                                                                       self.production_detailed[
                                                                                           f'{highheattechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
@@ -84,19 +83,24 @@ class SofcgtHighHeat(highheattechno):
                                                                             f'{highheattechno.energy_name} ({self.product_energy_unit})']  # in kg
         # Production
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
+            self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] - \
             self.production_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})']
 
-    # def get_theoretical_electricity_needs(self):
-    #     # we need as output kwh/kwh
-    #     elec_demand = self.techno_infos_dict['elec_demand']
+    
+        
+    def get_theoretical_hydrogen_needs(self):
+        # we need as output kwh/kwh
+        hydrogen_demand = self.techno_infos_dict['hydrogen_demand']
 
-    #     return elec_demand
+        hydrogen_needs = hydrogen_demand
+
+        return hydrogen_needs
+    
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 
         
         '''
-        solid_fuel_needs = self.techno_infos_dict['fuel_demand']
+        hydrogen_needs = self.techno_infos_dict['hydrogen_demand']
         efficiency = self.configure_efficiency()
-        return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency[:, np.newaxis]}
+        return {GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency[:, np.newaxis]}
