@@ -64,7 +64,8 @@ class SofcgtTestCase(unittest.TestCase):
                                                    5221700000.0, 5207400000.0, 5193100000.0,
                                                    5178800000.0, 5164500000.0, 5150200000.0,
                                                    5135900000.0, 5121600000.0, 5107300000.0,
-                                                   5093000000.0,5083000000]) / 5.0e9})
+                                                   5093000000.0,]) / 5.0e9
+                                                   })
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -104,7 +105,8 @@ class SofcgtTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat_high': f'{self.name}'
+                   'ns_heat_high': f'{self.name}',
+                   'ns_solid_fuel': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

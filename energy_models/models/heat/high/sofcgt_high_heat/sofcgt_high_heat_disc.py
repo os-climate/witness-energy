@@ -20,6 +20,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.high.sofcgt_high_heat.sofcgt_high_heat import SofcgtHighHeat
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 
 
 class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
@@ -60,8 +61,13 @@ class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
         'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.73 , # consumptions and productions already have efficiency included
         #https://www.pure.ed.ac.uk/ws/portalfiles/portal/172039125/Ding_Energy_118804_Postprint.pdf
-        'elec_demand': 440 , 
-        'elec_demand_unit': 'KW',
+        
+        'fuel_demand': 1.08 ,  # at 100% efficiency
+        #https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693
+        'fuel_demand_unit': 'kg/kWh',
+        #https://www.sciencedirect.com/science/article/abs/pii/S0360319921007849
+        'water_demand': 0.0971 ,
+        'water_demand_unit': 'kg/kWh',
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,
@@ -81,7 +87,7 @@ class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
                3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 
                ]
     
- 
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})
     
