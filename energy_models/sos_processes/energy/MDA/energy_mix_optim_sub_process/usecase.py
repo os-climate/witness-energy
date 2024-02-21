@@ -405,7 +405,7 @@ class Study(EnergyStudyManager):
             "variable": [GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
             "parent": ["objectives", "constraints", "constraints"],
             "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
-            "weight": [1.0, 0.0, 0.0,],
+            "weight": [1.0, 100.0, 100.0,],
             FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM,],
             "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS,]
         })
@@ -576,7 +576,7 @@ class Study(EnergyStudyManager):
 
         target_energy_prod = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.TargetEnergyProductionValue: np.geomspace(1, 150 * 1e3, len(self.years))
+            GlossaryEnergy.TargetEnergyProductionValue: np.linspace(100. * 1.e3, 150. * 1e3, len(self.years))
         })
 
         max_invest = pd.DataFrame({
