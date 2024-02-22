@@ -95,13 +95,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
                    'ns_witness': f'{ns_study}'}
 
-        # Add demand, energymix and resources discipline
+        # Add demand, jeatmix and resources discipline
 
-        # mods_dict = {energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-        #              }
 
-        # mods_dict = {energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-        #              }
         mods_dict = {energy_mix: 'energy_models.core.heat_mix.heat_mix_disc.Heat_Mix_Discipline',
                      }
         builder_other_list = self.create_builder_list(
@@ -116,7 +112,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_energy_study': f'{ns_study}',
                        'ns_witness': f'{ns_study}',
                        'ns_energy': f'{ns_study}.{energy_mix}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'}
+                       #'ns_ccs': f'{ns_study}.{CCS_NAME}'
+                       }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
             }

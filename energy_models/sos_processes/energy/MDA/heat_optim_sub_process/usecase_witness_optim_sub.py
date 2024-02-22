@@ -21,8 +21,6 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 #from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from energy_models.sos_processes.energy.MDA.heat_process_v0.usecase import Study as witness_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -40,8 +38,6 @@ from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.use
 from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
 
 DEFAULT_TECHNO_DICT = {
-                       # Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
-                       # Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos_dev},
                        hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
                        mediumtemperatureheat.name: {'type': ENERGY_TYPE, 'value': mediumtemperatureheat_technos_dev},
                        lowtemperatureheat.name: {'type': ENERGY_TYPE, 'value': lowtemperatureheat_technos_dev},
@@ -62,7 +58,7 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
-                     2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                     2], techno_dict=DEFAULT_TECHNO_DICT,
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -74,11 +70,9 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'HeatMix'
-        self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
-        self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.witness_uc = witness_usecase(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,

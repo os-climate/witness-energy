@@ -30,12 +30,7 @@ from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecas
 from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
 from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Methane_technos_dev
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Electricity_technos_dev
-from energy_models.core.stream_type.energy_models.electricity import Electricity
+
 DEFAULT_TECHNO_DICT = {
                        # Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
                        # Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos_dev},
