@@ -50,18 +50,10 @@ class SofcgtHighHeat(highheattechno):
         # and then we divide by efficiency
         
 
-        # need in kg/kWh
-        self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
-        
-        
-        # Cost of water for 1 kWH of electricity - Efficiency removed as data
-        # is the process global water consumption
-        
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details['water_needs'])
+       
 
         # + self.cost_details[GlossaryEnergy.electricity]
-        return self.cost_details[GaseousHydrogen.name] + self.cost_details[Water.name]
+        return self.cost_details[GaseousHydrogen.name] 
 
    
 
@@ -69,22 +61,16 @@ class SofcgtHighHeat(highheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-
-        # Consumption
-        #elec_needs = self.get_electricity_needs()
-
         # Consumption
         self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                           'hydrogen_needs'] * \
                                                                                       self.production_detailed[
                                                                                           f'{highheattechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-                                                                        self.production_detailed[
-                                                                            f'{highheattechno.energy_name} ({self.product_energy_unit})']  # in kg
-        # Production
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] - \
-            self.production_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})']
+       
+        
+        #Production
+        self.production_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] * \
+                                                                                     (1-self.cost_details['efficiency'])/(self.cost_details['efficiency'])
 
     
         

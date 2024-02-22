@@ -1,21 +1,10 @@
-# Electric Boiler
+# SOFC
 
-What is the Electric Boiler? [^2]
+What is the SOFC? [^2]
 
-An Electric Boiler is a Boiler which operates using electricity rather than a combustible fossil fuel such as gas or oil boilers.
-Electrically heated boilers make use of electric current running through a heating element to create heat, to boil water into high-temperature and high-pressure steam. [^4]
-They can be classified into the automatically controlled and the manually controlled types. 
 
-High temperature heat in electric boiler technology, the temperature range is above 400 degree C.
 
-In electricity demand, Electricity is used to produce 1KWh of heat(this information in KWh): elec_demand is in
-KWh of electricity / KWh of heat. [^9]
-
-Production in 2019 that is total heat produced by Electric boiler is 1.51 EJ = 419 TWh. [^5]
-
-Initial production for high heat temp = 139.67 TWh. [^10]
-
-Working[^1] :
+Working  :
 
 Electric heating is the process of converting electrical current into heat energy. The heating element within an electric heater is called an electrical resistor, and when an electric current passes through the resistor, this is where the heat is created.
 
@@ -43,12 +32,15 @@ The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heati
 
 [^5]: [Electric Boiler: World heat production – WBA(World Bioenergy Association)](https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf) 
 
-[^6]: Capex, https://capgemini-my.sharepoint.com/personal/valentin_joncquieres_capgemini_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fvalentin%5Fjoncquieres%5Fcapgemini%5Fcom%2FDocuments%2FFichiers%20de%20conversation%20Microsoft%20Teams%2FPriyankaChintada%5Ffinal%5Fthesis%2Epdf&parent=%2Fpersonal%2Fvalentin%5Fjoncquieres%5Fcapgemini%5Fcom%2FDocuments%2FFichiers%20de%20conversation%20Microsoft%20Teams&ga=1 # table 5.2.
+[^6]: Capex, https://www.google.com/search?q=capex+of+sofc+technologies+worldwide+%24%2Fkw&sca_esv=8ab36c672be0c8ca&rlz=1C1GCEA_enIN1087IN1087&ei=5drWZaPAGd6YseMPiu-7iAM&ved=0ahUKEwjjxtzsmr6EAxVeTGwGHYr3DjEQ4dUDCBA&uact=5&oq=capex+of+sofc+technologies+worldwide+%24%2Fkw&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNhcGV4IG9mIHNvZmMgdGVjaG5vbG9naWVzIHdvcmxkd2lkZSAkL2t3MgUQIRigATIFECEYoAEyBRAhGKABMgUQIRigAUi_TFDRCViZRHABeAGQAQCYAakBoAGiBaoBAzAuNbgBA8gBAPgBAcICChAAGEcY1gQYsAPCAggQABiABBiiBIgGAZAGAw&sclient=gws-wiz-serp----
 
-[^7]: Opex, https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
+[^7]: Opex, https://www.sciencedirect.com/science/article/pii/S2092678216303338---
 
-[^8]: Efficiency, https://www.google.com/search?q=electric+boiler+efficiency&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddgb3MP-p7vfw3Bi3_aNLESRLQX8g%3A1685475202926&ei=gk92ZJKcOL-VseMPs4WWuA0&ved=0ahUKEwiS5f215J3_AhW_SmwGHbOCBdcQ4dUDCA8&uact=5&oq=electric+boiler+efficiency&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQgAQyBQgAEIAEMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoKCAAQRxDWBBCwAzoECCMQJzoHCCMQ6gIQJzoVCAAQAxCPARDqAhC0AhCMAxDlAhgBOhUILhADEI8BEOoCELQCEIwDEOUCGAE6BwgAEIoFEEM6CAgAEIoFEJECOgsIABCABBCxAxCDAToNCAAQigUQsQMQgwEQQzoKCAAQigUQsQMQQzoICAAQgAQQsQM6CggAEIAEEBQQhwJKBAhBGABQ-QRYx1pgxWVoAnABeAOAAcMBiAG0K5IBBTI3LjI2mAEAoAEBsAEUwAEByAEI2gEGCAEQARgL&sclient=gws-wiz-serp
+[^8]: Efficiency, https://www.google.com/search?q=sofc+Technology+effiency+world+wide&sca_esv=dcfe5edb8f188ebf&rlz=1C1GCEA_enIN1087IN1087&ei=N-DWZYG7LOKMnesPqpusuAo&ved=0ahUKEwjBsqn2n76EAxViRmcHHaoNC6cQ4dUDCBA&uact=5&oq=sofc+Technology+effiency+world+wide&gs_lp=Egxnd3Mtd2l6LXNlcnAiI3NvZmMgVGVjaG5vbG9neSBlZmZpZW5jeSB3b3JsZCB3aWRlMgoQIRgKGKABGMMEMgQQIRgKSJWlAlDnBVin2gFwA3gAkAEAmAG6AaAB1g6qAQQ0LjEyuAEDyAEA-AEBwgIOEAAYgAQYigUYhgMYsAPCAggQABiABBiiBIgGAZAGAg&sclient=gws-wiz-serp#ip=1 ---
 
-[^9]: Electricity demand, https://billswiz.com/electric-boiler-electricity-use
+[^9]: Hydrogen demand, https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693---
 
-[^10]: Initial production, https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf
+[^10] : Water demand, https://www.sciencedirect.com/science/article/abs/pii/S0360319921007849--
+
+[^11]: Initial production, https://www.intechopen.com/chapters/80796
+  
