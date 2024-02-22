@@ -49,25 +49,25 @@ class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 991.44,
-         #https://ec.europa.eu/research/participants/documents/downloadPublic?documentIds=080166e5b09ca4e9&appId=PPGMS
+        'Capex_init': 1250,
+         #From <https://www.google.com/search?q=capex+of+sofc+technologies+worldwide+%24%2Fkw&sca_esv=8ab36c672be0c8ca&rlz=1C1GCEA_enIN1087IN1087&ei=5drWZaPAGd6YseMPiu-7iAM&ved=0ahUKEwjjxtzsmr6EAxVeTGwGHYr3DjEQ4dUDCBA&uact=5&oq=capex+of+sofc+technologies+worldwide+%24%2Fkw&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNhcGV4IG9mIHNvZmMgdGVjaG5vbG9naWVzIHdvcmxkd2lkZSAkL2t3MgUQIRigATIFECEYoAEyBRAhGKABMgUQIRigAUi_TFDRCViZRHABeAGQAQCYAakBoAGiBaoBAzAuNbgBA8gBAPgBAcICChAAGEcY1gQYsAPCAggQABiABBiiBIgGAZAGAw&sclient=gws-wiz-serp> 
+
         # table 5.2.
         'Capex_init_unit': '$/kW',  # $ per kW of electricity
-        'Opex_percentage': 8.28,
+        'Opex_percentage': 0.02,#https://www.diva-portal.org/smash/get/diva2:1666533/FULLTEXT01.pdf
+        #https://www.researchgate.net/publication/260609024_Economic_analysis_of_a_solid_oxide_fuel_cell_cogenerationtrigeneration_system_for_hotels_in_Hong_Kong
+
          ##https://ec.europa.eu/research/participants/documents/downloadPublic?documentIds=080166e5b09ca4e9&appId=PPGMS
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 0.73 , # consumptions and productions already have efficiency included
-        #https://www.pure.ed.ac.uk/ws/portalfiles/portal/172039125/Ding_Energy_118804_Postprint.pdf
+        'efficiency': 0.6 , # consumptions and productions already have efficiency included
+        #From <https://www.sciencedirect.com/science/article/pii/S0378775316310011
         
         'hydrogen_demand': 1.08 ,  # at 100% efficiency
         #https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693
         'hydrogen_demand_unit': 'kg/kWh',
-        #https://www.sciencedirect.com/science/article/abs/pii/S0360319921007849
-        'water_demand': 0.0971 ,
-        'water_demand_unit': 'kg/kWh',
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,
@@ -77,9 +77,7 @@ class SofcgtHighHeatDiscipline(HighHeatTechnoDiscipline):
     # production in 2019: 1.51 EJ = 419 TWh
     # production 120 MW Net power= 0.00012 terawatt-hours (TWh)
     # From <https://www.google.com/search?sca_esv=62aa5c07e907627d&rlz=1C1GCEA_enIN1087IN1087&q=electricity+output+from+sofcgt+plant&nfpr=1&sa=X&ved=2ahUKEwj4mrLwgKWEAxX-8DgGHbzUDtsQvgUoAXoECAUQAw&biw=1280&bih=585&dpr=1.5
-    # https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf
-    # page 14
-    # in TWh
+     # in TWh
     initial_production = 0.00012
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
