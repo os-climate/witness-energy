@@ -257,6 +257,140 @@ class Study(EnergyStudyManager):
 
         return indep_invest_df
 
+    def update_dv_arrays(self):
+        """
+        Update design variable arrays
+        """
+        invest_mix_dict = self.get_investments_mix()
+
+        for energy in self.energy_list:
+            energy_wo_dot = energy.replace(".", "_")
+            self.update_dspace_dict_with(
+                f"{energy}.{energy_wo_dot}_array_mix",
+                list(
+                    np.maximum(self.lower_bound_techno, invest_mix_dict[energy].values)
+                ),
+                self.lower_bound_techno,
+                self.upper_bound_techno,
+            )
+
+    def update_dv_arrays_technos(self, invest_mix_df):
+        """
+        Update design variable arrays for all technologies in the case where we have only one investment discipline
+        """
+        invest_mix_df_wo_years = invest_mix_df.drop(GlossaryEnergy.Years, axis=1)
+
+        # check if we are in coarse usecase, in this case we deactivate first point of optim
+        if GlossaryEnergy.fossil in self.energy_list:
+            activated_elem = [False] + [True] * (GlossaryEnergy.NB_POLES_COARSE - 1)
+        else:
+            activated_elem = None
+        for column in invest_mix_df_wo_years.columns:
+            techno_wo_dot = column.replace(".", "_")
+            self.update_dspace_dict_with(
+                f"{column}.{techno_wo_dot}_array_mix",
+                np.minimum(
+                    np.maximum(
+                        self.lower_bound_techno, invest_mix_df_wo_years[column].values
+                    ),
+                    self.upper_bound_techno,
+                ),
+                self.lower_bound_techno,
+                self.upper_bound_techno,
+                activated_elem=activated_elem,
+            )
+
+    def add_utilization_ratio_dv(self, instanciated_studies):
+        """
+        Update design space with utilization ratio for each technology
+        """
+        dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+        start_value_utilization_ratio = np.ones(len_utilization_ratio) * 100.
+        lower_bound = np.ones(len_utilization_ratio) * 0.5
+        upper_bound = np.ones(len_utilization_ratio) * 100.
+        for energy_name, study in dict_energy_studies.items():
+            if study is not None:
+                for techno_name in study.technologies_list:
+                    if energy_name in self.ccs_list:
+                        # if energy is ccs, use different name
+                        var_name_utilization_ratio = f"{energy_name}.{techno_name}_utilization_ratio_array"
+                    else:
+                        var_name_utilization_ratio = f"{energy_name}_{techno_name}_utilization_ratio_array"
+
+                    self.update_dspace_dict_with(
+                        var_name_utilization_ratio,
+                        start_value_utilization_ratio,
+                        lower_bound,
+                        upper_bound,
+                    )
+
+    def setup_objectives(self):
+
+        func_df = pd.DataFrame({
+            # "variable": ["energy_production_objective", "syngas_prod_objective"],
+            "variable": [GlossaryEnergy.CO2MinimizationObjective],
+            "parent": ["objectives"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE],
+            "weight": [0.0],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS]
+        })
+
+        return func_df
+
+    def setup_constraints(self):
+
+        func_df = pd.DataFrame(
+            columns=["variable", "parent", "ftype", "weight", FunctionManagerDisc.AGGR_TYPE]
+        )
+        list_var = []
+        list_parent = []
+        list_ftype = []
+        list_weight = []
+        list_aggr_type = []
+        list_namespaces = []
+
+
+        if (
+                hightemperatureheat.name in self.energy_list
+        ):
+            list_var.append(GlossaryEnergy.EnergyProductionValue)
+            list_parent.append("Energy_constraints")
+            list_ftype.append(FunctionManagerDisc.INEQ_CONSTRAINT)
+            list_weight.append(0.0)
+            list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
+
+        list_var.extend([EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
+        list_parent.extend(["Energy_constraints"])
+        list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
+        list_weight.extend([-1.0])
+        list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
+        list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
+
+        # if set(EnergyDemandDiscipline.energy_constraint_list).issubset(
+        #         self.energy_list
+        # ):
+        #     list_var.extend(
+        #         ["electricity_demand_constraint", "transport_demand_constraint"]
+        #     )
+        #     list_parent.extend(["demand_constraint", "demand_constraint"])
+        #     list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT])
+        #     list_weight.extend([-1.0, -1.0])
+        #     list_aggr_type.extend([FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM])
+        #     list_namespaces.extend(
+        #         [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS]
+        #     )
+
+        func_df["variable"] = list_var
+        func_df["parent"] = list_parent
+        func_df["ftype"] = list_ftype
+        func_df["weight"] = list_weight
+        func_df[FunctionManagerDisc.AGGR_TYPE] = list_aggr_type
+        func_df["namespace"] = list_namespaces
+
+        return func_df
 
     def setup_usecase(self):
         high_heat_name = hightemperatureheat.name
@@ -430,6 +564,7 @@ class Study(EnergyStudyManager):
                 instanciated_studies)
             values_dict.update(
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}': invest_mix_df})
+            self.update_dv_arrays_technos(invest_mix_df)
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             invest_mix_df = self.get_absolute_total_mix(instanciated_studies)
             values_dict.update(
@@ -437,11 +572,12 @@ class Study(EnergyStudyManager):
                     f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df
                 }
             )
-
+            self.update_dv_arrays_technos(invest_mix_df)
+            self.add_utilization_ratio_dv(instanciated_studies)
         values_dict_list.append(values_dict)
 
-        # self.func_df = concat(
-        #     [self.setup_objectives(), self.setup_constraints()])
+        self.func_df = concat(
+            [self.setup_objectives(), self.setup_constraints()])
 
         self.create_technolist_per_energy(instanciated_studies)
 
