@@ -35,6 +35,8 @@ class NaturalGasBoilerHighHeat(highheattechno):
         """
         Compute primary costs to produce 1kWh of heat
         """
+        print('')
+        print(self.prices.to_string())
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
