@@ -1796,23 +1796,23 @@ class Energy_Mix_Discipline(SoSWrapp):
         serie = InstanciatedSeries(
             x_serie_1,
             (co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values / 1.0e3).tolist(),
-            'CO2 captured from CC technos')
+            'CO2 captured from CC technos', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
             (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(),
-            f'{CarbonCapture.name} used by energy mix')
+            f'{CarbonCapture.name} used by energy mix', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food')
+            (-co2_emissions[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1829,18 +1829,18 @@ class Energy_Mix_Discipline(SoSWrapp):
         x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), f'CO2 storage by invest')
+            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), f'CO2 storage capacity')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
-            f'CO2 storage limited by CO2 to store')
+            f'CO2 captured and stored')
         new_chart.add_series(serie)
 
         return new_chart
