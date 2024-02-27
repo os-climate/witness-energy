@@ -145,8 +145,6 @@ class Heat_Mix_Discipline(SoSWrapp):
                                 #     'visibility': 'Shared', 'namespace': 'ns_energy'}
                                 dynamic_inputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
                                     'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
-                                dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
-                                    'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
 
 
         if GlossaryEnergy.YearStart in self.get_data_in():
@@ -182,17 +180,6 @@ class Heat_Mix_Discipline(SoSWrapp):
                        GlossaryEnergy.EnergyProductionValue: total_energy_heat_production,
                        GlossaryEnergy.TargetHeatProductionConstraintValue: total_energy_heat_production_constraint,
                        }
-
-        for energy in input_dict[GlossaryEnergy.energy_list]:
-            for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
-                # output_dict[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = pd.DataFrame(
-                #     {GlossaryEnergy.Years: input_dict['CO2_emission_mix'][GlossaryEnergy.Years].values,
-                #      GlossaryEnergy.CO2EmissionsValue: input_dict['CO2_emission_mix'][
-                #          f'{energy}.{techno}'].values})
-
-                output_dict[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = pd.DataFrame(
-                    {GlossaryEnergy.Years: input_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][GlossaryEnergy.Years].values,
-                     GlossaryEnergy.EnergyProductionValue: input_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][techno].values})
 
         self.store_sos_outputs_values(output_dict)
 
