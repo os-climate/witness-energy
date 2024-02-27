@@ -16,20 +16,33 @@ limitations under the License.
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
     GHGemissionsDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.heat_mix.heat_mix import HeatMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import AGRI_TYPE
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.sos_processes.energy.MDA.heat_optim_sub_process.usecase_witness_optim_sub import DEFAULT_TECHNO_DICT
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
+from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
 
-
+DEFAULT_TECHNO_DICT = {
+                       hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
+                       mediumtemperatureheat.name: {'type': ENERGY_TYPE, 'value': mediumtemperatureheat_technos_dev},
+                       lowtemperatureheat.name: {'type': ENERGY_TYPE, 'value': lowtemperatureheat_technos_dev},
+                       }
 class ProcessBuilder(WITNESSSubProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'Heat Mix Optim sub process',
+        'label': 'Energy Mix Optim sub process',
         'description': '',
         'category': '',
         'version': '',
@@ -38,10 +51,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
-        self.energy_list = [
-            key
-            for key, value in DEFAULT_TECHNO_DICT.items()
-            if value["type"] in ["energy"]]
 
     def get_builders(self):
         coupling_name = "MDA"
@@ -54,8 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         builder_list = []
 
         # ---------------------------------------------
-        print('')
-        print(self.energy_list)
+        self.energy_list = DEFAULT_TECHNO_DICT
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
@@ -77,7 +85,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # ---------------------------------------------
         mods_dict = {
-            energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+            energy_mix: 'energy_models.core.heat_mix.heat_mix_disc.Heat_Mix_Discipline',
             # GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
         }
 
@@ -94,23 +102,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_other_list)
 
-        # ---------------------------------------------
-        # ns_dict = {
-        #     GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
-        #     'ns_energy': f'{ns_study}.{energy_mix}',
-        #     GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
-        #     'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}.{carbon_storage}.PureCarbonSolidStorage',
-        #     'ns_resource': f'{ns_study}',
-        #     GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
-        #     'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
-        # }
-        #
-        # emissions_mod_dict = {
-        #     GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
-        #     EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'
-        # }
-        # builder_emission_list = self.create_builder_list(emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
-        # builder_list.extend(builder_emission_list)
 
         # ---------------------------------------------
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -119,7 +110,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy_study': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
                 'ns_energy': f'{ns_study}.{energy_mix}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
+                # GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
             }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
@@ -135,7 +126,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_emissions': f'{ns_study}',
                 'ns_energy': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
+                # GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
                 GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                 GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                 'ns_forest': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
@@ -208,3 +199,4 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         coupling_builder.set_builder_info('cls_builder', builder_list)
 
         return coupling_builder
+

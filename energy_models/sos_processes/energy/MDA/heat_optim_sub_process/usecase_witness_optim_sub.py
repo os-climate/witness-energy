@@ -31,7 +31,6 @@ from sostrades_core.execution_engine.func_manager.func_manager import FunctionMa
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
@@ -44,7 +43,7 @@ from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecas
     TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
 from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
-from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
+# from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
 
 DEFAULT_TECHNO_DICT = {
                        hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
@@ -95,7 +94,8 @@ class Study(EnergyStudyManager):
     def create_study_list(self):
         self.sub_study_dict = {}
         self.sub_study_path_dict = {}
-        for energy in self.energy_list + self.ccs_list:
+        #+ self.ccs_list
+        for energy in self.energy_list:
             cls, path = self.get_energy_mix_study_cls(energy)
             self.sub_study_dict[energy] = cls
             self.sub_study_path_dict[energy] = path
@@ -218,7 +218,8 @@ class Study(EnergyStudyManager):
 
     def create_technolist_per_energy(self, instanciated_studies):
         self.dict_technos = {}
-        dict_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        #  + self.ccs_list
+        dict_studies = dict(zip(self.energy_list, instanciated_studies))
 
         for energy_name, study_val in dict_studies.items():
             if study_val is not None:
@@ -285,7 +286,8 @@ class Study(EnergyStudyManager):
 
     def make_dspace_utilisation_ratio(self) -> pd.DataFrame:
         variables = []
-        for energy_or_ccs in self.energy_list + self.ccs_list:
+        # + self.ccs_list
+        for energy_or_ccs in self.energy_list:
             for techno in self.dict_technos[energy_or_ccs]:
                 variables.append(
                     f"{energy_or_ccs}.{techno}.utilization_ratio_array"
@@ -308,7 +310,8 @@ class Study(EnergyStudyManager):
 
     def make_func_df(self):
         func_df = pd.DataFrame({
-            "variable": [GlossaryEnergy.CO2MinimizationObjective, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
+            "variable": [GlossaryEnergy.CO2MinimizationObjective, GlossaryEnergy.TargetHeatProductionConstraintValue,
+                         GlossaryEnergy.MaxBudgetConstraintValue, ],
             "parent": ["objectives", "constraints", "constraints"],
             "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
             "weight": [1.0, 0.0, 0.0,],
@@ -413,6 +416,70 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.MaxBudgetValue: np.geomspace(3000, 6000, len(self.years))
         })
 
+
+
+        energy_mix_emission_dic = {}
+        energy_mix_emission_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_emission_dic['heat.hightemperatureheat.NaturalGasBoilerHighHeat'] = np.ones(len(self.years)) * 10.0
+        energy_mix_emission_dic['heat.hightemperatureheat.ElectricBoilerHighHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic['heat.hightemperatureheat.HeatPumpHighHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_emission_dic['heat.hightemperatureheat.GeothermalHighHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_emission_dic['heat.hightemperatureheat.CHPHighHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_emission_dic['heat.hightemperatureheat.HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 60.0
+        energy_mix_emission_dic['heat.hightemperatureheat.SofcgtHighHeat'] = np.ones(len(self.years)) * 70.0
+
+        energy_mix_emission_dic['heat.lowtemperatureheat.NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 10.0
+        energy_mix_emission_dic['heat.lowtemperatureheat.ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic['heat.lowtemperatureheat.HeatPumpLowHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_emission_dic['heat.lowtemperatureheat.GeothermalLowHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_emission_dic['heat.lowtemperatureheat.CHPLowHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_emission_dic['heat.lowtemperatureheat.HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 60.0
+
+        energy_mix_emission_dic['heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat'] = np.ones(
+            len(self.years)) * 10.0
+        energy_mix_emission_dic['heat.mediumtemperatureheat.ElectricBoilerMediumHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic['heat.mediumtemperatureheat.HeatPumpMediumHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_emission_dic['heat.mediumtemperatureheat.GeothermalMediumHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_emission_dic['heat.mediumtemperatureheat.CHPMediumHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_emission_dic['heat.mediumtemperatureheat.HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 60.0
+
+        energy_mix_emission = pd.DataFrame(energy_mix_emission_dic)
+        energy_production = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5}
+        )
+
+        ############
+        energy_mix_high_heat_production_dic = {}
+        energy_mix_high_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_high_heat_production_dic['NaturalGasBoilerHighHeat'] = np.ones(len(self.years)) * 2
+        energy_mix_high_heat_production_dic['ElectricBoilerHighHeat'] = np.ones(len(self.years)) * 3
+        energy_mix_high_heat_production_dic['HeatPumpHighHeat'] = np.ones(len(self.years)) * 4
+        energy_mix_high_heat_production_dic['GeothermalHighHeat'] = np.ones(len(self.years)) * 5
+        energy_mix_high_heat_production_dic['CHPHighHeat'] = np.ones(len(self.years)) * 6
+        energy_mix_high_heat_production_dic['HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 7
+        energy_mix_high_heat_production_dic['SofcgtHighHeat'] = np.ones(len(self.years)) * 8
+        self.high_heat_production = pd.DataFrame(energy_mix_high_heat_production_dic)
+
+        energy_mix_low_heat_production_dic = {}
+        energy_mix_low_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_low_heat_production_dic['NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 15.0
+        energy_mix_low_heat_production_dic['ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 16.0
+        energy_mix_low_heat_production_dic['HeatPumpLowHeat'] = np.ones(len(self.years)) * 17.0
+        energy_mix_low_heat_production_dic['GeothermalLowHeat'] = np.ones(len(self.years)) * 18.0
+        energy_mix_low_heat_production_dic['CHPLowHeat'] = np.ones(len(self.years)) * 19.0
+        energy_mix_low_heat_production_dic['HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
+        self.low_heat_production = pd.DataFrame(energy_mix_low_heat_production_dic)
+
+        energy_mix_mediun_heat_production_dic = {}
+        energy_mix_mediun_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_mediun_heat_production_dic['NaturalGasBoilerMediumHeat'] = np.ones(len(self.years)) * 22.0
+        energy_mix_mediun_heat_production_dic['ElectricBoilerMediumHeat'] = np.ones(len(self.years)) * 23.0
+        energy_mix_mediun_heat_production_dic['HeatPumpMediumHeat'] = np.ones(len(self.years)) * 24.0
+        energy_mix_mediun_heat_production_dic['GeothermalMediumHeat'] = np.ones(len(self.years)) * 25.0
+        energy_mix_mediun_heat_production_dic['CHPMediumHeat'] = np.ones(len(self.years)) * 13.0
+        energy_mix_mediun_heat_production_dic['HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 18.0
+        self.medium_heat_production = pd.DataFrame(energy_mix_mediun_heat_production_dic)
+        self.max_invest_constraint_ref = 10.
         values_dict = {
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
@@ -421,19 +488,19 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
-            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
+            # f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
             f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
-            # f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
-            # f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
+            f'{self.study_name}.{self.coupling_name}.{GlossaryEnergy.MaxInvestConstraintName}': self.max_invest_constraint_ref,
+            f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.CO2_emission_mix': energy_mix_emission,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
-            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
+            # f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
             f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
-            f"{self.study_name}.{self.coupling_name}.CO2_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.CH4_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.N2O_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
+
         }
 
         (
