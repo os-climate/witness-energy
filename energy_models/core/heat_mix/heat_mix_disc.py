@@ -215,26 +215,26 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
-        # for energy in energy_list:
-        #     techno_list = inputs_dict[f'{energy}.technologies_list']
-        #     for techno in techno_list:
-        #         self.set_partial_derivative_for_other_types(
-        #             (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
-        #             (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
-        #
-        #         self.set_partial_derivative_for_other_types(
-        #             (GlossaryEnergy.TargetHeatProductionConstraintValue,),
-        #             (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
-
         for energy in energy_list:
             techno_list = inputs_dict[f'{energy}.technologies_list']
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
-                (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
+            for techno in techno_list:
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
+                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
 
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TargetHeatProductionConstraintValue,),
-                (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+
+        # for energy in energy_list:
+        #     techno_list = inputs_dict[f'{energy}.technologies_list']
+        #     self.set_partial_derivative_for_other_types(
+        #         (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
+        #         (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
+        #
+        #     self.set_partial_derivative_for_other_types(
+        #         (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+        #         (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
 
         for techno in self.energy_model.distribution_list: #+ self.other_energy_List
             self.set_partial_derivative_for_other_types(
