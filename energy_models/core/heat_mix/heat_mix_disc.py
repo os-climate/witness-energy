@@ -27,7 +27,9 @@ from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
-
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 
 
 class Heat_Mix_Discipline(SoSWrapp):
@@ -93,6 +95,24 @@ class Heat_Mix_Discipline(SoSWrapp):
                                                                         'float', None, True),
                                                                     'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': (
                                                                         'float', None, True),
+                                                                    f'heat.hightemperatureheat.{Methane.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.mediumtemperatureheat.{Methane.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.lowtemperatureheat.{Methane.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.hightemperatureheat.{Electricity.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.mediumtemperatureheat.{Electricity.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.lowtemperatureheat.{Electricity.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.hightemperatureheat.{GaseousHydrogen.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.mediumtemperatureheat.{GaseousHydrogen.name}': (
+                                                                        'float', None, True),
+                                                                    f'heat.lowtemperatureheat.{GaseousHydrogen.name}': (
+                                                                        'float', None, True),
                                                                     }},
                }
 
@@ -138,13 +158,13 @@ class Heat_Mix_Discipline(SoSWrapp):
                     if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
                             f'{energy}.{GlossaryEnergy.techno_list}')
-                        if technology_list is not None:
-                            for techno in technology_list:
-                                # dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                                #     'type': 'dataframe', 'unit': 'kg/kWh',
-                                #     'visibility': 'Shared', 'namespace': 'ns_energy'}
-                                dynamic_inputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
-                                    'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
+                        # if technology_list is not None:
+                        #     for techno in technology_list:
+                        #         # dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
+                        #         #     'type': 'dataframe', 'unit': 'kg/kWh',
+                        #         #     'visibility': 'Shared', 'namespace': 'ns_energy'}
+                        #         dynamic_inputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        #             'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
 
 
         if GlossaryEnergy.YearStart in self.get_data_in():
@@ -185,7 +205,7 @@ class Heat_Mix_Discipline(SoSWrapp):
 
     def compute_sos_jacobian(self):
         inputs_dict = self.get_sosdisc_inputs()
-
+        outputs_dict = self.get_sosdisc_outputs()
         years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
 
@@ -195,26 +215,54 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
+        # for energy in energy_list:
+        #     techno_list = inputs_dict[f'{energy}.technologies_list']
+        #     for techno in techno_list:
+        #         self.set_partial_derivative_for_other_types(
+        #             (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
+        #             (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+        #
+        #         self.set_partial_derivative_for_other_types(
+        #             (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+        #             (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+
         for energy in energy_list:
             techno_list = inputs_dict[f'{energy}.technologies_list']
-            for techno in techno_list:
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
-                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
+                (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
 
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.TargetHeatProductionConstraintValue,),
-                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+                (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), identity)  # ,identity * 1e-3
 
-        for techno in self.energy_model.distribution_list:
-
+        for techno in self.energy_model.distribution_list: #+ self.other_energy_List
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
                 ('CO2_emission_mix', techno), identity) #,identity * 1e-3
 
             self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
+                ('CO2_emission_mix', techno), identity)  # ,identity * 1e-3
+
+            self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2MinimizationObjective,),
                 ('CO2_emission_mix', techno), ones)
+
+        for techno in self.energy_model.methane_energy_List:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, Methane.name),
+                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+
+        for techno in self.energy_model.electricity_energy_List:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, Electricity.name),
+                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+        for techno in self.energy_model.gaseous_hydrogen_energy_List:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, GaseousHydrogen.name),
+                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TargetHeatProductionConstraintValue,),

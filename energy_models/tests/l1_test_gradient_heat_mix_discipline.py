@@ -19,7 +19,9 @@ from os.path import join, dirname
 import numpy as np
 import pandas as pd
 from pandas import read_csv
-
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -27,7 +29,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class HeatMixJacobianTestCase(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
+    #
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'HeatMix'
@@ -72,6 +74,9 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_emission_dic['heat.hightemperatureheat.CHPHighHeat'] = np.ones(len(self.years)) * 50.0
         energy_mix_emission_dic['heat.hightemperatureheat.HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 60.0
         energy_mix_emission_dic['heat.hightemperatureheat.SofcgtHighHeat'] = np.ones(len(self.years)) * 70.0
+        energy_mix_emission_dic[f'heat.hightemperatureheat.{Methane.name}'] = np.ones(len(self.years)) * 70.0
+        energy_mix_emission_dic[f'heat.hightemperatureheat.{Electricity.name}'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic[f'heat.hightemperatureheat.{GaseousHydrogen.name}'] = np.ones(len(self.years)) * 2.0
 
         energy_mix_emission_dic['heat.lowtemperatureheat.NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 10.0
         energy_mix_emission_dic['heat.lowtemperatureheat.ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
@@ -79,6 +84,9 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_emission_dic['heat.lowtemperatureheat.GeothermalLowHeat'] = np.ones(len(self.years)) * 40.0
         energy_mix_emission_dic['heat.lowtemperatureheat.CHPLowHeat'] = np.ones(len(self.years)) * 50.0
         energy_mix_emission_dic['heat.lowtemperatureheat.HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 60.0
+        energy_mix_emission_dic[f'heat.lowtemperatureheat.{Methane.name}'] = np.ones(len(self.years)) * 70.0
+        energy_mix_emission_dic[f'heat.lowtemperatureheat.{Electricity.name}'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic[f'heat.lowtemperatureheat.{GaseousHydrogen.name}'] = np.ones(len(self.years)) * 2.0
 
         energy_mix_emission_dic['heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat'] = np.ones(
             len(self.years)) * 10.0
@@ -87,6 +95,9 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_emission_dic['heat.mediumtemperatureheat.GeothermalMediumHeat'] = np.ones(len(self.years)) * 40.0
         energy_mix_emission_dic['heat.mediumtemperatureheat.CHPMediumHeat'] = np.ones(len(self.years)) * 50.0
         energy_mix_emission_dic['heat.mediumtemperatureheat.HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 60.0
+        energy_mix_emission_dic[f'heat.mediumtemperatureheat.{Methane.name}'] = np.ones(len(self.years)) * 70.0
+        energy_mix_emission_dic[f'heat.mediumtemperatureheat.{Electricity.name}'] = np.ones(len(self.years)) * 20.0
+        energy_mix_emission_dic[f'heat.mediumtemperatureheat.{GaseousHydrogen.name}'] = np.ones(len(self.years)) * 2.0
 
         energy_mix_emission = pd.DataFrame(energy_mix_emission_dic)
 
@@ -132,9 +143,9 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
                             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryEnergy.energy_list}': heat_energy_list,
-                            'heat.hightemperatureheat.technologies_list': high_heat_techno_list,
-                            'heat.lowtemperatureheat.technologies_list': low_heat_techno_list,
-                            'heat.mediumtemperatureheat.technologies_list': medium_heat_techno_list,
+                            # 'heat.hightemperatureheat.technologies_list': high_heat_techno_list,
+                            # 'heat.lowtemperatureheat.technologies_list': low_heat_techno_list,
+                            # 'heat.mediumtemperatureheat.technologies_list': medium_heat_techno_list,
                             f'{self.name}.{self.model_name}.CO2_emission_mix': energy_mix_emission,
                             f'{self.name}.{self.model_name}.{GlossaryEnergy.TargetHeatProductionValue}': self.target_production,
                             f'{self.name}.{self.model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
@@ -142,6 +153,43 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
 
                             }
+
+        # ############################################
+        # columns_list = [column for column in self.high_heat_production
+        #                 if not column.endswith(GlossaryEnergy.Years)]
+        # for col in columns_list:
+        #     techno_prod = pd.DataFrame(
+        #         {
+        #             GlossaryEnergy.Years: self.years,
+        #             col: self.high_heat_production[col],
+        #         }
+        #     )
+        #     self.values_dict.update({f'{self.name}.{self.model_name}.heat.hightemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+        #
+        # #########################################
+        # columns_list = [column for column in self.low_heat_production
+        #                 if not column.endswith(GlossaryEnergy.Years)]
+        # for col in columns_list:
+        #     techno_prod = pd.DataFrame(
+        #         {
+        #             GlossaryEnergy.Years: self.years,
+        #             col: self.low_heat_production[col],
+        #         }
+        #     )
+        #     self.values_dict.update({f'{self.name}.{self.model_name}.heat.lowtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+        #
+        # #########################################
+        # columns_list = [column for column in self.medium_heat_production
+        #                 if not column.endswith(GlossaryEnergy.Years)]
+        # for col in columns_list:
+        #     techno_prod = pd.DataFrame(
+        #         {
+        #             GlossaryEnergy.Years: self.years,
+        #             col: self.medium_heat_production[col],
+        #         }
+        #     )
+        #     self.values_dict.update({f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+        # ################################################
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
