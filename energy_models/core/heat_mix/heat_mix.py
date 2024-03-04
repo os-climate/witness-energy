@@ -28,7 +28,9 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
-
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 
 class HeatMix(BaseStream):
     """
@@ -99,11 +101,43 @@ class HeatMix(BaseStream):
 
         self.compute_distribution_list(inputs_dict)
         techno_CO2_emission = inputs_dict['CO2_emission_mix'][self.distribution_list]
+
+        self.methane_energy_List = [f'heat.hightemperatureheat.{Methane.name}',
+                        f'heat.mediumtemperatureheat.{Methane.name}',
+                        f'heat.lowtemperatureheat.{Methane.name}']
+        self.electricity_energy_List = [ f'heat.hightemperatureheat.{Electricity.name}',
+                        f'heat.mediumtemperatureheat.{Electricity.name}',
+                        f'heat.lowtemperatureheat.{Electricity.name}']
+        self.gaseous_hydrogen_energy_List = [f'heat.hightemperatureheat.{GaseousHydrogen.name}',
+                        f'heat.mediumtemperatureheat.{GaseousHydrogen.name}',
+                        f'heat.lowtemperatureheat.{GaseousHydrogen.name}']
+
+        # CO2_emission_mix_columns = [column for column in inputs_dict['CO2_emission_mix']
+        #                   if not column.endswith(GlossaryEnergy.Years)]
+        #
+        # result = list(set(CO2_emission_mix_columns) - set(self.distribution_list))
+        # print('')
+        # print(result)
+
+        methane_CO2_emission = inputs_dict['CO2_emission_mix'][self.methane_energy_List]
+        electricity_CO2_emission = inputs_dict['CO2_emission_mix'][self.electricity_energy_List]
+        gaseous_hydrogen_CO2_emission = inputs_dict['CO2_emission_mix'][self.gaseous_hydrogen_energy_List]
+
+        # print(techno_CO2_emission.to_string())
         techno_CO2_emission_sum = techno_CO2_emission.sum(axis=1).values
+        methane_CO2_emission_sum = methane_CO2_emission.sum(axis=1).values
+        electricity_CO2_emission_sum = electricity_CO2_emission.sum(axis=1).values
+        gaseous_hydrogen_CO2_emission_sum = gaseous_hydrogen_CO2_emission.sum(axis=1).values
 
         energy_CO2_emission = pd.DataFrame(
             {GlossaryEnergy.Years: inputs_dict['CO2_emission_mix'][GlossaryEnergy.Years],
-             GlossaryEnergy.EnergyCO2EmissionsValue: techno_CO2_emission_sum})
+             GlossaryEnergy.EnergyCO2EmissionsValue: techno_CO2_emission_sum,
+             Methane.name: methane_CO2_emission_sum,
+             Electricity.name: electricity_CO2_emission_sum,
+             GaseousHydrogen.name: gaseous_hydrogen_CO2_emission_sum,
+             })
+
+        # print(energy_CO2_emission.to_string())
         return energy_CO2_emission
 
     def compute_energy_CO2_emission_objective(self, energy_CO2_emission):
@@ -119,4 +153,4 @@ class HeatMix(BaseStream):
         for energy in input_dict[GlossaryEnergy.energy_list]:
             for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
                 self.distribution_list.append(f'{energy}.{techno}')
-#
+        # self.distribution_list.append(Methane.name)

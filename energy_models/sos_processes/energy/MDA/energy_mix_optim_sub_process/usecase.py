@@ -31,6 +31,7 @@ from sostrades_core.execution_engine.func_manager.func_manager import FunctionMa
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
@@ -172,6 +173,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                CarbonUtilization.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
             }
 
         else:
@@ -179,6 +181,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
                 CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
                 CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                CarbonUtilization.name: [0.03] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
             }
 
         if self.bspline:
@@ -585,6 +588,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyProductionValue}": target_energy_prod,
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
@@ -659,9 +663,8 @@ class Study(EnergyStudyManager):
         if not self.coarse_mode:
             agri_values_dict = self.get_input_value_from_agriculture_mix()
             values_dict_list.append(agri_values_dict)
-
             values_dict.update({
-                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+                f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
@@ -684,6 +687,9 @@ class Study(EnergyStudyManager):
         dvar_values = self.get_dvar_values(dspace)
         values_mdo.update(dvar_values)
         values_dict_list.append(values_mdo)
+
+
+
 
         return values_dict_list
 
