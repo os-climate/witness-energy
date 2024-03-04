@@ -98,6 +98,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
                GlossaryEnergy.TargetProductionConstraintRefValue: GlossaryEnergy.TargetProductionConstraintRef,
+               GlossaryEnergy.EnergyMeanPriceObjectiveRefValue: GlossaryEnergy.EnergyMeanPriceObjectiveRef,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
@@ -200,7 +201,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf
+        GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf,
+        GlossaryEnergy.EnergyMeanPriceObjectiveValue: GlossaryEnergy.EnergyMeanPriceObjective,
     }
 
     energy_name = EnergyMix.name
@@ -457,6 +459,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'carbon_capture_from_energy_mix': self.energy_model.carbon_capture_from_energy_mix,
                         GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital,
                         GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
+                        GlossaryEnergy.EnergyMeanPriceObjectiveValue: self.energy_model.energy_mean_price_objective,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
@@ -855,15 +858,26 @@ class Energy_Mix_Discipline(SoSWrapp):
                 mix_weight_energy = mix_weight[energy].values
                 dmean_price_dco2_tax += inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values * \
                                         mix_weight_energy
+                d_emp = mix_weight_energy * np.identity(len(years))
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyMeanPriceValue,
-                     GlossaryEnergy.EnergyPriceValue), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
-                    mix_weight_energy * np.identity(len(years)))
+                    (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
+                    (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                    d_emp)
+                d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyMeanPriceValue,
-                     GlossaryEnergy.EnergyPriceValue), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
-                    inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values *
-                    mix_weight_energy * np.identity(len(years)))
+                    (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
+                    (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                    d_emp_obj)
+                d_emp = inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values * mix_weight_energy * np.identity(len(years))
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
+                    (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                    d_emp)
+                d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
+                    (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                    d_emp_obj)
                 dmean_price_dprod = self.compute_dmean_price_dprod(
                     energy, energies,
                     mix_weight, energy_price_after_tax,
@@ -874,10 +888,16 @@ class Energy_Mix_Discipline(SoSWrapp):
                 if energy in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
                                         self.energy_model.raw_tonet_dict[energy])
+                d_emp = scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
+                    d_emp)
+                d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
+                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    d_emp_obj)
 
             for energy_input in energy_list:
                 if energy_input in energies:
@@ -890,15 +910,28 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                                energy_price_after_tax,
                                                                                production_energy_net_pos,
                                                                                production_detailed_df, cons=True)
+                            d_emp = scaling_factor_energy_consumption * dmean_price_dcons
                             self.set_partial_derivative_for_other_types(
                                 (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
                                 (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                  f'{energy} ({stream_class_dict[energy].unit})'),
-                                scaling_factor_energy_consumption * dmean_price_dcons)
+                                d_emp)
+                            d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
+                            self.set_partial_derivative_for_other_types(
+                                (GlossaryEnergy.EnergyMeanPriceObjectiveValue, ),
+                                (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
+                                 f'{energy} ({stream_class_dict[energy].unit})'),
+                                d_emp_obj)
+        d_emp = dmean_price_dco2_tax * np.identity(len(years))
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
             (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
             dmean_price_dco2_tax * np.identity(len(years)))
+        d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.EnergyMeanPriceObjectiveValue, ),
+            (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
+            d_emp_obj)
 
         # --------------------------------#
         # -- New CO2 emissions gradients--#
