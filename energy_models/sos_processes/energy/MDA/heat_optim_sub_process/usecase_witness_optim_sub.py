@@ -512,48 +512,48 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
             # f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
             f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
-            f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
-            f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
-            f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
+            # f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
 
         }
 
-        # ###########################################
-        # columns_list = [column for column in self.high_heat_production
-        #                 if not column.endswith(GlossaryEnergy.Years)]
-        # for col in columns_list:
-        #     techno_prod = pd.DataFrame(
-        #         {
-        #             GlossaryEnergy.Years: self.years,
-        #             col: self.high_heat_production[col],
-        #         }
-        #     )
-        #     values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.hightemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
-        #
-        # #########################################
-        # columns_list = [column for column in self.low_heat_production
-        #                 if not column.endswith(GlossaryEnergy.Years)]
-        # for col in columns_list:
-        #     techno_prod = pd.DataFrame(
-        #         {
-        #             GlossaryEnergy.Years: self.years,
-        #             col: self.low_heat_production[col],
-        #         }
-        #     )
-        #     values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.lowtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
-        #
-        # #########################################
-        # columns_list = [column for column in self.medium_heat_production
-        #                 if not column.endswith(GlossaryEnergy.Years)]
-        # for col in columns_list:
-        #     techno_prod = pd.DataFrame(
-        #         {
-        #             GlossaryEnergy.Years: self.years,
-        #             col: self.medium_heat_production[col],
-        #         }
-        #     )
-        #     values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.mediumtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
-        # ################################################
+        ###########################################
+        columns_list = [column for column in self.high_heat_production
+                        if not column.endswith(GlossaryEnergy.Years)]
+        for col in columns_list:
+            techno_prod = pd.DataFrame(
+                {
+                    GlossaryEnergy.Years: self.years,
+                    col: self.high_heat_production[col],
+                }
+            )
+            values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.hightemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+
+        #########################################
+        columns_list = [column for column in self.low_heat_production
+                        if not column.endswith(GlossaryEnergy.Years)]
+        for col in columns_list:
+            techno_prod = pd.DataFrame(
+                {
+                    GlossaryEnergy.Years: self.years,
+                    col: self.low_heat_production[col],
+                }
+            )
+            values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.lowtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+
+        #########################################
+        columns_list = [column for column in self.medium_heat_production
+                        if not column.endswith(GlossaryEnergy.Years)]
+        for col in columns_list:
+            techno_prod = pd.DataFrame(
+                {
+                    GlossaryEnergy.Years: self.years,
+                    col: self.medium_heat_production[col],
+                }
+            )
+            values_dict.update({f'{self.study_name}.{self.coupling_name}.{energy_mix_name}.heat.mediumtemperatureheat.{col}.{GlossaryEnergy.EnergyProductionValue}': techno_prod})
+        ################################################
         (
             values_dict_list,
             dspace_list,
