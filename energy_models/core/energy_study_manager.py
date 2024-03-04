@@ -241,6 +241,6 @@ class EnergyStudyManager(StudyManager):
 
         return bspline_method(ctrl_pts, len_years)
 
-    def specific_check(self):
+    def specific_check_inputs(self):
         # check all elements of data dict
         specific_check_years(self.execution_engine.dm)
