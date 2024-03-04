@@ -32,14 +32,14 @@ They produce low emissions of pollutants compared to traditional combustion-base
 
 [^2]: [SOFC Overview ](https://www.bosch-hydrogen-energy.com/sofc/how-it-works/)
 
-[^3]: Capex, https://www.google.com/search?q=capex+of+sofc+technologies+worldwide+%24%2Fkw&sca_esv=8ab36c672be0c8ca&rlz=1C1GCEA_enIN1087IN1087&ei=5drWZaPAGd6YseMPiu-7iAM&ved=0ahUKEwjjxtzsmr6EAxVeTGwGHYr3DjEQ4dUDCBA&uact=5&oq=capex+of+sofc+technologies+worldwide+%24%2Fkw&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNhcGV4IG9mIHNvZmMgdGVjaG5vbG9naWVzIHdvcmxkd2lkZSAkL2t3MgUQIRigATIFECEYoAEyBRAhGKABMgUQIRigAUi_TFDRCViZRHABeAGQAQCYAakBoAGiBaoBAzAuNbgBA8gBAPgBAcICChAAGEcY1gQYsAPCAggQABiABBiiBIgGAZAGAw&sclient=gws-wiz-serp
+[^3]: [ SOFC Capex Value](https://www.google.com/search?q=capex+of+sofc+technologies+worldwide+%24%2Fkw&sca_esv=8ab36c672be0c8ca&rlz=1C1GCEA_enIN1087IN1087&ei=5drWZaPAGd6YseMPiu-7iAM&ved=0ahUKEwjjxtzsmr6EAxVeTGwGHYr3DjEQ4dUDCBA&uact=5&oq=capex+of+sofc+technologies+worldwide+%24%2Fkw&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNhcGV4IG9mIHNvZmMgdGVjaG5vbG9naWVzIHdvcmxkd2lkZSAkL2t3MgUQIRigATIFECEYoAEyBRAhGKABMgUQIRigAUi_TFDRCViZRHABeAGQAQCYAakBoAGiBaoBAzAuNbgBA8gBAPgBAcICChAAGEcY1gQYsAPCAggQABiABBiiBIgGAZAGAw&sclient=gws-wiz-serp)
 
-[^4]: Opex, https://www.diva-portal.org/smash/get/diva2:1666533/FULLTEXT01.pdf
+[^4]: [SOFC Opex Value](https://www.diva-portal.org/smash/get/diva2:1666533/FULLTEXT01.pdf)
 
-[^5]: Efficiency, https://www.sciencedirect.com/science/article/pii/S0378775316310011
+[^5]: [SOFC Efficiency](https://www.sciencedirect.com/science/article/pii/S0378775316310011)
 
-[^6]: Hydrogen demand, https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693
+[^6]: [SOFC Hydrogen demand](https://www.sciencedirect.com/science/article/abs/pii/S0360544220302693)
 
-[^7]: Initial production, https://www.google.com/search?sca_esv=62aa5c07e907627d&rlz=1C1GCEA_enIN1087IN1087&q=electricity+output+from+sofcgt+plant&nfpr=1&sa=X&ved=2ahUKEwj4mrLwgKWEAxX-8DgGHbzUDtsQvgUoAXoECAUQAw&biw=1280&bih=585&dpr=1.5
+[^7]: [SOFC Initial production](https://www.google.com/search?sca_esv=62aa5c07e907627d&rlz=1C1GCEA_enIN1087IN1087&q=electricity+output+from+sofcgt+plant&nfpr=1&sa=X&ved=2ahUKEwj4mrLwgKWEAxX-8DgGHbzUDtsQvgUoAXoECAUQAw&biw=1280&bih=585&dpr=1.5)
 
-[^8]: Heat Production,https://www.bosch.com/stories/sofc-system/
+[^8]: [ SOFC Heat Production](https://www.bosch.com/stories/sofc-system/)
