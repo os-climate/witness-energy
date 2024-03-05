@@ -48,8 +48,8 @@ class TestMDARobustness(AbstractJacobianUnittest):
         self.dirs_to_del = []
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
-        self.year_start = GlossaryEnergy.YeartStartDefault
-        self.year_end = 2050
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         logging.disable(logging.INFO)
 
     def tearDown(self):

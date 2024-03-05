@@ -48,7 +48,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                               'dataframe_descriptor': {
-                                                                  GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                   'demand': ('float', None, True),
                                                                   f'production {GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
@@ -70,7 +70,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                      'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
                GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {
-                   GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                    GlossaryEnergy.TransportDemandValue: ('float', None, True)},
                                                      'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh',
@@ -233,7 +233,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Electrical efficiency [-]',
                                              chart_name=chart_name, stacked_bar=True)
 
-        years = np.arange(2000, 2050)
+        years = np.arange(2000, GlossaryEnergy.YearEndDefault)
         elec_efficiency = self.demand_model.electrical_machine_efficiency(
             years)
 

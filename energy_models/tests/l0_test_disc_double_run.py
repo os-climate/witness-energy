@@ -32,8 +32,8 @@ class DiscDoubleRunTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryEnergy.YeartStartDefault
-        self.year_end = 2050
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
 
     def test_01_run_disc_twice_and_compare_dm(self):
 

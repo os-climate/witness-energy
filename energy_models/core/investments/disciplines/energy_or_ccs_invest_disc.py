@@ -43,14 +43,14 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                'int', [1900, 2100], False),
+                                                'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                          GlossaryEnergy.EnergyInvestmentsValue: (
                                                                          'float', None, True)},
                                                 'dataframe_edition_locked': False,
                                                 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'ccs_percentage': {'type': 'dataframe',
                            'dataframe_descriptor': {
-                               GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                'ccs_percentage': ('float', [0., 100.], True)},
                            'dataframe_edition_locked': False,
                            'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}

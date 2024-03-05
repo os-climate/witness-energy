@@ -121,7 +121,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
     # The increase in land is of 10Mha each year, in CAPEX and OPEX
     land_surface_for_food = pd.DataFrame(
-        {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1),
+        {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
          'Agriculture total (Gha)': 4.8})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
@@ -129,7 +129,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
@@ -145,7 +145,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                                      'namespace': GlossaryEnergy.NS_WITNESS,
                                                      'default': land_surface_for_food,
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                     'int', [1900, 2100], False),
+                                                     'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               'Agriculture total (Gha)': (
                                                                               'float', None, True), },
                                                      'dataframe_edition_locked': False}}

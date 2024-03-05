@@ -66,7 +66,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         self.full_values_dict[f'{self.name}.max_mda_iter'] = 50
         forest_investment = pd.DataFrame({
-            GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+            GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
             GlossaryEnergy.ForestInvestmentValue: 5.
         })
         self.full_values_dict.update({

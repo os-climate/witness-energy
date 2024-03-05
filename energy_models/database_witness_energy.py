@@ -33,7 +33,7 @@ class DatabaseWitnessEnergy:
     InvestFossil = ColectedData(
         value=data_invest,
         unit="%",
-        description="Percentage of Investment between 2020 and 2100 for the full fossil investment scenario",
+        description="Percentage of Investment between 2020 and GlossaryEnergy.YearEndDefaultCore for the full fossil investment scenario",
         link="https://www.iea.org/data-and-statistics/data-product/world-energy-investment-2023-datafile-2#",
         source="World energy investment - IEA",
         last_update_date=date(2023, 11, 22),
@@ -41,7 +41,7 @@ class DatabaseWitnessEnergy:
     InvestNZE = ColectedData(
         value=data_invest_nze_scenario,
         unit="%",
-        description="Percentage of Investment between 2020 and 2100 for nze scenario",
+        description="Percentage of Investment between 2020 and GlossaryEnergy.YearEndDefaultCore for nze scenario",
         link="https://iea.blob.core.windows.net/assets/deebef5d-0c34-4539-9d0c-10b13d840027/NetZeroby2050-ARoadmapfortheGlobalEnergySector_CORR.pdf ",
         source="World energy investment - IEA",
         last_update_date=date(2023, 11, 22),
@@ -49,7 +49,7 @@ class DatabaseWitnessEnergy:
     InvestSteps = ColectedData(
         value=data_invest_steps_scenario,
         unit="%",
-        description="Percentage of Investment between 2020 and 2100 for STEPS scenario",
+        description="Percentage of Investment between 2020 and GlossaryEnergy.YearEndDefaultCore for STEPS scenario",
         link="https://iea.blob.core.windows.net/assets/614bb748-dc5e-440b-966a-adae9ea022fe/WorldEnergyOutlook2023.pdf",
         source="World energy investment - IEA",
         last_update_date=date(2023, 11, 22),

@@ -187,7 +187,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_energy',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, 2100], False),
+                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                              GlossaryEnergy.CO2Tax: (
                                                                              'float', None, True)}
                                                     },

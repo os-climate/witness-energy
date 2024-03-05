@@ -33,8 +33,8 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 class Study(StudyManager):
     def __init__(
             self,
-            year_start=GlossaryEnergy.YeartStartDefault,
-            year_end=2050,
+            year_start=GlossaryEnergy.YearStartDefault,
+            year_end=GlossaryEnergy.YearEndDefault,
             time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,

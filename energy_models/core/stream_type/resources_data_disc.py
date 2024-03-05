@@ -70,8 +70,8 @@ class ResourcesDisc(SoSWrapp):
         'icon': 'fas fa-cubes fa-fw',
         'version': '',
     }
-    year_start_default = GlossaryEnergy.YeartStartDefault
-    year_end_default = 2050
+    year_start_default = GlossaryEnergy.YearStartDefault
+    year_end_default = GlossaryEnergy.YearEndDefault
 
     years = np.arange(year_start_default, year_end_default + 1)
 
@@ -79,7 +79,7 @@ class ResourcesDisc(SoSWrapp):
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, 2100], False),
+                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                              'uranium_resource': ('float', None, True),
                                                                              'water_resource': ('float', None, True),
                                                                              'sea_water_resource': (
@@ -128,7 +128,7 @@ class ResourcesDisc(SoSWrapp):
                                                     'default': get_static_prices(years)},
                GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
                                                             'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                            'int', [1900, 2100], False),
+                                                            'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                                      'uranium_resource': (
                                                                                      'float', None, True),
                                                                                      'water_resource': (
