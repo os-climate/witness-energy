@@ -106,7 +106,7 @@ class Study(StudyManager):
 
         return values_dict_list
 
-    def specific_check(self):
+    def specific_check_inputs(self):
         """
         Specific check of years column
         """
