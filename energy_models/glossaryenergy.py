@@ -80,7 +80,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
     CO2EmissionsValue = "CO2_emissions"
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
     TechnoProductionValue = "techno_production"
     TechnoPricesValue = "techno_prices"
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
