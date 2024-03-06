@@ -446,8 +446,8 @@ class Study(EnergyStudyManager):
             if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
                 prefix_name = GlossaryEnergy.CCUS
                 instance_sub_study = sub_study(
-                    self.year_start,
-                    self.year_end,
+                    year_start=self.year_start,
+                    year_end=self.year_end,
                     bspline=self.bspline,
                     main_study=False,
                     prefix_name=prefix_name,
@@ -457,8 +457,8 @@ class Study(EnergyStudyManager):
                 )
             elif self.techno_dict[sub_study_name]["type"] == ENERGY_TYPE:
                 instance_sub_study = sub_study(
-                    self.year_start,
-                    self.year_end,
+                    year_start=self.year_start,
+                    year_end=self.year_end,
                     bspline=self.bspline,
                     main_study=False,
                     execution_engine=self.execution_engine,

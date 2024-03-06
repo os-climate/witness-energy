@@ -63,9 +63,9 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
 
         self.study_v0 = Study_v0(
-            self.year_start,
-            self.year_end,
-            self.time_step,
+            year_start=self.year_start,
+            year_end=self.year_end,
+            time_step=self.time_step,
             main_study=self.main_study,
             bspline=self.bspline,
             execution_engine=execution_engine,
