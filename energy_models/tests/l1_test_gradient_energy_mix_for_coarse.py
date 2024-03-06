@@ -80,7 +80,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
         self.energy_list = [GlossaryEnergy.renewable, GlossaryEnergy.fossil]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def TearDown(self):
         '''
