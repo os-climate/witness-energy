@@ -57,8 +57,8 @@ class EnergyDemand(object):
         self.improved_efficiency_factor = None
         self.net_transport_production = None
         self.name = name
-        self.year_start = GlossaryEnergy.YeartStartDefault  # year start
-        self.year_end = GlossaryEnergy.YeartEndDefault  # year end
+        self.year_start = GlossaryEnergy.YearStartDefault  # year start
+        self.year_end = GlossaryEnergy.YearEndDefault  # year end
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.long_term_elec_machine_efficiency = 0.985
         self.initial_electricity_demand = 0.0

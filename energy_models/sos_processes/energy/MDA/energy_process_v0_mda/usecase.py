@@ -33,8 +33,8 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 class Study(StudyManager):
     def __init__(
             self,
-            year_start=GlossaryEnergy.YeartStartDefault,
-            year_end=2050,
+            year_start=GlossaryEnergy.YearStartDefault,
+            year_end=GlossaryEnergy.YearEndDefault,
             time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
@@ -63,9 +63,9 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
 
         self.study_v0 = Study_v0(
-            self.year_start,
-            self.year_end,
-            self.time_step,
+            year_start=self.year_start,
+            year_end=self.year_end,
+            time_step=self.time_step,
             main_study=self.main_study,
             bspline=self.bspline,
             execution_engine=execution_engine,

@@ -42,7 +42,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         func = sc.interp1d(list(self.hydro_techno_margin[GlossaryEnergy.Years]),
                            self.hydro_techno_margin['H2plasmacracking'],
                            kind='linear', fill_value='extrapolate')
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4})
@@ -157,7 +157,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         self.ee.display_treeview_nodes()
         invest_before_year_start = pd.DataFrame({
             GlossaryEnergy.Years: -np.arange(1, 2 + 1), GlossaryEnergy.InvestValue: [1000.0, 1000.0]})
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
@@ -167,9 +167,9 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -212,7 +212,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         invest_before_year_start = pd.DataFrame({
             GlossaryEnergy.Years: -np.arange(1, 2 + 1), GlossaryEnergy.InvestValue: [1000.0, 1000.0]})
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_for_grad,
@@ -222,9 +222,9 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
