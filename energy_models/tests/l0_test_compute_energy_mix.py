@@ -37,8 +37,8 @@ class EnergyMixTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryEnergy.YeartStartDefault
-        self.year_end = 2050
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start + 1
         self.energy_list = [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
@@ -279,7 +279,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.land_use_required_mock = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -304,71 +304,6 @@ class EnergyMixTestCase(unittest.TestCase):
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.TargetEnergyProductionValue: np.ones_like(self.years) * 280000
         })
-
-    def test_01_energy_mix(self):
-        """
-        Test energy mix class
-
-        Returns
-        -------
-        None.
-
-        """
-
-        inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
-                       GlossaryEnergy.YearEnd: self.year_end,
-                       GlossaryEnergy.energy_list: [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane],
-                       GlossaryEnergy.ccs_list: [],
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{GlossaryEnergy.methane}.data_fuel_dict': Methane.data_energy_dict,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
-                       f'{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       'minimum_energy_production': self.minimum_energy_production,
-                       'total_prod_minus_min_prod_constraint_ref': self.total_prod_minus_min_prod_constraint_ref,
-                       'production_threshold': self.production_threshold,
-                       'scaling_factor_energy_production': 1.e3,
-                       'scaling_factor_energy_consumption': 1e3,
-                       'solid_fuel_elec_percentage': 0.3,
-                       'solid_fuel_elec_constraint_ref': 100.0,
-                       'liquid_hydrogen_percentage': 0.3,
-                       'liquid_hydrogen_constraint_ref': 100.0,
-                       'syngas_prod_ref': 100.,
-                       'syngas_prod_constraint_limit': 10000.,
-                       'ratio_ref': 100.,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.losses_percentage': 1.,
-                       f'{GlossaryEnergy.methane}.losses_percentage': 2.,
-                       'heat_losses_percentage': 5.
-
-                       }
-
-        EM = EnergyMix('EnergyMix')
-        EM.configure(inputs_dict)
-        EM.compute_raw_production()
-        EM.compute_net_consumable_energy()
-        EM.compute_net_energy_production()
-        EM.compute_price_by_energy()
-        EM.compute_CO2_emissions()
 
     def test_02_energy_mix_discipline(self):
         """

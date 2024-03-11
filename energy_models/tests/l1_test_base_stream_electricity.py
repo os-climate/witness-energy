@@ -42,7 +42,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = GlossaryEnergy.electricity
         logging.disable(logging.INFO)
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.years = years
 
@@ -123,8 +123,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                               f'{GlossaryEnergy.electricity} (TWh)': [low_prod] * years_low_prod + [100] * (
                                                       len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': ['Hydropower', 'GasTurbine'],
                        f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}': self.hydropower_consumption,

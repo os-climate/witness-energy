@@ -66,7 +66,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         self.full_values_dict[f'{self.name}.max_mda_iter'] = 50
         forest_investment = pd.DataFrame({
-            GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+            GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
             GlossaryEnergy.ForestInvestmentValue: 5.
         })
         self.full_values_dict.update({
@@ -128,7 +128,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             inputs=inputs_names,
                             outputs=[f'{self.name}.{self.model_name}.co2_emissions_needed_by_energy_mix',
                                      f'{self.name}.{self.model_name}.carbon_capture_from_energy_mix',
-                                     f'{self.name}.{self.model_name}.energy_mean_price',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
+                                     f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',
                                      f'{self.name}.{self.model_name}.land_demand_df',
                                      f'{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}',
@@ -149,7 +150,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = [
             f'{self.name}.{GlossaryEnergy.CO2TaxesValue}']
 
-        energy_mix_output = [f'{self.name}.{self.model_name}.energy_mean_price',
+        energy_mix_output = [f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
+                             f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
                              f'{self.name}.{self.model_name}.energy_prices_after_tax']
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energy_mix_co2_tax.pkl',

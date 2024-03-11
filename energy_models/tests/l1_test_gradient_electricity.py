@@ -59,8 +59,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = GlossaryEnergy.electricity
-        self.year_start = GlossaryEnergy.YeartStartDefault
-        self.year_end = 2050
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
 
         self.years = np.arange(self.year_start, self.year_end + 1)
 
@@ -111,7 +111,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.invest_level_geothermal = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level_geothermal[GlossaryEnergy.InvestValue] = 5.0 * \
                                                                    1.10 ** (self.invest_level_geothermal[
-                                                                                GlossaryEnergy.Years] - 2020)
+                                                                                GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
         self.invest_level_solar_pv = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 130.0})
@@ -128,7 +128,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.invest_level_nuclear = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level_nuclear[GlossaryEnergy.InvestValue] = 33.0 * \
                                                                 1.10 ** (self.invest_level_nuclear[
-                                                                             GlossaryEnergy.Years] - 2020)
+                                                                             GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
         self.invest_level_hydropower = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                      GlossaryEnergy.InvestValue: np.array(

@@ -69,8 +69,8 @@ class Study(EnergyStudyManager):
     def __init__(
             self,
             file_path=__file__,
-            year_start=GlossaryEnergy.YeartStartDefault,
-            year_end=2050,
+            year_start=GlossaryEnergy.YearStartDefault,
+            year_end=GlossaryEnergy.YearEndDefault,
             main_study=True,
             bspline=True,
             execution_engine=None,

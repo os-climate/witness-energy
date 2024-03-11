@@ -141,7 +141,7 @@ class FlueGasDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
                         'dataframe_descriptor': {
-                            GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                             'CO2 from Flue Gas (Mt)': ('float', None, False),
                             }
                     }

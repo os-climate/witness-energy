@@ -48,13 +48,13 @@ class TechnoDiscipline(SoSWrapp):
         'version': '',
     }
 
-    years_default = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+    years_default = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                    GlossaryEnergy.InvestValue: ('float', None, True)},
                                           'dataframe_edition_locked': False
                                           },
