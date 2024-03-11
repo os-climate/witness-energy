@@ -1013,7 +1013,25 @@ class TechnoType:
     def compute_carbon_emissions(self):
         '''
         Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary resources 
+        CO2 from production + CO2 from primary resources
+
+        Definitions of the various levels of emissions:
+        self.carbon_intensity['production'] = -scope 1- (direct emissions): direct CO2 emissions during the production phase of the techno
+                ex: CO2 emitted or needed as part of the chemical reaction used to produce the techno (ex: Sabatier reaction
+                requires CO2 to produce methane from H2) + company facilities emissions + company vehicles emissions
+                + CO2 emissions of energy used for the production + ...
+        co2_emissions_frominput_energies = -scope 2- (indirect emissions): CO2 emissions during the production of the energies
+                used in scope 1, namely of the energies used during the production of the techno = emissions during
+                production of purchased electricity, steam, heating & cooling for own use
+                NB: in climateeconomics/sos_wrapping/sos_wrapping_witness/post_proc_witness_optim/post_processing_witness_full.py
+                co2_emissions_frominput_energies is referred to as CO2_from_other_consumption
+                In https://ghgprotocol.org/sites/default/files/standards/ghg-protocol-revised.pdf p.31, scope 2 definition only accounts for
+                indirect CO2 emissions of purchased electricity
+
+        self.carbon_intensity[self.name] = CO2_from_production + co2_emissions_frominput_energies =  scope 1 + scope 2 emissions
+
+        NB: scope 3 CO2 emissions of the techno are not considered in this method. See for instance
+                CO2_per_use in climateeconomics/sos_wrapping/sos_wrapping_witness/post_proc_witness_optim/post_processing_witness_full.py
         '''
 
         if 'CO2_from_production' not in self.techno_infos_dict:
