@@ -171,6 +171,8 @@ class EnergyMix(BaseStream):
         self.carbon_capture_from_energy_mix = None
         self.net_positive_consumable_energy_production = None
         self.energy_mean_price = None
+        self.energy_mean_price_objective = None
+        self.energy_mean_price_objective_ref = None
         self.constraint_liquid_hydrogen = None
         self.constraint_solid_fuel_elec = None
         self.syngas_prod_objective = None
@@ -244,6 +246,7 @@ class EnergyMix(BaseStream):
         self.energy_list = inputs_dict[GlossaryEnergy.energy_list]
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
+        self.energy_mean_price_objective_ref = inputs_dict[GlossaryEnergy.EnergyMeanPriceObjectiveRefValue]
         # Specific configure for energy mix
         self.co2_emitted_by_energy = {}
 
@@ -977,12 +980,22 @@ class EnergyMix(BaseStream):
         self.compute_syngas_prod_objective()
         self.compute_syngas_prod_constraint()
 
+
         self.compute_all_streams_demand_ratio()
         self.compute_net_positive_consumable_energy_production()
         self.compute_mean_price(exp_min=inputs['exp_min'])
+        self.compute_energy_mean_price_objective()
+
         self.compute_constraint_h2()
 
         self.compute_target_production_constraint(inputs)
+
+    def compute_energy_mean_price_objective(self):
+        self.energy_mean_price_objective = np.array([
+            self.energy_mean_price[GlossaryEnergy.EnergyPriceValue].mean() /  self.energy_mean_price_objective_ref])
+
+    def d_energy_mean_price_obj_d_energy_mean_price(self, d_energy_mean_price):
+        return np.mean(d_energy_mean_price, axis=0) / self.energy_mean_price_objective_ref
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):

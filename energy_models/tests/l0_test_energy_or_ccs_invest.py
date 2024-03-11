@@ -36,8 +36,8 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YeartStartDefault
-        self.y_e = 2050
+        self.y_s = GlossaryEnergy.YearStartDefault
+        self.y_e = GlossaryEnergy.YearEndDefault
         self.y_step = 1
         self.energy_invest = EnergyOrCCSInvest()
 

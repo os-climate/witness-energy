@@ -35,8 +35,8 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_end = 2050
-        years = np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)
+        self.year_end = GlossaryEnergy.YearEndDefault
+        years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(

@@ -39,11 +39,11 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -84,14 +84,14 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
 
     def test_01_compute_depleted_oil_gas_price(self):
 
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
 
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
-                       GlossaryEnergy.YearEnd: 2050,
+        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
+                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': DepletedOilGasDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
@@ -102,12 +102,12 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                        GlossaryEnergy.EnergyPricesValue: pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
                        'initial_production': DepletedOilGasDiscipline.initial_storage,
                        'initial_age_distrib': DepletedOilGasDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -164,9 +164,9 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
             traceback.print_exc()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

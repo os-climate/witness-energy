@@ -42,11 +42,11 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -55,8 +55,8 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
-             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
+             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0,
+             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -77,8 +77,8 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
-             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 100})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
+             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
@@ -102,14 +102,14 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
         pass
 
     def test_01_compute_Pressure_swing_adsorption_price(self):
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
 
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
-                       GlossaryEnergy.YearEnd: 2050,
+        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
+                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': PressureSwingAdsorptionDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.InvestLevelValue: self.invest_level,
@@ -119,7 +119,7 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        GlossaryEnergy.EnergyPricesValue: self.energy_prices,
                        GlossaryEnergy.FlueGasMean: self.flue_gas_mean,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
@@ -183,7 +183,7 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,

@@ -39,7 +39,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = GlossaryEnergy.hydrogen
 
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.years = years
 
         self.electrolysis_techno_prices = pd.DataFrame(
@@ -118,8 +118,8 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
                                                     100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': 2020,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
@@ -195,8 +195,8 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
                                                     100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': 2020,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,

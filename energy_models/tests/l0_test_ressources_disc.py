@@ -53,8 +53,8 @@ class ResourcesDisc(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': 2050
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

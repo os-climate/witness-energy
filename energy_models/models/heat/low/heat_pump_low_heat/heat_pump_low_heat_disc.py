@@ -129,7 +129,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
                                         'dataframe_descriptor': {
-                                            GlossaryEnergy.Years: ('int', [1900, 2100], True),
+                                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], True),
                                             'heat_flux': ('float', [1.e-8, 1e30], True),
                                             },
                                         }

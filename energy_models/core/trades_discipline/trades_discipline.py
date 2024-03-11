@@ -46,7 +46,7 @@ class TradesDiscipline(SoSWrapp):
                                  SoSWrapp.VISIBILITY:
                                      SoSWrapp.SHARED_VISIBILITY, SoSWrapp.NAMESPACE: 'ns_scatter_scenario',
                                  'structuring': True},
-               GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
+               GlossaryEnergy.YearEnd: {'type': 'int', 'default': GlossaryEnergy.YearEndDefault, 'unit': '[-]',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,

@@ -268,6 +268,7 @@ class TechnoType:
 
         self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
             GlossaryEnergy.UtilisationRatioValue].values
+        self.techno_infos_dict = inputs_dict['techno_infos_dict']
 
     def configure_energy_data(self, inputs_dict):
         '''

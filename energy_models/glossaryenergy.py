@@ -28,14 +28,15 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_UTILIZATION_RATIO = (
         10  # number of poles for bspline design variables utilization ratio
     )
-    NB_POLES_COARSE: int = 10  # number of poles in witness coarse
+    NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
 
-    YeartEndDefault = 2050
+    YearEndDefault = 2050
+    YearEndDefaultCore = GlossaryWitnessCore.YearEndDefault
     YearEndVar = {
         "type": "int",
-        "default": YeartEndDefault,
+        "default": YearEndDefault,
         "unit": "year",
         "visibility": "Shared",
         "namespace": "ns_public",
@@ -80,7 +81,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
     CO2EmissionsValue = "CO2_emissions"
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
     TechnoProductionValue = "techno_production"
     TechnoPricesValue = "techno_prices"
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
@@ -112,7 +112,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
             "invest": ("float", [0., 1e30], True),
@@ -127,7 +127,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
             "invest": ("float", [0., 1e30], True),
@@ -141,7 +141,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
@@ -155,7 +155,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
             GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
@@ -173,7 +173,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
@@ -187,7 +187,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
-                [1900, GlossaryWitnessCore.YeartEndDefault],
+                [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
         },
@@ -201,7 +201,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
             EnergyInvestPercentageGDPName: ("float", [0, 100], True),
         },
         "description": "percentage of total energy investment in each of the energy technologies",
@@ -214,7 +214,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
             GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_forest",
@@ -242,7 +242,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
             GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_crop",
@@ -286,7 +286,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
             ForestInvestmentValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_invest",
@@ -299,7 +299,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
             CarbonCapturedValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_invest",

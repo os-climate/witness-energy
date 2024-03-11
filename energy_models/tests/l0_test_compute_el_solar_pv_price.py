@@ -41,11 +41,11 @@ class SolarPvPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -94,14 +94,14 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
     def test_01_compute_solarpv_price(self):
 
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
 
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
-                       GlossaryEnergy.YearEnd: 2050,
+        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
+                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
@@ -116,7 +116,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
                        'initial_age_distrib': SolarPvDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
                        GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -167,7 +167,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,

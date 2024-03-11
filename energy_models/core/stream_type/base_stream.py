@@ -57,8 +57,8 @@ class BaseStream:
         self.energy_type_capital = None
         self.name = name
         # -- Inputs attributes set from configure method
-        self.year_start = GlossaryEnergy.YeartStartDefault  # year start
-        self.year_end = GlossaryEnergy.YeartEndDefault  # year end
+        self.year_start = GlossaryEnergy.YearStartDefault  # year start
+        self.year_end = GlossaryEnergy.YearEndDefault  # year end
         self.min_prod = 1e-3
         self.subelements_list = []
         self.total_prices = None  # energy outputs dataframe
