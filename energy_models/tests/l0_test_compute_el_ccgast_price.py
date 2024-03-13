@@ -138,21 +138,6 @@ class CCGasTPriceTestCase(unittest.TestCase):
         model.configure_parameters_update(inputs_dict)
         price_details = model.compute_price()
 
-        # Comparison in $/kWH
-        plt.figure()
-        plt.xlabel(GlossaryEnergy.Years)
-
-        plt.plot(price_details[GlossaryEnergy.Years],
-                 price_details['CombinedCycleGasTurbine'], label='SoSTrades Total')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-                 label='SoSTrades Transport')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['CombinedCycleGasTurbine_factory'],
-                 label='SoSTrades Factory')
-        plt.legend()
-        plt.ylabel('Price ($/kWh)')
-
     def test_03_ccgast_discipline(self):
 
         self.name = 'Test'

@@ -53,7 +53,8 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: np.ones(len(years)) * 11.0})
         # From CO2 prod of methane fossil
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4,
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level_2 = pd.DataFrame(
@@ -139,21 +140,6 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         model.configure_parameters(inputs_dict)
         model.configure_parameters_update(inputs_dict)
         price_details = model.compute_price()
-
-        # Comparison in $/kWH
-        plt.figure()
-        plt.xlabel(GlossaryEnergy.Years)
-
-        plt.plot(price_details[GlossaryEnergy.Years],
-                 price_details['BiomassFired'], label='SoSTrades Total')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-                 label='SoSTrades Transport')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['BiomassFired_factory'],
-                 label='SoSTrades Factory')
-        plt.legend()
-        plt.ylabel('Price ($/kWh)')
 
     def test_03_gas_turbine_discipline(self):
 

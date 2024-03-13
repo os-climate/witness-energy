@@ -102,7 +102,8 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                        GlossaryEnergy.EnergyPricesValue: pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        'initial_production': DepletedOilGasDiscipline.initial_storage,
                        'initial_age_distrib': DepletedOilGasDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
@@ -123,20 +124,6 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
         depleted_oil_gas_model.configure_parameters(inputs_dict)
         depleted_oil_gas_model.configure_parameters_update(inputs_dict)
         price_details = depleted_oil_gas_model.compute_price()
-
-        # Comparison in $/kgCO2
-        # plt.figure()
-        # plt.xlabel(GlossaryEnergy.Years)
-
-        # plt.plot(price_details[GlossaryEnergy.Years],
-        # price_details['Simplified_Carbon_Storage'], label='SoSTrades Total')
-
-        # # plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-        # #          label='SoSTrades Transport')
-
-        # plt.legend()
-        # plt.ylabel('Price ($/kgCO2)')
-        # plt.show()
 
     def test_03_depleted_oil_gas_discipline(self):
 
@@ -166,7 +153,8 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
