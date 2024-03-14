@@ -218,7 +218,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                               self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
                                                               <= self.techno_model.year_end][
                                   GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
+                0, np.sign(carbon_emissions[self.techno_name])).values[:, np.newaxis]
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
                 grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
@@ -255,7 +255,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                                               <= self.techno_model.year_end][
                                   GlossaryEnergy.CO2Tax].values[:,
                               np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
+                0, np.sign(carbon_emissions[self.techno_name])).values[:, np.newaxis]
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name),
                 (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),

@@ -142,8 +142,8 @@ class WGS(GaseousHydrogenTechno):
             'calorific_value'] +
                            GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[
                                'calorific_value']) / (
-                                      GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio *
-                                      CO.data_energy_dict['molar_mass'])
+                                  GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio *
+                                  CO.data_energy_dict['molar_mass'])
 
         calup = (self.syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
                  GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict['calorific_value'])
@@ -435,10 +435,10 @@ class WGS(GaseousHydrogenTechno):
         factory_grad = self.compute_dfactory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.prices[Syngas.name].to_numpy() / efficiency.values[:, np.newaxis]
         dwater_dsyngas_ratio = np.identity(len(years)) * self.compute_dwater_needs_dsyngas_ratio() * \
                                self.resources_prices[Water.name].to_numpy(
-                               ) / efficiency[:, np.newaxis]
+                               ) / efficiency.values[:, np.newaxis]
 
         mol_H2 = (1.0 + self.syngas_ratio) / \
                  (1.0 + self.needed_syngas_ratio)
@@ -541,7 +541,7 @@ class WGS(GaseousHydrogenTechno):
         efficiency = self.configure_efficiency()
         return {
             Syngas.name: np.identity(
-                len(self.years)) * syngas_needs / efficiency[:, np.newaxis],
+                len(self.years)) * syngas_needs / efficiency.values[:, np.newaxis],
             Electricity.name: np.identity(
                 len(self.years)) * elec_needs
         }
@@ -554,7 +554,7 @@ class WGS(GaseousHydrogenTechno):
         efficiency = self.configure_efficiency()
         return {
             Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
+                len(self.years)) * water_needs / efficiency.values[:, np.newaxis],
         }
 
     def compute_dprod_dfluegas(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
@@ -630,7 +630,7 @@ class WGS(GaseousHydrogenTechno):
                                             self.cost_details['efficiency']
 
         return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + \
-               self.carbon_intensity[Water.name]
+            self.carbon_intensity[Water.name]
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

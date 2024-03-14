@@ -50,9 +50,10 @@ class SMR(SyngasTechno):
             / self.cost_details['efficiency'])
 
         self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
-                                           self.prices[GlossaryEnergy.electricity]
+                                                        self.prices[GlossaryEnergy.electricity]
 
-        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[GlossaryEnergy.electricity]
+        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[
+            GlossaryEnergy.electricity]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -66,7 +67,7 @@ class SMR(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency[:, np.newaxis],
+                len(self.years)) * methane_needs / efficiency.values[:, np.newaxis],
             Electricity.name: np.identity(
                 len(self.years)) * elec_needs
         }
@@ -79,7 +80,7 @@ class SMR(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
+                len(self.years)) * water_needs / efficiency.values[:, np.newaxis],
         }
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -100,7 +101,7 @@ class SMR(SyngasTechno):
                                             self.cost_details['efficiency']
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[Electricity.name] + \
-               self.carbon_intensity[Water.name]
+            self.carbon_intensity[Water.name]
 
     def get_theoretical_CH4_needs(self):
         ''' 

@@ -67,7 +67,7 @@ class AuthothermalReforming(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency[:, np.newaxis]
+                len(self.years)) * methane_needs / efficiency.values[:, np.newaxis]
 
         }
 
@@ -78,9 +78,10 @@ class AuthothermalReforming(SyngasTechno):
         co2_needs = self.get_theoretical_CO2_needs()
         oxygen_needs = self.get_theoretical_O2_needs()
         efficiency = self.configure_efficiency()
+        init_grad = np.identity(len(self.years)) / efficiency[:, np.newaxis]
         return {
-            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
-            Oxygen.name: np.identity(len(self.years)) * oxygen_needs / efficiency[:, np.newaxis],
+            CO2.name: init_grad * co2_needs,
+            Oxygen.name: init_grad * oxygen_needs,
         }
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -107,7 +108,7 @@ class AuthothermalReforming(SyngasTechno):
         co2_needs = self.get_theoretical_CO2_needs()
         efficiency = self.configure_efficiency()
         return {
-            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency.values[:, np.newaxis],
         }
 
     def get_theoretical_CH4_needs(self):
