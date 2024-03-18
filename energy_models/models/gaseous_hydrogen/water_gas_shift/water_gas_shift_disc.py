@@ -179,7 +179,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             np.zeros(len(self.techno_model.years), ))
 
         efficiency = self.techno_model.configure_efficiency()
-        eff_new_axis = efficiency.values[:, np.newaxis]
+        eff_new_axis = efficiency[:, np.newaxis]
         dsyngas_dsyngas_ratio = np.identity(len(
             self.techno_model.years)) * dsyngas_needs_dsyngas_ratio * self.techno_model.prices[
                                     GlossaryEnergy.syngas].to_numpy() / eff_new_axis
@@ -262,7 +262,8 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (
-            GlossaryEnergy.TechnoProductionValue, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'),
+                GlossaryEnergy.TechnoProductionValue,
+                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'),
             ('syngas_ratio',),
             dprodenergy_dsyngas_ratio * self.techno_model.applied_ratio['applied_ratio'].values[:,
                                         np.newaxis] / 100.0 / scaling_factor_techno_production)
@@ -274,7 +275,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         # co2_flue_gas = co2_prod * production_energy
 
-        dco2_flue_gas_dsyngas_ratio = co2_prod.values[:, np.newaxis] * dprodenergy_dsyngas_ratio * \
+        dco2_flue_gas_dsyngas_ratio = co2_prod[:, np.newaxis] * dprodenergy_dsyngas_ratio * \
                                       self.techno_model.applied_ratio['applied_ratio'].values[:,
                                       np.newaxis] / scaling_factor_techno_production + \
                                       np.identity(len(self.techno_model.years)) * dco2_prod_dsyngas_ratio * \
@@ -376,8 +377,8 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                 techno_model = WGS(self.techno_name)
                 # Update init values syngas price and syngas_ratio
                 inputs_dict[GlossaryEnergy.EnergyPricesValue][GlossaryEnergy.syngas] = \
-                inputs_dict['energy_detailed_techno_prices'][
-                    techno]
+                    inputs_dict['energy_detailed_techno_prices'][
+                        techno]
                 inputs_dict['syngas_ratio'] = np.ones(
                     len(years)) * inputs_dict['syngas_ratio_technos'][techno]
                 # -- configure class with inputs

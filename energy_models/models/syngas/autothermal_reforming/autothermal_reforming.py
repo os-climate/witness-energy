@@ -67,7 +67,7 @@ class AuthothermalReforming(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency.values[:, np.newaxis]
+                len(self.years)) * methane_needs / efficiency[:, np.newaxis]
 
         }
 

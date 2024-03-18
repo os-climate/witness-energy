@@ -56,7 +56,7 @@ class Methanation(MethaneTechno):
         efficiency = self.configure_efficiency()
         return {
             GaseousHydrogen.name: np.identity(
-                len(self.years)) * hydrogen_needs / efficiency.values[:, np.newaxis]
+                len(self.years)) * hydrogen_needs / efficiency[:, np.newaxis]
         }
 
     def grad_price_vs_resources_price(self):
@@ -67,7 +67,7 @@ class Methanation(MethaneTechno):
         efficiency = self.configure_efficiency()
         return {
             CO2.name: np.identity(
-                len(self.years)) * co2_needs / efficiency.values[:, np.newaxis]
+                len(self.years)) * co2_needs / efficiency[:, np.newaxis]
         }
 
     def compute_consumption_and_production(self):

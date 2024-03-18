@@ -60,26 +60,27 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.energy_name = GlossaryEnergy.liquid_fuel
         # crude oil price : 1.3$/gallon
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                   0.159236536471781, 0.15899046935409588,
-                                                                   0.15874840310033885,
-                                                                   0.15875044941298937, 0.15875249600769718,
-                                                                   0.15875454288453355,
-                                                                   0.15875659004356974, 0.1587586374848771,
-                                                                   0.15893789675406477,
-                                                                   0.15911934200930778, 0.15930302260662477,
-                                                                   0.15948898953954933,
-                                                                   0.15967729551117891, 0.15986799501019029,
-                                                                   0.16006114439108429,
-                                                                   0.16025680195894345, 0.16045502805900876,
-                                                                   0.16065588517140537,
-                                                                   0.1608594380113745, 0.16106575363539733,
-                                                                   0.16127490155362818,
-                                                                   0.16148695384909017, 0.1617019853041231,
-                                                                   0.1619200735346165,
-                                                                   0.16214129913260598, 0.16236574581786147,
-                                                                   0.16259350059915213,
-                                                                   0.1628246539459331]) * 1000.0,
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                   0.159236536471781, 0.15899046935409588,
+                                                   0.15874840310033885,
+                                                   0.15875044941298937, 0.15875249600769718,
+                                                   0.15875454288453355,
+                                                   0.15875659004356974, 0.1587586374848771,
+                                                   0.15893789675406477,
+                                                   0.15911934200930778, 0.15930302260662477,
+                                                   0.15948898953954933,
+                                                   0.15967729551117891, 0.15986799501019029,
+                                                   0.16006114439108429,
+                                                   0.16025680195894345, 0.16045502805900876,
+                                                   0.16065588517140537,
+                                                   0.1608594380113745, 0.16106575363539733,
+                                                   0.16127490155362818,
+                                                   0.16148695384909017, 0.1617019853041231,
+                                                   0.1619200735346165,
+                                                   0.16214129913260598, 0.16236574581786147,
+                                                   0.16259350059915213,
+                                                   0.1628246539459331]) * 1000.0,
              'CO2': 0.0,
              GlossaryEnergy.syngas: 34,
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
@@ -96,7 +97,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 2.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.syngas: 0.0,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(

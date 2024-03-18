@@ -67,7 +67,7 @@ class SMR(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency.values[:, np.newaxis],
+                len(self.years)) * methane_needs / efficiency[:, np.newaxis],
             Electricity.name: np.identity(
                 len(self.years)) * elec_needs
         }
@@ -80,7 +80,7 @@ class SMR(SyngasTechno):
         efficiency = self.configure_efficiency()
         return {
             Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency.values[:, np.newaxis],
+                len(self.years)) * water_needs / efficiency[:, np.newaxis],
         }
 
     def compute_CO2_emissions_from_input_resources(self):
