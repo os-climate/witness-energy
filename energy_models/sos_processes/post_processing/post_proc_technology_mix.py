@@ -153,8 +153,8 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         # Filtering most producing technologies in descending order based on production values
         techno_filter = filter_df.sort_values(by=['production'], ascending=[False])
         # Extracting data for first 'filtered_production_technology' highest most producing technologies
+        # pylint: disable-msg=unsubscriptable-object
         techno_filter_list = techno_filter['techno'].tolist()[:filtered_production_technology]
-
         y_values = []
         co2_values = []
         for key in techno_filter_list:
