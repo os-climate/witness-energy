@@ -125,7 +125,7 @@ class OilGen(ElectricityTechno):
         '''
         liquid_fuel_needs = self.techno_infos_dict['fuel_demand']
         efficiency = self.configure_efficiency()
-        return {LiquidFuel.name: np.identity(len(self.years)) * liquid_fuel_needs / efficiency.values[:, np.newaxis]}
+        return {LiquidFuel.name: np.identity(len(self.years)) * liquid_fuel_needs / efficiency[:, np.newaxis]}
 
     def grad_price_vs_resources_price(self):
         '''

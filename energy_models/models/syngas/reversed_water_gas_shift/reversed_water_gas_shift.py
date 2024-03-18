@@ -253,7 +253,7 @@ class RWGS(SyngasTechno):
         efficiency = self.configure_efficiency()
 
         dsyngas_price_dsyngas_ratio = np.identity(len(
-            self.years)) * dsyngas_needs_dsyngas_ratio * self.prices[Syngas.name].to_numpy() / efficiency.values[:,
+            self.years)) * dsyngas_needs_dsyngas_ratio * self.prices[Syngas.name].to_numpy() / efficiency[:,
                                                                                                np.newaxis]
 
         return dsyngas_price_dsyngas_ratio
@@ -435,7 +435,7 @@ class RWGS(SyngasTechno):
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 Syngas.name: np.identity(
-                    len(self.years)) * syngas_needs / efficiency.values[:, np.newaxis]
+                    len(self.years)) * syngas_needs / efficiency[:, np.newaxis]
                 }
 
     def compute_consumption_and_production(self):
