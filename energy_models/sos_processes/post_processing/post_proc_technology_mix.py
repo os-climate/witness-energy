@@ -75,11 +75,12 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             if y_incre == 0:
                 var_energyproduction_all_energy_df = var_energyproduction_df.copy()
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", energ + ".").str.replace("(TWh)", "")
+                    energ + " ", energ + ".").str.replace(" (TWh)", "")
             else:
                 var_energyproduction_all_energy_df = var_energyproduction_all_energy_df.merge(var_energyproduction_df)
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", energ + ".").str.replace(r" \(.*\)", "")
+                    energ + " ", energ + ".").str.replace(" (TWh)", "")  #(r" \(.*\)", "")
+                # FIXME: r" is raw string not regex, need to use re.sub
             y_incre += 1
 
     techno_name_list = []
