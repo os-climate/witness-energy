@@ -1489,7 +1489,7 @@ if '__main__' == __name__:
     np.set_printoptions(threshold=10000)
     # cls.test_07_ratio_CalciumLooping_discipline_jacobian()
 
-    cls.test_02b_ratio_Nuclear_discipline_jacobian(),
+    cls.test_04b_ratio_Refinery_discipline_jacobian(),
     # cls.test_02_ratio_SMR_discipline_jacobian,
     # cls.test_05_ratio_WaterGasShift_discipline_jacobian,
     # cls.test_06_ratio_FischerTropsch_discipline_jacobian,
