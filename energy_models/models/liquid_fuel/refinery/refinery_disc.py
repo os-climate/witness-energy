@@ -196,34 +196,25 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             grad_total = value * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
                                           len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / \
                          100.0
-            grad_total_efficiency = grad_total / self.techno_model.configure_efficiency()
-
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
-                grad_total_efficiency)
+                grad_total)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyCO2EmissionsValue, energy), np.zeros(len(self.techno_model.years)))
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), grad_total_efficiency)
+                (GlossaryEnergy.EnergyPricesValue, energy), grad_total)
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
                 value)
 
-            #             self.set_partial_derivative_for_other_types(
-            #                 (GlossaryEnergy.CO2EmissionsValue, energy), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
             grad_on_co2_tax = value * \
                               self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
                                                               <= self.techno_model.year_end][
                                   GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name])).values[:, np.newaxis]
+                0, np.sign(carbon_emissions[self.techno_name])).values
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
-                grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
-                                           len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) /
-                100.0)
+                grad_on_co2_tax)
 
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
@@ -242,12 +233,11 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.ResourcesPriceValue, resource),
-                value / self.techno_model.configure_efficiency() *
-                self.techno_model.margin[
+                value * self.techno_model.margin[
                     GlossaryEnergy.MarginValue].values / 100.0)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.ResourcesPriceValue, resource), value / self.techno_model.configure_efficiency() *
+                (GlossaryEnergy.ResourcesPriceValue, resource), value *
                                                                 self.techno_model.margin[
                                                                     GlossaryEnergy.MarginValue].values / 100.0)
             grad_on_co2_tax = value * \
@@ -255,15 +245,11 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                                               <= self.techno_model.year_end][
                                   GlossaryEnergy.CO2Tax].values[:,
                               np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name])).values[:, np.newaxis]
+                0, np.sign(carbon_emissions[self.techno_name])).values
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name),
                 (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),
-                grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
-                                           len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / 100.0)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), np.zeros(len(self.techno_model.years)))
+                grad_on_co2_tax)
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
