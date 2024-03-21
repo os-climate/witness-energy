@@ -73,10 +73,7 @@ class TechnoDiscipline(SoSWrapp):
                                      },
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
-        GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '$/t',
-                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                             "dynamic_dataframe_columns": True
-                                             },
+        GlossaryEnergy.ResourcesPriceValue: GlossaryEnergy.ResourcesPrice,
         GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kgCO2/kg',
                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_resource',

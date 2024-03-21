@@ -81,7 +81,7 @@ class FuelDiscipline(SoSWrapp):
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
+                GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
                 }
 
     def __init__(self, sos_name, logger: logging.Logger):
