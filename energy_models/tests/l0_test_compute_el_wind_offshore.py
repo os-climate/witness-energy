@@ -70,7 +70,8 @@ class WindOffshoreTestCase(unittest.TestCase):
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 110})
+             GlossaryEnergy.MarginValue: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 110})
 
         transport_cost = 11,
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -141,21 +142,6 @@ class WindOffshoreTestCase(unittest.TestCase):
         model.configure_parameters(inputs_dict)
         model.configure_parameters_update(inputs_dict)
         price_details = model.compute_price()
-
-        # Comparison in $/kWH
-        plt.figure()
-        plt.xlabel(GlossaryEnergy.Years)
-
-        plt.plot(price_details[GlossaryEnergy.Years],
-                 price_details['WindOffshore'], label='SoSTrades Total')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-                 label='SoSTrades Transport')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['WindOffshore_factory'],
-                 label='SoSTrades Factory')
-        plt.legend()
-        plt.ylabel('Price ($/kWh)')
 
     def test_03_wind_off_shore_discipline(self):
         self.name = 'Test'

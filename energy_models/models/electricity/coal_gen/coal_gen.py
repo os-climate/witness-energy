@@ -70,8 +70,8 @@ class CoalGen(ElectricityTechno):
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
-        self.production_detailed[
-            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
+            self.production_detailed[
+                f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] * \
                                                                                         self.production_detailed[
@@ -123,7 +123,7 @@ class CoalGen(ElectricityTechno):
         '''
         solid_fuel_needs = self.techno_infos_dict['fuel_demand']
         efficiency = self.configure_efficiency()
-        return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency[:, np.newaxis]}
+        return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency.values[:, np.newaxis]}
 
     def grad_price_vs_resources_price(self):
         '''

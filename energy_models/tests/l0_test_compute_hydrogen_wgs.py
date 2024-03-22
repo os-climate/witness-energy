@@ -175,20 +175,6 @@ class WGSPriceTestCase(unittest.TestCase):
             syngas_needs_list.append(price_details['syngas_needs'].values[0])
             price_list.append(price_details['WGS'].values[0])
 
-    #         plt.figure()
-    #         plt.xlabel(f'{GlossaryEnergy.syngas} ratio')
-    #         plt.plot(sg_ratio_list,
-    #                  price_list)
-    #         plt.ylabel('Price ($/kWh)')
-    #         plt.show()
-
-    #         plt.figure()
-    #         plt.xlabel(f'{GlossaryEnergy.syngas} ratio')
-    #         plt.plot(sg_ratio_list,
-    #                  syngas_needs_list)
-    #         plt.ylabel('Needs (kWh/kWh)')
-    #         plt.show()
-
     def test_02_wgs_discipline_forH2(self):
 
         self.name = 'Test'

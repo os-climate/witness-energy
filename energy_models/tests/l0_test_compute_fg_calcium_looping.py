@@ -55,8 +55,10 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0,
-             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
+             GlossaryEnergy.electricity: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0,
+             GlossaryEnergy.methane: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -78,7 +80,8 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
+             GlossaryEnergy.MarginValue: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
@@ -142,21 +145,6 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
         calcium_looping_model.configure_parameters(inputs_dict)
         calcium_looping_model.configure_parameters_update(inputs_dict)
         price_details = calcium_looping_model.compute_price()
-
-        # Comparison in $/kWH
-        plt.figure()
-        plt.xlabel(GlossaryEnergy.Years)
-
-        plt.plot(price_details[GlossaryEnergy.Years],
-                 price_details['Flue_gas_capture.CalciumLooping'], label='SoSTrades Total')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-                 label='SoSTrades Transport')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['Flue_gas_capture.CalciumLooping_factory'],
-                 label='SoSTrades Factory')
-        plt.legend()
-        plt.ylabel('Price ($/kWh)')
 
     def test_03_calcium_looping_discipline(self):
         self.name = 'Test'

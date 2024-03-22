@@ -131,7 +131,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
@@ -188,7 +189,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -241,7 +243,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -294,7 +297,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -351,7 +355,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -409,7 +414,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -462,7 +468,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -516,7 +523,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
+                                                            GlossaryEnergy.YearEndDefault + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

@@ -142,8 +142,8 @@ class WGS(GaseousHydrogenTechno):
             'calorific_value'] +
                            GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[
                                'calorific_value']) / (
-                                      GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio *
-                                      CO.data_energy_dict['molar_mass'])
+                                  GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio *
+                                  CO.data_energy_dict['molar_mass'])
 
         calup = (self.syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
                  GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict['calorific_value'])
@@ -630,7 +630,7 @@ class WGS(GaseousHydrogenTechno):
                                             self.cost_details['efficiency']
 
         return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + \
-               self.carbon_intensity[Water.name]
+            self.carbon_intensity[Water.name]
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

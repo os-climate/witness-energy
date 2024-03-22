@@ -54,8 +54,9 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                          'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                              'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
+                                              GlossaryEnergy.InvestValue: ('float', None, True)},
                                           'dataframe_edition_locked': False
                                           },
         GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh',
@@ -72,10 +73,7 @@ class TechnoDiscipline(SoSWrapp):
                                      },
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
-        GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '$/t',
-                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                             "dynamic_dataframe_columns": True
-                                             },
+        GlossaryEnergy.ResourcesPriceValue: GlossaryEnergy.ResourcesPrice,
         GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kgCO2/kg',
                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_resource',
@@ -227,7 +225,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         }
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -374,7 +372,7 @@ class TechnoDiscipline(SoSWrapp):
                     (GlossaryEnergy.TechnoProductionValue, column),
                     (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
                     (
-                                dprod_column_dinvest.T * applied_ratio * utilisation_ratio / 100).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                            dprod_column_dinvest.T * applied_ratio * utilisation_ratio / 100).T * scaling_factor_invest_level / scaling_factor_techno_production)
 
                 dprod_dutilisation_ratio = np.diag(applied_ratio * production_wo_ratio[column] / 100.)
                 self.set_partial_derivative_for_other_types(
@@ -384,7 +382,7 @@ class TechnoDiscipline(SoSWrapp):
                 )
 
                 self.techno_production_derivative[column] = (
-                                                                        dprod_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+                                                                    dprod_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
 
                 # ---Gradient other techno prods vs each ratio
                 self.dprod_column_dratio[column] = {}
@@ -448,18 +446,18 @@ class TechnoDiscipline(SoSWrapp):
                         (GlossaryEnergy.TechnoConsumptionValue, column),
                         (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
                         (
-                                    self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                                self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production)
                     self.techno_consumption_derivative[column] = (
-                                                                             self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production
+                                                                         self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production
 
                 else:
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoConsumptionValue, column),
                         (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
                         (
-                                    self.dcons_column_dinvest.T * applied_ratio * utilisation_ratio / 100).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                                self.dcons_column_dinvest.T * applied_ratio * utilisation_ratio / 100).T * scaling_factor_invest_level / scaling_factor_techno_production)
                     self.techno_consumption_derivative[column] = (
-                                                                             self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+                                                                         self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, column),
                     (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),

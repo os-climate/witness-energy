@@ -78,8 +78,7 @@ class HeatDiscipline(SoSWrapp):
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
-                # 'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
+                GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
                 }
 
     def __init__(self, sos_name, logger: logging.Logger):

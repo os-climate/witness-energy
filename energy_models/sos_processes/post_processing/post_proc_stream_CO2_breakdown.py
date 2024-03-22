@@ -187,11 +187,11 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     if summary:
         # Create a graph to aggregate the informations on all years
         price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
-                                                                                                  ], [], [], [], [], [], []
+        ], [], [], [], [], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
         CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryEnergy.CO2TaxesValue)[
-                                         GlossaryEnergy.CO2Tax].values, []
+            GlossaryEnergy.CO2Tax].values, []
         for i, row in multilevel_df.iterrows():
             # skip techno that do not produce the selected energy
             if i[0] != energy_name:
@@ -237,11 +237,11 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             # -technology level-#
             ################
             price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
-                                                                                                      ], [], [], [], [], [], []
+            ], [], [], [], [], [], []
             energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
                 0]
             CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryEnergy.CO2TaxesValue)[
-                                             GlossaryEnergy.CO2Tax].values, []
+                GlossaryEnergy.CO2Tax].values, []
             for i, row in multilevel_df.iterrows():
                 # skip techno that do not produce the selected energy
                 if i[0] != energy_name:
@@ -372,7 +372,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno, CO2_per_kWh_techno,
                                        price_per_kWh_techno, price_per_kWh_wotaxes_techno)],
                                      index=idx, columns=columns_techno)
-            multilevel_df = multilevel_df.append(techno_df)
+            multilevel_df = pd.concat([multilevel_df, techno_df])
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
         GlossaryEnergy.YearStart), energy_disc.get_sosdisc_inputs(GlossaryEnergy.YearEnd) + 1, 1)
@@ -718,6 +718,6 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             techno_df = pd.DataFrame([[energy, techno, production_techno, CO2_from_production, CO2_per_use,
                                        CO2_after_use] + list(CO2_from_other_consumption.values())],
                                      index=idx, columns=columns_techno)
-            multilevel_df = multilevel_df.append(techno_df)
+            multilevel_df = pd.concat([multilevel_df, techno_df])
 
     return multilevel_df, years

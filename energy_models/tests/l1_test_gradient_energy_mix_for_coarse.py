@@ -54,7 +54,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
         usecase = Study(execution_engine=self.ee,
-                        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT, main_study=True)
+                        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                        main_study=True)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -119,7 +120,6 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list
              if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
-
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',

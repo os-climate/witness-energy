@@ -311,7 +311,7 @@ class OneInvestDiscipline(SoSWrapp):
             all_invest_df = self.get_sosdisc_outputs(
                 'all_invest_df')
 
-            chart_name = f'Distribution of investments on each energy vs years'
+            chart_name = f'Distribution of investments on each energy '
 
             new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
@@ -323,7 +323,7 @@ class OneInvestDiscipline(SoSWrapp):
                 techno_list = [
                     col for col in all_invest_df.columns if col.startswith(f'{energy}.')]
                 short_df = all_invest_df[techno_list]
-                chart_name = f'Distribution of investments for {energy} vs years'
+                chart_name = f'Distribution of investments for {energy} '
                 new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                             chart_name=chart_name, stacked_bar=True)
 

@@ -54,7 +54,8 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.renewable: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
+             GlossaryEnergy.renewable: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -76,7 +77,8 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
+             GlossaryEnergy.MarginValue: np.ones(
+                 len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0})
@@ -140,21 +142,6 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
         flue_gas_techno_model.configure_parameters(inputs_dict)
         flue_gas_techno_model.configure_parameters_update(inputs_dict)
         price_details = flue_gas_techno_model.compute_price()
-
-        # Comparison in $/kWH
-        plt.figure()
-        plt.xlabel(GlossaryEnergy.Years)
-
-        plt.plot(price_details[GlossaryEnergy.Years],
-                 price_details['Flue_gas_capture.FlueGasTechno'], label='SoSTrades Total')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
-                 label='SoSTrades Transport')
-
-        plt.plot(price_details[GlossaryEnergy.Years], price_details['Flue_gas_capture.FlueGasTechno_factory'],
-                 label='SoSTrades Factory')
-        plt.legend()
-        plt.ylabel('Price ($/kWh)')
 
     def test_03_flue_gas_techno_discipline(self):
         self.name = 'Test'

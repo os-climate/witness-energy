@@ -176,7 +176,7 @@ class InvestTechnoDiscipline(SoSWrapp):
                 'techno_invest_df')
             techno_list = self.get_sosdisc_inputs(
                 GlossaryEnergy.techno_list)
-            chart_name = f'Distribution of Investments vs years'
+            chart_name = f'Distribution of Investments '
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
