@@ -266,7 +266,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         years = np.arange(year_start, year_end + 1)
         if 'Invest Distribution' in charts:
 
-            chart_name = f'Distribution of investments on each energy vs years'
+            chart_name = f'Distribution of investments on each energy '
 
             new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
@@ -276,7 +276,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             for energy in energy_list + ccs_list:
                 list_energy = []
                 if energy != BiomassDry.name:
-                    chart_name = f'Distribution of investments for {energy} vs years'
+                    chart_name = f'Distribution of investments for {energy} '
                     new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                                 chart_name=chart_name, stacked_bar=True)
                     techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
@@ -300,7 +300,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     new_chart_energy.series.append(serie)
 
             forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
-            chart_name = f'Distribution of reforestation investments vs years'
+            chart_name = f'Distribution of reforestation investments '
             agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                          chart_name=chart_name, stacked_bar=True)
             serie_agriculture = InstanciatedSeries(
@@ -315,7 +315,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             new_chart_energy.series.append(serie)
 
             if BiomassDry.name in energy_list:
-                chart_name = f'Distribution of agriculture sector investments vs years'
+                chart_name = f'Distribution of agriculture sector investments '
                 agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
 

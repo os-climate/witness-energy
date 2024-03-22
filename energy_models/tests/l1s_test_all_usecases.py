@@ -38,3 +38,9 @@ class TestUseCases(unittest.TestCase):
         test_passed, output_error = _test_all_usecases(processes_repo=self.processes_repo)
         if not test_passed:
             raise Exception(f'{output_error}')
+
+
+if '__main__' == __name__:
+    cls = TestUseCases()
+    cls.setUp()
+    cls.test_all_usecases()

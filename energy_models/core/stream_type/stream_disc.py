@@ -67,7 +67,7 @@ class StreamDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
         GlossaryEnergy.EnergyConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
+        GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
         GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha'},
         GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf

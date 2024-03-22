@@ -605,7 +605,7 @@ class CCUS_Discipline(SoSWrapp):
         carbon_storage_limit = self.get_sosdisc_inputs('carbonstorage_limit')
         years = list(co2_emissions[GlossaryEnergy.Years])
 
-        chart_name = 'Cumulated carbon storage (Gt) vs years'
+        chart_name = 'Cumulated carbon storage (Gt) '
 
         year_start = years[0]
         year_end = years[len(years) - 1]

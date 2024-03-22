@@ -191,7 +191,6 @@ class ResourcesDisc(SoSWrapp):
                                                             'default': get_static_CO2_emissions(years)}}
 
     DESC_OUT = {
-
         GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',

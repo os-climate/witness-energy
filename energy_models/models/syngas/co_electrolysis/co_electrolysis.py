@@ -69,9 +69,10 @@ class CoElectrolysis(SyngasTechno):
         co2_needs = self.get_theoretical_CO2_needs()
         water_needs = self.get_theoretical_water_needs()
         efficiency = self.configure_efficiency()
+        init_grad = np.identity(len(self.years)) / efficiency[:, np.newaxis]
         return {
-            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
-            Water.name: np.identity(len(self.years)) * water_needs / efficiency[:, np.newaxis],
+            CO2.name: init_grad * co2_needs,
+            Water.name: init_grad * water_needs,
         }
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -91,7 +92,7 @@ class CoElectrolysis(SyngasTechno):
                                                   self.cost_details['elec_needs']
 
         return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[Water.name] + \
-               self.carbon_intensity[Electricity.name]
+            self.carbon_intensity[Electricity.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''
@@ -100,7 +101,7 @@ class CoElectrolysis(SyngasTechno):
         co2_needs = self.get_theoretical_CO2_needs()
         efficiency = self.configure_efficiency()
         return {
-            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency.values[:, np.newaxis],
         }
 
     def get_theoretical_CO2_needs(self):
