@@ -31,13 +31,15 @@ class CoalGasification(SyngasTechno):
     def compute_cost_of_resources_usage(self):
         pass
 
-    def compute_cost_of_other_energies_needs(self):
-        # in kwh of fuel by kwh of syngas
-        self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of biomass for 1 kWH of syngas
         self.cost_details[SolidFuel.name] = list(
             self.prices[SolidFuel.name] * self.cost_details['solid_fuel_needs'])
+
+    def compute_other_energies_needs(self):
+        # in kwh of fuel by kwh of syngas
+        self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
+
 
     def compute_other_primary_energy_costs(self):
         """
@@ -45,7 +47,8 @@ class CoalGasification(SyngasTechno):
         """
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[SolidFuel.name]
 

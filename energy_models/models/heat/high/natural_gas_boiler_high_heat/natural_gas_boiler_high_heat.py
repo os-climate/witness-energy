@@ -31,7 +31,13 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_needs(self):
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[f'{Methane.name}'] = \
+            self.prices[f'{Methane.name}'] * \
+            self.cost_details[f'{Methane.name}_needs'] / \
+            self.cost_details['efficiency']
+
+    def compute_other_energies_needs(self):
         # methane_needs
 
         # output needed in this method is in $/kwh of heat
@@ -40,16 +46,13 @@ class NaturalGasBoilerHighHeat(highheattechno):
         # and then we divide by efficiency
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
-        self.cost_details[f'{Methane.name}'] = \
-            self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs'] / \
-            self.cost_details['efficiency']
 
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of heat
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[f'{Methane.name}']
 

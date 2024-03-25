@@ -32,9 +32,10 @@ class GeothermalHeat(mediumheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_needs(self):
+    def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
-
+        
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
@@ -44,7 +45,8 @@ class GeothermalHeat(mediumheattechno):
         """
         Compute primary costs to produce 1kWh of Geothermal Heat Generation
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name]
 

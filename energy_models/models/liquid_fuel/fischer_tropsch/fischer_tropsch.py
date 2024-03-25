@@ -91,12 +91,14 @@ class FischerTropsch(LiquidFuelTechno):
         self.ratio_df = ratio_df
         return ratio_df
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of liquid_fuel
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
 
     def compute_specifif_costs_of_technos(self):
         nb_years = self.year_end - self.year_start + 1
@@ -269,7 +271,8 @@ class FischerTropsch(LiquidFuelTechno):
         """
         Compute primary costs which depends on the technology 
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
         self.compute_specifif_costs_of_technos()
 
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name]

@@ -26,13 +26,14 @@ from energy_models.core.techno_type.base_techno_models.carbon_capture_techno imp
 
 class Amine(CCTechno):
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
-
-
-        self.cost_details['heat_needs'] = self.get_heat_needs()
         self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs'])
+
+    
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details['heat_needs'] = self.get_heat_needs()
 
     def compute_resources_needs(self):
         self.cost_details['amine_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
@@ -47,7 +48,8 @@ class Amine(CCTechno):
         """
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']] + \
                self.cost_details[Methane.name]

@@ -25,27 +25,28 @@ from energy_models.core.techno_type.base_techno_models.biogas_techno import BioG
 
 class AnaerobicDigestion(BioGasTechno):
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        # Cost of biomass is in $/kg
+        self.cost_details[WetBiomass.name] = list(
+            self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
+            )
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
 
         # Wet biomass_needs are in kg/m^3
         self.cost_details['wet_biomass_needs'] = self.techno_infos_dict['wet_biomass_needs'] / \
                                                  self.data_energy_dict['density'] / \
                                                  self.data_energy_dict['calorific_value']
 
-        # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(
-            self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
-            )
-
-
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[WetBiomass.name]
 

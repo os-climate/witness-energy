@@ -31,13 +31,15 @@ class NaturalGasMediumHeat(mediumheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
+    def compute_cost_of_other_energies_usage(self):
 
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
             self.cost_details[f'{Methane.name}_needs'] / \
             self.cost_details['efficiency']
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
+
 
         # methane_needs
 
@@ -50,7 +52,8 @@ class NaturalGasMediumHeat(mediumheattechno):
         """
         Compute primary costs to produce 1kWh of heat
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[f'{Methane.name}']
 

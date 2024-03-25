@@ -24,7 +24,16 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 
 
 class Pelletizing(SolidFuelTechno):
-    def compute_cost_of_other_energies_needs(self):
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+
+        # Cost of biomass for 1 kWh of pellet
+        self.cost_details[BiomassDry.name] = list(
+            self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
+
+
+    def compute_other_energies_needs(self):
         # in kg of fuel by kg of pellets depends on moisture level
         self.cost_details['biomass_dry_needs'] = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
                                                  (1 + self.data_energy_dict['pellets_moisture'])
@@ -33,12 +42,6 @@ class Pelletizing(SolidFuelTechno):
         # plus electricity needed for chipping dry biomass
         self.cost_details['elec_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
-
-        # Cost of biomass for 1 kWh of pellet
-        self.cost_details[BiomassDry.name] = list(
-            self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
 
     def compute_other_primary_energy_costs(self):
         """
@@ -46,7 +49,8 @@ class Pelletizing(SolidFuelTechno):
         """
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 

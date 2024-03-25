@@ -26,13 +26,14 @@ from energy_models.core.techno_type.base_techno_models.carbon_capture_techno imp
 class DirectAirCaptureTechno(CCTechno):
 
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
-        self.cost_details[Renewable.name] = list(self.prices[Renewable.name] * self.cost_details['elec_needs']
-                                                 )
-        self.cost_details['heat_needs'] = self.get_heat_needs()
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Renewable.name] = list(self.prices[Renewable.name] * self.cost_details['elec_needs'])
         self.cost_details[Fossil.name] = list(self.prices[Fossil.name] * self.cost_details['heat_needs'])
+    
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details['heat_needs'] = self.get_heat_needs()
+
 
     def compute_other_primary_energy_costs(self):
         """
@@ -42,7 +43,8 @@ class DirectAirCaptureTechno(CCTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 

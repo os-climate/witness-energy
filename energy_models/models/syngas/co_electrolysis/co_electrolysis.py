@@ -43,11 +43,13 @@ class CoElectrolysis(SyngasTechno):
         self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
                                              / self.cost_details['efficiency'])
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
                                               self.prices[Electricity.name]
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
 
     def compute_other_primary_energy_costs(self):
         """
@@ -56,7 +58,8 @@ class CoElectrolysis(SyngasTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Water.name] + self.cost_details[CO2.name] + self.cost_details[Electricity.name]
 

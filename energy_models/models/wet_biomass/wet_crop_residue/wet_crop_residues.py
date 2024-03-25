@@ -21,16 +21,20 @@ from energy_models.core.techno_type.base_techno_models.wet_biomass_techno import
 
 class WetCropResidues(WetBiomassTechno):
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'])
+    
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
 
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of wood
         """
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name]
 

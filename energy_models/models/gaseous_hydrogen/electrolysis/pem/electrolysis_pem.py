@@ -46,13 +46,15 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[self.PLATINUM_RESOURCE_NAME] = list(self.resources_prices[self.PLATINUM_RESOURCE_NAME] *
                                                               self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'])
 
-    def compute_cost_of_other_energies_needs(self):
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
+                                              self.prices[Electricity.name]
+    
+    def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.cost_details['elec_needs'] = 1.0 / self.cost_details['efficiency']
 
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
 
     def compute_other_primary_energy_costs(self):
         """
@@ -60,7 +62,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         """
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[Water.name] + self.cost_details[
             self.PLATINUM_RESOURCE_NAME]

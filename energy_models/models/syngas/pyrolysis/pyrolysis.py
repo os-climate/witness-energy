@@ -49,7 +49,8 @@ class Pyrolysis(SyngasTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[ResourceGlossary.Wood['name']]
 

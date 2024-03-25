@@ -39,12 +39,15 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
 
-    def compute_cost_of_other_energies_needs(self):
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
+                                              self.prices[Electricity.name]
+    
+    def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.cost_details['elec_needs'] = 1.0 / self.cost_details['efficiency']
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
+
 
     def compute_other_primary_energy_costs(self):
         """
@@ -53,7 +56,8 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[Water.name]
 

@@ -1072,7 +1072,11 @@ class TechnoType:
         """To be overloaded when techno relies on resources"""
         pass
 
-    def compute_cost_of_other_energies_needs(self):
+    def compute_other_energies_needs(self):
+        """To be overloaded when techno uses other technos productions to produce its energy"""
+        pass
+
+    def compute_cost_of_other_energies_usage(self):
         """To be overloaded when techno uses other technos productions to produce its energy"""
         pass
 

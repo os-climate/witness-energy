@@ -26,12 +26,7 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 class BiomassGasification(SyngasTechno):
     syngas_COH2_ratio = 26.0 / 31.0 * 100.0  # in %
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of syngas
-
-        self.cost_details['biomass_needs'] = self.techno_infos_dict['biomass_demand']
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of syngas
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'])
@@ -41,6 +36,13 @@ class BiomassGasification(SyngasTechno):
         self.cost_details[BiomassDry.name] = list(
             self.prices[BiomassDry.name] * self.cost_details['biomass_needs'])
 
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        # in kwh of fuel by kwh of syngas
+
+        self.cost_details['biomass_needs'] = self.techno_infos_dict['biomass_demand']
+
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
@@ -48,7 +50,8 @@ class BiomassGasification(SyngasTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 

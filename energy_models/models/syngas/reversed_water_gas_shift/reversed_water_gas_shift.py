@@ -404,16 +404,18 @@ class RWGS(SyngasTechno):
             self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
             / self.cost_details['efficiency'])
 
-    def compute_cost_of_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   )
-        # Cost of methane for 1 kWH of H2
-        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio)
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+
         self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
                                               / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+        # Cost of methane for 1 kWH of H2
+        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio)
 
 
     def compute_other_primary_energy_costs(self):
@@ -423,7 +425,8 @@ class RWGS(SyngasTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[CO2.name]
 

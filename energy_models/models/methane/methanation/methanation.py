@@ -34,13 +34,15 @@ class Methanation(MethaneTechno):
         self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
                                            self.cost_details['efficiency'])
 
-    def compute_cost_of_other_energies_needs(self):
-        # in kWh of H2 for kWh of CH4
-        self.cost_details['hydrogen_needs'] = self.get_theoretical_hydrogen_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of H2 for 1 kg of CH4 (in kg), price is in $/kg
         self.cost_details[GaseousHydrogen.name] = list(
             self.prices[GaseousHydrogen.name] * self.cost_details['hydrogen_needs'] / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        # in kWh of H2 for kWh of CH4
+        self.cost_details['hydrogen_needs'] = self.get_theoretical_hydrogen_needs()
+
 
     def compute_other_primary_energy_costs(self):
         """
@@ -49,7 +51,8 @@ class Methanation(MethaneTechno):
 
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
-        self.compute_cost_of_other_energies_needs()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[GaseousHydrogen.name] + self.cost_details[CO2.name]
 
