@@ -29,15 +29,18 @@ class HeatPump(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of Heat Pump Heat Generation
-        """
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of Heat Pump Heat Generation
+        """
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[Electricity.name]
 

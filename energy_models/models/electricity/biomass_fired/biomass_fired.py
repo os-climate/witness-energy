@@ -26,14 +26,16 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 class BiomassFired(ElectricityTechno):
     COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
+    def compute_cost_of_other_energies_needs(self):
         # Cost of biomass for 1 kWH
         self.cost_details[BiomassDry.name] = list(
             self.prices[BiomassDry.name] * self.techno_infos_dict['biomass_needs'])
 
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology
+        """
+        self.compute_cost_of_other_energies_needs()
         return self.cost_details[BiomassDry.name]
 
     def compute_consumption_and_production(self):

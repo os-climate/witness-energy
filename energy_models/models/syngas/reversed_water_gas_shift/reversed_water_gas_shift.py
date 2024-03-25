@@ -395,32 +395,36 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio - self.syngas_ratio)
         return elec_demand
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
-
+    def compute_resources_needs(self):
         self.cost_details['CO2_needs'] = self.get_theoretical_co2_needs()
 
-        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(
-            self.syngas_ratio)
-
-        # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   )
-        # Cost of methane for 1 kWH of H2
-        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
-                                              / self.cost_details['efficiency'])
-
+    def compute_cost_of_resources_usage(self):
         #         # Cost of CO2 for 1 kWH of H2
         self.cost_details[CO2.name] = list(
             self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
             / self.cost_details['efficiency'])
 
-        # self.cost_details[CO2.name]
+    def compute_cost_of_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+        # Cost of electricity for 1 kWH of H2
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
+                                                   )
+        # Cost of methane for 1 kWH of H2
+        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio)
+        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
+                                              / self.cost_details['efficiency'])
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_cost_of_other_energies_needs()
+
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[CO2.name]
 
     def grad_price_vs_energy_price(self):

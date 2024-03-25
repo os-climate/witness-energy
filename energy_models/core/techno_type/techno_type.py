@@ -1063,6 +1063,23 @@ class TechnoType:
         '''
         return 0.0
 
+
+    def compute_resources_needs(self):
+        """To be overloaded when techno relies on resources"""
+        pass
+
+    def compute_cost_of_resources_usage(self):
+        """To be overloaded when techno relies on resources"""
+        pass
+
+    def compute_cost_of_other_energies_needs(self):
+        """To be overloaded when techno uses other technos productions to produce its energy"""
+        pass
+
+    def compute_specifif_costs_of_technos(self):
+        """To be overloaded when techno relies on resources"""
+        pass
+
     def compute_co2_tax(self):
         '''
         CO2 taxes are in $/tCO2

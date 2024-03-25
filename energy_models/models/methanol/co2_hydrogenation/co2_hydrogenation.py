@@ -26,13 +26,18 @@ from energy_models.core.techno_type.base_techno_models.methanol_techno import Me
 
 class CO2Hydrogenation(MethanolTechno):
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of methanol
-        """
+    def compute_resources_needs(self):
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+
+    def compute_cost_of_resources_usage(self):
+        self.cost_details[Water.name] = \
+            self.resources_prices[Water.name] * \
+            self.cost_details[f'{Water.name}_needs'] / \
+            self.cost_details['efficiency']
+
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details[f'{CarbonCapture.name}_needs'] = self.get_theoretical_co2_needs()
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
         self.cost_details[CarbonCapture.name] = \
@@ -45,15 +50,18 @@ class CO2Hydrogenation(MethanolTechno):
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[Water.name] = \
-            self.resources_prices[Water.name] * \
-            self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
-
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of methanol
+        """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[CarbonCapture.name] + self.cost_details[GaseousHydrogen.name] + \
                self.cost_details[Water.name] + self.cost_details[Electricity.name]

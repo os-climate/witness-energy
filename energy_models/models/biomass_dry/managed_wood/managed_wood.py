@@ -33,15 +33,16 @@ class ManagedWood(BiomassDryTechno):
         self.price_mix = None
         self.mean_age_df = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of wood
-        """
-
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kg of wood
+        """
+        self.compute_cost_of_other_energies_needs()
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):

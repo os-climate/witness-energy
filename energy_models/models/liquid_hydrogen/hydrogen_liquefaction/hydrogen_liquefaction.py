@@ -29,12 +29,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
     inputs
 
     """
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
 
         # for 1kwh of gas hydrogen, we get 0.98
@@ -47,6 +42,13 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         # Cost of hydrogen for 1kwh of LH2
         self.cost_details[GaseousHydrogen.name] = self.prices[GaseousHydrogen.name] * \
                                                   self.cost_details['hydrogen_needs']
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+        self.compute_cost_of_other_energies_needs()
+
 
         return self.cost_details[Electricity.name] + self.cost_details[GaseousHydrogen.name]
 

@@ -37,11 +37,7 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
 
     elec_consumption_factor = .185
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of hydrotreated_oil_fuel
-        """
-
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs(
         )
 
@@ -61,6 +57,12 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
 
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'])
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of hydrotreated_oil_fuel
+        """
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[NaturalOil.name] + self.cost_details[GaseousHydrogen.name] + self.cost_details[
             Electricity.name]

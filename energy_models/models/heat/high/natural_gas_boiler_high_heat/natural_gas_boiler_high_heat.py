@@ -31,10 +31,13 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of heat
-        """
+    def compute_cost_of_other_energies_needs(self):
+        # methane_needs
+
+        # output needed in this method is in $/kwh of heat
+        # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
+        # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
+        # and then we divide by efficiency
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
         self.cost_details[f'{Methane.name}'] = \
@@ -42,12 +45,12 @@ class NaturalGasBoilerHighHeat(highheattechno):
             self.cost_details[f'{Methane.name}_needs'] / \
             self.cost_details['efficiency']
 
-        # methane_needs
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of heat
+        """
+        self.compute_cost_of_other_energies_needs()
 
-        # output needed in this method is in $/kwh of heat
-        # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
-        # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
-        # and then we divide by efficiency
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):

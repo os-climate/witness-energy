@@ -25,13 +25,7 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 class Pyrolysis(SyngasTechno):
     syngas_COH2_ratio = 0.5 / 0.45 * 100.0  # in %
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        # wood needed to produce 1kwh of syngas
-
+    def compute_resources_needs(self):
         # syngas produced in kg by 1kg of wood
         syngas_kg = 1.0 * self.techno_infos_dict['syngas_yield']
 
@@ -42,9 +36,20 @@ class Pyrolysis(SyngasTechno):
         # wood needs in kg to produce 1kWh of syngas
         self.cost_details['wood_needs'] = 1 / syngas_kwh
 
+    def compute_cost_of_resources_usage(self):
+
         # Cost of wood for 1 kWh of syngas
         self.cost_details[ResourceGlossary.Wood['name']] = list(
             self.resources_prices[ResourceGlossary.Wood['name']] * self.cost_details['wood_needs'])
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[ResourceGlossary.Wood['name']]
 

@@ -26,7 +26,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
-    # ontology information
+    # ontology information'
     _ontology_data = {
         'label': 'Geothermal Low Heat Model',
         'type': 'Research',

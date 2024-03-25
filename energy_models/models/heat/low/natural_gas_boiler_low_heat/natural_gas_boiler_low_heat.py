@@ -31,10 +31,7 @@ class NaturalGasLowHeat(lowheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of heat
-        """
+    def compute_cost_of_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
         self.cost_details[f'{Methane.name}'] = \
@@ -48,6 +45,12 @@ class NaturalGasLowHeat(lowheattechno):
         # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of heat
+        """
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[f'{Methane.name}']
 

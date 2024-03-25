@@ -27,19 +27,14 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 class CoElectrolysis(SyngasTechno):
     syngas_COH2_ratio = 100.0  # in %
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of syngas 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
+    def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
         self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs()
 
         # need in kwh to produce 1kwh of syngas
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
 
+    def compute_cost_of_resources_usage(self):
         # Cost of CO2 for 1 kWH of H2
         self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
                                            / self.cost_details['efficiency'])
@@ -48,8 +43,20 @@ class CoElectrolysis(SyngasTechno):
         self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
                                              / self.cost_details['efficiency'])
 
+    def compute_cost_of_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
                                               self.prices[Electricity.name]
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kg of syngas 
+        """
+
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_cost_of_other_energies_needs()
 
         return self.cost_details[Water.name] + self.cost_details[CO2.name] + self.cost_details[Electricity.name]
 
