@@ -29,13 +29,11 @@ class SMR(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs']
-            / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
@@ -106,8 +104,7 @@ class SMR(SyngasTechno):
                                                   self.cost_details['elec_needs']
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f'{Water.name}_needs'] / \
-                                            self.cost_details['efficiency']
+                                            self.cost_details[f'{Water.name}_needs']
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[Electricity.name] + \
             self.carbon_intensity[Water.name]

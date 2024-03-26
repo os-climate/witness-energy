@@ -35,8 +35,7 @@ class OilGen(ElectricityTechno):
     def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details['water_needs'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is

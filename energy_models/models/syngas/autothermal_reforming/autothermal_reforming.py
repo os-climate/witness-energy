@@ -25,24 +25,22 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
 
-class AuthothermalReforming(SyngasTechno):
+class AutothermalReforming(SyngasTechno):
     syngas_COH2_ratio = 100.0  # in %
 
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs()
+        self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
         # need in kg to produce 1kwh of syngas
-        self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs()
+        self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # Cost of oxygen for 1 kWH of H2
         self.cost_details[Oxygen.name] = list(
-            self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
-            / self.cost_details['efficiency'])
+            self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs'])
 
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
-                                           / self.cost_details['efficiency'])
+        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH of H2
@@ -103,9 +101,9 @@ class AuthothermalReforming(SyngasTechno):
                                                    self.cost_details['methane_needs'] / \
                                                    self.cost_details['efficiency']
         self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
-                                          self.cost_details['CO2_needs'] / self.cost_details['efficiency']
+                                          self.cost_details['CO2_needs']
         self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
-                                             self.cost_details['oxygen_needs'] / self.cost_details['efficiency']
+                                             self.cost_details['oxygen_needs']
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
             Oxygen.name]

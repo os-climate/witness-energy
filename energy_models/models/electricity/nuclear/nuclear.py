@@ -35,8 +35,7 @@ class Nuclear(ElectricityTechno):
     def compute_cost_of_resources_usage(self):
         self.cost_details[self.URANIUM_RESOURCE_NAME] = list(self.resources_prices[self.URANIUM_RESOURCE_NAME] *
                                                              self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'])
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] *
-                                             self.cost_details['water_needs'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
         # self.cost_details[self.COPPER_RESOURCE_NAME] = list(self.resources_prices[self.COPPER_RESOURCE_NAME] *
         #                                             self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'])
 

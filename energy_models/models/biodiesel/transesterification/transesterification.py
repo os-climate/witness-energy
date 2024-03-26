@@ -34,13 +34,13 @@ class Transesterification(BioDieselTechno):
 
     def compute_resources_needs(self):
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs()
+        self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs() / self.cost_details['efficiency']
         # need in kg oil/kWh biodiesel
-        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs()
+        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / self.cost_details['efficiency']
         # need in kg/kwh biodiesel
-        self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs()
+        self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs() / self.cost_details['efficiency']
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
         # need in kWh/kwh biodiesel
 
 
@@ -49,29 +49,25 @@ class Transesterification(BioDieselTechno):
         # Cost of methanol for 1 kWH of biodiesel
         # $/kWh
         self.cost_details[Methanol.name] = list(
-            self.resources_prices[Methanol.name] * self.cost_details[f'{Methanol.name}_needs'] / self.cost_details[
-                'efficiency'])
+            self.resources_prices[Methanol.name] * self.cost_details[f'{Methanol.name}_needs'] )
 
         # Cost of natural oil for 1 kWH of biodiesel
         # $/kwh
-        self.cost_details[NaturalOil.name] = list(
-            self.resources_prices[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details[
-                'efficiency'])
+        self.cost_details[NaturalOil.name] = list(self.resources_prices[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs'] )
 
         # Cost of sodium hydroxyde for 1 kWH of biodiesel
         # $/kwh
         # as potassium hydroxide can also be used, the price of the catalyst is the average of
         # potassium hydroxide and sodium hydroxide price
+
+        # before we used to do an average of sodium
         catalyst_price = (self.resources_prices[SodiumHydroxide.name] +
                           self.resources_prices[PotassiumHydroxide.name]) / 2
-        self.cost_details[SodiumHydroxide.name] = list(
-            catalyst_price * self.cost_details[f'{SodiumHydroxide.name}_needs'] / self.cost_details['efficiency'])
+        self.cost_details[SodiumHydroxide.name] = list(catalyst_price * self.cost_details[f'{SodiumHydroxide.name}_needs'])
 
         # Cost of 1kg of water for 1 kWH of biodiesel
         # $/kWh
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'] / self.cost_details[
-                'efficiency'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'])
 
 
     def compute_cost_of_other_energies_usage(self):
@@ -145,26 +141,21 @@ class Transesterification(BioDieselTechno):
         self.consumption_detailed[f'{SodiumHydroxide.name} ({self.mass_unit})'] = self.cost_details[
                                                                                       f'{SodiumHydroxide.name}_needs'] * \
                                                                                   self.production_detailed[
-                                                                                      f'{BioDiesel.name} ({self.product_energy_unit})'] / \
-                                                                                  self.cost_details[
-                                                                                      'efficiency']  # in kWH
+                                                                                      f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
         naturaloil_data = NaturalOil.data_energy_dict
         naturaloil_calorific_value = naturaloil_data['calorific_value']
         self.consumption_detailed[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                            f'{NaturalOil.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{BioDiesel.name} ({self.product_energy_unit})'] * \
-                                                                                       naturaloil_calorific_value / \
-                                                                                       self.cost_details['efficiency']
+                                                                                       naturaloil_calorific_value
 
         self.consumption_detailed[f'{Methanol.name} ({self.mass_unit})'] = self.cost_details[f'{Methanol.name}_needs'] * \
                                                                            self.production_detailed[
-                                                                               f'{BioDiesel.name} ({self.product_energy_unit})'] / \
-                                                                           self.cost_details['efficiency']  # in kWH
+                                                                               f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
                                                                         self.production_detailed[
-                                                                            f'{BioDiesel.name} ({self.product_energy_unit})'] / \
-                                                                        self.cost_details['efficiency']  # in kWH
+                                                                            f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

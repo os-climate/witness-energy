@@ -29,19 +29,17 @@ class CoElectrolysis(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs()
+        self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
 
         # need in kwh to produce 1kwh of syngas
-        self.cost_details['water_needs'] = self.get_theoretical_water_needs()
+        self.cost_details['water_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
-                                           / self.cost_details['efficiency'])
+        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
-                                             / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
@@ -92,11 +90,10 @@ class CoElectrolysis(SyngasTechno):
         '''
 
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                               self.cost_details['CO2_needs'] / \
-                                               self.cost_details['efficiency']
+                                               self.cost_details['CO2_needs']
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs'] / self.cost_details['efficiency']
+                                            self.cost_details['water_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']
@@ -176,21 +173,18 @@ class CoElectrolysis(SyngasTechno):
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
                                                                                 self.production_detailed[
-                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                self.cost_details['efficiency']
+                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
                                                                         self.production_detailed[
-                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                        self.cost_details['efficiency']
+                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = \
             self.cost_details['elec_needs'] * \
             self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # self.consumption[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-        #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-        #      self.cost_details['efficiency']
+        #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
     def get_h2o_production(self):
         """
