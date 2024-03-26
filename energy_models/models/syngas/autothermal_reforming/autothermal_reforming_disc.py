@@ -39,7 +39,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'AutothermalReforming'
+    techno_name = GlossaryEnergy.AutothermalReforming
     lifetime = 15
     construction_delay = 3  # years
     # 'reaction': '2CH4 + CO2 + O2 = 3H2 + 3CO + H2O',

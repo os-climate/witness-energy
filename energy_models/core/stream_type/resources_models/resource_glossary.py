@@ -160,3 +160,27 @@ class ResourceGlossary:
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
         'Coal': Coal, 'Oil': Oil, 'Copper': Copper, 'Platinum': Platinum,
     }
+
+    TechnoResourceUsedDict = {
+        "Transesterification": [MethanolResource, NaturalOilResource, SodiumHydroxideResource, WaterResource],
+        "AnaerobicDigestion": [WetBiomassResource],
+        "Amine": [AmineResource],
+        "CalciumPotassium": [CalciumResource, PotassiumResource],
+        "CoalGen": [WaterResource],
+        "Nuclear": [UraniumResource, WaterResource],
+        "OilGen": [WaterResource],
+        "BiomassFermentation": [WaterResource],
+        "ElectrolysisAWE": [WaterResource],
+        "ElectrolysisPEM": [WaterResource, PlatinumResource],
+        "ElectrolysisSOEC": [WaterResource],
+        "Refinery": [OilResource],
+        "FossilGas": [NaturalGasResource],
+        "Methanation": [CO2Resource],
+        "CO2Hydrogenation": [WaterResource],
+        "CoalExtraction": [CoalResource],
+        "AuthothermalReforming": [CO2Resource, OxygenResource],
+        "CoElectrolysis" : [CO2Resource, WaterResource],
+        "Pyrolysis": [WoodResource],
+        "RWGS": [CO2Resource],
+        "SMR": [WaterResource],
+    }

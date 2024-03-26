@@ -44,7 +44,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-fan fa-fw',
         'version': '',
     }
-    techno_name = 'WindOffshore'
+    techno_name = GlossaryEnergy.WindOffshore
     lifetime = 30  # ATB NREL 2020
     construction_delay = 3  # ATB NREL 2020
 

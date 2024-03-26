@@ -40,7 +40,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HeatPumpMediumHeat'
+    techno_name = GlossaryEnergy.HeatPumpMediumHeat
     energy_name = mediumtemperatureheat.name
 
     lifetime = 25  # years # https://www.energy.gov/energysaver/heat-pump-systems

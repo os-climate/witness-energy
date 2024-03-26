@@ -43,7 +43,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-solar-panel fa-fw',
         'version': '',
     }
-    techno_name = 'SolarPv'
+    techno_name = GlossaryEnergy.SolarPv
     lifetime = 25  # IRENA, EOLES model
     construction_delay = 1
     # Source for Opex percentage, Capex init, capacity factor:

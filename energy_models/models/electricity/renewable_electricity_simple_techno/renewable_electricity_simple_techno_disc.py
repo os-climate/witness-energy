@@ -46,7 +46,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     data_fuel_dict_default = Electricity.data_energy_dict
-    techno_name = 'RenewableElectricitySimpleTechno'
+    techno_name = GlossaryEnergy.RenewableElectricitySimpleTechno
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).

@@ -43,7 +43,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-temperature-high fa-fw',
         'version': '',
     }
-    techno_name = 'Geothermal'
+    techno_name = GlossaryEnergy.Geothermal
     # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.
     # Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.
     # Publications Office of the European Union, Luxemburgo.

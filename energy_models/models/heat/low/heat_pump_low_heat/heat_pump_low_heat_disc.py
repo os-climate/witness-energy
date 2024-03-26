@@ -40,7 +40,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HeatPumpLowHeat'
+    techno_name = GlossaryEnergy.HeatPumpLowHeat
     energy_name = lowtemperatureheat.name
 
     lifetime = 25  # years

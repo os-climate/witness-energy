@@ -40,7 +40,7 @@ class DepletedOilGasDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-gas-pump fa-fw',
         'version': '',
     }
-    techno_name = 'DepletedOilGas'
+    techno_name = GlossaryEnergy.DepletedOilGas
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

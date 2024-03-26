@@ -46,7 +46,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    techno_name = 'FossilSimpleTechno'
+    techno_name = GlossaryEnergy.FossilSimpleTechno
     lifetime = 25
     construction_delay = 3
 

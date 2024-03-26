@@ -42,7 +42,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-atom fa-fw',
         'version': '',
     }
-    techno_name = 'Nuclear'
+    techno_name = GlossaryEnergy.Nuclear
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).

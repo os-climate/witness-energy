@@ -46,7 +46,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'BiomassFired'
+    techno_name = GlossaryEnergy.BiomassFired
     lifetime = 25  # Value for CHP units
     construction_delay = 2  # years
 

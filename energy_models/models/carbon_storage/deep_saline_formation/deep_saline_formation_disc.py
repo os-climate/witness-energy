@@ -40,7 +40,7 @@ class DeepSalineFormationDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-water fa-fw',
         'version': '',
     }
-    techno_name = 'DeepSalineFormation'
+    techno_name = GlossaryEnergy.DeepSalineFormation
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

@@ -43,7 +43,7 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-water fa-fw',
         'version': '',
     }
-    techno_name = 'Hydropower'
+    techno_name = GlossaryEnergy.Hydropower
     lifetime = 50
     construction_delay = 3
     techno_infos_dict_default = {'type': 'electricity_creation',

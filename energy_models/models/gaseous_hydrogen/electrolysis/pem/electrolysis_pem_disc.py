@@ -44,7 +44,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         'icon': 'fas fa-hospital-symbol fa-fw',
         'version': '',
     }
-    techno_name = 'Electrolysis.PEM'
+    techno_name = GlossaryEnergy.ElectrolysisPEM
     # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY
     # https://www.fch.europa.eu/news/launch-refhyne-worlds-largest-electrolysis-plant-rhineland-refinery

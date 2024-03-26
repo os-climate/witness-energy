@@ -41,7 +41,7 @@ class NaturalGasBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'NaturalGasBoilerHighHeat'
+    techno_name = GlossaryEnergy.NaturalGasBoilerHighHeat
     energy_name = hightemperatureheat.name
 
     # Conversions

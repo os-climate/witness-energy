@@ -42,7 +42,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         'icon': 'fas fa-hospital-symbol fa-fw',
         'version': '',
     }
-    techno_name = 'PlasmaCracking'
+    techno_name = GlossaryEnergy.PlasmaCracking
     lifetime = 25
     construction_delay = 2
     techno_infos_dict_default = {'reaction': 'CH4 = C + 2H2',

@@ -43,7 +43,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'CombinedCycleGasTurbine'
+    techno_name = GlossaryEnergy.CombinedCycleGasTurbine
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
     construction_delay = 2  # years
     # Taud, R., Karg, J. and O�Leary, D., 1999.

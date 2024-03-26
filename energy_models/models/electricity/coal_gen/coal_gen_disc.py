@@ -45,7 +45,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-industry fa-fw',
         'version': '',
     }
-    techno_name = 'CoalGen'
+    techno_name = GlossaryEnergy.CoalGen
     lifetime = 46
     # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.
     # Quantifying operational lifetimes for coal power plants under the Paris

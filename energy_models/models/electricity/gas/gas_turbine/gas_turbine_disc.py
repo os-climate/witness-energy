@@ -44,7 +44,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'GasTurbine'
+    techno_name = GlossaryEnergy.GasTurbine
     lifetime = 30  # Source U.S. Energy Information Administration 2020
     construction_delay = 2  # years #Lazard
     # Taud, R., Karg, J. and O�Leary, D., 1999.

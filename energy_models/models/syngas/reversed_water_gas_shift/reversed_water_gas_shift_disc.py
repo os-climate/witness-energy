@@ -40,7 +40,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'ReversedWaterGasShift'
+    techno_name = GlossaryEnergy.ReversedWaterGasShift
     lifetime = 20
     construction_delay = 2
     techno_infos_dict_default = {'maturity': 5,

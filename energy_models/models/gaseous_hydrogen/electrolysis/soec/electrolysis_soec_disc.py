@@ -41,7 +41,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
         'icon': 'fas fa-hospital-symbol fa-fw',
         'version': '',
     }
-    techno_name = 'Electrolysis.SOEC'
+    techno_name = GlossaryEnergy.ElectrolysisSOEC
     # Haldor Topsoe, 2021
     # Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production
     # https://blog.topsoe.com/haldor-topsoe-to-build-large-scale-soec-electrolyzer-manufacturing-facility-to-meet-customer-needs-for-green-hydrogen-production

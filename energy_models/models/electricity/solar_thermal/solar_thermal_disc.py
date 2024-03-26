@@ -45,7 +45,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-solar-panel fa-fw',
         'version': '',
     }
-    techno_name = 'SolarThermal'
+    techno_name = GlossaryEnergy.SolarThermal
     lifetime = 25  # JRC, IRENA, SolarPACES
     construction_delay = 3  # JRC, ATB NREL, database https://solarpaces.nrel.gov/
     techno_infos_dict_default = {'maturity': 0,

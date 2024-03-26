@@ -45,7 +45,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'WaterGasShift'
+    techno_name = GlossaryEnergy.WaterGasShift
     # Giuliano, A., Freda, C. and Catizzone, E., 2020.
     # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections.
     # Bioengineering, 7(3), p.70.

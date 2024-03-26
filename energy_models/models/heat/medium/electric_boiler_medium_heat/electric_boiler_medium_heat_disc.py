@@ -40,7 +40,7 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'ElectricBoilerMediumHeat'
+    techno_name = GlossaryEnergy.ElectricBoilerMediumHeat
     energy_name = mediumtemperatureheat.name
 
     # Heat Producer [Online]

@@ -44,7 +44,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
         'icon': 'fas fa-hospital-symbol fa-fw',
         'version': '',
     }
-    techno_name = 'Electrolysis.AWE'
+    techno_name = GlossaryEnergy.ElectrolysisAWE
     construction_delay = 1  # year
     # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019.
     # Advances in alkaline water electrolyzers: A review.

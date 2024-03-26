@@ -44,7 +44,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     # Eighteen percent of the world�s forests are now located within
     # protected areas
 
-    techno_name = 'Reforestation'
+    techno_name = GlossaryEnergy.Reforestation
     lifetime = 150
     construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 0,
