@@ -24,6 +24,7 @@ from climateeconomics.core.core_resources.resource_mix.resource_mix import Resou
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -92,7 +93,9 @@ class TechnoDiscipline(SoSWrapp):
         'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction
+    }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
     DESC_OUT = {
@@ -138,7 +141,7 @@ class TechnoDiscipline(SoSWrapp):
         dynamic_inputs = {}
         dynamic_outputs = {}
         if self.get_data_in() is not None:
-            self.update_default_dataframes_with_years()
+            self.update_default_values()
 
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -169,10 +172,16 @@ class TechnoDiscipline(SoSWrapp):
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
-    def update_default_dataframes_with_years(self):
+    def update_default_values(self):
         '''
         Update all default dataframes with years 
         '''
+        if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
+            resource_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
+            if resource_used_for_prod is None:
+                resource_used_for_prod = ResourceGlossary.TechnoResourceUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoResourceUsedDict else []
+                self.set_dynamic_default_values({GlossaryEnergy.ResourcesUsedForProductionValue: resource_used_for_prod})
+
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
             if year_start is not None and year_end is not None:
