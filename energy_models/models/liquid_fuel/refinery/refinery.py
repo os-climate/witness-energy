@@ -28,7 +28,7 @@ from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_m
 
 
 class Refinery(LiquidFuelTechno):
-    OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
+    OIL_RESOURCE_NAME = ResourceGlossary.OilResource
     # corresponds to crude oil price divided by efficiency TO BE MODIFIED
     oil_extraction_capex = 44.0 / 0.89
 

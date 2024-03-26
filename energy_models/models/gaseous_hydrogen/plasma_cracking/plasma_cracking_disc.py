@@ -271,7 +271,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         dhydro_prod_dinvest = self.dprod_dinvest * \
                               scaling_factor_invest_level  # / scaling_factor_techno_production
-        dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{ResourceGlossary.Carbon['name']} (Mt)"] * \
+        dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{ResourceGlossary.CarbonResource} (Mt)"] * \
                                scaling_factor_invest_level  # / scaling_factor_techno_production
 
         if (dhydro_prod_dinvest is not None) & (dcarbon_prod_dinvest is not None):
@@ -340,15 +340,15 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             dhydro_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
                 0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
 
-        if GlossaryEnergy.electricity in self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"].keys():
-            dcarbon_prod_dratio_elec = self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"][
+        if GlossaryEnergy.electricity in self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"].keys():
+            dcarbon_prod_dratio_elec = self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"][
                                            GlossaryEnergy.electricity] * \
                                        scaling_factor_invest_level  # / scaling_factor_techno_production
         else:
             dcarbon_prod_dratio_elec = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
                 0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
-        if GlossaryEnergy.methane in self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"].keys():
-            dcarbon_prod_dratio_meth = self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"][GlossaryEnergy.methane] * \
+        if GlossaryEnergy.methane in self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"].keys():
+            dcarbon_prod_dratio_meth = self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"][GlossaryEnergy.methane] * \
                                        scaling_factor_invest_level  # / scaling_factor_techno_production
         else:
             dcarbon_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[

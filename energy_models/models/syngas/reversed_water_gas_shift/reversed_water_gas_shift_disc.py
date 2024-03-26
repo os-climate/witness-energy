@@ -228,7 +228,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f"{ResourceGlossary.Water['name']} (Mt)"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoProductionValue, f"{ResourceGlossary.WaterResource} (Mt)"), ('syngas_ratio',),
             dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dcons_electricity_dsyngas_ratio(

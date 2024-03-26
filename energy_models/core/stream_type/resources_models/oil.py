@@ -19,7 +19,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class CrudeOil(BaseStream):
-    name = ResourceGlossary.CrudeOil['name']
+    name = ResourceGlossary.CrudeOilResource
     data_energy_dict = {'reference': 'engineeringtoolbox',
                         'maturity': 5,
                         'WACC': 0.1,

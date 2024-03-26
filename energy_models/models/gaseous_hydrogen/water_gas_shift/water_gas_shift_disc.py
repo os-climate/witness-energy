@@ -189,10 +189,10 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         dwater_dsyngas_ratio = np.identity(len(
             self.techno_model.years)) * dwater_needs_dsyngas_ratio * self.techno_model.resources_prices[
-                                   ResourceGlossary.Water['name']].to_numpy() / eff_new_axis
+                                   ResourceGlossary.WaterResource].to_numpy() / eff_new_axis
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, ResourceGlossary.Water['name']), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoDetailedPricesValue, ResourceGlossary.WaterResource), ('syngas_ratio',),
             dwater_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(
@@ -328,13 +328,13 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                         np.newaxis] / scaling_factor_techno_consumption,
             production_energy * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f"{ResourceGlossary.Water['name']} (Mt)"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionValue, f"{ResourceGlossary.WaterResource} (Mt)"), ('syngas_ratio',),
             dwater_consumption_dsyngas_ratio / 100.0)
         dwater_consumption_woratio_dsyngas_ratio = self.techno_model.compute_dwater_consumption_dsyngas_ratio(
             dwater_needs_dsyngas_ratio, dprodenergy_dsyngas_ratio / scaling_factor_techno_consumption,
                                         production_energy_woratio * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f"{ResourceGlossary.Water['name']} (Mt)"),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f"{ResourceGlossary.WaterResource} (Mt)"),
             ('syngas_ratio',), dwater_consumption_woratio_dsyngas_ratio / 100.0)
 
         ###################################

@@ -36,11 +36,11 @@ class CalciumPotassium(CCTechno):
 
     def compute_cost_of_resources_usage(self):
         self.cost_details['potassium'] = list(
-            self.resources_prices[ResourceGlossary.Potassium['name']] * self.cost_details['potassium_needs']
+            self.resources_prices[ResourceGlossary.PotassiumResource] * self.cost_details['potassium_needs']
             )
 
         self.cost_details['calcium'] = list(
-            self.resources_prices[ResourceGlossary.Calcium['name']] * self.cost_details['calcium_needs']
+            self.resources_prices[ResourceGlossary.CalciumResource] * self.cost_details['calcium_needs']
         )
 
     def compute_cost_of_other_energies_usage(self):
@@ -74,16 +74,16 @@ class CalciumPotassium(CCTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
             'elec_needs']
 
-        self.carbon_intensity[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[
-                                                                        ResourceGlossary.Potassium['name']] * \
+        self.carbon_intensity[ResourceGlossary.PotassiumResource] = self.resources_CO2_emissions[
+                                                                        ResourceGlossary.PotassiumResource] * \
                                                                     self.cost_details['potassium_needs']
 
-        self.carbon_intensity[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[
-                                                                      ResourceGlossary.Calcium['name']] * \
+        self.carbon_intensity[ResourceGlossary.CalciumResource] = self.resources_CO2_emissions[
+                                                                      ResourceGlossary.CalciumResource] * \
                                                                   self.cost_details['calcium_needs']
 
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            ResourceGlossary.Potassium['name']] + self.carbon_intensity[ResourceGlossary.Calcium['name']]
+            ResourceGlossary.PotassiumResource] + self.carbon_intensity[ResourceGlossary.CalciumResource]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -105,8 +105,8 @@ class CalciumPotassium(CCTechno):
         potassium_needs = self.compute_potassium_need()
         efficiency = self.techno_infos_dict[GlossaryEnergy.EnergyEfficiency]
         return {
-            ResourceGlossary.Calcium['name']: np.identity(len(self.years)) * calcium_needs / efficiency,
-            ResourceGlossary.Potassium['name']: np.identity(len(self.years)) * potassium_needs / efficiency,
+            ResourceGlossary.CalciumResource: np.identity(len(self.years)) * calcium_needs / efficiency,
+            ResourceGlossary.PotassiumResource: np.identity(len(self.years)) * potassium_needs / efficiency,
         }
 
     def compute_consumption_and_production(self):

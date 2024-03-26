@@ -47,7 +47,7 @@ def get_static_prices(years):
                        kind='linear', fill_value='extrapolate')
 
     resources_prices_default_dict = {GlossaryEnergy.Years: years,
-                                     ResourceGlossary.GlossaryDict['CO2']['name']: func(years)}
+                                     ResourceGlossary.CO2Resource: func(years)}
 
     resources_prices_default_dict.update(
         {ResourceGlossary.GlossaryDict[resource]['name']: ResourceGlossary.GlossaryDict[resource]['price'] for resource

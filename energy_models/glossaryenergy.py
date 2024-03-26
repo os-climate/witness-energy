@@ -104,6 +104,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
+    ResourcesUsedForProductionValue = "Resources used for production"
+    ResourcesUsedForProduction = {
+        "var_name": ResourcesUsedForProductionValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+    }
+    ResourcesTechnoDict = {
+        #"Transesterification": [Resources]
+    }
+
+
     CCSTechnoInvest = {
         "type": "dataframe",
         "unit": "G$",

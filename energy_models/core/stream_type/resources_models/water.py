@@ -18,7 +18,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class Water(BaseStream):
-    name = ResourceGlossary.Water['name']
+    name = ResourceGlossary.WaterResource
     data_energy_dict = {'reference': '',
                         'maturity': 5,
                         'density': 997.0,

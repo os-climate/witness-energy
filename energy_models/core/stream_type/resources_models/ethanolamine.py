@@ -18,7 +18,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class EthanolAmine(BaseStream):
-    name = ResourceGlossary.EthanolAmine['name']
+    name = ResourceGlossary.EthanolAmineResource
     data_energy_dict = {'chemical_formula': 'HOCH2CH2NH2',
                         'maturity': 5,
                         # 1.0117 g/cm3

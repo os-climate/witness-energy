@@ -39,8 +39,8 @@ class Pyrolysis(SyngasTechno):
     def compute_cost_of_resources_usage(self):
 
         # Cost of wood for 1 kWh of syngas
-        self.cost_details[ResourceGlossary.Wood['name']] = list(
-            self.resources_prices[ResourceGlossary.Wood['name']] * self.cost_details['wood_needs'])
+        self.cost_details[ResourceGlossary.WoodResource] = list(
+            self.resources_prices[ResourceGlossary.WoodResource] * self.cost_details['wood_needs'])
 
     def compute_other_primary_energy_costs(self):
         """
@@ -52,7 +52,7 @@ class Pyrolysis(SyngasTechno):
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
 
-        return self.cost_details[ResourceGlossary.Wood['name']]
+        return self.cost_details[ResourceGlossary.WoodResource]
 
     def compute_consumption_and_production(self):
         """
@@ -91,11 +91,11 @@ class Pyrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_intensity[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[
-                                                                   ResourceGlossary.Wood['name']] * \
+        self.carbon_intensity[ResourceGlossary.WoodResource] = self.resources_CO2_emissions[
+                                                                   ResourceGlossary.WoodResource] * \
                                                                self.cost_details['wood_needs']
 
-        return self.carbon_intensity[ResourceGlossary.Wood['name']]
+        return self.carbon_intensity[ResourceGlossary.WoodResource]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -110,4 +110,4 @@ class Pyrolysis(SyngasTechno):
         syngas_kg = 1.0 * self.techno_infos_dict['syngas_yield']
         syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
         wood_needs = 1 / syngas_kwh
-        return {ResourceGlossary.Wood['name']: np.identity(len(self.years)) * wood_needs}
+        return {ResourceGlossary.WoodResource: np.identity(len(self.years)) * wood_needs}

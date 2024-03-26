@@ -18,7 +18,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class Oxygen(BaseStream):
-    name = ResourceGlossary.Oxygen['name']
+    name = ResourceGlossary.OxygenResource
     data_energy_dict = {
         'maturity': 10,
         'WACC': 0.1,

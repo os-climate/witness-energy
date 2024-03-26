@@ -26,7 +26,7 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class CoalGen(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
     def compute_resources_needs(self):
         # need in kg/kWh

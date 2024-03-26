@@ -31,7 +31,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
     """
 
-    PLATINUM_RESOURCE_NAME = ResourceGlossary.Platinum['name']
+    PLATINUM_RESOURCE_NAME = ResourceGlossary.PlatinumResource
 
     def compute_resources_needs(self):
         self.cost_details['water_needs'] = self.get_water_needs()

@@ -26,7 +26,7 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 
 
 class CoalExtraction(SolidFuelTechno):
-    COAL_RESOURCE_NAME = ResourceGlossary.Coal['name']
+    COAL_RESOURCE_NAME = ResourceGlossary.CoalResource
 
     def __init__(self, name):
         super().__init__(name)

@@ -24,8 +24,8 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class Nuclear(ElectricityTechno):
-    URANIUM_RESOURCE_NAME = ResourceGlossary.Uranium['name']
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    URANIUM_RESOURCE_NAME = ResourceGlossary.UraniumResource
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()

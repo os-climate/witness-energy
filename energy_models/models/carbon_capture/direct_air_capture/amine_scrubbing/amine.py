@@ -39,7 +39,7 @@ class Amine(CCTechno):
         self.cost_details['amine_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
-        self.cost_details[ResourceGlossary.Amine['name']] = list(self.resources_prices[ResourceGlossary.Amine['name']] * self.cost_details['amine_needs'])
+        self.cost_details[ResourceGlossary.AmineResource] = list(self.resources_prices[ResourceGlossary.AmineResource] * self.cost_details['amine_needs'])
 
     def compute_other_primary_energy_costs(self):
         """
@@ -51,7 +51,7 @@ class Amine(CCTechno):
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
 
-        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']] + \
+        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.AmineResource] + \
                self.cost_details[Methane.name]
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -64,11 +64,11 @@ class Amine(CCTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
             'elec_needs']
 
-        self.carbon_intensity[ResourceGlossary.Amine['name']] = self.resources_CO2_emissions[
-                                                                    ResourceGlossary.Amine['name']] * \
+        self.carbon_intensity[ResourceGlossary.AmineResource] = self.resources_CO2_emissions[
+                                                                    ResourceGlossary.AmineResource] * \
                                                                 self.cost_details['amine_needs']
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            ResourceGlossary.Amine['name']] - 1.0
+            ResourceGlossary.AmineResource] - 1.0
 
     def grad_price_vs_energy_price(self):
         '''
@@ -87,7 +87,7 @@ class Amine(CCTechno):
         '''
         amine_needs = self.compute_amine_need()
         efficiency = self.configure_efficiency()
-        return {ResourceGlossary.Amine['name']: np.identity(len(self.years)) * amine_needs / efficiency,
+        return {ResourceGlossary.AmineResource: np.identity(len(self.years)) * amine_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):

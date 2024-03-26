@@ -24,7 +24,7 @@ from energy_models.core.techno_type.base_techno_models.methane_techno import Met
 
 
 class FossilGas(MethaneTechno):
-    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
+    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh

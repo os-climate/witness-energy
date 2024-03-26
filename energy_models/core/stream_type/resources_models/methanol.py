@@ -20,7 +20,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 class Methanol(BaseStream):
     """Methanol, also known as methyl alcohol amongst other names, is a chemical with the formula CH3OH (a methyl group linked to a hydroxyl group, often abbreviated MeOH).
     It is a light, volatile, colourless, flammable liquid with a distinctive alcoholic odour similar to that of ethanol."""
-    name = ResourceGlossary.Methanol['name']
+    name = ResourceGlossary.MethanolResource
     data_energy_dict = {
         'reference': 'https://en.wikipedia.org/wiki/Methanol',
         'chemical_formula': 'CH3OH',

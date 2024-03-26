@@ -635,10 +635,10 @@ class FischerTropsch(LiquidFuelTechno):
                          self.cost_details['efficiency']
 
         self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[
-                                              ResourceGlossary.CO2['name']] * co2_needs
+                                              ResourceGlossary.CO2Resource] * co2_needs
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[
-                                                ResourceGlossary.Water['name']] * water_needs
+                                                ResourceGlossary.WaterResource] * water_needs
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Syngas.name] + \
                self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]

@@ -49,7 +49,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
         # price of 1 kg of wood
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.Wood['name']: len(years) * [130]
+            {GlossaryEnergy.Years: years, ResourceGlossary.WoodResource: len(years) * [130]
              })
 
         self.invest_level = pd.DataFrame(

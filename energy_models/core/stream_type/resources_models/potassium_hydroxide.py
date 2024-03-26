@@ -20,7 +20,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 class PotassiumHydroxide(BaseStream):
     """Potassium hydroxide is an inorganic compound with the formula KOH, and is commonly called caustic potash.
     It is used as a catalyst in the transesterifiction process to produce biodiesel"""
-    name = ResourceGlossary.PotassiumHydroxide['name']
+    name = ResourceGlossary.PotassiumHydroxideResource
     data_energy_dict = {'reference': 'https://en.wikipedia.org/wiki/Potassium_hydroxide',
                         'chemical_formula': 'KOH',
                         'maturity': 5,

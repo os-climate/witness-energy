@@ -18,7 +18,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class Dioxygen(BaseStream):
-    name = ResourceGlossary.Dioxygen['name']
+    name = ResourceGlossary.DioxygenResource
     data_energy_dict = {'maturity': 5,
                         'density': 1.314,
                         'density_unit': 'kg/m^3',

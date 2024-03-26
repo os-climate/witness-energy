@@ -18,7 +18,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class CalciumOxide(BaseStream):
-    name = ResourceGlossary.CalciumOxyde['name']
+    name = ResourceGlossary.CalciumOxydeResource
     data_energy_dict = {'chemical_formula': 'KOH',
                         'maturity': 5,
 

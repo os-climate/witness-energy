@@ -24,27 +24,31 @@ from energy_models.core.techno_type.base_techno_models.biogas_techno import BioG
 
 
 class AnaerobicDigestion(BioGasTechno):
-
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
-        # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(
-            self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
-            )
 
-    def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
 
+    def compute_resources_needs(self):
         # Wet biomass_needs are in kg/m^3
         self.cost_details['wet_biomass_needs'] = self.techno_infos_dict['wet_biomass_needs'] / \
                                                  self.data_energy_dict['density'] / \
                                                  self.data_energy_dict['calorific_value']
 
+    def compute_cost_of_resources_usage(self):
+        # Cost of biomass is in $/kg
+        self.cost_details[WetBiomass.name] = list(
+            self.resources_prices[ResourceGlossary.WetBiomassResource] * self.cost_details['wet_biomass_needs']
+        )
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
 
@@ -66,7 +70,7 @@ class AnaerobicDigestion(BioGasTechno):
         wet_biomass_needs = self.techno_infos_dict['wet_biomass_needs'] / \
                             self.data_energy_dict['density'] / \
                             self.data_energy_dict['calorific_value']
-        return {ResourceGlossary.WetBiomass['name']: np.identity(len(self.years)) * wet_biomass_needs}
+        return {ResourceGlossary.WetBiomassResource: np.identity(len(self.years)) * wet_biomass_needs}
 
     def compute_consumption_and_production(self):
         """
@@ -89,7 +93,7 @@ class AnaerobicDigestion(BioGasTechno):
         '''
 
         self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[
-                                                          ResourceGlossary.WetBiomass['name']] * \
+                                                          ResourceGlossary.WetBiomassResource] * \
                                                       self.cost_details['wet_biomass_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
