@@ -307,45 +307,46 @@ class TechnoDiscipline(SoSWrapp):
         if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
             for ratio_name in inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue].columns:
                 if ratio_name != GlossaryEnergy.Years:
-                    production_woratio = self.techno_model.production_woratio[
-                        f'{self.energy_name} ({self.techno_model.product_energy_unit})']
-                    self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
-                        production_woratio, ratio_name=ratio_name,
-                        dapplied_ratio_dratio=dapplied_ratio_dratio)
+                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_energy_unit})']
+
+                    self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(production_woratio,
+                                                                                           ratio_name=ratio_name,
+                                                                                           dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.TechnoProductionValue,
-                         f'{self.energy_name} ({self.techno_model.product_energy_unit})'),
+                        (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'),
                         (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
-                        self.dprod_dratio[ratio_name] / 100.)
+                        self.dprod_dratio[ratio_name])
+
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.land_use_woratio[
-                            f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
+                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'],
+                        ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.LandUseRequiredValue, f'{self.techno_model.name} (Gha)'),
                         (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
-                        dland_use_dratio / 100.)
+                        dland_use_dratio)
         if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
             for ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns:
                 if ratio_name != GlossaryEnergy.Years:
-                    production_woratio = self.techno_model.production_woratio[
-                        f'{self.energy_name} ({self.techno_model.product_energy_unit})']
+                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_energy_unit})']
+
                     self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
-                        production_woratio, ratio_name=ratio_name,
+                        production_woratio,
+                        ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.TechnoProductionValue,
-                         f'{self.energy_name} ({self.techno_model.product_energy_unit})'),
+                        (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'),
                         ('all_resource_ratio_usable_demand', ratio_name),
-                        self.dprod_dratio[ratio_name] / 100.)
+                        self.dprod_dratio[ratio_name])
+
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.land_use_woratio[
-                            f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
+                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'],
+                        ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.LandUseRequiredValue, f'{self.techno_model.name} (Gha)'),
                         ('all_resource_ratio_usable_demand', ratio_name),
-                        dland_use_dratio / 100.)
+                        dland_use_dratio)
 
         # Compute jacobian for other energy production/consumption
         self.dprod_column_dinvest = {}
@@ -390,27 +391,28 @@ class TechnoDiscipline(SoSWrapp):
                     if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             GlossaryEnergy.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryEnergy.Years:
-                            production_woratio = self.techno_model.production_woratio[
-                                column]
+                            production_woratio = self.techno_model.production_woratio[column]
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
-                                production_woratio, ratio_name=ratio_name,
+                                production_woratio,
+                                ratio_name=ratio_name,
                                 dapplied_ratio_dratio=dapplied_ratio_dratio)
                             self.set_partial_derivative_for_other_types(
                                 (GlossaryEnergy.TechnoProductionValue, column),
                                 (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
-                                self.dprod_column_dratio[column][ratio_name] / 100.)
+                                self.dprod_column_dratio[column][ratio_name])
+
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
-                            production_woratio = self.techno_model.production_woratio[
-                                column]
+                            production_woratio = self.techno_model.production_woratio[column]
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
-                                production_woratio, ratio_name=ratio_name,
+                                production_woratio,
+                                ratio_name=ratio_name,
                                 dapplied_ratio_dratio=dapplied_ratio_dratio)
                             self.set_partial_derivative_for_other_types(
                                 (GlossaryEnergy.TechnoProductionValue, column),
                                 ('all_resource_ratio_usable_demand', ratio_name),
-                                self.dprod_column_dratio[column][ratio_name] / 100.)
+                                self.dprod_column_dratio[column][ratio_name])
         self.techno_consumption_derivative = {}
         for column in consumption:
 
@@ -486,7 +488,7 @@ class TechnoDiscipline(SoSWrapp):
                                 self.set_partial_derivative_for_other_types(
                                     (GlossaryEnergy.TechnoConsumptionValue, column),
                                     (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
-                                    dprod_dratio / 100.)
+                                    dprod_dratio)
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
@@ -494,15 +496,15 @@ class TechnoDiscipline(SoSWrapp):
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
-                                consumption_woratio = self.techno_model.consumption_woratio[
-                                    column]
+                                consumption_woratio = self.techno_model.consumption_woratio[column]
                                 dprod_dratio = self.techno_model.compute_dprod_dratio(
-                                    consumption_woratio, ratio_name=ratio_name,
+                                    consumption_woratio,
+                                    ratio_name=ratio_name,
                                     dapplied_ratio_dratio=dapplied_ratio_dratio)
                                 self.set_partial_derivative_for_other_types(
                                     (GlossaryEnergy.TechnoConsumptionValue, column),
                                     ('all_resource_ratio_usable_demand', ratio_name),
-                                    dprod_dratio / 100.)
+                                    dprod_dratio)
 
         dland_use_dinvest = self.techno_model.compute_dlanduse_dinvest()
         derivate_land_use = dland_use_dinvest.copy()
@@ -539,14 +541,13 @@ class TechnoDiscipline(SoSWrapp):
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios()
         for ratio_name in ratio_df.columns:
             if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
-                if ratio_name in inputs_dict[
-                    GlossaryEnergy.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryEnergy.Years:
+                if ratio_name in inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryEnergy.Years:
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
                         ('non_use_capital', self.techno_model.name),
                         (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
-                        np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
+                        dnon_use_capital_dratio)
             if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                 if ratio_name in inputs_dict[
                     'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
@@ -555,7 +556,7 @@ class TechnoDiscipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types(
                         ('non_use_capital', self.techno_model.name),
                         ('all_resource_ratio_usable_demand', ratio_name),
-                        np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
+                        dnon_use_capital_dratio)
 
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
