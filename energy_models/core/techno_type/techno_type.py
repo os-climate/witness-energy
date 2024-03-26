@@ -424,7 +424,7 @@ class TechnoType:
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
                     self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
         dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return dnon_use_capital_dratio
+        return np.diag(dnon_use_capital_dratio / 100.)
 
     def compute_price(self):
         """
@@ -1323,7 +1323,7 @@ class TechnoType:
                 if ratio_name in col and ratio_name != GlossaryEnergy.Years:
                     dprod_dratio = (np.identity(len(self.years)) * prod.values) * \
                                    dapplied_ratio_dratio[ratio_name]
-        return dprod_dratio
+        return dprod_dratio / 100.
 
     def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
         '''
@@ -1605,3 +1605,10 @@ class TechnoType:
         self.production_woratio = copy(self.production_detailed)
         self.consumption_woratio = copy(self.consumption_detailed)
         self.land_use_woratio = copy(self.land_use)
+
+    def d_non_use_capital_d_utilisation_ratio(self):
+
+        d_non_use_capital_d_utilisation_ratio = np.diag(
+            - self.techno_capital * self.applied_ratio / 100.
+        )
+        return d_non_use_capital_d_utilisation_ratio
