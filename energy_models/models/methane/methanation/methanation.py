@@ -62,10 +62,9 @@ class Methanation(MethaneTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            GaseousHydrogen.name: np.identity(
-                len(self.years)) * hydrogen_needs / efficiency[:, np.newaxis]
+            GaseousHydrogen.name: np.diag(hydrogen_needs / efficiency)
         }
 
     def grad_price_vs_resources_price(self):
@@ -73,10 +72,9 @@ class Methanation(MethaneTechno):
         Compute the gradient of global price vs resources prices
         '''
         co2_needs = self.get_theoretical_co2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            CO2.name: np.identity(
-                len(self.years)) * co2_needs / efficiency[:, np.newaxis]
+            CO2.name: np.diag(co2_needs / efficiency)
         }
 
     def compute_consumption_and_production(self):

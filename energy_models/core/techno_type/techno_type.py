@@ -88,7 +88,7 @@ class TechnoType:
         self.carbon_intensity = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
-        self.crf = None
+        self.capital_recovery_factor = None
         self.nb_years_amort_capex = 10
         self.scaling_factor_invest_level = None
         self.scaling_factor_techno_production = None
@@ -441,18 +441,13 @@ class TechnoType:
         self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
             self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
-        self.crf = self.compute_crf(self.techno_infos_dict)
+        self.capital_recovery_factor = self.compute_capital_recovery_factor(self.techno_infos_dict)
 
-        # Compute efficiency evolving in time or not
-        if self.techno_infos_dict['techno_evo_eff'] == 'yes':
-            self.cost_details['efficiency'] = self.configure_efficiency()
-        else:
-            self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
+        self.compute_efficiency()
 
         self.prices = self.prices.loc[self.prices[GlossaryEnergy.Years]
                                       <= self.cost_details[GlossaryEnergy.Years].max()]
-        self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
-        )
+        self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
         # self.cost_details['CAPEX_heat_tech'] = self.cost_details[f'Capex_{self.name}'] * self.crf
@@ -460,7 +455,7 @@ class TechnoType:
         # self.cost_details[GlossaryEnergy.CO2TaxesValue] = self.cost_details[f'Capex_{self.name}'] * self.crf
 
         self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
-                                                    (self.crf + self.techno_infos_dict['Opex_percentage'])
+                                                    (self.capital_recovery_factor + self.techno_infos_dict['Opex_percentage'])
 
         if 'decommissioning_percentage' in self.techno_infos_dict:
             self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'] * \
@@ -518,7 +513,7 @@ class TechnoType:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
 
         # CAPEX in ($/MWh)
-        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.capital_recovery_factor
 
         # Running OPEX in ($/MWh)
         self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
@@ -754,15 +749,17 @@ class TechnoType:
 
         return expo_factor
 
-    def compute_crf(self, data_config):
+    def compute_capital_recovery_factor(self, data_config):
         """
         Compute annuity factor with the Weighted averaged cost of capital
         and the lifetime of the selected solution
         """
-        crf = (data_config['WACC'] * (1.0 + data_config['WACC']) ** data_config['lifetime']) / \
-              ((1.0 + data_config['WACC']) ** data_config['lifetime'] - 1.0)
+        wacc = self.techno_infos_dict['WACC']
+        lifetime = self.techno_infos_dict['lifetime']
 
-        return crf
+        capital_recovery_factor = (wacc * (1.0 + wacc) ** lifetime) / ((1.0 + wacc) ** lifetime - 1.0)
+
+        return capital_recovery_factor
 
     def check_capex_unity(self, data_tocheck):
         """
@@ -953,8 +950,9 @@ class TechnoType:
 
         return fuel_need
 
-    def configure_efficiency(self):
-        if 'techno_evo_time' in self.techno_infos_dict:
+    def compute_efficiency(self):
+        # Compute efficiency evolving in time or not
+        if 'techno_evo_time' in self.techno_infos_dict and self.techno_infos_dict['techno_evo_eff'] == 'yes':
             middle_evolution_year = self.techno_infos_dict['techno_evo_time']
             efficiency_max = self.techno_infos_dict['efficiency_max']
             efficiency_ini = self.techno_infos_dict['efficiency']
@@ -963,18 +961,16 @@ class TechnoType:
             if 'efficiency evolution slope' in self.techno_infos_dict:
                 efficiency_slope = self.techno_infos_dict['efficiency evolution slope']
 
-            years = self.years - \
-                    self.years[0]
+            years = self.years - self.years[0]
 
             eff_list = [self.sigmoid_function(
                 i, efficiency_max, efficiency_ini, middle_evolution_year, efficiency_slope) for i in years]
             efficiency = pd.Series(eff_list)
 
         else:
-            efficiency_ini = self.techno_infos_dict['efficiency']
-            years = self.years - \
-                    self.years[0]
-            efficiency = efficiency_ini * np.ones(len(years))
+            efficiency = self.techno_infos_dict['efficiency'] * np.ones_like(self.years)
+
+        self.cost_details['efficiency'] = efficiency
         return efficiency
 
     def sigmoid_function(self, x, eff_max, eff_ini, l, slope):
@@ -1607,8 +1603,8 @@ class TechnoType:
         self.land_use_woratio = copy(self.land_use)
 
     def d_non_use_capital_d_utilisation_ratio(self):
-
+        techno_capital = self.techno_capital[GlossaryEnergy.Capital].values
         d_non_use_capital_d_utilisation_ratio = np.diag(
-            - self.techno_capital * self.applied_ratio / 100.
+            - techno_capital * self.applied_ratio['applied_ratio'] / 100.
         )
         return d_non_use_capital_d_utilisation_ratio

@@ -130,8 +130,8 @@ class CoalGen(ElectricityTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         solid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.configure_efficiency()
-        return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency.values[:, np.newaxis]}
+        efficiency = self.compute_efficiency()
+        return {SolidFuel.name: np.diag(solid_fuel_needs / efficiency)}
 
     def grad_price_vs_resources_price(self):
         '''

@@ -71,11 +71,9 @@ class AutothermalReforming(SyngasTechno):
         # CO2_needs = self.get_theoretical_CO2_needs()
         methane_needs = self.get_theoretical_CH4_needs()
         # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency[:, np.newaxis]
-
+            Methane.name: np.diag(methane_needs / efficiency)
         }
 
     def grad_price_vs_resources_price(self):
@@ -84,8 +82,8 @@ class AutothermalReforming(SyngasTechno):
         '''
         co2_needs = self.get_theoretical_CO2_needs()
         oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.configure_efficiency()
-        init_grad = np.identity(len(self.years)) / efficiency[:, np.newaxis]
+        efficiency = self.compute_efficiency()
+        init_grad = np.diag(1 / efficiency)
         return {
             CO2.name: init_grad * co2_needs,
             Oxygen.name: init_grad * oxygen_needs,
@@ -113,9 +111,9 @@ class AutothermalReforming(SyngasTechno):
         Compute the gradient of global CO2 emissions vs resources CO2 emissions
         '''
         co2_needs = self.get_theoretical_CO2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency.values[:, np.newaxis],
+            CO2.name: np.diag(co2_needs / efficiency),
         }
 
     def get_theoretical_CH4_needs(self):

@@ -213,8 +213,7 @@ class TechnoDiscipline(SoSWrapp):
         self.techno_model.compute(inputs_dict)
 
         outputs_dict = {GlossaryEnergy.TechnoDetailedPricesValue: self.techno_model.cost_details,
-                        GlossaryEnergy.TechnoPricesValue: self.techno_model.cost_details[
-                            [GlossaryEnergy.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
+                        GlossaryEnergy.TechnoPricesValue: self.techno_model.cost_details[[GlossaryEnergy.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
                         GlossaryEnergy.TechnoDetailedConsumptionValue: self.techno_model.consumption_detailed,
                         GlossaryEnergy.TechnoConsumptionValue: self.techno_model.consumption,
                         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: self.techno_model.consumption_woratio,
@@ -223,8 +222,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.TechnoProductionWithoutRatioValue: self.techno_model.production_woratio,
                         'age_distrib_production': self.techno_model.age_distrib_prod_df,
                         'mean_age_production': self.techno_model.mean_age_df,
-                        GlossaryEnergy.CO2EmissionsValue: self.techno_model.carbon_intensity[
-                            [GlossaryEnergy.Years, self.techno_name]],
+                        GlossaryEnergy.CO2EmissionsValue: self.techno_model.carbon_intensity[[GlossaryEnergy.Years, self.techno_name]],
                         'CO2_emissions_detailed': self.techno_model.carbon_intensity,
                         GlossaryEnergy.LandUseRequiredValue: self.techno_model.land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
@@ -256,14 +254,11 @@ class TechnoDiscipline(SoSWrapp):
                                                                       GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
                                                                   self.techno_model.techno_infos_dict)
 
-        crf = self.techno_model.compute_crf(
-            self.techno_model.techno_infos_dict)
-        dfactory_dinvest = dcapex_dinvest * \
-                           (crf + self.techno_model.techno_infos_dict['Opex_percentage'])
+        crf = self.techno_model.compute_capital_recovery_factor(self.techno_model.techno_infos_dict)
+        dfactory_dinvest = dcapex_dinvest * (crf + self.techno_model.techno_infos_dict['Opex_percentage'])
 
         margin = self.techno_model.margin[GlossaryEnergy.MarginValue].values
-        self.dprice_dinvest = dfactory_dinvest * np.split(margin, len(margin)) / \
-                              100.0
+        self.dprice_dinvest = dfactory_dinvest * np.split(margin, len(margin)) / 100.0
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),
@@ -274,8 +269,7 @@ class TechnoDiscipline(SoSWrapp):
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             self.dprice_dinvest * scaling_factor_invest_level)
 
-        capex = outputs_dict[GlossaryEnergy.TechnoDetailedPricesValue][
-            f'Capex_{self.techno_name}'].values
+        capex = outputs_dict[GlossaryEnergy.TechnoDetailedPricesValue][f'Capex_{self.techno_name}'].values
         # Compute jacobian for enegy_type production
         self.dprod_dinvest = self.techno_model.compute_dprod_dinvest(
             capex, invest_level[GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
@@ -422,18 +416,12 @@ class TechnoDiscipline(SoSWrapp):
                                 self.dprod_column_dratio[column][ratio_name])
         self.techno_consumption_derivative = {}
         for column in consumption:
-
             if column != GlossaryEnergy.Years:
-
                 if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]:
-                    var_cons = (consumption[column] /
-                                installed_power['new_power_production']).fillna(
-                        0)
+                    var_cons = (consumption[column] / installed_power['new_power_production']).fillna(0)
                     self.dcons_column_dinvest = self.dpower_dinvest.copy()
                 else:
-                    var_cons = (consumption[column] /
-                                production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
-                        0)
+                    var_cons = (consumption[column] /production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(0)
                     self.dcons_column_dinvest = self.dprod_dinvest.copy()
 
                 for line in range(len(years)):
@@ -531,14 +519,10 @@ class TechnoDiscipline(SoSWrapp):
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             dnon_use_capital_dinvest)
 
-        techno_capital = self.get_sosdisc_outputs(GlossaryEnergy.TechnoCapitalValue)[GlossaryEnergy.Capital].values
-        d_non_use_capital_d_utilisation_ratio = np.diag(
-            - techno_capital * applied_ratio / 100.
-        )
         self.set_partial_derivative_for_other_types(
             ('non_use_capital', self.techno_model.name),
             (GlossaryEnergy.UtilisationRatioValue, GlossaryEnergy.UtilisationRatioValue),
-            d_non_use_capital_d_utilisation_ratio)
+            self.techno_model.d_non_use_capital_d_utilisation_ratio())
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),

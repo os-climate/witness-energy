@@ -86,7 +86,7 @@ class Amine(CCTechno):
         Compute the gradient of global price vs resources prices
         '''
         amine_needs = self.compute_amine_need()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {ResourceGlossary.AmineResource: np.identity(len(self.years)) * amine_needs / efficiency,
                 }
 

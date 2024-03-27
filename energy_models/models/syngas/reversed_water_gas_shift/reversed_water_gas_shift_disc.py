@@ -203,7 +203,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         dco2_emissions_dsyngas_ratio = self.techno_model.compute_dco2_emissions_dsyngas_ratio()
         dcons_syngas_dsyngas_ratio = self.techno_model.compute_dco2_emissions_syngas_dsyngas_ratio()
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dco2_emissions_electricity_dsyngas_ratio()
-        efficiency = self.techno_model.configure_efficiency()
+        efficiency = self.techno_model.compute_efficiency()
 
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
             'scaling_factor_techno_consumption')

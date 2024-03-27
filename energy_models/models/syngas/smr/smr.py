@@ -71,10 +71,9 @@ class SMR(SyngasTechno):
         methane_needs = self.get_theoretical_CH4_needs()
         elec_needs = self.get_electricity_needs()
         # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency[:, np.newaxis],
+            Methane.name: np.diag(methane_needs / efficiency),
             Electricity.name: np.identity(
                 len(self.years)) * elec_needs
         }
@@ -84,10 +83,9 @@ class SMR(SyngasTechno):
         Compute the gradient of global price vs resources prices 
         '''
         water_needs = self.get_theoretical_water_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
+            Water.name: np.diag(water_needs / efficiency),
         }
 
     def compute_CO2_emissions_from_input_resources(self):

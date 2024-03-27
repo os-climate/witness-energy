@@ -61,7 +61,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''
         elec_needs = self.get_electricity_needs()
         methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 Methane.name: np.identity(len(self.years)) * methane_needs / efficiency.values}
 

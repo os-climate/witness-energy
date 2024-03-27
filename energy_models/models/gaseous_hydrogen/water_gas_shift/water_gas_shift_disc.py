@@ -178,7 +178,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             (GlossaryEnergy.TechnoDetailedPricesValue, GlossaryEnergy.electricity), ('syngas_ratio',),
             np.zeros(len(self.techno_model.years), ))
 
-        efficiency = self.techno_model.configure_efficiency()
+        efficiency = self.techno_model.compute_efficiency()
         eff_new_axis = efficiency[:, np.newaxis]
         dsyngas_dsyngas_ratio = np.identity(len(
             self.techno_model.years)) * dsyngas_needs_dsyngas_ratio * self.techno_model.prices[

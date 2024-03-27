@@ -131,8 +131,8 @@ class OilGen(ElectricityTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         liquid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.configure_efficiency()
-        return {LiquidFuel.name: np.identity(len(self.years)) * liquid_fuel_needs / efficiency[:, np.newaxis]}
+        efficiency = self.compute_efficiency()
+        return {LiquidFuel.name: np.diag(liquid_fuel_needs / efficiency)}
 
     def grad_price_vs_resources_price(self):
         '''

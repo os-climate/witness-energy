@@ -62,7 +62,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        hydrogen_needs = 1.0 / self.configure_efficiency()
+        hydrogen_needs = 1.0 / self.compute_efficiency()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs,

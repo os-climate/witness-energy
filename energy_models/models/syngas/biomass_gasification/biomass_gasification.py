@@ -63,11 +63,12 @@ class BiomassGasification(SyngasTechno):
         elec_needs = self.get_electricity_needs()
         biomass_needs = self.techno_infos_dict['biomass_demand']
 
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
 
         # methane_needs = self.get_theoretical_methane_needs()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.identity(len(self.years)) * biomass_needs / efficiency[:, np.newaxis]}
+                BiomassDry.name: np.diag(biomass_needs / efficiency)
+                }
 
     def compute_consumption_and_production(self):
         """

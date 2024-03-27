@@ -86,7 +86,7 @@ class FlueGasTechno(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        efficency = self.configure_efficiency()
+        efficency = self.compute_efficiency()
 
         return {Renewable.name: np.identity(
             len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(

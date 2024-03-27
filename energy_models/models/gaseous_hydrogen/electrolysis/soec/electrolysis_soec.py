@@ -62,7 +62,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         Compute the gradient of global price vs energy prices 
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
 
         return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
                 }
