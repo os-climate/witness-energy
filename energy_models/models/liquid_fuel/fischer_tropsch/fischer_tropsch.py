@@ -271,8 +271,7 @@ class FischerTropsch(LiquidFuelTechno):
         """
         Compute primary costs which depends on the technology 
         """
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
         self.compute_specifif_costs_of_technos()
 
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name]

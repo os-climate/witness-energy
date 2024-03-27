@@ -56,10 +56,7 @@ class AutothermalReforming(SyngasTechno):
         """
         Compute primary costs to produce 1kg of CH4
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Oxygen.name] + self.cost_details[Methane.name] + self.cost_details[CO2.name]
 

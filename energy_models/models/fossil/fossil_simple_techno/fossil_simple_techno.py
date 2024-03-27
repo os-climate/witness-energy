@@ -31,11 +31,7 @@ class FossilSimpleTechno(FossilTechno):
         """
         Compute primary costs which depends on the technology
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
-        self.compute_specifif_costs_of_technos()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details['resource_price']
 
