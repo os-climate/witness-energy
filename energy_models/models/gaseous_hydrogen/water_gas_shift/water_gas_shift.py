@@ -499,22 +499,25 @@ class WGS(GaseousHydrogenTechno):
 
         return dprice_dsyngas
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
-
-        self.syngas_ratio = self.syngas_ratio[0:len(
-            self.cost_details[GlossaryEnergy.Years])]
+    def compute_resources_needs(self):
         # need in kg
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
+
+    def compute_cost_of_resources_usage(self):
+        # Cost of water for 1 kWH of H2
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
+                                             / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        # in kwh of fuel by kwh of H2
+        self.syngas_ratio = self.syngas_ratio[0:len(
+            self.cost_details[GlossaryEnergy.Years])]
 
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(
             self.syngas_ratio)
 
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
@@ -522,9 +525,15 @@ class WGS(GaseousHydrogenTechno):
         self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
                                               / self.cost_details['efficiency'])
 
-        # Cost of water for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
-                                             / self.cost_details['efficiency'])
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[Water.name]
 
