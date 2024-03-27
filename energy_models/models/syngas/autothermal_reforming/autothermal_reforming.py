@@ -84,16 +84,6 @@ class AutothermalReforming(SyngasTechno):
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
             Oxygen.name]
 
-    def grad_co2_emissions_vs_resources_co2_emissions(self):
-        '''
-        Compute the gradient of global CO2 emissions vs resources CO2 emissions
-        '''
-        co2_needs = self.get_theoretical_CO2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            CO2.name: np.diag(co2_needs / efficiency),
-        }
-
     def get_theoretical_CH4_needs(self):
         """
         Get methane needs in kWh CH4 /kWh syngas

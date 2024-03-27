@@ -1628,3 +1628,12 @@ class TechnoType:
             - techno_capital * self.applied_ratio['applied_ratio'] / 100.
         )
         return d_non_use_capital_d_utilisation_ratio
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        return {
+            resource: np.diag(self.cost_details[f"{resource}_needs"].values) for resource in self.resources_used_for_production
+        }
+

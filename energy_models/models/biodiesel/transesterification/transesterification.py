@@ -118,16 +118,6 @@ class Transesterification(BioDieselTechno):
                self.carbon_intensity[NaturalOil.name] + self.carbon_intensity[Methanol.name] + \
                self.carbon_intensity[Water.name]
 
-    def grad_co2_emissions_vs_resources_co2_emissions(self):
-        '''
-        Compute the gradient of global CO2 emissions vs resources CO2 emissions
-        '''
-        return {
-            NaturalOil.name: np.diag(self.cost_details[f"{NaturalOil.name}_needs"].values),
-            Methanol.name: np.diag(self.cost_details[f"{Methanol.name}_needs"].values),
-            SodiumHydroxide.name: np.diag(self.cost_details[f"{SodiumHydroxide.name}_needs"].values),
-            Water.name: np.diag(self.cost_details[f"{Water.name}_needs"].values),
-        }
 
     def get_theoretical_methanol_needs(self):
         """

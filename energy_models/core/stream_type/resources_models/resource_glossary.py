@@ -185,5 +185,6 @@ class ResourceGlossary:
         GlossaryEnergy.WaterGasShift: [WaterResource],
         GlossaryEnergy.ReversedWaterGasShift: [CO2Resource],
         "SMR": [WaterResource],
-        GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource]
+        GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource],
+        GlossaryEnergy.HefaDeoxygenation: [NaturalOilResource],
     }
