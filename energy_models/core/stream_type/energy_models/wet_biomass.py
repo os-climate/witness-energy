@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2024/02/01 Copyright 2024 Capgemini
+Modifications on 2024/02/01-2024/03/27 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -33,7 +33,7 @@ class WetBiomass(EnergyType):
                         'CO2_per_use': 2.86,
                         'CO2_per_use_unit': 'kg/kg',
                         # Whittaker, C., Macalpine, W., Yates, N.E. et al.
-                        # Dry Matter Losses and Methane Emissions During Wood Chip Storage: the Impact on Full Life Cycle Greenhouse Gas Savings of Short Rotation Coppice Willow for Heat. Bioenerg. Res. 9, 820�835 (2016). https://doi.org/10.1007/s12155-016-9728-0
+                        # Dry Matter Losses and Methane Emissions During Wood Chip Storage: the Impact on Full Life Cycle Greenhouse Gas Savings of Short Rotation Coppice Willow for Heat. Bioenerg. Res. 9, 820-835 (2016). https://doi.org/10.1007/s12155-016-9728-0
                         # Bond, T. C., et al 2013.
                         # Bounding the role of black carbon in the climate system: A scientific assessment.
                         # Journal of geophysical research: Atmospheres,

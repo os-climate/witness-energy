@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'Opex_percentage': 0.01,
                                  # Giuliano, A., Freda, C. and Catizzone, E., 2020.
-                                 # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water�gas shift and carbon capture sections.
+                                 # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water-gas shift and carbon capture sections.
                                  # Bioengineering, 7(3), p.70.
                                  # Giuliano2020 : the elec demand is more or
                                  # less constant 6.6 MW for WGS over the 8.6
