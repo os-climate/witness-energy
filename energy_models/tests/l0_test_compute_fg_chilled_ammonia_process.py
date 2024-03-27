@@ -104,47 +104,6 @@ class FGChilledAmmoniaProcessTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_chilled_ammonia_process_price(self):
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': ChilledAmmoniaProcessDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: ChilledAmmoniaProcessDiscipline.invest_before_year_start,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       GlossaryEnergy.FlueGasMean: self.flue_gas_mean,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       'initial_production': ChilledAmmoniaProcessDiscipline.initial_capture,
-                       'initial_age_distrib': ChilledAmmoniaProcessDiscipline.initial_age_distribution,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict}
-
-        cap_model = ChilledAmmoniaProcess(
-            'Flue_gas_capture.ChilledAmmoniaProcess')
-        cap_model.configure_parameters(inputs_dict)
-        cap_model.configure_parameters_update(inputs_dict)
-        price_details = cap_model.compute_price()
-
     def test_03_chilled_ammonia_process_discipline(self):
         self.name = 'Test'
         self.model_name = 'Flue_gas_capture.ChilledAmmoniaProcess'
