@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,41 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-from os.path import join, dirname
+
+import warnings
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
+import scipy.interpolate as sc
 
-from energy_models.core.investments.one_invest import OneInvest
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.methanol import Methanol
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
+    get_static_prices
+from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import CO2HydrogenationDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+
+warnings.filterwarnings("ignore")
 
 
-class TestOneInvest(unittest.TestCase):
+class OneInvestJacobianCase(AbstractJacobianUnittest):
     """
-    OneInvest test class
+    Methanol Fuel jacobian test class
     """
+
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_01_one_invest_analytic_grad,
+        ]
 
     def setUp(self):
         '''
@@ -38,7 +58,8 @@ class TestOneInvest(unittest.TestCase):
         self.y_e = GlossaryEnergy.YearEndDefault
         self.y_step = 1
         self.energy_list = [
-            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
+            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
+            GlossaryEnergy.methane]
 
         self.ccs_list = [
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
@@ -76,49 +97,19 @@ class TestOneInvest(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-    def test_01_one_invest_model(self):
-        scaling_factor_energy_investment = 100
-        inputs_dict = {GlossaryEnergy.YearStart: self.y_s,
-                       GlossaryEnergy.YearEnd: self.y_e,
-                       GlossaryEnergy.energy_list: self.energy_list,
-                       GlossaryEnergy.ccs_list: self.ccs_list,
-                       f'{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
-                       f'{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       f'{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                            f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
-                       f'{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
-                       GlossaryEnergy.invest_mix: self.energy_mix,
-                       GlossaryEnergy.EnergyInvestmentsValue: self.energy_investment,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       'is_dev': False}
-        one_invest_model = OneInvest()
-        all_invest_df = one_invest_model.compute(inputs_dict)
-        norm_mix = self.energy_mix[[
-            col for col in self.energy_mix if col != GlossaryEnergy.Years]].sum(axis=1)
+    def tearDown(self):
+        pass
 
-        for column in all_invest_df.columns:
-            if column != GlossaryEnergy.Years:
-                invest_techno = all_invest_df[column].values
-                invest_theory = self.energy_investment[
-                                    GlossaryEnergy.EnergyInvestmentsValue].values * self.energy_mix[
-                                    column] / norm_mix * scaling_factor_energy_investment
-
-                self.assertListEqual(np.round(invest_techno, 8).tolist(
-                ), np.round(invest_theory, 8).tolist())
-
-    def test_02_one_invest_disc(self):
-
+    def test_01_one_invest_analytic_grad(self):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    }
-
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline'
@@ -129,34 +120,47 @@ class TestOneInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
+        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
+                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
+                       f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
-                       f'{self.name}.{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore',
+                                                                                       'CoalGen'],
                        f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift',
-                                                                                    'Electrolysis.AWE'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                                              f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
-                                                                              'GeologicMineralization'],
+                       f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': [
+                           'WaterGasShift',
+                           'Electrolysis.AWE'],
+                       f'{self.name}.{GlossaryEnergy.carbon_capture}.technologies_list': [
+                           f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
+                           f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                       f'{self.name}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
+                                                                                          'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.energy_investment}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
         self.ee.execute()
 
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        # graph.to_plotly().show()
+        all_technos_list = [
+            f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_one_invest_{self.model_name}.pkl',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
+                            outputs=[
+                                f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                all_technos_list],
+                            )
+
+
+
 
 if '__main__' == __name__:
-    cls = TestOneInvest()
-    cls.setUp()
-    cls.test_01_one_invest_model()
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    pass
