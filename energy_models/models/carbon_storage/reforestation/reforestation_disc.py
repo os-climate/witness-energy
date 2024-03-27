@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     }
 
     # Reforestation is the cost of planting tree with no managing nor cutting
-    # Eighteen percent of the world�s forests are now located within
+    # Eighteen percent of the world's forests are now located within
     # protected areas
 
     techno_name = GlossaryEnergy.Reforestation

@@ -50,14 +50,13 @@ class Refinery(LiquidFuelTechno):
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
-        ) / self.data_energy_dict['calorific_value']
+        ) / self.data_energy_dict['calorific_value'] / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # resources price [$/t] since needs are in [kg/kWh] to have cost in
         # [$/t]*[kg/kWh]=[$/MWh]
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
-            self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] /
-            self.cost_details['efficiency'])
+            self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(
@@ -78,10 +77,7 @@ class Refinery(LiquidFuelTechno):
         Compute primary costs which depends on the technology 
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
@@ -105,7 +101,7 @@ class Refinery(LiquidFuelTechno):
         oil_needs = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'].values
         return {
             self.OIL_RESOURCE_NAME: np.identity(
-                len(self.years)) / self.cost_details['efficiency'].values * oil_needs,
+                len(self.years)) * oil_needs,
         }
 
     def compute_consumption_and_production(self):
@@ -186,7 +182,7 @@ class Refinery(LiquidFuelTechno):
 
         self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[self.OIL_RESOURCE_NAME] * \
                                                         self.cost_details[
-                                                            f'{self.OIL_RESOURCE_NAME}_needs'] / efficiency
+                                                            f'{self.OIL_RESOURCE_NAME}_needs']
 
         return self.carbon_intensity[Electricity.name] + \
             self.carbon_intensity[self.OIL_RESOURCE_NAME] + \

@@ -46,10 +46,7 @@ class Amine(CCTechno):
         Compute primary costs which depends on the technology 
 
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.AmineResource] + \
                self.cost_details[Methane.name]
@@ -86,7 +83,7 @@ class Amine(CCTechno):
         Compute the gradient of global price vs resources prices
         '''
         amine_needs = self.compute_amine_need()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {ResourceGlossary.AmineResource: np.identity(len(self.years)) * amine_needs / efficiency,
                 }
 

@@ -29,13 +29,11 @@ class SMR(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs']
-            / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
@@ -56,10 +54,7 @@ class SMR(SyngasTechno):
         """
         Compute primary costs to produce 1kg of syngas 
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[
             GlossaryEnergy.electricity]
@@ -73,10 +68,9 @@ class SMR(SyngasTechno):
         methane_needs = self.get_theoretical_CH4_needs()
         elec_needs = self.get_electricity_needs()
         # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            Methane.name: np.identity(
-                len(self.years)) * methane_needs / efficiency[:, np.newaxis],
+            Methane.name: np.diag(methane_needs / efficiency),
             Electricity.name: np.identity(
                 len(self.years)) * elec_needs
         }
@@ -86,10 +80,9 @@ class SMR(SyngasTechno):
         Compute the gradient of global price vs resources prices 
         '''
         water_needs = self.get_theoretical_water_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
+            Water.name: np.diag(water_needs / efficiency),
         }
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -106,8 +99,7 @@ class SMR(SyngasTechno):
                                                   self.cost_details['elec_needs']
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f'{Water.name}_needs'] / \
-                                            self.cost_details['efficiency']
+                                            self.cost_details[f'{Water.name}_needs']
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[Electricity.name] + \
             self.carbon_intensity[Water.name]

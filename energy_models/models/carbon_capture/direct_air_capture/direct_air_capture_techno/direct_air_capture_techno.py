@@ -41,10 +41,7 @@ class DirectAirCaptureTechno(CCTechno):
 
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 

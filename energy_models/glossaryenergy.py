@@ -108,12 +108,20 @@ class GlossaryEnergy(GlossaryWitnessCore):
     ResourcesUsedForProduction = {
         "var_name": ResourcesUsedForProductionValue,
         "type": "list",
+        #"structuring": True,
         "subtype_descriptor": {"list": "string"},
     }
-    ResourcesTechnoDict = {
-        #"Transesterification": [Resources]
-    }
 
+    CostOfResourceUsageValue = "cost_of_resources_usage"
+    CostOfResourceUsageDf = {
+        "var_name": CostOfResourceUsageValue,
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Cost of usage for each resource",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
+        }
+    }
 
     CCSTechnoInvest = {
         "type": "dataframe",

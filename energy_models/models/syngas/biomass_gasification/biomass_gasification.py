@@ -48,10 +48,7 @@ class BiomassGasification(SyngasTechno):
         Compute primary costs which depends on the technology 
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 
@@ -63,11 +60,12 @@ class BiomassGasification(SyngasTechno):
         elec_needs = self.get_electricity_needs()
         biomass_needs = self.techno_infos_dict['biomass_demand']
 
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
 
         # methane_needs = self.get_theoretical_methane_needs()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.identity(len(self.years)) * biomass_needs / efficiency[:, np.newaxis]}
+                BiomassDry.name: np.diag(biomass_needs / efficiency)
+                }
 
     def compute_consumption_and_production(self):
         """

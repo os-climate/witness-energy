@@ -82,49 +82,6 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_depleted_oil_gas_price(self):
-
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': DepletedOilGasDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: DepletedOilGasDiscipline.invest_before_year_start,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyPricesValue: pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            GlossaryEnergy.YearEndDefault + 1)}),
-                       'initial_production': DepletedOilGasDiscipline.initial_storage,
-                       'initial_age_distrib': DepletedOilGasDiscipline.initial_age_distribution,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonStorage.data_energy_dict,
-                       }
-
-        depleted_oil_gas_model = DepletedOilGas('DepletedOilGas')
-        depleted_oil_gas_model.configure_parameters(inputs_dict)
-        depleted_oil_gas_model.configure_parameters_update(inputs_dict)
-        price_details = depleted_oil_gas_model.compute_price()
-
     def test_03_depleted_oil_gas_discipline(self):
 
         self.name = 'Test'

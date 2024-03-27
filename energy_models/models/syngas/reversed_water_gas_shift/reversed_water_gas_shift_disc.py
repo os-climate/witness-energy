@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'Opex_percentage': 0.01,
                                  # Giuliano, A., Freda, C. and Catizzone, E., 2020.
-                                 # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water�gas shift and carbon capture sections.
+                                 # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water-gas shift and carbon capture sections.
                                  # Bioengineering, 7(3), p.70.
                                  # Giuliano2020 : the elec demand is more or
                                  # less constant 6.6 MW for WGS over the 8.6
@@ -183,7 +183,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         # now syngas is in % grad is divided by 100
         dprice_CO2 = self.techno_model.compute_dco2_needs_dsyngas_ratio()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'CO2_needs'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoDetailedPricesValue, f"{ResourceGlossary.CO2Resource}_needs"), ('syngas_ratio',),
             np.identity(len(years)) * dprice_CO2 / 100.0)
 
         #         self.set_partial_derivative_for_other_types(
@@ -203,7 +203,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         dco2_emissions_dsyngas_ratio = self.techno_model.compute_dco2_emissions_dsyngas_ratio()
         dcons_syngas_dsyngas_ratio = self.techno_model.compute_dco2_emissions_syngas_dsyngas_ratio()
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dco2_emissions_electricity_dsyngas_ratio()
-        efficiency = self.techno_model.configure_efficiency()
+        efficiency = self.techno_model.compute_efficiency()
 
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
             'scaling_factor_techno_consumption')

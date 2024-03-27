@@ -28,11 +28,10 @@ class Methanation(MethaneTechno):
 
     def compute_resources_needs(self):
         # in kg of CO2 for kWh of CH4
-        self.cost_details['dioxide_needs'] = self.get_theoretical_co2_needs()
+        self.cost_details[f'{CO2.name}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
     def compute_cost_of_resources_usage(self):
         # Cost of CO2 for 1 kg of CH4 (in kg), price is in $/kg
-        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
-                                           self.cost_details['efficiency'])
+        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details[f'{CO2.name}_needs'])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of H2 for 1 kg of CH4 (in kg), price is in $/kg
@@ -49,10 +48,7 @@ class Methanation(MethaneTechno):
         Compute primary costs to produce 1kg of CH4
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[GaseousHydrogen.name] + self.cost_details[CO2.name]
 
@@ -62,10 +58,9 @@ class Methanation(MethaneTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            GaseousHydrogen.name: np.identity(
-                len(self.years)) * hydrogen_needs / efficiency[:, np.newaxis]
+            GaseousHydrogen.name: np.diag(hydrogen_needs / efficiency)
         }
 
     def grad_price_vs_resources_price(self):
@@ -73,10 +68,9 @@ class Methanation(MethaneTechno):
         Compute the gradient of global price vs resources prices
         '''
         co2_needs = self.get_theoretical_co2_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {
-            CO2.name: np.identity(
-                len(self.years)) * co2_needs / efficiency[:, np.newaxis]
+            CO2.name: np.diag(co2_needs / efficiency)
         }
 
     def compute_consumption_and_production(self):
@@ -96,10 +90,9 @@ class Methanation(MethaneTechno):
                                                                        H2Oprod
 
         # Consumption
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['dioxide_needs'] * \
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f'{CO2.name}_needs'] * \
                                                                                 self.production_detailed[
-                                                                                    f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                self.cost_details['efficiency']
+                                                                                    f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                                 'hydrogen_needs'] * \
@@ -117,8 +110,7 @@ class Methanation(MethaneTechno):
                                                       self.cost_details['hydrogen_needs'] / \
                                                       self.cost_details['efficiency']
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                               self.cost_details['dioxide_needs'] / \
-                                               self.cost_details['efficiency']
+                                               self.cost_details[f'{CO2.name}_needs']
 
         return self.carbon_intensity[GaseousHydrogen.name] + self.carbon_intensity[f'{CO2.name}']
 

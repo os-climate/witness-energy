@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ class CCGasTPriceTestCase(unittest.TestCase):
 
         transport_cost = 11.0
         # It is noteworthy that the cost of transmission has generally been held (and can
-        # continue to be held)    within the �10-12/MWhr range despite transmission distances
+        # continue to be held)    within the 10-12/MWhr range despite transmission distances
         # increasing by almost an order of magnitude from an average of 20km for the
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
@@ -96,47 +96,6 @@ class CCGasTPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_ccgast_price(self):
-
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': CombinedCycleGasTurbineDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: CombinedCycleGasTurbineDiscipline.invest_before_year_start,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       'initial_production': CombinedCycleGasTurbineDiscipline.initial_production,
-                       'initial_age_distrib': CombinedCycleGasTurbineDiscipline.initial_age_distribution,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        model = GasElec('CombinedCycleGasTurbine')
-        model.configure_parameters(inputs_dict)
-        model.configure_parameters_update(inputs_dict)
-        price_details = model.compute_price()
 
     def test_03_ccgast_discipline(self):
 
