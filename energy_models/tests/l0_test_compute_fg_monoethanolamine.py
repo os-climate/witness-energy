@@ -105,48 +105,6 @@ class FGMonoEthanolAmineTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_monoethanolamine_price(self):
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': MonoEthanolAmineDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: MonoEthanolAmineDiscipline.invest_before_year_start,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       GlossaryEnergy.FlueGasMean: self.flue_gas_mean,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       'initial_production': MonoEthanolAmineDiscipline.initial_capture,
-                       'initial_age_distrib': MonoEthanolAmineDiscipline.initial_age_distribution,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict,
-                       }
-
-        monoethanolamine_model = MonoEthanolAmine(
-            'Flue_gas_capture.MonoEthanolAmine')
-        monoethanolamine_model.configure_parameters(inputs_dict)
-        monoethanolamine_model.configure_parameters_update(inputs_dict)
-        price_details = monoethanolamine_model.compute_price()
-
     def test_03_monoethanolamine_discipline(self):
         self.name = 'Test'
         self.model_name = 'Flue_gas_capture.MonoEthanolAmine'

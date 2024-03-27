@@ -30,13 +30,12 @@ class OilGen(ElectricityTechno):
 
     def compute_resources_needs(self):
         # need in kg/kWh
-        self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
+        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
     def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details['water_needs'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is
@@ -54,10 +53,7 @@ class OilGen(ElectricityTechno):
         """
         Compute primary costs which depends on the technology 
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[LiquidFuel.name] + self.cost_details[Water.name]
 
@@ -74,7 +70,7 @@ class OilGen(ElectricityTechno):
                                                                                            'liquid_fuel_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
                                                                         self.production_detailed[
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
@@ -122,7 +118,7 @@ class OilGen(ElectricityTechno):
         self.carbon_intensity[LiquidFuel.name] = self.energy_CO2_emissions[LiquidFuel.name] * \
                                                  self.cost_details['liquid_fuel_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
         return self.carbon_intensity[LiquidFuel.name] + self.carbon_intensity[Water.name]
 
@@ -132,8 +128,8 @@ class OilGen(ElectricityTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         liquid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.configure_efficiency()
-        return {LiquidFuel.name: np.identity(len(self.years)) * liquid_fuel_needs / efficiency[:, np.newaxis]}
+        efficiency = self.compute_efficiency()
+        return {LiquidFuel.name: np.diag(liquid_fuel_needs / efficiency)}
 
     def grad_price_vs_resources_price(self):
         '''

@@ -50,8 +50,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         """
         Compute primary costs which depends on the technology 
         """
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
 
         return self.cost_details[Electricity.name] + self.cost_details[GaseousHydrogen.name]
@@ -62,7 +61,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        hydrogen_needs = 1.0 / self.configure_efficiency()
+        hydrogen_needs = 1.0 / self.compute_efficiency()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs,

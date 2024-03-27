@@ -26,16 +26,4 @@ class LiquidFuelTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
 
-    @abstractmethod
-    def compute_other_primary_energy_costs(self):
-        '''
-        Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
-        '''
-
-    @abstractmethod
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get the theoretical CO2 production for a given technology,
-        Need to be overloaded in each technology model (example in SMR)
-        '''
-        return 0.0
+    

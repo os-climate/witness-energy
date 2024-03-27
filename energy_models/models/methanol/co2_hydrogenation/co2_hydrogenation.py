@@ -27,13 +27,12 @@ from energy_models.core.techno_type.base_techno_models.methanol_techno import Me
 class CO2Hydrogenation(MethanolTechno):
 
     def compute_resources_needs(self):
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         self.cost_details[Water.name] = \
             self.resources_prices[Water.name] * \
-            self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Water.name}_needs']
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[CarbonCapture.name] = \
@@ -62,10 +61,7 @@ class CO2Hydrogenation(MethanolTechno):
         """
         Compute primary costs to produce 1kWh of methanol
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[CarbonCapture.name] + self.cost_details[GaseousHydrogen.name] + \
                self.cost_details[Water.name] + self.cost_details[Electricity.name]
@@ -144,8 +140,7 @@ class CO2Hydrogenation(MethanolTechno):
 
         self.carbon_intensity[Water.name] = \
             self.resources_CO2_emissions[Water.name] * \
-            self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Water.name}_needs']
 
         return self.carbon_intensity[CarbonCapture.name] + self.carbon_intensity[GaseousHydrogen.name] + \
                self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]

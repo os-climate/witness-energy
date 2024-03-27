@@ -194,13 +194,6 @@ class CropEnergy(BiomassDryTechno):
                                  self.techno_infos_dict['residue_percentage_for_energy']
         return d_condo_dland_for_food
 
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get the theoretical CO2 production for a given technology,
-        Need to be overloaded in each technology model (example in SMR)
-        '''
-        return 0.0
-
     def compute_dlanduse_dinvest(self):
         """
         compute grad d_land_use / d_invest

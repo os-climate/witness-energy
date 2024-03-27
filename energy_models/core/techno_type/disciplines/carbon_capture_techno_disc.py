@@ -78,7 +78,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.InvestValue].values,
             inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
 
-        crf = self.techno_model.compute_crf(inputs_dict['techno_infos_dict'])
+        crf = self.techno_model.compute_capital_recovery_factor(inputs_dict['techno_infos_dict'])
         dfactory_dfluegas = dcapex_dfluegas * \
                             (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
 

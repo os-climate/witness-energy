@@ -45,8 +45,7 @@ class ElectricBoilerHighHeat(highheattechno):
         Compute primary costs to produce 1kWh of heat
         """
 
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Electricity.name]
 

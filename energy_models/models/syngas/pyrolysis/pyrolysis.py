@@ -34,23 +34,20 @@ class Pyrolysis(SyngasTechno):
         syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
 
         # wood needs in kg to produce 1kWh of syngas
-        self.cost_details['wood_needs'] = 1 / syngas_kwh
+        self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] = 1 / syngas_kwh
 
     def compute_cost_of_resources_usage(self):
 
         # Cost of wood for 1 kWh of syngas
         self.cost_details[ResourceGlossary.WoodResource] = list(
-            self.resources_prices[ResourceGlossary.WoodResource] * self.cost_details['wood_needs'])
+            self.resources_prices[ResourceGlossary.WoodResource] * self.cost_details[f"{ResourceGlossary.WoodResource}_needs"])
 
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[ResourceGlossary.WoodResource]
 
@@ -77,7 +74,7 @@ class Pyrolysis(SyngasTechno):
                                                                   self.techno_infos_dict['bio_oil_yield'] / \
                                                                   self.techno_infos_dict['syngas_yield']
 
-        self.consumption_detailed[f'wood ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
+        self.consumption_detailed[f'wood ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] * \
                                                                 self.production_detailed[
                                                                     f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
@@ -93,7 +90,7 @@ class Pyrolysis(SyngasTechno):
 
         self.carbon_intensity[ResourceGlossary.WoodResource] = self.resources_CO2_emissions[
                                                                    ResourceGlossary.WoodResource] * \
-                                                               self.cost_details['wood_needs']
+                                                               self.cost_details[f"{ResourceGlossary.WoodResource}_needs"]
 
         return self.carbon_intensity[ResourceGlossary.WoodResource]
 

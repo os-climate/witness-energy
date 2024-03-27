@@ -39,7 +39,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     Liquid Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -96,8 +96,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      'CoElectrolysis': 1.0,
                                      'BiomassGasification': 2.0
                                      }
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.syngas: 0.0,
+        self.energy_carbon_emissions = pd.DataFrame({
+            GlossaryEnergy.Years: years,
+            GlossaryEnergy.electricity: 0.0,
+            GlossaryEnergy.syngas: 0.0,
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,

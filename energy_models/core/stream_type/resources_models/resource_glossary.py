@@ -182,6 +182,7 @@ class ResourceGlossary:
         "AuthothermalReforming": [CO2Resource, OxygenResource],
         "CoElectrolysis" : [CO2Resource, WaterResource],
         "Pyrolysis": [WoodResource],
+        "WGS": [WaterResource],
         "RWGS": [CO2Resource],
         "SMR": [WaterResource],
     }

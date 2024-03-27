@@ -75,8 +75,7 @@ class FlueGasTechno(CCTechno):
         """
         Compute primary costs which depends on the technology
         """
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Renewable.name]
 
@@ -86,7 +85,7 @@ class FlueGasTechno(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        efficency = self.configure_efficiency()
+        efficency = self.compute_efficiency()
 
         return {Renewable.name: np.identity(
             len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(

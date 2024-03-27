@@ -49,8 +49,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         """
         Compute primary costs which depends on the technology
         """
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
 
@@ -61,7 +60,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''
         elec_needs = self.get_electricity_needs()
         methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 Methane.name: np.identity(len(self.years)) * methane_needs / efficiency.values}
 

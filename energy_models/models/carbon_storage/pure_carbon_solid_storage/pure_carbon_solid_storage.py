@@ -29,11 +29,10 @@ class PureCarbonSS(CSTechno):
         super().__init__(name)
         self.carbon_to_be_stored_constraint = None
 
-    def compute_crf(self, data_config):
+    def compute_capital_recovery_factor(self, data_config):
         return 1
 
-    def compute_other_primary_energy_costs(self):
-        return 0
+    
 
     def compute_consumption_and_production(self):
         """

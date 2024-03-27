@@ -50,10 +50,7 @@ class FossilGas(MethaneTechno):
         Compute primary costs to produce 1kg of CH4
         """
 
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_energies_needs()
-        self.compute_cost_of_other_energies_usage()
+        super().compute_other_primary_energy_costs()
 
         # cost to produce 1Kwh of methane
         return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]

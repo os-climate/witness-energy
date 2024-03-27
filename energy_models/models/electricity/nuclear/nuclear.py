@@ -29,14 +29,13 @@ class Nuclear(ElectricityTechno):
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
-        self.cost_details['water_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs()
         # self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'] = self.get_theoretical_copper_needs()
 
     def compute_cost_of_resources_usage(self):
         self.cost_details[self.URANIUM_RESOURCE_NAME] = list(self.resources_prices[self.URANIUM_RESOURCE_NAME] *
                                                              self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'])
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] *
-                                             self.cost_details['water_needs'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
         # self.cost_details[self.COPPER_RESOURCE_NAME] = list(self.resources_prices[self.COPPER_RESOURCE_NAME] *
         #                                             self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'])
 
@@ -108,7 +107,7 @@ class Nuclear(ElectricityTechno):
         self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
                                                             self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
         return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
 
@@ -253,7 +252,7 @@ class Nuclear(ElectricityTechno):
         '''
         water_needs = self.get_theoretical_water_needs()
         uranium_needs = self.get_theoretical_uranium_fuel_needs()
-        efficiency = self.configure_efficiency()
+        efficiency = self.compute_efficiency()
         
         return {
             Water.name: np.identity(len(self.years)) * water_needs,

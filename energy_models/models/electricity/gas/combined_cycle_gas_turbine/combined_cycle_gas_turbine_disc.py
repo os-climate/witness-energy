@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/06-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/06-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     techno_name = GlossaryEnergy.CombinedCycleGasTurbine
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
     construction_delay = 2  # years
-    # Taud, R., Karg, J. and O�Leary, D., 1999.
+    # Taud, R., Karg, J. and O'Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
     # https://documents1.worldbank.org/curated/en/640981468780885410/pdf/263500Energy0issues020.pdf
