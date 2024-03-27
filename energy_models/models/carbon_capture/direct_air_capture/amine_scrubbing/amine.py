@@ -36,10 +36,7 @@ class Amine(CCTechno):
         self.cost_details['heat_needs'] = self.get_heat_needs()
 
     def compute_resources_needs(self):
-        self.cost_details['amine_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
-
-    def compute_cost_of_resources_usage(self):
-        self.cost_details[ResourceGlossary.AmineResource] = list(self.resources_prices[ResourceGlossary.AmineResource] * self.cost_details['amine_needs'])
+        self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
     def compute_other_primary_energy_costs(self):
         """
@@ -47,8 +44,8 @@ class Amine(CCTechno):
 
         """
         super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.AmineResource] + \
+        a = 1
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.AmineResource] + \
                self.cost_details[Methane.name]
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -63,7 +60,7 @@ class Amine(CCTechno):
 
         self.carbon_intensity[ResourceGlossary.AmineResource] = self.resources_CO2_emissions[
                                                                     ResourceGlossary.AmineResource] * \
-                                                                self.cost_details['amine_needs']
+                                                                self.cost_details[f'{ResourceGlossary.AmineResource}_needs']
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
             ResourceGlossary.AmineResource] - 1.0
 
@@ -103,7 +100,7 @@ class Amine(CCTechno):
                                                                             self.production_detailed[
                                                                                 f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'amine ({self.mass_unit})'] = self.cost_details['amine_needs'] * \
+        self.consumption_detailed[f'amine ({self.mass_unit})'] = self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] * \
                                                                  self.production_detailed[
                                                                      f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
