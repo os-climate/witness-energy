@@ -25,10 +25,4 @@ class EthanolTechno(TechnoType):
         TechnoType.__init__(self, name)
         self.energy_name = Ethanol.name
 
-    @abstractmethod
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get the theoretical CO2 production for a given technology,
-        Need to be overloaded in each technology model (example in SMR)
-        '''
-        return 0.0
+    
