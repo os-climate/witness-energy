@@ -542,6 +542,13 @@ class TechnoType:
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+        self.compute_specifif_costs_of_technos()
+
+        return 0.0
 
     def is_invest_before_year(self, year):
         '''
