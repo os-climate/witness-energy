@@ -552,7 +552,7 @@ class TechnoType:
         self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
         if len(self.resources_used_for_production) > 0:
             pass
-            #assert all(self.cost_details[self.resources_used_for_production].values == self.cost_of_resources_usage[self.resources_used_for_production].values) # todo:  remove when old method is deleted
+            #assert (self.cost_details[self.resources_used_for_production].values - self.cost_of_resources_usage[self.resources_used_for_production].values).std() < 1e-16)# todo:  remove when old method is deleted
 
     @abstractmethod
     def compute_other_primary_energy_costs(self):
