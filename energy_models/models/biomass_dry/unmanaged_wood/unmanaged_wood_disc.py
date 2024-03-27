@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # average of 360 and 600 divided by 5
     wood_density_m3_per_ha = 96
 
-    # in litterature, average price of residue is 30-50�/t
-    # wood price is 100-200�/t => 26% between
+    # in litterature, average price of residue is 30-50$/t
+    # wood price is 100-200$/t => 26% between
     wood_residue_price_percent_dif = 0.34
 
     # 1,62% of managed wood is used for energy purpose

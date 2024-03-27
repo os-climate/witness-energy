@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 # Rajendran, K., Gallach�ir, B.�. and Murphy, J.D., 2019.
+                                 # Rajendran, K., Gallachóir, B.ó. and Murphy, J.D., 2019.
                                  # The Role of Incentivising Biomethane in
                                  # Ireland Using Anaerobic Digestion.
                                  'elec_demand': 0.25,  # Mean of technos

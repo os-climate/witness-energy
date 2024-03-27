@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     # Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019.
     # Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process.
     # Energy, 185, pp.1063-1075.
-    # Rosenfeld, D.C., B�hm, H., Lindorfer, J. and Lehner, M., 2020.
+    # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.
     # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
