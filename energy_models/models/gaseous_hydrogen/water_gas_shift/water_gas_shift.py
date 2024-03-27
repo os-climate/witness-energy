@@ -501,12 +501,11 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_resources_needs(self):
         # need in kg
-        self.cost_details['water_needs'] = self.get_theoretical_water_needs()
+        self.cost_details['water_needs'] = self.get_theoretical_water_needs()/ self.cost_details['efficiency']
 
     def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
-                                             / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
@@ -611,11 +610,8 @@ class WGS(GaseousHydrogenTechno):
                                                                                        f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                    self.cost_details[
                                                                                        'efficiency']  # in kWH
-        th_water_needs = self.get_theoretical_water_needs()
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
-                                                                        self.production_detailed[
-                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                        self.cost_details['efficiency']  # in kg
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']   # in kg
 
         # production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
@@ -635,8 +631,7 @@ class WGS(GaseousHydrogenTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs'] / \
-                                            self.cost_details['efficiency']
+                                            self.cost_details['water_needs']
 
         return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + \
             self.carbon_intensity[Water.name]
