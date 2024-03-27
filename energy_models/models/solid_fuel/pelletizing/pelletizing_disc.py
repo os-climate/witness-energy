@@ -38,7 +38,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'Pelletizing'
+    techno_name = GlossaryEnergy.Pelletizing
     # Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019.
     # Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process.
     # Energy, 185, pp.1063-1075.

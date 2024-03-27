@@ -299,7 +299,7 @@ class RWGS(SyngasTechno):
 
         dco2_price_dsyngas_ratio = np.identity(len(
             self.years)) * dco2_needs_dsyngas_ratio * self.resources_prices[
-                                       ResourceGlossary.CO2['name']].to_numpy() / efficiency[:, np.newaxis]
+                                       ResourceGlossary.CO2Resource].to_numpy() / efficiency[:, np.newaxis]
 
         return dco2_price_dsyngas_ratio
 
@@ -395,32 +395,39 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio - self.syngas_ratio)
         return elec_demand
 
+    def compute_resources_needs(self):
+        self.cost_details['CO2_needs'] = self.get_theoretical_co2_needs()
+
+    def compute_cost_of_resources_usage(self):
+        #         # Cost of CO2 for 1 kWH of H2
+        self.cost_details[CO2.name] = list(
+            self.resources_prices[ResourceGlossary.CO2Resource] * self.cost_details['CO2_needs']
+            / self.cost_details['efficiency'])
+
+    def compute_cost_of_other_energies_usage(self):
+        # Cost of electricity for 1 kWH of H2
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+
+        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
+                                              / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+        # Cost of methane for 1 kWH of H2
+        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio)
+
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
         """
 
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
-        self.cost_details['CO2_needs'] = self.get_theoretical_co2_needs()
-
-        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(
-            self.syngas_ratio)
-
-        # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   )
-        # Cost of methane for 1 kWH of H2
-        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
-                                              / self.cost_details['efficiency'])
-
-        #         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(
-            self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
-            / self.cost_details['efficiency'])
-
-        # self.cost_details[CO2.name]
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[CO2.name]
 
     def grad_price_vs_energy_price(self):
@@ -524,7 +531,7 @@ class RWGS(SyngasTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']
 
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
+        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2Resource] * \
                                                self.cost_details['CO2_needs'] / \
                                                self.cost_details['efficiency']
 
@@ -534,7 +541,7 @@ class RWGS(SyngasTechno):
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = self.resources_CO2_emissions[
-                                           ResourceGlossary.CO2['name']] * dco2_needs_dsyngas_ratio
+                                           ResourceGlossary.CO2Resource] * dco2_needs_dsyngas_ratio
 
         return dco2_emissions_dsyngas_ratio
 

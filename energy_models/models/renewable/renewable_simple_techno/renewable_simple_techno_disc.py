@@ -43,7 +43,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
         'icon': 'fas fa-fan fa-fw',
         'version': '',
     }
-    techno_name = 'RenewableSimpleTechno'
+    techno_name = GlossaryEnergy.RenewableSimpleTechno
     lifetime = 30
     construction_delay = 3
     # net production = 25385.78 TWh

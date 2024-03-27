@@ -39,7 +39,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'FossilGas'
+    techno_name = GlossaryEnergy.FossilGas
     lifetime = 23
     construction_delay = 3  # years
     techno_infos_dict_default = {'available_power': 15000000,

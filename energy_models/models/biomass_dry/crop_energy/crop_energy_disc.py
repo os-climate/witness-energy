@@ -45,7 +45,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         'icon': 'fas fa-tractor fa-fw',
         'version': '',
     }
-    techno_name = 'CropEnergy'
+    techno_name = GlossaryEnergy.CropEnergy
     lifetime = 50
     construction_delay = 1  # years
 

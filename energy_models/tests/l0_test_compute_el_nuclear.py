@@ -40,11 +40,11 @@ class NuclearTestCase(unittest.TestCase):
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.Water['name'], ResourceGlossary.Uranium['name']])
+            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource, ResourceGlossary.UraniumResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.Water['name']] = 2.0
-        self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
-        self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000  # in $/Mt
+        self.resources_price[ResourceGlossary.WaterResource] = 2.0
+        self.resources_price[ResourceGlossary.UraniumResource] = 1390.0e3
+        self.resources_price[ResourceGlossary.CopperResource] = 10057.7 * 1000 * 1000  # in $/Mt
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.

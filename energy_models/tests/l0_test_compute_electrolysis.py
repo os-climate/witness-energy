@@ -50,8 +50,8 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.energy_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Water['name']: 0.0,
-                                              ResourceGlossary.Platinum['name']: 32825887})
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.WaterResource: 0.0,
+                                              ResourceGlossary.PlatinumResource: 32825887})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [0.3]})

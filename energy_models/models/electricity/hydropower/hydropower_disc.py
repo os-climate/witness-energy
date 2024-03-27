@@ -43,7 +43,7 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-water fa-fw',
         'version': '',
     }
-    techno_name = 'Hydropower'
+    techno_name = GlossaryEnergy.Hydropower
     lifetime = 50
     construction_delay = 3
     techno_infos_dict_default = {'type': 'electricity_creation',
@@ -122,13 +122,13 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product:
+                if ResourceGlossary.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.Copper['name'] in reactant:
+            if ResourceGlossary.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc

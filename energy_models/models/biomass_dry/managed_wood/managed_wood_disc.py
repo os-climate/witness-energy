@@ -44,7 +44,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)
 
-    techno_name = 'ManagedWood'
+    techno_name = GlossaryEnergy.ManagedWood
     lifetime = 150
     construction_delay = 3  # years, time for wood to dry
 

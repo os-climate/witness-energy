@@ -98,9 +98,9 @@ class CoalGenPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.Water['name']])
+            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.Water['name']
+        self.resources_price[ResourceGlossary.WaterResource
         ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(

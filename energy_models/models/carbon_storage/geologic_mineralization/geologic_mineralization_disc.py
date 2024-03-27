@@ -40,7 +40,7 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-mountain fa-fw',
         'version': '',
     }
-    techno_name = 'GeologicMineralization'
+    techno_name = GlossaryEnergy.GeologicMineralization
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

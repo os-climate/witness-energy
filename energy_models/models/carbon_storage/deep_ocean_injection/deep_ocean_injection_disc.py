@@ -40,7 +40,7 @@ class DeepOceanInjectionDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-water fa-fw',
         'version': '',
     }
-    techno_name = 'DeepOceanInjection'
+    techno_name = GlossaryEnergy.DeepOceanInjection
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

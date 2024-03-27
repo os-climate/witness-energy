@@ -39,7 +39,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
-    techno_name = 'CoElectrolysis'
+    techno_name = GlossaryEnergy.CoElectrolysis
     lifetime = 40
     construction_delay = 2  # years
     # 'reaction': 'H20 + CO2 = H2 + CO + O2',

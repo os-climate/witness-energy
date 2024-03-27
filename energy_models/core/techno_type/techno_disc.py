@@ -48,8 +48,6 @@ class TechnoDiscipline(SoSWrapp):
         'version': '',
     }
 
-    years_default = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),

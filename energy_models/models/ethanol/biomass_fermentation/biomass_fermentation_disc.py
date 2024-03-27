@@ -39,7 +39,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'BiomassFermentation'
+    techno_name = GlossaryEnergy.BiomassFermentation
     energy_name = Ethanol.name
 
     # Conversions

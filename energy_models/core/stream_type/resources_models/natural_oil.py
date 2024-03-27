@@ -1,6 +1,7 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2024/01/31 Copyright 2024 Capgemini
+Modifications on 26/03/2024 Copyright 2024 Capgemini
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -25,7 +26,7 @@ class NaturalOil(BaseStream):
     that are liquid at room temperature (triglycerides that are solid
     at room temperature are fats – whether derived from animal or
     plants)"""
-    name = ResourceGlossary.NaturalOil['name']
+    name = ResourceGlossary.NaturalOilResource
     data_energy_dict = {
         'reference': 'https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane ',
         'maturity': 5,

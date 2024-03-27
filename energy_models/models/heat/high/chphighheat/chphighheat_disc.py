@@ -38,7 +38,7 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CHPHighHeat'
+    techno_name = GlossaryEnergy.CHPHighHeat
     energy_name = hightemperatureheat.name
 
     # Conversions

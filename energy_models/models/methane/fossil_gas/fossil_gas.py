@@ -24,25 +24,37 @@ from energy_models.core.techno_type.base_techno_models.methane_techno import Met
 
 
 class FossilGas(MethaneTechno):
-    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
+    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
+
+    def compute_resources_needs(self):
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
+
+    def compute_cost_of_resources_usage(self):
+        # resources price [$/t] since needs are in [kg/kWh] to have cost in
+        # [$/MWh]
+        self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
+            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[
+                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
+
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
+        # needs in [kg/kWh]
+
 
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
 
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
-        # needs in [kg/kWh]
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
-        ) / Methane.data_energy_dict['calorific_value']  # kg/kWh
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
-        # resources price [$/t] since needs are in [kg/kWh] to have cost in
-        # [$/MWh]
-        self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
-            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[
-                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+
         # cost to produce 1Kwh of methane
         return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]
 

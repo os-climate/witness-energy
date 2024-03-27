@@ -32,18 +32,22 @@ class GeothermalHeat(lowheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of Geothermal Heat Generation
-        """
-
+    def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of Geothermal Heat Generation
+        """
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+        
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):

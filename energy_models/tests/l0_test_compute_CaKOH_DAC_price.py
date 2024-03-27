@@ -93,8 +93,8 @@ class CalciumPotassiumTestCase(unittest.TestCase):
              })
 
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.Potassium['name']: KOH_price,
-             ResourceGlossary.Calcium['name']: CaO_price,
+            {GlossaryEnergy.Years: years, ResourceGlossary.PotassiumResource: KOH_price,
+             ResourceGlossary.CalciumResource: CaO_price,
              })
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)

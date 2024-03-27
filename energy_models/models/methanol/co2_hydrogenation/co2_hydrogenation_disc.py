@@ -39,7 +39,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CO2Hydrogenation'
+    techno_name = GlossaryEnergy.CO2Hydrogenation
     energy_name = Methanol.name
 
     # energy data

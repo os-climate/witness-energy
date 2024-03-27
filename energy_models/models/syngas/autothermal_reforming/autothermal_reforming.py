@@ -28,31 +28,40 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 class AuthothermalReforming(SyngasTechno):
     syngas_COH2_ratio = 100.0  # in %
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-
+    def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
         self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs()
-
-        # need in kwh to produce 1kwh of syngas
-        self.cost_details['methane_needs'] = self.get_theoretical_CH4_needs()
-
         # need in kg to produce 1kwh of syngas
         self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs()
 
+    def compute_cost_of_resources_usage(self):
         # Cost of oxygen for 1 kWH of H2
         self.cost_details[Oxygen.name] = list(
             self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
             / self.cost_details['efficiency'])
-        # Cost of methane for 1 kWH of H2
-        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['methane_needs']
-                                                    / self.cost_details['efficiency'])
 
         # Cost of CO2 for 1 kWH of H2
         self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
                                            / self.cost_details['efficiency'])
+
+    def compute_cost_of_other_energies_usage(self):
+        # Cost of methane for 1 kWH of H2
+        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['methane_needs']
+                                                    / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        # need in kwh to produce 1kwh of syngas
+        self.cost_details['methane_needs'] = self.get_theoretical_CH4_needs()
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kg of CH4
+        """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Oxygen.name] + self.cost_details[Methane.name] + self.cost_details[CO2.name]
 

@@ -44,7 +44,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         'icon': 'fas fa-hospital-symbol fa-fw',
         'version': '',
     }
-    techno_name = 'Electrolysis.PEM'
+    techno_name = GlossaryEnergy.ElectrolysisPEM
     # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY
     # https://www.fch.europa.eu/news/launch-refhyne-worlds-largest-electrolysis-plant-rhineland-refinery
@@ -126,13 +126,13 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Platinum['name'] in product:
+                if ResourceGlossary.PlatinumResource in product:
                     chart_name = f'Mass consumption of platinum for the {self.techno_name} technology with input investments'
                     new_chart_platinum = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [kg]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.Platinum['name'] in reactant:
+            if ResourceGlossary.PlatinumResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[
