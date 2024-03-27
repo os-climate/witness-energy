@@ -108,6 +108,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     ResourcesUsedForProduction = {
         "var_name": ResourcesUsedForProductionValue,
         "type": "list",
+        #"structuring": True,
         "subtype_descriptor": {"list": "string"},
     }
 

@@ -140,9 +140,8 @@ class TechnoDiscipline(SoSWrapp):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         dynamic_outputs = {}
+        self.update_default_values()
         if self.get_data_in() is not None:
-            self.update_default_values()
-
             if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
                 resources_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
                 if resources_used_for_production is not None:
@@ -176,8 +175,15 @@ class TechnoDiscipline(SoSWrapp):
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource',
                                                                             "dynamic_dataframe_columns": True}
+
         self.add_inputs(dynamic_inputs)
-        self.add_outputs(dynamic_outputs)
+        d = self.add_additionnal_dynamic_output()
+        d.update(dynamic_outputs)
+        self.add_outputs(d)
+
+    def add_additionnal_dynamic_output(self):
+        """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
+        return {}
 
     def update_default_values(self):
         '''
@@ -187,7 +193,7 @@ class TechnoDiscipline(SoSWrapp):
             resource_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
             if resource_used_for_prod is None:
                 resource_used_for_prod = ResourceGlossary.TechnoResourceUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoResourceUsedDict else []
-                self.set_dynamic_default_values({GlossaryEnergy.ResourcesUsedForProductionValue: resource_used_for_prod})
+                self.update_default_value(GlossaryEnergy.ResourcesUsedForProductionValue, 'in', resource_used_for_prod)
 
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
