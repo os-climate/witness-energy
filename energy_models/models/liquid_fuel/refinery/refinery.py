@@ -28,7 +28,7 @@ from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_m
 
 
 class Refinery(LiquidFuelTechno):
-    OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
+    OIL_RESOURCE_NAME = ResourceGlossary.OilResource
     # corresponds to crude oil price divided by efficiency TO BE MODIFIED
     oil_extraction_capex = 44.0 / 0.89
 
@@ -46,32 +46,44 @@ class Refinery(LiquidFuelTechno):
         self.data_energy_dict = inputs_dict['data_fuel_dict']
         self.other_energy_dict = inputs_dict['other_fuel_dict']
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
+    def compute_resources_needs(self):
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
         ) / self.data_energy_dict['calorific_value']
+
+    def compute_cost_of_resources_usage(self):
         # resources price [$/t] since needs are in [kg/kWh] to have cost in
         # [$/t]*[kg/kWh]=[$/MWh]
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] /
             self.cost_details['efficiency'])
 
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
+
         # in kWh of hydrogen per kWh of fuel
         self.cost_details[GaseousHydrogen.name] = list(
             self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details[
                                                       'efficiency']
 
-        return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[
-            GaseousHydrogen.name]
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+
+        return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
     def grad_price_vs_energy_price(self):
         '''

@@ -104,6 +104,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
+    ResourcesUsedForProductionValue = "Resources used for production"
+    ResourcesUsedForProduction = {
+        "var_name": ResourcesUsedForProductionValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+    }
+    ResourcesTechnoDict = {
+        #"Transesterification": [Resources]
+    }
+
+
     CCSTechnoInvest = {
         "type": "dataframe",
         "unit": "G$",
@@ -305,3 +316,83 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
     }
+
+    # techno names
+    GeothermalLowHeat = "GeothermalLowHeat"
+    CropEnergy = "CropEnergy"
+    ManagedWood = "ManagedWood"
+    UnmanagedWood = "UnmanagedWood"
+    BiomassBuryingFossilization = "BiomassBuryingFossilization"
+    CarbonStorageTechno = "CarbonStorageTechno"
+    DeepOceanInjection = "DeepOceanInjection"
+    DeepSalineFormation = "DeepSalineFormation"
+    DepletedOilGas = "DepletedOilGas"
+    EnhancedOilRecovery = "EnhancedOilRecovery"
+    GeologicMineralization = "GeologicMineralization"
+    PureCarbonSolidStorage = "PureCarbonSolidStorage"
+    Reforestation = "Reforestation"
+    BiomassFired = "BiomassFired"
+    CoalGen = "CoalGen"
+    BiogasFired = "BiogasFired"
+    CombinedCycleGasTurbine = "CombinedCycleGasTurbine"
+    GasTurbine = "GasTurbine"
+    Geothermal = "Geothermal"
+    Hydropower = "Hydropower"
+    Nuclear = "Nuclear"
+    OilGen = "OilGen"
+    RenewableElectricitySimpleTechno = "RenewableElectricitySimpleTechno"
+    SolarPv = "SolarPv"
+    SolarThermal = "SolarThermal"
+    WindOffshore = "WindOffshore"
+    WindOnshore = "WindOnshore"
+    BiomassFermentation = "BiomassFermentation"
+    FossilSimpleTechno = "FossilSimpleTechno"
+    ElectrolysisAWE = "Electrolysis.AWE"
+    ElectrolysisPEM = "Electrolysis.PEM"
+    ElectrolysisSOEC = "Electrolysis.SOEC"
+    PlasmaCracking = "PlasmaCracking"
+    WaterGasShift = "WaterGasShift"
+    CHPHighHeat = "CHPHighHeat"
+    ElectricBoilerHighHeat = "ElectricBoilerHighHeat"
+    GeothermalHighHeat = "GeothermalHighHeat"
+    HeatPumpHighHeat = "HeatPumpHighHeat"
+    NaturalGasBoilerHighHeat = "NaturalGasBoilerHighHeat"
+    CHPLowHeat = "CHPLowHeat"
+    ElectricBoilerLowHeat = "ElectricBoilerLowHeat"
+    GeothermalLowHeat = "GeothermalLowHeat"
+    HeatPumpLowHeat = "HeatPumpLowHeat"
+    NaturalGasBoilerLowHeat = "NaturalGasBoilerLowHeat"
+    CHPMediumHeat = "CHPMediumHeat"
+    ElectricBoilerMediumHeat = "ElectricBoilerMediumHeat"
+    GeothermalMediumHeat = "GeothermalMediumHeat"
+    HeatPumpMediumHeat = "HeatPumpMediumHeat"
+    NaturalGasBoilerMediumHeat = "NaturalGasBoilerMediumHeat"
+    HefaDecarboxylation = "HefaDecarboxylation"
+    HefaDeoxygenation = "HefaDeoxygenation"
+    FischerTropsch = "FischerTropsch"
+    Refinery = "Refinery"
+    HydrogenLiquefaction = "HydrogenLiquefaction"
+    FossilGas = "FossilGas"
+    Methanation = "Methanation"
+    UpgradingBiogas = "UpgradingBiogas"
+    CO2Hydrogenation = "CO2Hydrogenation"
+    RenewableSimpleTechno = "RenewableSimpleTechno"
+    CoalExtraction = "CoalExtraction"
+    Pelletizing = "Pelletizing"
+    AutothermalReforming = "AutothermalReforming"
+    BiomassGasification = "BiomassGasification"
+    CoElectrolysis = "CoElectrolysis"
+    CoalGasification = "CoalGasification"
+    Pyrolysis = "Pyrolysis"
+    ReversedWaterGasShift = "ReversedWaterGasShift"
+    SMR = "SMR"
+    AnimalManure = "AnimalManure"
+    WetCropResidues = "WetCropResidues"
+
+
+
+
+
+
+
+

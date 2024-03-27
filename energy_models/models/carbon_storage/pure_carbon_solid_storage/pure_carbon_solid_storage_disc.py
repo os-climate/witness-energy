@@ -43,7 +43,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-flask fa-fw',
         'version': '',
     }
-    techno_name = 'PureCarbonSolidStorage'
+    techno_name = GlossaryEnergy.PureCarbonSolidStorage
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

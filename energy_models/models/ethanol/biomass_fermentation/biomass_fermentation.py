@@ -35,22 +35,19 @@ class BiomassFermentation(EthanolTechno):
         - 1 pound = 0.45359237 kg
     """
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of biodiesel
-        """
-        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs()
+    def compute_resources_needs(self):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
-        self.cost_details[BiomassDry.name] = \
-            self.prices[BiomassDry.name] * \
-            self.cost_details[f'{BiomassDry.name}_needs'] / \
-            self.cost_details['efficiency']
-
+    def compute_cost_of_resources_usage(self):
         self.cost_details[Water.name] = \
             self.resources_prices[Water.name] * \
             self.cost_details[f'{Water.name}_needs'] / \
+            self.cost_details['efficiency']
+
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[BiomassDry.name] = \
+            self.prices[BiomassDry.name] * \
+            self.cost_details[f'{BiomassDry.name}_needs'] / \
             self.cost_details['efficiency']
 
         self.cost_details[Electricity.name] = \
@@ -58,8 +55,21 @@ class BiomassFermentation(EthanolTechno):
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.cost_details[BiomassDry.name] + self.cost_details[Water.name] + \
-               self.cost_details[Electricity.name]
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs()
+        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of biodiesel
+        """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+
+        return self.cost_details[BiomassDry.name] + self.cost_details[Water.name] + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''

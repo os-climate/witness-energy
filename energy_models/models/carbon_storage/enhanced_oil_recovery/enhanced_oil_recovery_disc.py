@@ -40,7 +40,7 @@ class EnhancedOilRecoveryDiscipline(CSTechnoDiscipline):
         'icon': 'fas fa-gas-pump fa-fw',
         'version': '',
     }
-    techno_name = 'EnhancedOilRecovery'
+    techno_name = GlossaryEnergy.EnhancedOilRecovery
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

@@ -40,7 +40,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'GeothermalHighHeat'
+    techno_name = GlossaryEnergy.GeothermalHighHeat
     energy_name = hightemperatureheat.name
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power

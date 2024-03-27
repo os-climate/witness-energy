@@ -42,7 +42,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     }
     syngas_ratio = Pyrolysis.syngas_COH2_ratio
 
-    techno_name = 'Pyrolysis'
+    techno_name = GlossaryEnergy.Pyrolysis
     lifetime = 20
     construction_delay = 2
     techno_infos_dict_default = {'maturity': 0,

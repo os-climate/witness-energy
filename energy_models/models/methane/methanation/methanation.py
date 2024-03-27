@@ -25,26 +25,35 @@ from energy_models.core.techno_type.base_techno_models.methane_techno import Met
 
 class Methanation(MethaneTechno):
 
+
+    def compute_resources_needs(self):
+        # in kg of CO2 for kWh of CH4
+        self.cost_details['dioxide_needs'] = self.get_theoretical_co2_needs()
+    def compute_cost_of_resources_usage(self):
+        # Cost of CO2 for 1 kg of CH4 (in kg), price is in $/kg
+        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
+                                           self.cost_details['efficiency'])
+
+    def compute_cost_of_other_energies_usage(self):
+        # Cost of H2 for 1 kg of CH4 (in kg), price is in $/kg
+        self.cost_details[GaseousHydrogen.name] = list(
+            self.prices[GaseousHydrogen.name] * self.cost_details['hydrogen_needs'] / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        # in kWh of H2 for kWh of CH4
+        self.cost_details['hydrogen_needs'] = self.get_theoretical_hydrogen_needs()
+
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
 
-        # in kWh of H2 for kWh of CH4
-        self.cost_details['hydrogen_needs'] = self.get_theoretical_hydrogen_needs()
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
-        # in kg of CO2 for kWh of CH4
-        self.cost_details['dioxide_needs'] = self.get_theoretical_co2_needs()
-
-        # Cost of H2 for 1 kg of CH4 (in kg), price is in $/kg
-        self.cost_details[GaseousHydrogen.name] = list(
-            self.prices[GaseousHydrogen.name] * self.cost_details['hydrogen_needs'] / self.cost_details['efficiency'])
-
-        # Cost of CO2 for 1 kg of CH4 (in kg), price is in $/kg
-        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
-                                           self.cost_details['efficiency'])
-
-        # cost to produce 1Kwh of methane
         return self.cost_details[GaseousHydrogen.name] + self.cost_details[CO2.name]
 
     def grad_price_vs_energy_price(self):

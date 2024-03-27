@@ -42,7 +42,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         'icon': 'fas fa-gas-pump fa-fw',
         'version': '',
     }
-    techno_name = 'Refinery'
+    techno_name = GlossaryEnergy.Refinery
     lifetime = 35
     construction_delay = 3
     # only energetical valuable product taken into acocun. Wastes are not

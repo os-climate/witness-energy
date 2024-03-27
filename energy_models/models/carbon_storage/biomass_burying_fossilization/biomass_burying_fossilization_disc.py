@@ -40,7 +40,7 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    techno_name = 'BiomassBuryingFossilization'
+    techno_name = GlossaryEnergy.BiomassBuryingFossilization
     lifetime = 35
     construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,

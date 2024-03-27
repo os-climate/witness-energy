@@ -39,17 +39,23 @@ class PiperazineProcess(CCTechno):
         else:
             self.fg_ratio_effect = True
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-
-        """
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    / self.cost_details['efficiency'])
 
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
+    
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology
+
+        """
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name]
 

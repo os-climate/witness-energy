@@ -26,32 +26,45 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 
 
 class CoalExtraction(SolidFuelTechno):
-    COAL_RESOURCE_NAME = ResourceGlossary.Coal['name']
+    COAL_RESOURCE_NAME = ResourceGlossary.CoalResource
 
     def __init__(self, name):
         super().__init__(name)
         self.emission_factor_mt_twh = None
+
+    def compute_resources_needs(self):
+        # calorific value in kWh/kg * 1000 to have needs in t/kWh
+        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(
+            self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
+
+    def compute_cost_of_resources_usage(self):
+        self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(
+            self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
+
+    def compute_cost_of_other_energies_usage(self):
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
+                                                   / self.cost_details['efficiency'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+
+        # self.cost_details['fuel_needs'] = self.get_fuel_needs()
+        # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
+        #                                         / self.cost_details['efficiency'])
+
+        # + self.cost_details[LiquidFuel.name]
 
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
         """
 
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   / self.cost_details['efficiency'])
-
-        # self.cost_details['fuel_needs'] = self.get_fuel_needs()
-        # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
-        #                                         / self.cost_details['efficiency'])
-        # calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(
-            self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(
-            self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
-
-        # + self.cost_details[LiquidFuel.name]
         return self.cost_details[Electricity.name] + self.cost_details[self.COAL_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):

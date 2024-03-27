@@ -38,7 +38,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CHPMediumHeat'
+    techno_name = GlossaryEnergy.CHPMediumHeat
     energy_name = mediumtemperatureheat.name
 
     # Conversions

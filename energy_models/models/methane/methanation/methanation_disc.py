@@ -39,7 +39,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'Methanation'
+    techno_name = GlossaryEnergy.Methanation
     lifetime = 15
     # Thema, M., Bauer, F. and Sterner, M., 2019.
     # Power-to-Gas: Electrolysis and methanation status review.

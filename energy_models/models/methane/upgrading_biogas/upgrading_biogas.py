@@ -27,22 +27,27 @@ from energy_models.core.techno_type.base_techno_models.methane_techno import Met
 
 class UpgradingBiogas(MethaneTechno):
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
-
-        self.cost_details['biogas_needs'] = self.get_biogas_needs()
-
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'])
         # Cost of methane for 1 kWH of H2
         self.cost_details[BioGas.name] = list(
             self.prices[BioGas.name] * self.cost_details['biogas_needs'])
+
+    def compute_other_energies_needs(self):
+        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        # in kwh of fuel by kwh of H2
+
+        self.cost_details['biogas_needs'] = self.get_biogas_needs()
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kg of CH4
+        """
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Electricity.name] + self.cost_details[BioGas.name]
 

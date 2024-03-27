@@ -1,6 +1,7 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
+Modifications on 26/03/2024 Copyright 2024 Capgemini
+
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,101 +27,127 @@ class ResourceGlossary:
 
     UNITS = {'production': 'Mt', 'consumption': 'Mt', 'price': '$/t', GlossaryEnergy.CO2EmissionsValue: 'kgCO2/kg'}
 
-    ResourceList = ['Uranium', 'Water', 'SeaWater', 'CO2', 'BiomassDry', 'WetBiomass', 'NaturalOil', 'Methanol',
-                    'SodiumHydroxide', 'Wood', 'Carbon', 'ManagedWood', 'Oxygen', 'CrudeOil', 'SolidFuel',
-                    'Calcium', 'CalciumOxyde', 'Potassium', 'PotassiumHydroxide', 'Amine', 'Dioxygen',
-                    'EthanolAmine', 'MonoEthanolAmine', 'Glycerol', 'NaturalGas', 'Coal', 'Oil', 'Copper', 'Platinum']
 
-    Uranium = {'name': 'uranium_resource',
+    UraniumResource = 'uranium_resource'
+    Uranium = {'name': UraniumResource,
                GlossaryEnergy.CO2EmissionsValue: 0.474 / 277.78,
                'price': 1390000.0, }
-    Water = {'name': 'water_resource',
+    WaterResource = 'water_resource'
+    Water = {'name': WaterResource,
              GlossaryEnergy.CO2EmissionsValue: 0.0,
              'price': 1.78}
-    SeaWater = {'name': 'sea_water_resource',
+
+    SeaWaterResource = 'sea_water_resource'
+    SeaWater = {'name': SeaWaterResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 1.4313}
-    CO2 = {'name': 'CO2_resource',
+    CO2Resource = 'CO2_resource'
+    CO2 = {'name': CO2Resource,
            GlossaryEnergy.CO2EmissionsValue: -1.0,
            'price': 200.0}
-    BiomassDry = {'name': 'biomass_dry_resource',
+    BiomassDryResource = 'biomass_dry_resource'
+    BiomassDry = {'name': BiomassDryResource,
                   GlossaryEnergy.CO2EmissionsValue: - 0.425 * 44.01 / 12.0,
                   'price': 68.12}
-    WetBiomass = {'name': 'wet_biomass_resource',
+    WetBiomassResource = 'wet_biomass_resource'
+    WetBiomass = {'name': WetBiomassResource,
                   GlossaryEnergy.CO2EmissionsValue: - 0.9615,
                   'price': 56.0}
     # - 0.425 * 44.01 / 12.0 (old CO2_emissions value)
     # Calibration to have zero CO2 emissions in biogas.anaerobic_digestion when biogas use
 
-    NaturalOil = {'name': 'natural_oil_resource',
+    NaturalOilResource = 'natural_oil_resource'
+    NaturalOil = {'name': NaturalOilResource,
                   GlossaryEnergy.CO2EmissionsValue: -2.95,
                   'price': 1100.0}
-    Methanol = {'name': 'methanol_resource',
+    MethanolResource = 'methanol_resource'
+    Methanol = {'name': MethanolResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.54,
                 'price': 400.0}
-    SodiumHydroxide = {'name': 'sodium_hydroxide_resource',
+    SodiumHydroxideResource = 'sodium_hydroxide_resource'
+    SodiumHydroxide = {'name': SodiumHydroxideResource,
                        GlossaryEnergy.CO2EmissionsValue: 0.6329,
                        'price': 425.0}
-    Wood = {'name': 'wood_resource',
+    WoodResource = 'wood_resource'
+    Wood = {'name': WoodResource,
             GlossaryEnergy.CO2EmissionsValue: 1.78,
             'price': 120.0, }
-    Carbon = {'name': 'carbon_resource',
+    CarbonResource = 'carbon_resource'
+    Carbon = {'name': CarbonResource,
               GlossaryEnergy.CO2EmissionsValue: 44.01 / 12.0,
               'price': 25000.0}
-    ManagedWood = {'name': 'managed_wood_resource',
+    ManagedWoodResource = 'managed_wood_resource'
+    ManagedWood = {'name': ManagedWoodResource,
                    GlossaryEnergy.CO2EmissionsValue: 0.0,
                    'price': 37.5}
-    Oxygen = {'name': 'oxygen_resource',
+    OxygenResource = 'oxygen_resource'
+    Oxygen = {'name': OxygenResource,
               GlossaryEnergy.CO2EmissionsValue: 0.0,
               'price': 10.0}
-    Dioxygen = {'name': 'dioxygen_resource',
+    DioxygenResource = 'dioxygen_resource'
+    Dioxygen = {'name': DioxygenResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 10.0}
-    CrudeOil = {'name': 'crude_oil_resource',
+    CrudeOilResource = 'crude_oil_resource'
+    CrudeOil = {'name': CrudeOilResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.02533,
                 'price': 44.0}
-    SolidFuel = {'name': 'solid_fuel_resource',
+    SolidFuelResource = 'solid_fuel_resource'
+    SolidFuel = {'name': SolidFuelResource,
                  GlossaryEnergy.CO2EmissionsValue: 0.64 / 4.86,
                  'price': 250.0}
-    Calcium = {'name': 'calcium_resource',
+    CalciumResource = 'calcium_resource'
+    Calcium = {'name': CalciumResource,
                GlossaryEnergy.CO2EmissionsValue: 0.0,
                'price': 85.0}
-    CalciumOxyde = {'name': 'calcium_oxyde_resource',
+    CalciumOxydeResource = 'calcium_oxyde_resource'
+    CalciumOxyde = {'name': CalciumOxydeResource,
                     GlossaryEnergy.CO2EmissionsValue: 0.0,
                     'price': 150.0}
-    Potassium = {'name': 'potassium_resource',
+    PotassiumResource = 'potassium_resource'
+    Potassium = {'name': PotassiumResource,
                  GlossaryEnergy.CO2EmissionsValue: 0.0,
                  'price': 500.0}
-    PotassiumHydroxide = {'name': 'potassium_hydroxide_resource',
+    PotassiumHydroxideResource = 'potassium_hydroxide_resource'
+    PotassiumHydroxide = {'name': PotassiumHydroxideResource,
                           GlossaryEnergy.CO2EmissionsValue: 0.0,
                           'price': 500.0}
-    Amine = {'name': 'amine_resource',
+    AmineResource = 'amine_resource'
+    Amine = {'name': AmineResource,
              GlossaryEnergy.CO2EmissionsValue: 0.0,
              'price': 1300.0}
-    EthanolAmine = {'name': 'ethanol_amine_resource',
+    EthanolAmineResource = 'ethanol_amine_resource'
+    EthanolAmine = {'name': EthanolAmineResource,
                     GlossaryEnergy.CO2EmissionsValue: 0.0,
                     'price': 1700.0}
-    MonoEthanolAmine = {'name': 'mono_ethanol_amine_resource',
+    MonoEthanolAmineResource = 'mono_ethanol_amine_resource'
+    MonoEthanolAmine = {'name': MonoEthanolAmineResource,
                         GlossaryEnergy.CO2EmissionsValue: 0.0,
                         'price': 1700.0}
-    Glycerol = {'name': 'glycerol_resource',
+    GlycerolResource = 'glycerol_resource'
+    Glycerol = {'name': GlycerolResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 0.0}
-    NaturalGas = {'name': 'natural_gas_resource',
+    NaturalGasResource = 'natural_gas_resource'
+    NaturalGas = {'name': NaturalGasResource,
                   GlossaryEnergy.CO2EmissionsValue: 0.0,
                   'price': 0.0}
-    Coal = {'name': 'coal_resource',
+    CoalResource = 'coal_resource'
+    Coal = {'name': CoalResource,
             GlossaryEnergy.CO2EmissionsValue: 0.0,
             'price': 0.0}
-    Oil = {'name': 'oil_resource',
+    OilResource = 'oil_resource'
+    Oil = {'name': OilResource,
            GlossaryEnergy.CO2EmissionsValue: 0.02533,
            'price': 44.0}
 
-    Copper = {'name': 'copper_resource',
+    CopperResource = 'copper_resource'
+    Copper = {'name': CopperResource,
               GlossaryEnergy.CO2EmissionsValue: 0.0,
               'price': 10057.0}
 
-    Platinum = {'name': 'platinum_resource',
+    PlatinumResource = 'platinum_resource'
+    Platinum = {'name': PlatinumResource,
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 32825887.76}
 
@@ -133,4 +160,28 @@ class ResourceGlossary:
         'PotassiumHydroxide': PotassiumHydroxide, 'Amine': Amine, 'EthanolAmine': EthanolAmine,
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
         'Coal': Coal, 'Oil': Oil, 'Copper': Copper, 'Platinum': Platinum,
+    }
+
+    TechnoResourceUsedDict = {
+        "Transesterification": [MethanolResource, NaturalOilResource, SodiumHydroxideResource, WaterResource],
+        "AnaerobicDigestion": [WetBiomassResource],
+        "Amine": [AmineResource],
+        "CalciumPotassium": [CalciumResource, PotassiumResource],
+        "CoalGen": [WaterResource],
+        "Nuclear": [UraniumResource, WaterResource],
+        "OilGen": [WaterResource],
+        "BiomassFermentation": [WaterResource],
+        "ElectrolysisAWE": [WaterResource],
+        "ElectrolysisPEM": [WaterResource, PlatinumResource],
+        "ElectrolysisSOEC": [WaterResource],
+        "Refinery": [OilResource],
+        "FossilGas": [NaturalGasResource],
+        "Methanation": [CO2Resource],
+        "CO2Hydrogenation": [WaterResource],
+        "CoalExtraction": [CoalResource],
+        "AuthothermalReforming": [CO2Resource, OxygenResource],
+        "CoElectrolysis" : [CO2Resource, WaterResource],
+        "Pyrolysis": [WoodResource],
+        "RWGS": [CO2Resource],
+        "SMR": [WaterResource],
     }

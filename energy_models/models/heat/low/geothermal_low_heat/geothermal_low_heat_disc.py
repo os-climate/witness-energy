@@ -26,7 +26,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
-    # ontology information
+    # ontology information'
     _ontology_data = {
         'label': 'Geothermal Low Heat Model',
         'type': 'Research',
@@ -40,7 +40,7 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'GeothermalLowHeat'
+    techno_name = GlossaryEnergy.GeothermalLowHeat
     energy_name = lowtemperatureheat.name
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power

@@ -160,9 +160,9 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            ]) * 0.02 / 1000 * 1.0e-9
 
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.Amine['name']: amine_price,
-             ResourceGlossary.Potassium['name']: KOH_price,
-             ResourceGlossary.Calcium['name']: CaO_price,
+            {GlossaryEnergy.Years: years, ResourceGlossary.AmineResource: amine_price,
+             ResourceGlossary.PotassiumResource: KOH_price,
+             ResourceGlossary.CalciumResource: CaO_price,
              })
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: np.linspace(0.1, 0.46, len(years))})

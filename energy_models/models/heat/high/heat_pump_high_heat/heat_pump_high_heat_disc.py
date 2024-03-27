@@ -40,7 +40,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HeatPumpHighHeat'
+    techno_name = GlossaryEnergy.HeatPumpHighHeat
     energy_name = hightemperatureheat.name
 
     lifetime = 25  # years # https://www.energy.gov/energysaver/heat-pump-systems

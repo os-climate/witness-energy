@@ -40,7 +40,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'GeothermalMediumHeat'
+    techno_name = GlossaryEnergy.GeothermalMediumHeat
     energy_name = mediumtemperatureheat.name
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power

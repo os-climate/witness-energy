@@ -42,7 +42,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)
 
-    techno_name = 'WetCropResidues'
+    techno_name = GlossaryEnergy.WetCropResidues
     lifetime = 25
     construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,

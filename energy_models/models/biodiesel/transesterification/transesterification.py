@@ -32,25 +32,19 @@ class Transesterification(BioDieselTechno):
     """Reaction: in Mt: 1.23 oil + 0.1 methanol = 1.22 biodiesel + 0.12 glycerol or
     in kg 1.0082 oil + 0.082 methanol = 1 biodiesel + 0.0984 glycerol"""
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of biodiesel
-        """
+    def compute_resources_needs(self):
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs(
-        )
+        self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs()
         # need in kg oil/kWh biodiesel
-        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs(
-        )
+        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs()
         # need in kg/kwh biodiesel
-        self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs(
-        )
+        self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs()
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs(
-        )
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
         # need in kWh/kwh biodiesel
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs(
-        )
+
+
+    def compute_cost_of_resources_usage(self):
 
         # Cost of methanol for 1 kWH of biodiesel
         # $/kWh
@@ -79,10 +73,24 @@ class Transesterification(BioDieselTechno):
             self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'] / self.cost_details[
                 'efficiency'])
 
+
+    def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of biodiesel
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'] / self.cost_details[
                 'efficiency'])
+    
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs to produce 1kWh of biodiesel
+        """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
 
         return self.cost_details[Methanol.name] + self.cost_details[NaturalOil.name] \
                + self.cost_details[SodiumHydroxide.name] + self.cost_details[Water.name] \

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 26/03/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 class Glycerol(BaseStream):
     """Glycerol also called glycerine or glycerin) is a simple polyol compound.
     It is a colorless, odorless, viscous liquid that is sweet-tasting and non-toxic."""
-    name = ResourceGlossary.Glycerol['name']
+    name = ResourceGlossary.GlycerolResource
     data_energy_dict = {
         'reference': 'https://en.wikipedia.org/wiki/Glycerol',
         'chemical_formula': 'C3H8O3',

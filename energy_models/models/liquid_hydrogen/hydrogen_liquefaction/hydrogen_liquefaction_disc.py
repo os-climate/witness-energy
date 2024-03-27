@@ -41,7 +41,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         'icon': 'fas fa-tint fa-fw',
         'version': '',
     }
-    techno_name = 'HydrogenLiquefaction'
+    techno_name = GlossaryEnergy.HydrogenLiquefaction
     construction_delay = 2  # year
     lifetime = 40
     techno_infos_dict_default = {'maturity': 5,

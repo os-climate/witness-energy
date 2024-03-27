@@ -50,7 +50,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'FischerTropsch'
+    techno_name = GlossaryEnergy.FischerTropsch
     lifetime = 30
     construction_delay = 3
     # 'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',

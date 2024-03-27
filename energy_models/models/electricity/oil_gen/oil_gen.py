@@ -26,31 +26,39 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class OilGen(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        # in kwh of fuel by kwh of electricity
-        self.cost_details['liquid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
-                                                 self.cost_details['efficiency']
-
+    def compute_resources_needs(self):
         # need in kg/kWh
         self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
 
-        # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is
-        # the process global liquid_fuel consumption
-        self.cost_details[LiquidFuel.name] = list(
-            self.prices[LiquidFuel.name] * self.cost_details['liquid_fuel_needs'])
-
+    def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
         self.cost_details[Water.name] = list(
             self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
-        # + self.cost_details[GlossaryEnergy.electricity]
+    def compute_cost_of_other_energies_usage(self):
+        # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is
+        # the process global liquid_fuel consumption
+        self.cost_details[LiquidFuel.name] = list(
+            self.prices[LiquidFuel.name] * self.cost_details['liquid_fuel_needs'])
+    
+    def compute_other_energies_needs(self):
+        # in kwh of fuel by kwh of electricity
+        self.cost_details['liquid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
+                                                 self.cost_details['efficiency']
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+
         return self.cost_details[LiquidFuel.name] + self.cost_details[Water.name]
 
     def compute_consumption_and_production(self):

@@ -21,7 +21,7 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class Geothermal(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
     def compute_other_primary_energy_costs(self):
         return 0

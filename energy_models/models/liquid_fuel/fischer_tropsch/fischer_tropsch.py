@@ -91,12 +91,16 @@ class FischerTropsch(LiquidFuelTechno):
         self.ratio_df = ratio_df
         return ratio_df
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
+    def compute_cost_of_other_energies_usage(self):
+        # Cost of electricity for 1 kWH of liquid_fuel
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
+    def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
+
+
+    def compute_specifif_costs_of_technos(self):
         nb_years = self.year_end - self.year_start + 1
         sg_needs_efficiency = [self.get_theoretical_syngas_needs_for_FT(
         ) / self.cost_details['efficiency']] * nb_years
@@ -261,6 +265,15 @@ class FischerTropsch(LiquidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.syngas} before transformation'] = self.prices[Syngas.name] * \
                                                             self.cost_details['syngas_needs_for_FT'] / \
                                                             self.cost_details['efficiency']
+
+
+    def compute_other_primary_energy_costs(self):
+        """
+        Compute primary costs which depends on the technology 
+        """
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+        self.compute_specifif_costs_of_technos()
 
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name]
 
@@ -622,10 +635,10 @@ class FischerTropsch(LiquidFuelTechno):
                          self.cost_details['efficiency']
 
         self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[
-                                              ResourceGlossary.CO2['name']] * co2_needs
+                                              ResourceGlossary.CO2Resource] * co2_needs
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[
-                                                ResourceGlossary.Water['name']] * water_needs
+                                                ResourceGlossary.WaterResource] * water_needs
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Syngas.name] + \
                self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]

@@ -1,6 +1,7 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2024/01/31 Copyright 2024 Capgemini
+Modifications on 26/03/2024 Copyright 2024 Capgemini
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -19,7 +20,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class CrudeOil(BaseStream):
-    name = ResourceGlossary.CrudeOil['name']
+    name = ResourceGlossary.CrudeOilResource
     data_energy_dict = {'reference': 'engineeringtoolbox',
                         'maturity': 5,
                         'WACC': 0.1,

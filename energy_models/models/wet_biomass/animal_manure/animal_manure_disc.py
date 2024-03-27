@@ -42,7 +42,7 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)
 
-    techno_name = 'AnimalManure'
+    techno_name = GlossaryEnergy.AnimalManure
     lifetime = 25
     construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,

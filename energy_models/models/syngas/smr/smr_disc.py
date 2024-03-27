@@ -39,7 +39,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
-    techno_name = 'SMR'
+    techno_name = GlossaryEnergy.SMR
     lifetime = 25
     construction_delay = 2  # years
     techno_infos_dict_default = {'reaction': 'H20 + CH4 = 3H2 + CO',
