@@ -21,6 +21,7 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.oxygen import Oxygen
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
@@ -30,7 +31,7 @@ class AutothermalReforming(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details['CO2_needs'] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+        self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
         # need in kg to produce 1kwh of syngas
         self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
@@ -40,7 +41,7 @@ class AutothermalReforming(SyngasTechno):
             self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs'])
 
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs'])
+        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH of H2
@@ -96,7 +97,7 @@ class AutothermalReforming(SyngasTechno):
                                                    self.cost_details['methane_needs'] / \
                                                    self.cost_details['efficiency']
         self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
-                                          self.cost_details['CO2_needs']
+                                          self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
         self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
                                              self.cost_details['oxygen_needs']
 
@@ -176,7 +177,7 @@ class AutothermalReforming(SyngasTechno):
                                                                        H2Oprod
 
         # Consumption
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
                                                                                 self.production_detailed[
                                                                                     f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                 self.cost_details['efficiency']

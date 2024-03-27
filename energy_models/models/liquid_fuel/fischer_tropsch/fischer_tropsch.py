@@ -341,12 +341,12 @@ class FischerTropsch(LiquidFuelTechno):
         co2_needs = np.zeros(len(self.years))
 
         if self.sg_transformation_name in ['WGS', 'WGS or RWGS']:
-            water_needs += (self.price_details_sg_techno['water_needs'].fillna(0.0) *
+            water_needs += (self.price_details_sg_techno[f"{ResourceGlossary.WaterResource}_needs"].fillna(0.0) *
                             self.cost_details['syngas_needs_for_FT'] /
                             self.cost_details['efficiency']).values
 
         if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
-            co2_needs += (self.price_details_sg_techno['CO2_needs'].fillna(0.0) *
+            co2_needs += (self.price_details_sg_techno[f"{ResourceGlossary.CO2Resource}_needs"].fillna(0.0) *
                           self.cost_details['syngas_needs_for_FT'] /
                           self.cost_details['efficiency']).values
 
@@ -364,7 +364,7 @@ class FischerTropsch(LiquidFuelTechno):
         co2_needs = np.zeros(len(self.years))
 
         if self.sg_transformation_name in ['WGS', 'WGS or RWGS']:
-            water_needs += (self.price_details_sg_techno['water_needs'].fillna(0.0) *
+            water_needs += (self.price_details_sg_techno[f"{ResourceGlossary.WaterResource}_needs"].fillna(0.0) *
                             self.cost_details['syngas_needs_for_FT'] /
                             self.cost_details['efficiency']).values
 
@@ -373,7 +373,7 @@ class FischerTropsch(LiquidFuelTechno):
                           self.cost_details['efficiency']).values
 
         if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
-            co2_needs += (self.price_details_sg_techno['CO2_needs'].fillna(0.0) *
+            co2_needs += (self.price_details_sg_techno[f"{ResourceGlossary.CO2Resource}_needs"].fillna(0.0) *
                           self.cost_details['syngas_needs_for_FT'] /
                           self.cost_details['efficiency']).values
 
@@ -415,7 +415,8 @@ class FischerTropsch(LiquidFuelTechno):
                        'smooth_type': self.smooth_type,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'data_fuel_dict': self.syngas_energy_dict
+                       'data_fuel_dict': self.syngas_energy_dict,
+                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict["RWGS"]
                        }
         if self.is_stream_demand:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -469,7 +470,8 @@ class FischerTropsch(LiquidFuelTechno):
                        'smooth_type': self.smooth_type,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'data_fuel_dict': self.gaseous_hydrogen_energy_dict
+                       'data_fuel_dict': self.gaseous_hydrogen_energy_dict,
+                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict["WGS"]
                        }
         if self.is_stream_demand:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -521,7 +523,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         # If WGS in the loop then we need water in the process
         if self.sg_transformation_name in ['WGS', 'WGS or RWGS']:
-            water_needs = self.price_details_sg_techno['water_needs'].fillna(0.0) * \
+            water_needs = self.price_details_sg_techno[f"{ResourceGlossary.WaterResource}_needs"].fillna(0.0) * \
                           self.cost_details['syngas_needs_for_FT'] / \
                           self.cost_details['efficiency']
 
@@ -550,7 +552,7 @@ class FischerTropsch(LiquidFuelTechno):
                          self.cost_details['syngas_needs_for_FT'] / \
                          self.cost_details['efficiency']
 
-            co2_needs = self.price_details_sg_techno['CO2_needs'].fillna(0.0)  * \
+            co2_needs = self.price_details_sg_techno[f"{ResourceGlossary.CO2Resource}_needs"].fillna(0.0)  * \
                         self.cost_details['syngas_needs_for_FT'] / \
                         self.cost_details['efficiency']
 
@@ -612,7 +614,7 @@ class FischerTropsch(LiquidFuelTechno):
         co2_needs = 0.0
         water_needs = 0.0
         if self.sg_transformation_name in ['WGS', 'WGS or RWGS']:
-            water_needs += self.price_details_sg_techno['water_needs'].fillna(0.0) * \
+            water_needs += self.price_details_sg_techno[f"{ResourceGlossary.WaterResource}_needs"].fillna(0.0) * \
                            self.cost_details['syngas_needs_for_FT'] / \
                            self.cost_details['efficiency']
 
@@ -621,7 +623,7 @@ class FischerTropsch(LiquidFuelTechno):
                          self.cost_details['efficiency']
 
         if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
-            co2_needs += self.price_details_sg_techno['CO2_needs'].fillna(0.0) * \
+            co2_needs += self.price_details_sg_techno[f"{ResourceGlossary.CO2Resource}_needs"].fillna(0.0) * \
                          self.cost_details['syngas_needs_for_FT'] / \
                          self.cost_details['efficiency']
 

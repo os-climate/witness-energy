@@ -30,13 +30,13 @@ class CoalGen(ElectricityTechno):
 
     def compute_resources_needs(self):
         # need in kg/kWh
-        self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
+        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
     def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
         self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details['water_needs'])
+            self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of solid_fuel for 1 kWH of electricity - Efficiency removed as data is
@@ -70,7 +70,7 @@ class CoalGen(ElectricityTechno):
                                                                                           'solid_fuel_needs'] * \
                                                                                       self.production_detailed[
                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
                                                                         self.production_detailed[
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
@@ -117,7 +117,7 @@ class CoalGen(ElectricityTechno):
         self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
                                                 self.cost_details['solid_fuel_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
         return self.carbon_intensity[SolidFuel.name] + self.carbon_intensity[Water.name]
 

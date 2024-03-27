@@ -40,6 +40,7 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.cost_of_resources_usage = None
         self.years = None
         self.cost_details = None
         self.production_detailed = None
@@ -69,6 +70,7 @@ class TechnoType:
         self.production = None
         self.consumption = None
         self.name = name
+        self.resources_used_for_production = []
 
         self.invest_years = None  # Investment per year
         self.prices = None  # Input energy price
@@ -229,6 +231,8 @@ class TechnoType:
         if inputs_dict[GlossaryEnergy.UtilisationRatioValue] is not None:
             self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
                 GlossaryEnergy.UtilisationRatioValue].values
+
+        self.resources_used_for_production = inputs_dict[GlossaryEnergy.ResourcesUsedForProductionValue]
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -537,6 +541,19 @@ class TechnoType:
 
         return techno_prices[[GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']]
 
+    def compute_cost_of_resources_usage_generic_method(self):
+        """To replace non generic method compute_cost_of_resources_usage in the future"""
+        cost_of_resource_usage =  {
+            GlossaryEnergy.Years: self.years,
+        }
+        for resource in self.resources_used_for_production:
+            cost_of_resource_usage[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_prices[resource].values
+
+        self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
+        if len(self.resources_used_for_production) > 0:
+            pass
+            #assert all(self.cost_details[self.resources_used_for_production].values == self.cost_of_resources_usage[self.resources_used_for_production].values) # todo:  remove when old method is deleted
+
     @abstractmethod
     def compute_other_primary_energy_costs(self):
         '''
@@ -544,6 +561,7 @@ class TechnoType:
         '''
         self.compute_resources_needs()
         self.compute_cost_of_resources_usage()
+        self.compute_cost_of_resources_usage_generic_method()
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
         self.compute_specifif_costs_of_technos()

@@ -18,6 +18,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 from energy_models.core.techno_type.disciplines.biogas_techno_disc import BiogasTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import AnaerobicDigestion
@@ -52,7 +53,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  # Ireland Using Anaerobic Digestion.
                                  'elec_demand': 0.25,  # Mean of technos
                                  'elec_demand_unit': 'kWh/m^3',
-                                 'wet_biomass_needs': 2.0,  # Rakendran2019 in table 3
+                                 f"{WetBiomass.name}_needs": 2.0,  # Rakendran2019 in table 3
                                  'wet_biomass_needs_unit': 'kg/m^3',
                                  # McKendry P (2019)
                                  # Overview of Anaerobic Digestion and Power and Gas to Grid Plant CAPEX and OPEX Costs.

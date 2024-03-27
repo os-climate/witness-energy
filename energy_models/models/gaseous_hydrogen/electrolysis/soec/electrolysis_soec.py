@@ -19,6 +19,7 @@ import numpy as np
 
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
 
@@ -29,11 +30,11 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
     """
     def compute_resources_needs(self):
-        self.cost_details['water_needs'] = self.get_water_needs()
+        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
 
     def compute_cost_of_resources_usage(self):
         # Cost of water for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs'])
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
@@ -82,7 +83,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
 
@@ -136,7 +137,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] / \
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] / \
                                                                         self.data_energy_dict['calorific_value'] * \
                                                                         self.production_detailed[
                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
