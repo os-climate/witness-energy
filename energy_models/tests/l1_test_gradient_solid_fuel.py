@@ -32,7 +32,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
     """
-    Solid fuel jacobian test class
+    Solid fuel_production jacobian test class
     """
 
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True

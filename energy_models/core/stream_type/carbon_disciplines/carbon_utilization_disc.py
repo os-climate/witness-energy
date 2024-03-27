@@ -41,27 +41,10 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': CarbonUtilization.default_techno_list,
-                                     'visibility': 'Shared',
-                                     'namespace': 'ns_carbon_utilization', 'structuring': True, 'unit': '-'},
-               'food_storage_production': {'type': 'dataframe',
-                                       'visibility': 'Shared',
-                                       'namespace': 'ns_food_storage', 'unit': 'Mt',
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                'beverage food': ('float', None, False)}},
-               'food_storage_prod_ratio': {'type': 'dataframe',
-                                       'visibility': 'Shared',
-                                       'namespace': 'ns_food_storage', 'unit': '-',
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                'carbon_utilization.food_storage_applications.AlgaeCultivation': (
-                                                                'float', None, True),
-                                                                'carbon_utilization.food_storage_applications.BeverageCarbonation': (
-                                                                'float', None, True),
-                                                                'carbon_utilization.food_storage_applications.CarbonatedWater': (
-                                                                'float', None, True),
-                                                                'carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno': (
-                                                                    'float', None, True),
-                                                                }},
+                                            'possible_values': CarbonUtilization.default_techno_list,
+                                            'visibility': 'Shared',
+                                            'unit': '-',
+                                            'namespace': 'ns_carbon_utilization', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_utilization', 'default': CarbonUtilization.data_energy_dict,
                                   'unit': 'defined in dict'},
@@ -71,41 +54,30 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
 
     energy_name = CarbonUtilization.name
 
-    DESC_OUT = StreamDiscipline.DESC_OUT.copy()
-
-    DESC_OUT.update({'carbon_utilization_type': {'type': 'dataframe', 'unit': 'Mt'},
-                     'carbon_utilization_type_woratio': {'type': 'dataframe', 'unit': 'Mt'},
-                     # 'production_fgc': {'type': 'dataframe', 'unit': 'PWh'},
-                     # 'consumption_fgc': {'type': 'dataframe', 'unit': 'PWh'},
-                     'production_fsa': {'type': 'dataframe', 'unit': 'PWh'},
-                     'consumption_fsa': {'type': 'dataframe', 'unit': 'PWh'},
-                     })
-
-    # GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'}
-    #DESC_OUT.update(StreamDiscipline.DESC_OUT)
+    DESC_OUT = StreamDiscipline.DESC_OUT.copy()  # -- add specific techno outputs to this
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = CarbonUtilization(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def run(self):
-        '''
-        Overwrite run to limit flue gas carbon capture
-        '''
-
-        super().run()
-
-        outputs_dict = {
-            'carbon_utilization_type': self.energy_model.carbon_utilization_type,
-            'carbon_utilization_type_woratio': self.energy_model.carbon_utilization_type_woratio,
-            # 'production_fgc': self.energy_model.production_fgc,
-            # 'consumption_fgc': self.energy_model.consumption_fgc,
-            'production_fsa': self.energy_model.production_fsa,
-            'consumption_fsa': self.energy_model.consumption_fsa,
-        }
-        # -- store outputs
-        self.store_sos_outputs_values(outputs_dict)
+    # def run(self):
+    #     '''
+    #     Overwrite run to limit flue gas carbon capture
+    #     '''
+    #
+    #     super().run()
+    #
+    #     outputs_dict = {
+    #         'carbon_utilization_type': self.energy_model.carbon_utilization_type,
+    #         'carbon_utilization_type_woratio': self.energy_model.carbon_utilization_type_woratio,
+    #         # 'production_fgc': self.energy_model.production_fgc,
+    #         # 'consumption_fgc': self.energy_model.consumption_fgc,
+    #         'production_fsa': self.energy_model.production_fsa,
+    #         'consumption_fsa': self.energy_model.consumption_fsa,
+    #     }
+    #     # -- store outputs
+    #     self.store_sos_outputs_values(outputs_dict)
 
     # def compute_sos_jacobian(self):
     #     '''
@@ -167,7 +139,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
     #         grad_price_wotaxes_vs_fs_prod = np.zeros(len_matrix)
     #
     #     for techno in technologies_list:
-    #         if techno.startswith('food_storage_applications'):
+    #         if techno.startswith('food_products'):
     #             self.set_partial_derivative_for_other_types(
     #                 ('carbon_utilization_type',
     #                  'FSA'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
@@ -435,7 +407,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []
@@ -458,21 +430,20 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-
         # if 'SA' in charts:
         #     new_chart = self.get_charts_FSA_consumption_and_production_energy()
         #     if new_chart is not None:
         #         instanciated_charts.append(new_chart)
 
-        if 'FSA' in charts:
-            new_chart = self.get_charts_FSA_consumption_and_production_energy()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-        if GlossaryEnergy.Capital in charts:
-            chart = self.get_capital_breakdown_by_technos()
-            instanciated_charts.append(chart)
-
+        # if 'FSA' in charts:
+        #     new_chart = self.get_charts_FSA_consumption_and_production_energy()
+        #     if new_chart is not None:
+        #         instanciated_charts.append(new_chart)
+    #
+    #     if GlossaryEnergy.Capital in charts:
+    #         chart = self.get_capital_breakdown_by_technos()
+    #         instanciated_charts.append(chart)
+    #
         if 'Consumption and production' in charts:
             new_charts = self.get_charts_consumption_and_production_mass_CO2()
             for new_chart in new_charts:
@@ -486,80 +457,79 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-
-        if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix( years_list)
-            for new_chart in new_charts:
-                if new_chart is not None:
-                    instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno(unit)
-            for new_chart in new_charts:
-                if new_chart is not None:
-                    instanciated_charts.append(new_chart)
-        if 'Food storage or FSA capture' in charts:
-            new_chart = self.get_chart_food_storage_limit()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
+    #
+    #     if 'Technology mix' in charts:
+    #         new_charts = self.get_chart_technology_mix( years_list)
+    #         for new_chart in new_charts:
+    #             if new_chart is not None:
+    #                 instanciated_charts.append(new_chart)
+    #         new_charts = self.get_charts_production_by_techno(unit)
+    #         for new_chart in new_charts:
+    #             if new_chart is not None:
+    #                 instanciated_charts.append(new_chart)
+    #     if 'Food storage or FSA capture' in charts:
+    #         new_chart = self.get_chart_food_storage_limit()
+    #         if new_chart is not None:
+    #             instanciated_charts.append(new_chart)
+    #
         return instanciated_charts
-
-    def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
-        chart_name = f'Detailed prices of {self.energy_name} mix over the years'
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/kWh]', chart_name=chart_name)
-
-        serie = InstanciatedSeries(
-            energy_prices[GlossaryEnergy.Years].values.tolist(),
-            energy_prices[self.energy_name].values.tolist(), f'{self.energy_name} mix price', 'lines')
-
-        new_chart.series.append(serie)
-
-        technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-
-        for technology in technology_list:
-            techno_price = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
-            serie = InstanciatedSeries(
-                energy_prices[GlossaryEnergy.Years].values.tolist(),
-                techno_price[technology].values.tolist(), f'{technology} price', 'lines')
-            new_chart.series.append(serie)
-
-        return new_chart
-
-    def get_chart_energy_price_in_dollar_kg(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
-        cut_energy_name = self.energy_name.split(".")
-        display_energy_name = cut_energy_name[len(
-            cut_energy_name) - 1].replace("_", " ")
-        chart_name = f'Detailed prices of {display_energy_name} mix over the years'
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
-        total_price = energy_prices[self.energy_name].values * \
-            self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
-        serie = InstanciatedSeries(
-            energy_prices[GlossaryEnergy.Years].values.tolist(),
-            total_price.tolist(), f'{display_energy_name} mix price', 'lines')
-
-        new_chart.series.append(serie)
-
-        technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-
-        for technology in technology_list:
-            techno_price = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
-            cut_technology_name = technology.split(".")
-            display_technology_name = cut_technology_name[len(
-                cut_technology_name) - 1].replace("_", " ")
-            techno_price_kg = techno_price[technology].values * \
-                self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
-            serie = InstanciatedSeries(
-                energy_prices[GlossaryEnergy.Years].values.tolist(),
-                techno_price_kg.tolist(), f'{display_technology_name} price', 'lines')
-            new_chart.series.append(serie)
-
-        return new_chart
-
+    #
+    # def get_chart_energy_price_in_dollar_kwh(self):
+    #     energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+    #     chart_name = f'Detailed prices of {self.energy_name} mix over the years'
+    #     new_chart = TwoAxesInstanciatedChart(
+    #         GlossaryEnergy.Years, 'Prices [$/kWh]', chart_name=chart_name)
+    #
+    #     serie = InstanciatedSeries(
+    #         energy_prices[GlossaryEnergy.Years].values.tolist(),
+    #         energy_prices[self.energy_name].values.tolist(), f'{self.energy_name} mix price', 'lines')
+    #
+    #     new_chart.series.append(serie)
+    #
+    #     technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+    #
+    #     for technology in technology_list:
+    #         techno_price = self.get_sosdisc_inputs(
+    #             f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
+    #         serie = InstanciatedSeries(
+    #             energy_prices[GlossaryEnergy.Years].values.tolist(),
+    #             techno_price[technology].values.tolist(), f'{technology} price', 'lines')
+    #         new_chart.series.append(serie)
+    #
+    #     return new_chart
+    #
+    # def get_chart_energy_price_in_dollar_kg(self):
+    #     energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+    #     cut_energy_name = self.energy_name.split(".")
+    #     display_energy_name = cut_energy_name[len(
+    #         cut_energy_name) - 1].replace("_", " ")
+    #     chart_name = f'Detailed prices of {display_energy_name} mix over the years'
+    #     new_chart = TwoAxesInstanciatedChart(
+    #         GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
+    #     total_price = energy_prices[self.energy_name].values * \
+    #         self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+    #     serie = InstanciatedSeries(
+    #         energy_prices[GlossaryEnergy.Years].values.tolist(),
+    #         total_price.tolist(), f'{display_energy_name} mix price', 'lines')
+    #
+    #     new_chart.series.append(serie)
+    #
+    #     technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+    #     for technology in technology_list:
+    #         techno_price = self.get_sosdisc_inputs(
+    #             f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
+    #         cut_technology_name = technology.split(".")
+    #         display_technology_name = cut_technology_name[len(
+    #             cut_technology_name) - 1].replace("_", " ")
+    #         techno_price_kg = techno_price[technology].values * \
+    #             self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+    #         serie = InstanciatedSeries(
+    #             energy_prices[GlossaryEnergy.Years].values.tolist(),
+    #             techno_price_kg.tolist(), f'{display_technology_name} price', 'lines')
+    #         new_chart.series.append(serie)
+    #
+    #     return new_chart
+    #
     def get_charts_consumption_and_production_mass_CO2(self):
         instanciated_charts = []
         # Charts for consumption and prod
@@ -567,7 +537,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
-        chart_name = f'CO2 captured<br>with input investments'
+        chart_name = f'CO2 utilization<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -597,7 +567,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
-        chart_name = f'resources used for CO2 capture <br>with input investments'
+        chart_name = f'resources used for CO2 utilization <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -635,7 +605,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
         cut_energy_name = self.energy_name.split(".")
         display_energy_name = cut_energy_name[len(
             cut_energy_name) - 1].replace("_", " ").capitalize()
-        chart_name = f'{display_energy_name} Energy consumption for CO2 capture<br>with input investments'
+        chart_name = f'{display_energy_name} Energy consumption for CO2 utilization<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -673,142 +643,144 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
         instanciated_charts.append(new_chart)
 
         return instanciated_charts
+    #
+    # def get_chart_comparison_carbon_intensity(self):
+    #     new_charts = []
+    #     chart_name = f'Comparison of carbon intensity due to production of {self.energy_name} technologies'
+    #     new_chart = TwoAxesInstanciatedChart(
+    #         GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
+    #
+    #     technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+    #
+    #     for technology in technology_list:
+    #         techno_emissions = self.get_sosdisc_inputs(
+    #             f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
+    #         year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
+    #         emission_list = techno_emissions[technology].values.tolist()
+    #         serie = InstanciatedSeries(
+    #             year_list, emission_list, technology, 'lines')
+    #         new_chart.series.append(serie)
+    #     new_charts.append(new_chart)
+    #     chart_name = f'Comparison of carbon intensity for {self.energy_name} technologies (production + use)'
+    #     new_chart = TwoAxesInstanciatedChart(
+    #         GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
+    #
+    #     co2_per_use = self.get_sosdisc_outputs(
+    #         'CO2_per_use')
+    #
+    #     for technology in technology_list:
+    #         techno_emissions = self.get_sosdisc_inputs(
+    #             f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
+    #         year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
+    #         emission_list = techno_emissions[technology].values + \
+    #             co2_per_use['CO2_per_use']
+    #         serie = InstanciatedSeries(
+    #             year_list, emission_list.tolist(), technology, 'lines')
+    #         new_chart.series.append(serie)
+    #
+    #     new_charts.append(new_chart)
+    #     return new_charts
+    #
+    # def get_chart_food_storage_limit(self):
+    #     '''
+    #     Chart to check flue gas production limit on flue gas capture
+    #     '''
+    #     carbon_utilization_type = self.get_sosdisc_outputs('carbon_utilization_type')
+    #     food_storage_production = self.get_sosdisc_inputs('food_storage_production')
+    #
+    #     chart_name = f'Type of carbon capture production and food storage production limit'
+    #     new_chart = TwoAxesInstanciatedChart(
+    #         GlossaryEnergy.Years, 'Production [Mt]', chart_name=chart_name)
+    #
+    #     serie = InstanciatedSeries(
+    #         food_storage_production[GlossaryEnergy.Years].values.tolist(),
+    #         food_storage_production[CarbonUtilization.food_storage_name].values.tolist(), 'Food storage production', 'lines')
+    #     new_chart.series.append(serie)
+    #
+    #     if 'food storage limited' in carbon_utilization_type:
+    #         serie = InstanciatedSeries(
+    #             carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
+    #             carbon_utilization_type['food storage'].values.tolist(), 'CO2 captured by food storage (by invest)', 'lines')
+    #         new_chart.series.append(serie)
+    #
+    #         serie = InstanciatedSeries(
+    #             carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
+    #             carbon_utilization_type['food storage limited'].tolist(), 'CO2 captured by food storage (limited)', 'lines')
+    #         new_chart.series.append(serie)
+    #     else:
+    #         serie = InstanciatedSeries(
+    #             carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
+    #             carbon_utilization_type['food storage'].values.tolist(), 'CO2 captured by food storage', 'lines')
+    #         new_chart.series.append(serie)
+    #
+    #     serie = InstanciatedSeries(
+    #         carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
+    #         carbon_utilization_type['FSA'].values.tolist(), 'CO2 captured by FSA', 'lines')
+    #     new_chart.series.append(serie)
+    #
+    #     return new_chart
+    #
 
-    def get_chart_comparison_carbon_intensity(self):
-        new_charts = []
-        chart_name = f'Comparison of carbon intensity due to production of {self.energy_name} technologies'
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
-
-        technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-
-        for technology in technology_list:
-            techno_emissions = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
-            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
-            emission_list = techno_emissions[technology].values.tolist()
-            serie = InstanciatedSeries(
-                year_list, emission_list, technology, 'lines')
-            new_chart.series.append(serie)
-        new_charts.append(new_chart)
-        chart_name = f'Comparison of carbon intensity for {self.energy_name} technologies (production + use)'
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
-
-        co2_per_use = self.get_sosdisc_outputs(
-            'CO2_per_use')
-
-        for technology in technology_list:
-            techno_emissions = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
-            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
-            emission_list = techno_emissions[technology].values + \
-                co2_per_use['CO2_per_use']
-            serie = InstanciatedSeries(
-                year_list, emission_list.tolist(), technology, 'lines')
-            new_chart.series.append(serie)
-
-        new_charts.append(new_chart)
-        return new_charts
-
-    def get_chart_food_storage_limit(self):
-        '''
-        Chart to check flue gas production limit on flue gas capture
-        '''
-        carbon_utilization_type = self.get_sosdisc_outputs('carbon_utilization_type')
-        food_storage_production = self.get_sosdisc_inputs('food_storage_production')
-
-        chart_name = f'Type of carbon capture production and food storage production limit'
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Production [Mt]', chart_name=chart_name)
-
-        serie = InstanciatedSeries(
-            food_storage_production[GlossaryEnergy.Years].values.tolist(),
-            food_storage_production[CarbonUtilization.food_storage_name].values.tolist(), 'Food storage production', 'lines')
-        new_chart.series.append(serie)
-
-        if 'food storage limited' in carbon_utilization_type:
-            serie = InstanciatedSeries(
-                carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
-                carbon_utilization_type['food storage'].values.tolist(), 'CO2 captured by food storage (by invest)', 'lines')
-            new_chart.series.append(serie)
-
-            serie = InstanciatedSeries(
-                carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
-                carbon_utilization_type['food storage limited'].tolist(), 'CO2 captured by food storage (limited)', 'lines')
-            new_chart.series.append(serie)
-        else:
-            serie = InstanciatedSeries(
-                carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
-                carbon_utilization_type['food storage'].values.tolist(), 'CO2 captured by food storage', 'lines')
-            new_chart.series.append(serie)
-
-        serie = InstanciatedSeries(
-            carbon_utilization_type[GlossaryEnergy.Years].values.tolist(),
-            carbon_utilization_type['FSA'].values.tolist(), 'CO2 captured by FSA', 'lines')
-        new_chart.series.append(serie)
-
-        return new_chart
-
-
-    def get_charts_FSA_consumption_and_production_energy(self):
-
-        instanciated_charts = []
-
-        outputs_dict = self.get_sosdisc_outputs()
-
-        # Charts for consumption and prod
-        energy_consumption = outputs_dict['consumption_fsa']
-        energy_production = outputs_dict['production_fsa']
-        new_chart = None
-        # if energy_consumption != None and energy_production != None:
-        scaling_factor_energy_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_energy_consumption')
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
-            'scaling_factor_energy_production')
-        cut_energy_name = self.energy_name.split(".")
-        display_energy_name = cut_energy_name[len(
-            cut_energy_name) - 1].replace("_", " ").capitalize()
-        chart_name = f'{display_energy_name} FSA Energy consumption for CO2 capture<br>with input investments'
-
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
-                                             chart_name=chart_name, stacked_bar=True)
-
-        for reactant in energy_consumption.columns:
-
-            if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
-                energy_twh = - \
-                    energy_consumption[reactant].values * \
-                    scaling_factor_energy_consumption
-                legend_title = f'{reactant} consumption'.replace(
-                    "(TWh)", "")
-                serie = InstanciatedSeries(
-                    energy_consumption[GlossaryEnergy.Years].values.tolist(),
-                    energy_twh.tolist(), legend_title, 'bar')
-
-                new_chart.series.append(serie)
-
-        for products in energy_production.columns:
-            # We do not plot technology H2 production on this graph
-            # Pie charts are here to see difference of production between
-            # technologies
-
-            if products != GlossaryEnergy.Years and products.endswith('(kWh)') and self.energy_name not in products:
-                energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
-                legend_title = f'{products} production'.replace(
-                    "(TWh)", "")
-                serie = InstanciatedSeries(
-                    energy_production[GlossaryEnergy.Years].values.tolist(),
-                    energy_twh.tolist(), legend_title, 'bar')
-
-                new_chart.series.append(serie)
-
-
-
-        instanciated_charts.append(new_chart)
-
-        return new_chart
+    # def get_charts_FSA_consumption_and_production_energy(self):
+    #
+    #     instanciated_charts = []
+    #
+    #     outputs_dict = self.get_sosdisc_outputs()
+    #
+    #     # Charts for consumption and prod
+    #     print('')
+    #     print(outputs_dict.keys())
+    #     energy_consumption = outputs_dict['consumption_fsa']
+    #     energy_production = outputs_dict['production_fsa']
+    #     new_chart = None
+    #     # if energy_consumption != None and energy_production != None:
+    #     scaling_factor_energy_consumption = self.get_sosdisc_inputs(
+    #         'scaling_factor_energy_consumption')
+    #     scaling_factor_energy_production = self.get_sosdisc_inputs(
+    #         'scaling_factor_energy_production')
+    #     cut_energy_name = self.energy_name.split(".")
+    #     display_energy_name = cut_energy_name[len(
+    #         cut_energy_name) - 1].replace("_", " ").capitalize()
+    #     chart_name = f'{display_energy_name} FSA Energy consumption for CO2 capture<br>with input investments'
+    #
+    #     new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
+    #                                          chart_name=chart_name, stacked_bar=True)
+    #
+    #     for reactant in energy_consumption.columns:
+    #
+    #         if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
+    #             energy_twh = - \
+    #                 energy_consumption[reactant].values * \
+    #                 scaling_factor_energy_consumption
+    #             legend_title = f'{reactant} consumption'.replace(
+    #                 "(TWh)", "")
+    #             serie = InstanciatedSeries(
+    #                 energy_consumption[GlossaryEnergy.Years].values.tolist(),
+    #                 energy_twh.tolist(), legend_title, 'bar')
+    #
+    #             new_chart.series.append(serie)
+    #
+    #     for products in energy_production.columns:
+    #         # We do not plot technology H2 production on this graph
+    #         # Pie charts are here to see difference of production between
+    #         # technologies
+    #
+    #         if products != GlossaryEnergy.Years and products.endswith('(kWh)') and self.energy_name not in products:
+    #             energy_twh = energy_production[products].values * \
+    #                 scaling_factor_energy_production
+    #             legend_title = f'{products} production'.replace(
+    #                 "(TWh)", "")
+    #             serie = InstanciatedSeries(
+    #                 energy_production[GlossaryEnergy.Years].values.tolist(),
+    #                 energy_twh.tolist(), legend_title, 'bar')
+    #
+    #             new_chart.series.append(serie)
+    #
+    #
+    #
+    #     instanciated_charts.append(new_chart)
+    #
+    #     return new_chart
 
     # def get_charts_FSA_consumption_and_production_energy(self):
     #

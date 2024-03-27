@@ -23,7 +23,7 @@ from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import
 class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'Energy Technology Mix - Solid Fuel Mix',
+        'label': 'Energy Technology Mix - Solid fuel_production Mix',
         'description': '',
         'category': '',
         'version': '',

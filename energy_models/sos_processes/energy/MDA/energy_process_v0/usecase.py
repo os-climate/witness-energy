@@ -38,7 +38,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
-from energy_models.core.stream_type.carbon_models.food_storage import FoodStorage
+from energy_models.core.stream_type.carbon_models.food_products import FoodProducts
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -73,7 +73,7 @@ from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase im
 )
 
 from energy_models.sos_processes.energy.techno_mix.carbon_utilization_mix.usecase import (
-    DEFAULT_FOOD_STORAGE_LIST,
+    DEFAULT_FOOD_PRODUCTS_LIST,
 )
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -628,7 +628,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.FlueGasCapture,
             ]
             techno_list_carbon_utilization = [
-                GlossaryEnergy.FoodStorageApplications
+                GlossaryEnergy.FoodProducts
             ]
             techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
             invest_percentage_per_techno = {GlossaryEnergy.Years: self.years}
@@ -660,7 +660,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
-            f"{self.study_name}.max_mda_iter": 50,
+            f"{self.study_name}.max_mda_iter": 2,
             f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
             f"{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage": np.concatenate(
                 (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None
@@ -700,11 +700,11 @@ class Study(EnergyStudyManager):
             ] = flue_gas_list
 
         food_storage_list = [
-            techno for techno in DEFAULT_FOOD_STORAGE_LIST if techno in possible_technos
+            techno for techno in DEFAULT_FOOD_PRODUCTS_LIST if techno in possible_technos
         ]
         if CarbonUtilization.name in DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonUtilization.name}.{FoodStorage.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonUtilization.name}.{FoodProducts.node_name}.{GlossaryEnergy.techno_list}"
             ] = food_storage_list
 
 

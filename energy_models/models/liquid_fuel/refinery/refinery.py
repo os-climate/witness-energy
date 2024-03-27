@@ -67,7 +67,7 @@ class Refinery(LiquidFuelTechno):
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] /
             self.cost_details['efficiency'])
 
-        # in kWh of hydrogen per kWh of fuel
+        # in kWh of hydrogen per kWh of fuel_production
         self.cost_details[GaseousHydrogen.name] = list(
             self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details[
                                                       'efficiency']
@@ -235,7 +235,7 @@ class Refinery(LiquidFuelTechno):
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account  CO2 from electricity/fuel production
+        Need to take into account  CO2 from electricity/fuel_production production
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \

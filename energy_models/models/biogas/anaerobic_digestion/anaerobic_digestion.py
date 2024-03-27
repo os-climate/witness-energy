@@ -31,7 +31,7 @@ class AnaerobicDigestion(BioGasTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
+        # in kwh of fuel_production by kwh of H2
 
         # Wet biomass_needs are in kg/m^3
         self.cost_details['wet_biomass_needs'] = self.techno_infos_dict['wet_biomass_needs'] / \

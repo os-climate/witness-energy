@@ -68,8 +68,8 @@ class Nuclear(ElectricityTechno):
         # https://www.euronuclear.org/glossary/fuel-comparison/
 
         '''
-        One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
-        => 1 kg of fuel => 8.33 kg of ore
+        One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel_production
+        => 1 kg of fuel_production => 8.33 kg of ore
         '''
         # FOR ALL_RESOURCES DISCIPLINE
 
@@ -111,14 +111,14 @@ class Nuclear(ElectricityTechno):
     # @staticmethod
     def get_theoretical_uranium_fuel_needs(self):
         """
-        Get Uranium fuel needs in kg Uranium fuel /kWh electricty
+        Get Uranium fuel_production needs in kg Uranium fuel_production /kWh electricty
         World Nuclear Association
         https://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx
         * Prices are approximate and as of March 2017.
-        At 45,000 MWd/t burn-up this gives 360,000 kWh electrical per kg, hence fuel cost = 0.39 ¢/kWh.
+        At 45,000 MWd/t burn-up this gives 360,000 kWh electrical per kg, hence fuel_production cost = 0.39 ¢/kWh.
 
-        One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
-        => 1 kg of fuel => 8.33 kg of ore
+        One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel_production
+        => 1 kg of fuel_production => 8.33 kg of ore
         With a complete  fission, approx around 24,000,000 kWh of heat can be generated from 1 kg of uranium-235
         """
         uranium_fuel_needs = 1.0 / (24000000.00 * self.techno_infos_dict[

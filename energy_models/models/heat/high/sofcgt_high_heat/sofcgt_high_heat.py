@@ -69,9 +69,13 @@ class SofcgtHighHeat(highheattechno):
        
         
         #Production
-        self.production_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] * \
-                                                                                     (1-self.cost_details['efficiency'])/(self.cost_details['efficiency'])
+        self.production_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.production_detailed[
+                                                                                           f'{hightemperatureheat.name} ({self.product_energy_unit})'] * \
+                                                                                       (1 - self.cost_details[
+                                                                                           'efficiency']) / (
+                                                                                       self.cost_details['efficiency'])
     
         
     def get_theoretical_hydrogen_needs(self):

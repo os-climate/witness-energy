@@ -217,14 +217,6 @@ class Heat_Mix_Discipline(SoSWrapp):
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
         for energy in energy_list:
-            print('')
-            print(outputs_dict[GlossaryEnergy.EnergyProductionValue][GlossaryEnergy.EnergyProductionValue].to_string())
-            print(inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][energy].to_string())
-            # print('')
-            # print(outputs_dict[GlossaryEnergy.EnergyProductionValue].to_string())
-            slope = outputs_dict[GlossaryEnergy.EnergyProductionValue][GlossaryEnergy.EnergyProductionValue] / \
-                    inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][energy]
-            print(ones)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
                 (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy), ones)  # ,identity * 1e-3

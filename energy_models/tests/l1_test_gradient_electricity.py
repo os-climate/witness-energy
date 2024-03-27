@@ -194,7 +194,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             columns=[GlossaryEnergy.Years, 'water'])
         self.resources_price[GlossaryEnergy.Years] = self.years
         self.resources_price['water'] = Water.data_energy_dict['cost_now']
-        self.resources_price['uranium fuel'] = 1390.0e3
+        self.resources_price['uranium fuel_production'] = 1390.0e3
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')

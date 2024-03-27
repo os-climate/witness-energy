@@ -28,7 +28,7 @@ warnings.filterwarnings("ignore")
 
 class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
     """
-    Ethanol Fuel jacobian test class
+    Ethanol fuel_production jacobian test class
     """
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True

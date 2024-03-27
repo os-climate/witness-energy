@@ -33,7 +33,7 @@ warnings.filterwarnings("ignore")
 
 class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
     """
-    Hydrotreated Vegetable Oil Fuel jacobian test class
+    Hydrotreated Vegetable Oil fuel_production jacobian test class
     """
 
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True

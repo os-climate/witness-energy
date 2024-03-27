@@ -24,7 +24,7 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_storage_applications.algae_cultivation.algae_cultivation_disc import AlgaeCultivationDiscipline
+from energy_models.models.carbon_utilization.fuel_production.algae_cultivation.algae_cultivation_disc import AlgaeCultivationDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -133,7 +133,7 @@ class AlgaeCultivationTestCase(unittest.TestCase):
     def test_03_AlgaeC_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'food_storage_applications.AlgaeCultivation'
+        self.model_name = 'fuel_production.AlgaeCultivation'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -141,7 +141,7 @@ class AlgaeCultivationTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_utilization.food_storage_applications.algae_cultivation.algae_cultivation_disc.AlgaeCultivationDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.fuel_production.algae_cultivation.algae_cultivation_disc.AlgaeCultivationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

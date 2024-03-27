@@ -107,10 +107,10 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
 
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
-    # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas
-    # 750,000 t/year of liquid fuel
-    # 8 plants for gaseous fuel production (SNG and H2), with global
-    # production of gaseous fuel from biomass-derived syngas 3.2e8 Nm3/year
+    # 24 plants for liquid fuel_production production with global production of liquid fuel_production from biomass-derived syngas
+    # 750,000 t/year of liquid fuel_production
+    # 8 plants for gaseous fuel_production production (SNG and H2), with global
+    # production of gaseous fuel_production from biomass-derived syngas 3.2e8 Nm3/year
     syngas_needs_for_ft = 1.883
     initial_production = 0.75 * \
                          LiquidFuel.data_energy_dict['calorific_value'] * syngas_needs_for_ft + 3.2e8 * \

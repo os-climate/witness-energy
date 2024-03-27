@@ -55,9 +55,9 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                             'carbon_utilization.food_storage_applications.BeverageCarbonation': ('float', None, True),
-                                                             'carbon_utilization.food_storage_applications.CarbonatedWater': ('float', None, True),
-                                                             'carbon_utilization.food_storage_applications.AlgaeCultivation': ('float', None, True),
+                                                             'carbon_utilization.food_products.BeverageCarbonation': ('float', None, True),
+                                                             'carbon_utilization.food_products.CarbonatedWater': ('float', None, True),
+                                                             'carbon_utilization.fuel_production.AlgaeCultivation': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
@@ -351,7 +351,7 @@ class IndependentInvestDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []

@@ -50,7 +50,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                               'dataframe_descriptor': {
                                                                   GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                   'demand': ('float', None, True),
-                                                                  'production fuel.ethanol (TWh)': ('float', None, True),
+                                                                  'production fuel_production.ethanol (TWh)': ('float', None, True),
                                                                   'production heat.hightemperatureheat (TWh)': ('float', None, True),
                                                                   'production heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                                   'production heat.lowtemperatureheat (TWh)': ('float', None, True),
@@ -154,7 +154,7 @@ class EnergyDemandDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []
@@ -214,7 +214,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                              chart_name=chart_name, stacked_bar=True)
 
         note = {
-            'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
+            'Transport energies': 'Liquid hydrogen, liquid fuel_production, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
             [GlossaryEnergy.TransportDemandValue, GlossaryEnergy.EnergyProductionDetailedValue])

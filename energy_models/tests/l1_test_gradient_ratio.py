@@ -1179,7 +1179,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         coupled_inputs = [
-            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+            # 'Test_Ratio.EnergyMix.fuel_production.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
             # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
             f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.EnergyConsumptionValue}']
         coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]

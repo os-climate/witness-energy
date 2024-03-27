@@ -19,16 +19,16 @@ import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_utilization_techno_disc import CUTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_storage_applications.carbonated_water.carbonated_water import CarbonatedWater
+from energy_models.models.carbon_utilization.food_products.beverage_carbonation.beverage_carbonation import BeverageCarbonation
 
 
-class CarbonatedWaterDiscipline(CUTechnoDiscipline):
+class BeverageCarbonationDiscipline(CUTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
     # ontology information
     _ontology_data = {
-        'label': 'Carbonated Water Model',
+        'label': 'Beverage Carbonation Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -39,11 +39,9 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'food_storage_applications.CarbonatedWater'
-    # https://patents.google.com/patent/US6060103A/en
-    # https://drinkheartwater.com/blog/does-bottled-water-go-bad
-    # https://en.wikipedia.org/wiki/Carbonated_water
-    lifetime = 35        #2
+    techno_name = 'food_products.BeverageCarbonation'
+    # https://www.vedantu.com/chemistry/carbonation
+    lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
                                  'reaction': 'CO2 + H2O <--> H2CO3',
@@ -51,15 +49,16 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                  # Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply.
                                  # Energy Procedia, 23, pp.381-390.
                                  # Opex % : fig 5 - 6 :
-                                 'Opex_percentage': 0.35,  #https://www.atlantis-press.com/article/125971500.pdf
-                                 'elec_demand': 3.19,      # https://www.google.com/search?q=carbonated+water+process+how+much+electricity+used+in+kwh+&sca_esv=b9eca7660d2a1203&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn0_mLwbL4I9MG04Nw-xDXYROrfmkdg%3A1707333796755&ei=pNjDZafhLdKeseMP8OGy6Ao&ved=0ahUKEwinw9-D-pmEAxVST2wGHfCwDK0Q4dUDCBA&uact=5&oq=carbonated+water+process+how+much+electricity+used+in+kwh+&gs_lp=Egxnd3Mtd2l6LXNlcnAiOmNhcmJvbmF0ZWQgd2F0ZXIgcHJvY2VzcyBob3cgbXVjaCBlbGVjdHJpY2l0eSB1c2VkIGluIGt3aCBIAFAAWABwAHgBkAEAmAEAoAEAqgEAuAEDyAEA-AEB4gMEGAAgQQ&sclient=gws-wiz-serp#ip=1
+                                 # https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
+                                 'Opex_percentage': 0.29,   # https://www.justfooderp.com/docs/JustFood-Operational-Excellence.pdf
+                                 'elec_demand': 2.0,        # https://www.news-medical.net/news/20200206/New-technology-captures-CO2-from-the-atmosphere-for-use-in-beverage-carbonation.aspx
                                  'elec_demand_unit': 'kWh/kg',
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
-                                 'heat_demand': 0.00026,     # https://pubs.acs.org/doi/10.1021/acssuschemeng.0c08561
+                                 'heat_demand': 1.6,        # https://researchmgt.monash.edu/ws/portalfiles/portal/330629911/323332938_oa.pdf
                                  'heat_demand_unit': 'kWh/kg',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
@@ -68,12 +67,11 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  # 0.6577,  # 730 euro/tCO2 in Fashi2019 Capex
                                  # initial at year 2020 1.11 euro/$
-                                 'Capex_init': 0.12,                         # https://www.sciencedirect.com/topics/engineering/mineral-carbonation
-                                 'Capex_init_unit': '$/kgCO2',
-                                 'efficiency': 0.9,                          # https://www.scripps.org/news_items/5224-are-carbonated-beverages-harming-your-health
-                                                                             # https://www.total-water.com/blog/improving-efficiency-purified-water-treatment-system/
-                                 'CO2_capacity_peryear': 230E+9,             # https://www.iea.org/reports/putting-co2-to-use
-                                 'CO2_capacity_peryear_unit': 'kg CO2/year', # https://www.google.com/search?q=230+million+tonnes+to+kg&sca_esv=eff03c613f9494ac&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn08lfyUxK-_CvU8T6kZoS_FZ_BFOXg%3A1707412271742&ei=LwvFZef9LM2cseMPifO12AY&oq=230+million+to+to+kg&gs_lp=Egxnd3Mtd2l6LXNlcnAiFDIzMCBtaWxsaW9uIHRvIHRvIGtnKgIIATIKECEYChigARjDBDIKECEYChigARjDBEisZ1DBBlj5UXABeAGQAQCYAe8BoAHYDqoBBjAuMTMuMbgBAcgBAPgBAcICChAAGEcY1gQYsAPCAg0QABiABBiKBRhDGLADwgIGEAAYBxgewgIKEAAYgAQYigUYQ8ICCBAAGAcYHhgPwgIKEAAYCBgHGB4YD8ICCxAAGIAEGIoFGIYDwgIGEAAYHhgPwgIIEAAYHhgNGA_CAgoQABgIGB4YDxgKwgIHEAAYgAQYDcICDBAhGAoYoAEYwwQYCsICBhAhGAoYCsICCBAhGKABGMME4gMEGAAgQYgGAZAGCg&sclient=gws-wiz-serp
+                                 'Capex_init': 0.026,                        # page 84 # https://www.globalccsinstitute.com/archive/hub/publications/14026/accelerating-uptake-ccs-industrial-use-captured-carbon-dioxide.pdf
+                                 'Capex_init_unit': '$/kgCO2',               # https://www.google.com/search?q=t+to+kg&rlz=1C1UEAD_enIN1000IN1000&oq=t+to+&gs_lcrp=EgZjaHJvbWUqDAgBEAAYFBiHAhiABDIGCAAQRRg5MgwIARAAGBQYhwIYgAQyBwgCEAAYgAQyBwgDEAAYgAQyBggEEEUYPDIGCAUQRRg8MgYIBhBFGDwyBggHEEUYQdIBCDU2OTFqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8
+                                 'efficiency': 0.97,                         # https://www.hccb.in/blog/innovations/a-leap-forward-in-beverage-carbonation
+                                 'CO2_capacity_peryear': 35000E+9,           # https://www.sciencedirect.com/science/article/pii/S2352484722025872
+                                 'CO2_capacity_peryear_unit': 'kg CO2/year', # https://www.convert-measurement-units.com/conversion-calculator.php
                                  'real_factor_CO2': 1.0,
                                  GlossaryEnergy.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
@@ -87,26 +85,18 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                  # GJ/tCO2 in practice (Climeworks)
                                  # according to Vo2018 4GJ/tCO2 or Fasihi2016:
                                  # 1.51 in practice
-                                 'enthalpy': 3.19,
+                                 'enthalpy': 2.0,  # https://www.csiro.au/en/news/all/news/2020/february/heres-cheers-to-a-new-use-for-co2-from-the-atmosphere
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
-                                 'water_demand': 1.32,  # https://en.wikipedia.org/wiki/Bottled_water
+                                 'water_demand': 2.02,  # https://www.google.com/search?q=water+required+in+liter+to+form+1+liter+of+beverage+carbonated+drinks&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+liter+to+form+1+liter+of+beverage+carbona&gs_lcrp=EgZjaHJvbWUqCQgCECEYChigATIGCAAQRRg5MgkIARAhGAoYoAEyCQgCECEYChigAdIBCjExNzgzMWowajeoAgCwAgA&sourceid=chrome&ie=UTF-8
                                  'water_demand_unit': 'l/l',
-                                 'co2_needs': 1,      # https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carbonation
+                                 'co2_needs': 1,        # https://www.google.com/search?q=co2+needs+to+produce+1+liter+of+beverage+bottle&sca_esv=40ad471a4e6b196f&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn0_pRM6bqIEnQdjSjw_8Y3sXh8-YOw%3A1707821558392&ei=9knLZZi_F4aQnesP-YuXaA&oq=co2+needs+to+produce+1+liter+of+beverage+&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNvMiBuZWVkcyB0byBwcm9kdWNlIDEgbGl0ZXIgb2YgYmV2ZXJhZ2UgKgIIAzIFECEYoAEyBRAhGKABMgUQIRigATIFECEYoAFIv0xQoQNY6CBwAXgBkAEAmAGwAaAB2BOqAQQwLjE4uAEByAEA-AEBwgIKEAAYRxjWBBiwA8ICBBAjGCfCAgQQIRgVwgIHECEYChigAeIDBBgAIEGIBgGQBgg&sclient=gws-wiz-serp
                                  'co2_needs_unit': 'l/l',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  }
-
-    # source :
-    # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
-    # Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply.
-    # Energy Procedia, 23, pp.381-390.
-    # Buijs, W. and De Flart, S., 2017.
-    # Direct air capture of CO2 with an amine resin: A molecular modeling study of the CO2 capturing process.
-    # Industrial & engineering chemistry research, 56(43), pp.12297-12304.
 
     techno_info_dict = techno_infos_dict_default
 
@@ -128,7 +118,7 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                                          0.0]
                                              })
     # use the same flue gas ratio as gas turbine one
-    FOOD_STORAGE_RATIO = np.array([0.0350])
+    FOOD_PRODUCTS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -150,7 +140,7 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CarbonatedWater(self.techno_name)
+        self.techno_model = BeverageCarbonation(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):

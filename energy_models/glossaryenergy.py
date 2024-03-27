@@ -78,7 +78,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
-    FoodStorageMean = "food_storage_mean"
+    FoodProductsMean = "food_products_mean"
+    FuelProductionMean = "fuel_production_mean"
     DirectAirMean = "direct_air_mean"
     MarginValue = "margin"
     CO2EmissionsValue = "CO2_emissions"
@@ -104,8 +105,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
     CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
-    FoodStorageApplications = "food_storage_applications.FoodStorageApplicationsTechno"
-    food_storage_applications = 'food_storage_applications'
+    FoodProducts = "food_products.FoodProductsTechnoDiscipline"
+    food_products = 'food_products'
+    fuel_production = 'fuel_production'
 
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 

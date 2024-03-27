@@ -36,7 +36,7 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
 class FuelDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
-        'label': 'Fuel Energy Model',
+        'label': 'fuel_production Energy Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -147,7 +147,7 @@ class FuelDiscipline(SoSWrapp):
         energy_prices[GlossaryEnergy.fuel] = 0
         energy_prices['fuel_production'] = 0
 
-        # loop over fuel energies
+        # loop over fuel_production energies
         for energy in self.energy_list:
             energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.EnergyPricesValue}')
             energy_techno_prices = self.get_sosdisc_inputs(

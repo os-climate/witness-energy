@@ -30,7 +30,7 @@ class CoalGasification(SyngasTechno):
         Compute primary costs which depends on the technology 
         """
 
-        # in kwh of fuel by kwh of syngas
+        # in kwh of fuel_production by kwh of syngas
 
         self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
 

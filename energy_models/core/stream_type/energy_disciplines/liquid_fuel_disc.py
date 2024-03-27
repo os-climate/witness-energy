@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class LiquidFuelDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Liquid Fuel Energy Model',
+        'label': 'Liquid fuel_production Energy Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

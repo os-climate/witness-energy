@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Hydrotreated Oil Fuel Technology Model',
+        'label': 'Hydrotreated Oil fuel_production Technology Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

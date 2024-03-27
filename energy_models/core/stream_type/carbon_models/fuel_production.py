@@ -22,15 +22,15 @@ from energy_models.core.stream_type.carbon_models.carbon_utilization import Carb
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class FoodStorage(BaseStream):
-    name = CarbonUtilization.food_storage_name
-    node_name = 'food_storage_applications'
-    unit = 'Mt'
+class FuelProduction(BaseStream):
+    name = CarbonUtilization.fuel_production_name
+    node_name = 'fuel_production'
+    unit = 'TWh'
 
     def __init__(self, name):
         BaseStream.__init__(self, name)
-        self.food_storage_ratio_dict = {}
-        self.food_storage_ratio_mean = pd.DataFrame()
+        self.fuel_production_ratio_dict = {}
+        self.fuel_production_ratio_mean = pd.DataFrame()
 
     def configure_parameters(self, inputs_dict):
         BaseStream.configure_parameters(self, inputs_dict)
@@ -40,7 +40,7 @@ class FoodStorage(BaseStream):
         for techno in self.subelements_list:
             self.sub_production_dict[techno] = inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] * \
                 inputs_dict['scaling_factor_techno_production']
-            self.food_storage_ratio_dict[techno] = inputs_dict[f'{techno}.food_storage_co2_ratio'][0]
+            self.fuel_production_ratio_dict[techno] = inputs_dict[f'{techno}.fuel_production_co2_ratio'][0]
 
     def compute_production(self):
         '''
@@ -60,34 +60,34 @@ class FoodStorage(BaseStream):
 
     def compute(self, inputs, exp_min=True):
         '''
-        Compute function which compute food storage production and food storage mean ratio
+        Compute function which compute fuel products production and fuel Products mean ratio
         '''
         self.compute_production()
-        self.compute_food_storage_ratio()
+        self.compute_fuel_production_ratio()
 
-        return self.food_storage_ratio_mean
+        return self.fuel_production_ratio_mean
 
-    def get_total_food_storage_production(self):
+    def get_total_fuel_production_production(self):
         '''
-        Return a df with total food storage production and years
+        Return a df with total fuel products production and years
         '''
         return self.production[[GlossaryEnergy.Years, self.name]]
 
-    def get_total_food_storage_prod_ratio(self):
+    def get_total_fuel_production_prod_ratio(self):
         '''
-        Return mix weights which is food storage production ratio
+        Return mix weights which is fuel products production ratio
         '''
         return self.mix_weights
 
-    def compute_food_storage_ratio(self):
+    def compute_fuel_production_ratio(self):
         """
-        Method to compute food storage ratio using production by
+        Method to compute fuel products ratio using production by
         """
-        self.food_storage_ratio_mean = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.FoodStorageMean: 0.0})
+        self.fuel_production_ratio_mean = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.FuelProductionMean: 0.0})
 
         for techno in self.subelements_list:
-            self.mix_weights[techno] = self.production[f'{self.name} {techno} (Mt)'] / \
+            self.mix_weights[techno] = self.production[f'{self.name} {techno} (TWh)'] / \
                 self.production[f'{self.name}']
-            self.food_storage_ratio_mean[GlossaryEnergy.FoodStorageMean] += self.food_storage_ratio_dict[techno] *  \
+            self.fuel_production_ratio_mean[GlossaryEnergy.FuelProductionMean] += self.fuel_production_ratio_dict[techno] *  \
                 self.mix_weights[techno].values

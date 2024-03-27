@@ -672,7 +672,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []

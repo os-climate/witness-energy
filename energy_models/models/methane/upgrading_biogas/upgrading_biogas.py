@@ -33,7 +33,7 @@ class UpgradingBiogas(MethaneTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
+        # in kwh of fuel_production by kwh of H2
 
         self.cost_details['biogas_needs'] = self.get_biogas_needs()
 

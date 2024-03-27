@@ -1306,7 +1306,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []
@@ -1442,7 +1442,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                               energy_production_detailed[f'production {GlossaryEnergy.electricity} (TWh)'].values
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values),
                                        list(sum_solid_fuel_elec),
-                                       'Sum of solid fuel and electricity productions', 'lines')
+                                       'Sum of solid fuel_production and electricity productions', 'lines')
         new_chart.series.append(new_serie)
 
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(

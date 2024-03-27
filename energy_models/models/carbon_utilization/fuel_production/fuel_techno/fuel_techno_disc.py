@@ -20,11 +20,10 @@ import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_utilization_techno_disc import CUTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_storage_applications.food_storage_applications_techno.food_storage_applications_techno import \
-    FoodStorageApplicationsTechno
+from energy_models.models.carbon_utilization.fuel_production.fuel_techno.fuel_techno import FuelTechno
 
 
-class FoodStorageApplicationsTechnoDiscipline(CUTechnoDiscipline):
+class FuelProductionTechnoDiscipline(CUTechnoDiscipline):
     """
     Generic Direct Air Capture technology for WITNESS Coarse process
     Modeled after amine scrubbing
@@ -43,7 +42,7 @@ class FoodStorageApplicationsTechnoDiscipline(CUTechnoDiscipline):
         'icon': 'fa-solid fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'food_storage_applications.FoodStorageApplicationsTechno'
+    techno_name = 'food_products.FoodProductsTechnoDiscipline'
     lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
@@ -97,7 +96,7 @@ class FoodStorageApplicationsTechnoDiscipline(CUTechnoDiscipline):
                                              })
 
     # use the same flue gas ratio as gas turbine one
-    FOOD_STORAGE_RATIO = np.array([0.0350])
+    FUEL_PRODUCTION_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -119,7 +118,7 @@ class FoodStorageApplicationsTechnoDiscipline(CUTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = FoodStorageApplicationsTechno(self.techno_name)
+        self.techno_model = FuelTechno(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):

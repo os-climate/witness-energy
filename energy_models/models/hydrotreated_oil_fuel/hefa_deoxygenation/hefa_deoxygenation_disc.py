@@ -44,7 +44,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     techno_name = 'HefaDeoxygenation'
     energy_name = HydrotreatedOilFuel.name
     # Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017.
-    # Techno-economic and resource analysis of hydroprocessed renewable jet fuel.
+    # Techno-economic and resource analysis of hydroprocessed renewable jet fuel_production.
     # Biotechnology for biofuels, 10(1), pp.1-16.
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
     lifetime = 30  # years
@@ -70,13 +70,13 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
                       / (48.64 * 1e6),
         # Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017.
-        # Techno-economic and resource analysis of hydroprocessed renewable jet fuel.
+        # Techno-economic and resource analysis of hydroprocessed renewable jet fuel_production.
         # Biotechnology for biofuels, 10(1), pp.1-16.
         # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3
         # Mean value computed for production volume (mean value)
         'Capex_init_unit': '$/kg',
 
-        # Diederichs, G.W., 2015. Techno-economic assessment of processes that produce jet fuel from plant-derived sources
+        # Diederichs, G.W., 2015. Techno-economic assessment of processes that produce jet fuel_production from plant-derived sources
         # (Doctoral dissertation, Stellenbosch: Stellenbosch University).
         # https://core.ac.uk/download/pdf/37440495.pdf
         'efficiency': 0.753,

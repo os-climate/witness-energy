@@ -154,6 +154,7 @@ class Study(EnergyMixStudyManager):
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 10.0,
+                                      'heat.hightemperatureheat': 10.0,
                                       'amine': 1300.0,
                                       'potassium': 50.0,
                                       'calcium': 85.0,
@@ -181,7 +182,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.0})
 
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, GlossaryEnergy.electricity: 0.0, 'calcium': 0.0,
+            {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, GlossaryEnergy.electricity: 0.0, 'heat.hightemperatureheat': 0.0,'calcium': 0.0,
              GlossaryEnergy.methane: 0.2})
 
         coal_gen_prod = pd.DataFrame({GlossaryEnergy.Years: years,

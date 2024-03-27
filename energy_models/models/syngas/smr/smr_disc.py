@@ -57,7 +57,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'high_heat_production_unit': 'TWh/TWh',
                                  'useful_heat_recovery_factor': 0.8,
                                  # Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017.
-                                 # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell.
+                                 # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel_production cell.
                                  # Journal of Power Sources, 364, pp.41-51.
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryEnergy.Years,

@@ -45,7 +45,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = 'Electrolysis.PEM'
-    # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
+    # fuel_production Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY
     # https://www.fch.europa.eu/news/launch-refhyne-worlds-largest-electrolysis-plant-rhineland-refinery
     construction_delay = 2  # year
@@ -74,7 +74,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency_max': 0.75,
                                  'useful_heat_recovery_factor': 0.8,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'platinum_needs': 1.0 / 8.0,  # Fuel Cell technologies Office 2017
+                                 'platinum_needs': 1.0 / 8.0,  # fuel_production Cell technologies Office 2017
                                  'platinum_needs_units': 'g/KW', }
 
     # Around 50MW of nominal power *8000 hours per year

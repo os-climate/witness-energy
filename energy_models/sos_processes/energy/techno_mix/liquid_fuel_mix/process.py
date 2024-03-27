@@ -24,7 +24,7 @@ from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase impor
 class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'Energy Technology Mix - Liquid Fuel Mix',
+        'label': 'Energy Technology Mix - Liquid fuel_production Mix',
         'description': '',
         'category': '',
         'version': '',

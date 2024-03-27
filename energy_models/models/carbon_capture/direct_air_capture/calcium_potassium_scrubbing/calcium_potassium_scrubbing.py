@@ -94,7 +94,8 @@ class CalciumPotassium(CCTechno):
         heat_needs = self.get_heat_needs()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs ,
-                hightemperatureheat.name: np.identity(len(self.years)) * heat_needs}
+                # hightemperatureheat.name: np.identity(len(self.years)) * heat_needs
+                }
 
 
     def grad_price_vs_resources_price(self):

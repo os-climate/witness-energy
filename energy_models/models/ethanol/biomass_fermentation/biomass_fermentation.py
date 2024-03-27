@@ -114,7 +114,7 @@ class BiomassFermentation(EthanolTechno):
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account CO2 from electricity/fuel production
+        Need to take into account CO2 from electricity/fuel_production production
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
@@ -151,7 +151,7 @@ class BiomassFermentation(EthanolTechno):
 
     def get_theoretical_water_needs(self):
         """
-        From Renewable Fuel Association (https://ethanolrfa.org/file/1795/waterusagenrel-1.pdf)
+        From Renewable fuel_production Association (https://ethanolrfa.org/file/1795/waterusagenrel-1.pdf)
         3 to 4 gallons of water per gallon of ethanol produced
 
         Needs in kg of Water per kWh of Ethanol

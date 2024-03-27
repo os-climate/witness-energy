@@ -19,7 +19,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BioDiesel(EnergyType):
-    # Biodiesel is a fuel comprised of mono-alkyl esters of long chain fatty acids derived from vegetable oils or animal fats, designated B100, and meeting the requirements of ASTM D 6751.
+    # Biodiesel is a fuel_production comprised of mono-alkyl esters of long chain fatty acids derived from vegetable oils or animal fats, designated B100, and meeting the requirements of ASTM D 6751.
     # fatty acid methyl esters (FAME).
     name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}'
     short_name = GlossaryEnergy.biodiesel
@@ -28,7 +28,7 @@ class BioDiesel(EnergyType):
 
                         # Coronado, C.R., de Carvalho Jr, J.A. and Silveira, J.L., 2009.
                         # Biodiesel CO2 emissions: A comparison with the main fuels in the Brazilian market.
-                        # Fuel Processing Technology, 90(2), pp.204-211.
+                        # fuel_production Processing Technology, 90(2), pp.204-211.
                         # https://getec.unifei.edu.br/wp/wp-content/uploads/2016/10/15.pdf
                         # Engineering ToolBox, (2009). Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html

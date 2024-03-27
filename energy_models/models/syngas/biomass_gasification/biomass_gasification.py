@@ -32,7 +32,7 @@ class BiomassGasification(SyngasTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of syngas
+        # in kwh of fuel_production by kwh of syngas
 
         self.cost_details['biomass_needs'] = self.techno_infos_dict['biomass_demand']
 

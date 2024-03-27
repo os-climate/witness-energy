@@ -40,7 +40,7 @@ warnings.filterwarnings("ignore")
 
 class MethanolJacobianCase(AbstractJacobianUnittest):
     """
-    Methanol Fuel jacobian test class
+    Methanol fuel_production jacobian test class
     """
 
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True

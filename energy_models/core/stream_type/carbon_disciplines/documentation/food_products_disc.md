@@ -1,0 +1,10 @@
+# Carbon Utilization in Food Production:
+Carbon dioxide is one of the most important chemical compounds of human, animal, and plant lives, and environmental health. Because of several desirable characteristics of carbon dioxide in gas, solid, liquid, and supercritical states such as inertness, non-explosiveness, noncorrosiveness, high volatility, cooling ability, and low-cost, carbon dioxide is being used in a variety of applications in food and processing industries. Applications of carbon dioxide in preserving fruits, vegetables, meats, food grains, and liquid foods; inactivating microorganisms; and extracting oils, flavors, colors, and chemicals are discussed. Carbon dioxide as high pressure gas and supercritical fluid would find a niche in food and processing industries in the future especially in applications involving non-thermal sterilization and supercritical extraction
+
+### Carbonated Beverages [^1]
+The most common and oldest application of CO2 is in producing carbonated soft drinks and soda water. To some extent, this application extends to beer and sparkling wine, though CO2 is naturally produced during fermentation. The largest use of CO2 gas is in the manufacture of carbonated beverages. In 1920s, about 90% of CO2 produced was used for the manufacture of carbonated beverages in the U.S. Carbon dioxide contributes to the characteristic pungent taste or “bite” to the soft drinks because CO2 has a marked stimulating effect on the olfactory and gustatory nerves. The carbonation of a beverage helps to prevent mold growth. It also inhibits the growth of bacteria, in some instances, destroys bacteria depending on the extent of carbonation used. The acid used in the beverage and the CO2 content satisfactorily preserve carbonated beverages for a long time. 
+
+[^1]: [Applications of Carbon Dioxide in Food and Processing Industries](https://www.researchgate.net/publication/271432085_Applications_of_Carbon_Dioxide_in_Food_and_Processing_Industries_Current_Status_and_Future_Thrusts)
+
+[^2]: [Carbon utilization](https://www.c2es.org/wp-content/uploads/2019/09/carbon-utilization-a-vital-and-effective-pathway-for-decarbonization.pdf)
+

@@ -105,7 +105,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
         energy_name_list.append(energyname)
 
         for techno in EnergyDict[energyname]['TechnoName']:
-            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
+            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and fuel_production
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
             techno_name_list.append(techno)
             filtereddata = price_details[price_details[GlossaryEnergy.Years] == year]

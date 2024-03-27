@@ -22,7 +22,7 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_storage_applications.carbonated_water.carbonated_water_disc import CarbonatedWaterDiscipline
+from energy_models.models.carbon_utilization.food_products.carbonated_water.carbonated_water_disc import CarbonatedWaterDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -109,7 +109,7 @@ class CarbonatedWaterTestCase(unittest.TestCase):
     def test_03_carbonated_water_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'food_storage_applications.CarbonatedWater'
+        self.model_name = 'food_products.CarbonatedWater'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -117,7 +117,7 @@ class CarbonatedWaterTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_utilization.food_storage_applications.carbonated_water.carbonated_water_disc.CarbonatedWaterDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.food_products.carbonated_water.carbonated_water_disc.CarbonatedWaterDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

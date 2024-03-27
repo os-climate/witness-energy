@@ -30,7 +30,7 @@ class Pelletizing(SolidFuelTechno):
         Compute primary costs which depends on the technology 
         """
 
-        # in kg of fuel by kg of pellets depends on moisture level
+        # in kg of fuel_production by kg of pellets depends on moisture level
         self.cost_details['biomass_dry_needs'] = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
                                                  (1 + self.data_energy_dict['pellets_moisture'])
 

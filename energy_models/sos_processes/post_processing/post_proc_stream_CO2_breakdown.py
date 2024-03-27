@@ -74,7 +74,7 @@ def get_comparision_data(execution_engine, namespace, year):
     CO2tax_list = []
     energy_costs_List = []
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and fuel_production
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
         filtereddata = price_details[price_details[GlossaryEnergy.Years] == year]  # Filtering data for a year of 2023

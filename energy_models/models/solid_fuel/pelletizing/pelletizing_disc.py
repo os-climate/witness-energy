@@ -26,7 +26,7 @@ from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Solid Fuel Pelletizing Model',
+        'label': 'Solid fuel_production Pelletizing Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

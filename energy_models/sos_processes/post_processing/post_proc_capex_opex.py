@@ -52,7 +52,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     techno_price_data = {}
 
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and fuel_production
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
         year_list = price_details[GlossaryEnergy.Years].tolist()
         capex_list = price_details['CAPEX_Part'].tolist()

@@ -20,10 +20,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class HydrotreatedOilFuel(EnergyType):
     """
-    Vegetable oil can be used as an alternative fuel in diesel engines and in heating oil burners. When vegetable
-    oil is used directly as a fuel, in either modified or unmodified equipment, it is referred to as straight
+    Vegetable oil can be used as an alternative fuel_production in diesel engines and in heating oil burners. When vegetable
+    oil is used directly as a fuel_production, in either modified or unmodified equipment, it is referred to as straight
     vegetable oil (SVO) or pure plant oil (PPO). Conventional diesel engines can be modified to help ensure that
-    the viscosity of the vegetable oil is low enough to allow proper atomization of the fuel. This prevents
+    the viscosity of the vegetable oil is low enough to allow proper atomization of the fuel_production. This prevents
     incomplete combustion, which would damage the engine by causing a build-up of carbon. Straight vegetable
     oil can also be blended with conventional diesel or processed into biodiesel, HVO or bioliquids for use
     under a wider range of conditions. (Source: https://en.wikipedia.org/wiki/Vegetable_oil_fuel)
@@ -37,8 +37,8 @@ class HydrotreatedOilFuel(EnergyType):
                         'density': 780,
                         'density_unit': 'kg/m^3',
                         'cetane_number': 70,
-                        # Aatola, H., Larmi, M., Sarjovaara, T. and Mikkonen, S., 2009. Hydrotreated Vegetable Oil (HVO) as a Renewable Diesel Fuel:
-                        # Trade-off between NOx, Particulate Emission, and Fuel Consumption of a Heavy Duty Engine.
+                        # Aatola, H., Larmi, M., Sarjovaara, T. and Mikkonen, S., 2009. Hydrotreated Vegetable Oil (HVO) as a Renewable Diesel fuel_production:
+                        # Trade-off between NOx, Particulate Emission, and fuel_production Consumption of a Heavy Duty Engine.
                         # SAE International Journal of Engines, 1(1), pp.1251-1262.
                         # https://www.etipbioenergy.eu/images/SAE_Study_Hydrotreated_Vegetable_Oil_HVO_as_a_Renewable_Diesel_Fuel.pdf
                         'CO2_per_use': 3.15,

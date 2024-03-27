@@ -76,7 +76,7 @@ class Amine(CCTechno):
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                mediumtemperatureheat.name: np.identity(len(self.years)) * heat_needs
+                # mediumtemperatureheat.name: np.identity(len(self.years)) * heat_needs
                 }
 
     def grad_price_vs_resources_price(self):

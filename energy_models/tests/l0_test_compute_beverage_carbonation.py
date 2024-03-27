@@ -22,7 +22,7 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_storage_applications.beverage_carbonation.beverage_carbonation_disc import BeverageCarbonationDiscipline
+from energy_models.models.carbon_utilization.food_products.beverage_carbonation.beverage_carbonation_disc import BeverageCarbonationDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -109,7 +109,7 @@ class BeverageCarbonationTestCase(unittest.TestCase):
     def test_03_beverage_c_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'food_storage_applications.BeverageCarbonation'
+        self.model_name = 'food_products.BeverageCarbonation'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -117,7 +117,7 @@ class BeverageCarbonationTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_utilization.food_storage_applications.beverage_carbonation.beverage_carbonation_disc.BeverageCarbonationDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.food_products.beverage_carbonation.beverage_carbonation_disc.BeverageCarbonationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

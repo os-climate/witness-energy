@@ -102,7 +102,7 @@ class FischerTropsch(LiquidFuelTechno):
         sg_needs_efficiency = [self.get_theoretical_syngas_needs_for_FT(
         ) / self.cost_details['efficiency']] * nb_years
 
-        # in kwh of fuel by kwh of liquid_fuel
+        # in kwh of fuel_production by kwh of liquid_fuel
 
         # Cost of electricity for 1 kWH of liquid_fuel
         self.cost_details[Electricity.name] = list(

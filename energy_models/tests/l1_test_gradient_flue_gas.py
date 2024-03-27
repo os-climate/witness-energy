@@ -26,7 +26,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 class GradientFlueGasTestCase(AbstractJacobianUnittest):
     """
@@ -65,6 +65,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
+             hightemperatureheat.name: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 70.0,
              GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
@@ -90,7 +91,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
+            {GlossaryEnergy.Years: years, hightemperatureheat.name: 0.0, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
 
         transport_cost = 0,
 
@@ -122,10 +123,13 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_flue_gas': f'{self.name}',
                    'ns_electricity': self.name,
+                   'ns_heat_high': self.name,
                    'ns_carbon_capture': self.name,
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+
 
         mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
         builder = self.ee.factory.get_builder_from_module(
@@ -157,7 +161,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
@@ -183,11 +187,14 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                    'ns_flue_gas': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_electricity': self.name,
+                   'ns_heat_high': self.name,
                    'ns_carbon_capture': self.name,
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-
+        self.energy_prices[hightemperatureheat.name]: np.ones(
+            len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0
+        self.energy_carbon_emissions[hightemperatureheat.name] = 0.1
         mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc' \
                    '.PressureSwingAdsorptionDiscipline'
         builder = self.ee.factory.get_builder_from_module(
@@ -223,13 +230,16 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                            inputs=[
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
                                     f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'
+                            ],
+                            outputs=[
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',

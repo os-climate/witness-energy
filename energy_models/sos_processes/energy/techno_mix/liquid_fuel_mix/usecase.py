@@ -151,7 +151,7 @@ if '__main__' == __name__:
     uc_cls.test()
     # ppf = PostProcessingFactory()
     # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     if disc.name == 'EnergyMix.fuel.liquid_fuel.Refinery':
+    #     if disc.name == 'EnergyMix.fuel_production.liquid_fuel.Refinery':
     #         filters = ppf.get_post_processing_filters_by_discipline(
     #             disc)
     #         graph_list = ppf.get_post_processing_by_discipline(

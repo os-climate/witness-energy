@@ -92,11 +92,15 @@ class AlgaeCultivation(CUTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        # Production
-        self.production_detailed[f'{BiomassDry.name} ({self.mass_unit})'] = self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
+        # Production 3600000000
+        self.production_detailed[f'{CarbonUtilization.fuel_production_name} ({self.energy_unit})'] = self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
+        #self.production_detailed[f'{BiomassDry.name} ({self.mass_unit})'] = self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
 
+        # CO2 required = 57 g CO2 eq./MJ  , https://www.mdpi.com/2076-3417/11/24/11931
+        self.consumption_detailed[f'{CUTechno.energy_name} ({self.mass_unit})'] = 0.057 * 3600000000 * \
+                                                                                  self.production_detailed[f'{CarbonUtilization.fuel_production_name} ({self.energy_unit})'] * 1.0E-9
         self.compute_other_primary_energy_costs()
 
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \

@@ -48,7 +48,7 @@ class WetCropResidues(WetBiomassTechno):
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account  CO2 from electricity/fuel production
+        Need to take into account  CO2 from electricity/fuel_production production
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \

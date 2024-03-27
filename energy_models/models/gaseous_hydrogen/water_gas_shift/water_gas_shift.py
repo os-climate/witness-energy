@@ -505,7 +505,7 @@ class WGS(GaseousHydrogenTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # in kwh of fuel by kwh of H2
+        # in kwh of fuel_production by kwh of H2
 
         self.syngas_ratio = self.syngas_ratio[0:len(
             self.cost_details[GlossaryEnergy.Years])]

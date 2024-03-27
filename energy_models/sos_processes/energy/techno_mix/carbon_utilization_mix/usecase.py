@@ -21,23 +21,24 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
-from energy_models.core.stream_type.carbon_models.food_storage import FoodStorage
+from energy_models.core.stream_type.carbon_models.food_products import FoodProducts
+from energy_models.core.stream_type.carbon_models.fuel_production import FuelProduction
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
-                             'food_storage_applications.AlgaeCultivation']
-TECHNOLOGIES_LIST = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
-                             'food_storage_applications.AlgaeCultivation']
-TECHNOLOGIES_LIST_COARSE = ['food_storage_applications.BeverageCarbonation']
-TECHNOLOGIES_FOOD_STORAGE_LIST_COARSE = ['food_storage_applications.BeverageCarbonation']
-DEFAULT_FOOD_STORAGE_LIST = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
-                             'food_storage_applications.AlgaeCultivation']
-TECHNOLOGIES_LIST_DEV = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
-                             'food_storage_applications.AlgaeCultivation']
+DEFAULT_TECHNOLOGIES_LIST = ['food_products.BeverageCarbonation', 'food_products.CarbonatedWater',
+                             'fuel_production.AlgaeCultivation']
+TECHNOLOGIES_LIST = ['food_products.BeverageCarbonation', 'food_products.CarbonatedWater',
+                             'fuel_production.AlgaeCultivation']
+TECHNOLOGIES_LIST_COARSE = ['food_products.BeverageCarbonation']
+TECHNOLOGIES_FOOD_PRODUCTS_LIST_COARSE = ['food_products.BeverageCarbonation']
+DEFAULT_FOOD_PRODUCTS_LIST = ['food_products.BeverageCarbonation', 'food_products.CarbonatedWater',
+                             'fuel_production.AlgaeCultivation']
+TECHNOLOGIES_LIST_DEV = ['food_products.BeverageCarbonation', 'food_products.CarbonatedWater',
+                             'fuel_production.AlgaeCultivation']
 
-FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation', 'carbon_utilization.food_storage_applications.CarbonatedWater', 'carbon_utilization.food_storage_applications.AlgaeCultivation']
-
+FOOD_PRODUCTS_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_products.BeverageCarbonation', 'carbon_utilization.food_products.CarbonatedWater',]
+FUEL_PRODUCTION_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.fuel_production.AlgaeCultivation']
 
 
 class Study(EnergyMixStudyManager):
@@ -58,22 +59,22 @@ class Study(EnergyMixStudyManager):
         invest_carbon_utilization_mix_dict = {}
         l_ctrl = np.arange(0, 8)
 
-        if 'food_storage_applications.BeverageCarbonation' in self.technologies_list:
-            invest_carbon_utilization_mix_dict['food_storage_applications.BeverageCarbonation'] = np.array(
+        if 'food_products.BeverageCarbonation' in self.technologies_list:
+            invest_carbon_utilization_mix_dict['food_products.BeverageCarbonation'] = np.array(
                 [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 
-        if 'food_storage_applications.CarbonatedWater' in self.technologies_list:
-            invest_carbon_utilization_mix_dict['food_storage_applications.CarbonatedWater'] = [
+        if 'food_products.CarbonatedWater' in self.technologies_list:
+            invest_carbon_utilization_mix_dict['food_products.CarbonatedWater'] = [
                 0.1 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'food_storage_applications.AlgaeCultivation' in self.technologies_list:
-            invest_carbon_utilization_mix_dict['food_storage_applications.AlgaeCultivation'] = [
+        if 'fuel_production.AlgaeCultivation' in self.technologies_list:
+            invest_carbon_utilization_mix_dict['fuel_production.AlgaeCultivation'] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'food_storage_applications.FoodStorageApplicationsTechno' in self.technologies_list:
-            invest_carbon_utilization_mix_dict['food_storage_applications.FoodStorageApplicationsTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+        if 'food_products.FoodProductsTechno' in self.technologies_list:
+            invest_carbon_utilization_mix_dict['food_products.FoodProductsTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
             invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
-            invest_carbon_utilization_mix_dict['food_storage_applications.FoodStorageApplicationsTechno'][0] = invest_2020_ccus / 3.
+            invest_carbon_utilization_mix_dict['food_products.FoodProductsTechno'][0] = invest_2020_ccus / 3.
 
         if self.bspline:
             invest_carbon_utilization_mix_dict[GlossaryEnergy.Years] = self.years
@@ -90,7 +91,8 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = CarbonUtilization.name
-        food_storage_name = FoodStorage.node_name
+        food_products_name = FoodProducts.node_name
+        fuel_production_name = FuelProduction.node_name
         ccs_name = f'{self.prefix_name}.{CarbonUtilization.name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
@@ -102,8 +104,8 @@ class Study(EnergyMixStudyManager):
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
-        self.food_storage_mean = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.FoodStorageMean: 0.13})
+        self.food_products_mean = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.FoodProductsMean: 0.13})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
@@ -123,30 +125,32 @@ class Study(EnergyMixStudyManager):
              })
 
         algaecultivation_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                      f'{CarbonUtilization.fuel_production_name} (TWh)': 0.1})
         algaecultivation_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                         f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                         f'{CarbonUtilization.fuel_production_name} (TWh)': 0.1})
         beveragecarbonation_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                      f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
         beveragecarbonation_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                      f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
         carbonatedwater_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                        f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                        f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
         carbonatedwater_cons = pd.DataFrame({GlossaryEnergy.Years: years,
-                                        f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
-        foodstorageapplicationstechno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
-        foodstorageapplicationstechno_cons = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    f'{CarbonUtilization.food_storage_name} (Mt)': 0.1})
+                                        f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
+        FoodProductsapplicationstechno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                    f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
+        FoodProductsapplicationstechno_cons = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                    f'{CarbonUtilization.food_products_name} (Mt)': 0.1})
 
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       # f'{self.study_name}.{ccs_name}.{food_storage_name}.{GlossaryEnergy.food_storage_emission_techno_list}': DEFAULT_FOOD_STORAGE_LIST,
+                       # f'{self.study_name}.{ccs_name}.{food_products_name}.{GlossaryEnergy.food_products_emission_techno_list}': DEFAULT_food_products_LIST,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{ccs_name}.{food_storage_name}.{GlossaryEnergy.techno_list}': FOOD_STORAGE_TECHNOLOGIES_LIST_DEV,
-                       f'{self.study_name}.{ccs_name}.{food_storage_name}': self.food_storage_mean,
+                       f'{self.study_name}.{ccs_name}.{food_products_name}.{GlossaryEnergy.techno_list}': FOOD_PRODUCTS_TECHNOLOGIES_LIST_DEV,
+                       f'{self.study_name}.{ccs_name}.{food_products_name}': self.food_products_mean,
+                       f'{self.study_name}.{ccs_name}.{fuel_production_name}.{GlossaryEnergy.techno_list}': FUEL_PRODUCTION_TECHNOLOGIES_LIST_DEV,
+                       f'{self.study_name}.{ccs_name}.{fuel_production_name}': self.food_products_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
@@ -168,28 +172,28 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                   f'{self.study_name}.carbon_utilization.food_storage_applications.CarbonatedWater.food_storage_co2_ratio': np.array([0.035]),
-                    f'{self.study_name}.carbon_utilization.food_storage_applications.BeverageCarbonation.food_storage_co2_ratio': np.array([0.035]),
-                    f'{self.study_name}.carbon_utilization.food_storage_applications.AlgaeCultivation.food_storage_co2_ratio': np.array([0.035]),
-                    f'{self.study_name}.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.food_storage_co2_ratio': np.array(
+                    f'{self.study_name}.{ccs_name}.{food_products_name}.CarbonatedWater.food_products_co2_ratio': np.array([0.035]),
+                    f'{self.study_name}.{ccs_name}.{food_products_name}.BeverageCarbonation.food_products_co2_ratio': np.array([0.035]),
+                    f'{self.study_name}.{ccs_name}.{fuel_production_name}.AlgaeCultivation.food_products_co2_ratio': np.array([0.035]),
+                    f'{self.study_name}.{ccs_name}.{food_products_name}.FoodProductsApplicationsTechno.food_products_co2_ratio': np.array(
                         [0.035]),
                    #
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
-                    # f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoProductionValue}': beveragecarbonation_production,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoProductionValue}': algaecultivation_production,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.{GlossaryEnergy.TechnoProductionValue}': foodstorageapplicationstechno_prod,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
+                    # f'{self.study_name}.CCUS.carbon_utilization.food_products.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.BeverageCarbonation.{GlossaryEnergy.TechnoProductionValue}': beveragecarbonation_production,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{fuel_production_name}.AlgaeCultivation.{GlossaryEnergy.TechnoProductionValue}': algaecultivation_production,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.FoodProductsApplicationsTechno.{GlossaryEnergy.TechnoProductionValue}': FoodProductsapplicationstechno_prod,
 
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoConsumptionValue}': carbonatedwater_cons,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoConsumptionValue}': beveragecarbonation_consumption,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoConsumptionValue}': algaecultivation_consumption,
-                    f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.{GlossaryEnergy.TechnoConsumptionValue}': foodstorageapplicationstechno_cons,
-                    f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.CarbonatedWater.{GlossaryEnergy.TechnoConsumptionValue}': carbonatedwater_cons,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.BeverageCarbonation.{GlossaryEnergy.TechnoConsumptionValue}': beveragecarbonation_consumption,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{fuel_production_name}.AlgaeCultivation.{GlossaryEnergy.TechnoConsumptionValue}': algaecultivation_consumption,
+                    f'{self.study_name}.CCUS.{CarbonUtilization.name}.{food_products_name}.FoodProductsApplicationsTechno.{GlossaryEnergy.TechnoConsumptionValue}': FoodProductsapplicationstechno_cons,
+                    f"{self.study_name}.{energy_mix_name}.{CarbonUtilization.name}.{food_products_name}.carbon_utilization.food_products.BeverageCarbonation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.{CarbonUtilization.name}.{food_products_name}.carbon_utilization.food_products.CarbonatedWater.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.{CarbonUtilization.name}.{fuel_production_name}.carbon_utilization.fuel_production.AlgaeCultivation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.{CarbonUtilization.name}.{food_products_name}.carbon_utilization.food_products.FoodProductsApplicationsTechno.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
 
-                    f'{self.study_name}.{ccs_name}.food_storage_applications.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                    f'{self.study_name}.{ccs_name}.food_products.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                 })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

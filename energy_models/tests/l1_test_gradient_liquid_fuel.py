@@ -36,7 +36,7 @@ warnings.filterwarnings("ignore")
 
 class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     """
-    Liquid Fuel jacobian test class
+    Liquid fuel_production jacobian test class
     """
 
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True

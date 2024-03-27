@@ -23,7 +23,7 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.techno_type.base_techno_models.carbon_utilization_techno import CUTechno
 
 
-class FoodStorageApplicationsTechno(CUTechno):
+class FoodProductsTechno(CUTechno):
 
 
 

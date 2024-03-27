@@ -66,7 +66,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         default_resources_price_df = pd.DataFrame({GlossaryEnergy.Years: years,
                                                    'water': years * [2],
-                                                   'uranium fuel': 1390000,
+                                                   'uranium fuel_production': 1390000,
                                                    'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464,
                                                                     0.047799999999999995, 0.049199999999999994, 0.0506,
                                                                     0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063,

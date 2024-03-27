@@ -47,7 +47,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
             columns=[GlossaryEnergy.Years, 'water'])
         self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price['water'] = 2.0
-        self.resources_price['uranium fuel'] = 1390.0e3
+        self.resources_price['uranium fuel_production'] = 1390.0e3
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 33.0 * \

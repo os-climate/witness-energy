@@ -77,6 +77,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                        'namespace': 'ns_energy',
                                                        'dataframe_descriptor': {
                                                            GlossaryEnergy.Years: ('float', None, True),
+                                                           'production fuel.ethanol (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.biogas} (TWh)': ('float', None, True),
@@ -100,7 +101,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                            'float', None, True),
                                                            'production heat.lowtemperatureheat (TWh)': (
                                                            'float', None, True),
-                                                           'production fuel.ethanol (TWh)': (
+                                                           'production fuel_production.ethanol (TWh)': (
                                                                'float', None, True),
                                                            },
                                                        },
@@ -320,6 +321,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      GlossaryEnergy.carbon_storage: ('float', None, True),
                                                      GlossaryEnergy.carbon_utilization: ('float', None, True),
                                                      'beverage food (Mt)': ('float', None, True),
+                                                     'fuel production (TWh)': ('float', None, True),
                                                      'Carbonated Food (Mt) (Mt)': ('float', None, True),
                                                      'biomass_dry (Mt)': ('float', None, True),
                                                      'Carbonated Food (Mt)': ('float', None, True),
@@ -559,7 +561,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []

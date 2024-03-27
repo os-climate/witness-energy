@@ -42,7 +42,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Refinery Liquid Fuel Model',
+        'label': 'Refinery Liquid fuel_production Model',
         'type': 'Test',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -109,7 +109,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # Source: IEA 2022, Data and Statistics,
                                  # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
                                  # License: CC BY 4.0.
-                                 # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
+                                 # 2019 fuel_production prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
                                  # ratio for hydrogen demand = (40*33.3) /
                                  # (148717767/3.6/1000)
                                  'hydrogen_demand': (40 * 33.3) / (148717767 / 3.6 / 1000),

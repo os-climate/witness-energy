@@ -33,7 +33,7 @@ class OilGen(ElectricityTechno):
         Compute primary costs which depends on the technology 
         """
 
-        # in kwh of fuel by kwh of electricity
+        # in kwh of fuel_production by kwh of electricity
         self.cost_details['liquid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
                                                  self.cost_details['efficiency']
 

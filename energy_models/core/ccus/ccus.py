@@ -46,7 +46,7 @@ class CCUS(BaseStream):
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
                 f'{CarbonUtilization.name} (Mt)',
-                f'{CarbonUtilization.food_storage_name} (Mt)',
+                f'{CarbonUtilization.food_products_name} (Mt)',
 
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
@@ -160,6 +160,13 @@ class CCUS(BaseStream):
          Solid carbon is gaseous equivalent in the production for
          solidcarbonstorage technology
         '''
+
+        if CarbonUtilization.name in self.sub_production_dict:
+            self.total_co2_emissions[f'{CarbonUtilization.name} (Mt)'] = self.sub_production_dict[
+                CarbonUtilization.name][CarbonUtilization.name].values
+        else:
+            self.total_co2_emissions[f'{CarbonUtilization.name} (Mt)'] = 0.0
+
         if CarbonStorage.name in self.sub_production_dict:
 
             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = self.sub_production_dict[

@@ -22,7 +22,7 @@ class Methanol(EnergyType):
     # Methanol (CH3OH) is the simplest alcohol, and is also known as methyl alcohol.
     # It is mostly used in the production of chemicals, as well as in the manufacturing of
     # polyester fibers, acrylic plastics, and various pharmaceuticals.
-    # It can also be used as an alternative fuel through combustion reaction
+    # It can also be used as an alternative fuel_production through combustion reaction
     # Source: J.M.K.C. Donev et al. (2018). Energy Education - Methanol [Online].
     # Available: https://energyeducation.ca/encyclopedia/Methanol. [Accessed: June 20, 2022].
     name = f'{GlossaryEnergy.fuel}.methanol'

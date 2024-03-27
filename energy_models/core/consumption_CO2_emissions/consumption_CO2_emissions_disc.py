@@ -70,13 +70,15 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                        'namespace': 'ns_energy',
                                                        'dataframe_descriptor': {
                                                            GlossaryEnergy.Years: ('float', None, True),
+                                                           'production fuel.ethanol (TWh)': (
+                                                           'float', None, True),
                                                            'production heat.hightemperatureheat (TWh)': (
                                                            'float', None, True),
                                                            'production heat.mediumtemperatureheat (TWh)': (
                                                            'float', None, True),
                                                            'production heat.lowtemperatureheat (TWh)': (
                                                            'float', None, True),
-                                                           'production fuel.ethanol (TWh)': ('float', None, True),
+                                                           'production fuel_production.ethanol (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.biogas} (TWh)': ('float', None, True),
@@ -194,7 +196,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True),
                                                      'O2 (Mt)': ('float', None, True),
-                                                     'fuel.ethanol (TWh)': ('float', None, True),
+                                                     'fuel_production.ethanol (TWh)': ('float', None, True),
                                                      'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.mediumtemperatureheat (TWh)': (
@@ -237,6 +239,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  GlossaryEnergy.carbon_storage: ('float', None, True),
                                                  GlossaryEnergy.carbon_utilization: ('float', None, True),
+                                                 'fuel production (TWh)': ('float', None, True),
                                                  'beverage food (Mt)': ('float', None, True),
                                                  'Carbonated Food (Mt) (Mt)': ('float', None, True),
                                                  'biomass_dry (Mt)': ('float', None, True),
@@ -415,7 +418,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []

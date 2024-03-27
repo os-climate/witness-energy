@@ -863,7 +863,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)'][0]
 
         raw_fischertropsch_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel_production.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_ft_production = raw_fischertropsch_prod[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'].loc[
                                      raw_fischertropsch_prod[
@@ -918,14 +918,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
                         GlossaryEnergy.gasoline: (41878252 + 56524612) / 3600,
                         # 'diesel': 56524612 / 3600,
                         # 'naphtas' :11916946/3600,
-                        GlossaryEnergy.heating_oil: 16475667 / 3600,  # equivalent to fuel oil
+                        GlossaryEnergy.heating_oil: 16475667 / 3600,  # equivalent to fuel_production oil
                         # 'other_oil_products' :25409482/3600,
                         GlossaryEnergy.liquefied_petroleum_gas: 5672984 / 3600,  # LPG/ethane
                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 190442343 / 3600  # total of crude oil
                         }
 
         raw_refinery_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.Refinery.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel_production.liquid_fuel.Refinery.{GlossaryEnergy.TechnoProductionValue}')
 
         raw_refinery_prod_2020 = raw_refinery_prod.loc[
                                      raw_refinery_prod[
@@ -950,7 +950,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         error_liquid_fuel_net_prod = np.abs(
             liquid_fuel_net_prod_iea - net_liquid_fuel_prod) / liquid_fuel_net_prod_iea * 100.0
 
-        print('Liquid fuel net production error : ', error_liquid_fuel_net_prod, ' %',
+        print('Liquid fuel_production net production error : ', error_liquid_fuel_net_prod, ' %',
               f'IEA :{liquid_fuel_net_prod_iea} TWh vs WITNESS :{net_liquid_fuel_prod} TWh')
 
         liquid_fuel_own_use = 2485.89  # TWH
@@ -958,20 +958,20 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'].values[0]
         energy_production_raw_liquidfuel_iea = 52900 - liquid_fuel_own_use
         print(
-            f'Energy own use for liquid fuel production is {liquid_fuel_own_use} TWh')
+            f'Energy own use for liquid fuel_production production is {liquid_fuel_own_use} TWh')
 
-        print('Liquid fuel raw production error : ', error_liquid_fuel_net_prod, ' %',
+        print('Liquid fuel_production raw production error : ', error_liquid_fuel_net_prod, ' %',
               f'IEA :{energy_production_raw_liquidfuel_iea} TWh vs WITNESS :{liquid_fuel_raw_prod} TWh')
         chp_plants = 159.62 + 99.81  # TWh
 
         print('CHP and heat plants not implemented corresponds to ',
-              chp_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel production : ', chp_plants,
+              chp_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel_production production : ', chp_plants,
               ' TWh')
 
         oil_elec_plants = 1591.67  # TWh
 
         print('oil to electricity plants not implemented corresponds to ',
-              oil_elec_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel production : ',
+              oil_elec_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel_production production : ',
               oil_elec_plants, ' TWh')
 
         print('----------------- Total production -------------------')

@@ -132,7 +132,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         Get platinum needs in kg platinum /kWh H2
         
         https://www.energy.gov/sites/prod/files/2016/03/f30/At_A_GLANCE%20%28FCTO%29.pdf
-        According to the Fuel Cell Technologies Office, 1g of platinum enables the production of 8K of H2
+        According to the fuel_production Cell Technologies Office, 1g of platinum enables the production of 8K of H2
 
         Need to convert in kg/kWh ~ Mt/TWh
         """

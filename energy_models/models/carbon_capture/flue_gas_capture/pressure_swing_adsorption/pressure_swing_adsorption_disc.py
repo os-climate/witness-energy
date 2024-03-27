@@ -21,7 +21,8 @@ from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc impor
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption \
     import PressureSwingAdsorption
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
@@ -147,9 +148,36 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
 
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        inputs_dict = self.get_sosdisc_inputs()
+        outputs_dict = self.get_sosdisc_outputs()
+        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
+
+        delta_years = len(years)
+        identity = np.identity(delta_years)
+        ones = np.ones(delta_years)
+
+        grad_dict = self.techno_model.grad_price_vs_energy_price() #[Electricity.name]
 
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
+        # self.set_partial_derivative_for_other_types(
+        #     (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+        #     (GlossaryEnergy.TargetHeatProductionValue, GlossaryEnergy.TargetHeatProductionValue), identity * -1)
+
+        # self.set_partial_derivative_for_other_types(
+        #     (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+        #     (f'{hightemperatureheat.name}.{GlossaryEnergy.EnergyPricesValue}', hightemperatureheat.name), ones)
+
+        # self.set_partial_derivative_for_other_types(
+        #     (f'{hightemperatureheat.name}.{GlossaryEnergy.EnergyPricesValue}', hightemperatureheat.name),
+        #     (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), ones)
+
+        # grad_heat = self.techno_model.grad_prod_vs_flue_gas_mean()
+        #
+        # self.set_partial_derivatives_techno(
+        #     grad_heat, None)
+
         self.set_partial_derivatives_flue_gas()
+        # self.set_partial_derivatives_flue_gas(energy_name=hightemperatureheat.name)

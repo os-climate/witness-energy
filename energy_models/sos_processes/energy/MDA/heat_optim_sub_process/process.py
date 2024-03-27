@@ -153,7 +153,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         """
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
-            ns_dict = {'ns_fuel': f'{ns_study}.{coupling_name}.{energy_mix}.fuel'}
+            ns_dict = {'ns_fuel': f'{ns_study}.{coupling_name}.{energy_mix}.fuel_production'}
             mods_dict = {
                 f'{energy_mix}.{FuelDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.fuel_disc.FuelDiscipline',
             }

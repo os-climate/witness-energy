@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class SolidFuelTechnoDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Solid Fuel Technology Model',
+        'label': 'Solid fuel_production Technology Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

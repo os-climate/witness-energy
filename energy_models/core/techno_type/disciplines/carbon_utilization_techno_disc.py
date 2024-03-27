@@ -150,7 +150,7 @@ class CUTechnoDiscipline(TechnoDiscipline):
 
     def get_post_processing_list(self, filters=None):
 
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # For the outputs, making a graph for block fuel_production vs range and blocktime vs
         # range
 
         instanciated_charts = []
@@ -287,7 +287,6 @@ class CUTechnoDiscipline(TechnoDiscipline):
             GlossaryEnergy.TechnoDetailedConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
-        # print(techno_production.to_string())
         chart_name = f'{self.techno_name} resources production & consumption <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
@@ -307,7 +306,7 @@ class CUTechnoDiscipline(TechnoDiscipline):
         for products in techno_production.columns:
             if products != GlossaryEnergy.Years and products.endswith('(Mt)'):
                 energy_twh = techno_production[products].values
-                legend_title = f'{products} product'.replace(
+                legend_title = f'{products}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
                     techno_production[GlossaryEnergy.Years].values.tolist(),

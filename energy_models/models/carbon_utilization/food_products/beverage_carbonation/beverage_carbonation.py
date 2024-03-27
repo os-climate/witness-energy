@@ -19,12 +19,12 @@ import numpy as np
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_utilization_techno import CUTechno
 from energy_models.core.stream_type.resources_models.water import Water
 
 
-class CarbonatedWater(CUTechno):
+
+class BeverageCarbonation(CUTechno):
 
     def compute_other_primary_energy_costs(self):
         """
@@ -36,10 +36,10 @@ class CarbonatedWater(CUTechno):
 
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
+
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
         self.cost_details[Water.name] = self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
-
+                                        self.cost_details['efficiency']
         self.cost_details['heat_needs'] = self.get_heat_needs()
 
         return self.cost_details[Electricity.name] + self.cost_details[Water.name]
@@ -83,9 +83,9 @@ class CarbonatedWater(CUTechno):
 
         # Production
 
-        self.production_detailed[f'Carbonated Food ({self.mass_unit})'] = self.production_detailed[
-            f'{CUTechno.energy_name} ({self.product_energy_unit})']
-
+        self.production_detailed[f'{CarbonUtilization.food_products_name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
+                                                                        self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
         # Consumption
 
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
@@ -93,19 +93,19 @@ class CarbonatedWater(CUTechno):
 
         self.consumption_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
+        # https://sciencing.com/info-8793154-carbonation-affected-temperature.html
 
+
+        #Some beverages require acids to balance the sweetness and enhance flavor. May be used as input.
+
+
+
+        self.consumption_detailed[f'CO2 ({self.mass_unit})'] = self.techno_infos_dict['co2_needs'] * \
+                                                                        self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.production_detailed[
+                                                                            f'{CUTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
-
-        self.consumption_detailed[f'Carbonated Food ({self.mass_unit})'] = self.techno_infos_dict['co2_needs'] * \
-                                                                                                 self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
-
-        # # Productions
-        #
-        # self.production_detailed[f'carbonated_water ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-        #                                                          self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']   # in kWH
-
     def get_theoretical_water_needs(self):
 
         water_demand = self.techno_infos_dict['water_demand']

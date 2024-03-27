@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Hydrotreated Oil Fuel HEFA Model',
+        'label': 'Hydrotreated Oil fuel_production HEFA Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

@@ -87,6 +87,8 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+        print('')
+
         inputs_dict = {
             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,

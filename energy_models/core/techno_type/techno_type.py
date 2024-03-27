@@ -939,7 +939,7 @@ class TechnoType:
 
     def get_fuel_needs(self):
         """
-        Get the fuel needs for 1 kwh of the energy producted by the technology
+        Get the fuel_production needs for 1 kwh of the energy producted by the technology
         """
         if self.techno_infos_dict['fuel_demand'] != 0.0:
             fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
