@@ -59,16 +59,6 @@ class Methanation(MethaneTechno):
             GaseousHydrogen.name: np.diag(hydrogen_needs / efficiency)
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        co2_needs = self.get_theoretical_co2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            CO2.name: np.diag(co2_needs / efficiency)
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

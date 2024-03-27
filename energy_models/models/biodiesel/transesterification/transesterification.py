@@ -70,17 +70,6 @@ class Transesterification(BioDieselTechno):
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency}
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        return {
-            NaturalOil.name: np.diag(self.cost_details[f"{NaturalOil.name}_needs"].values),
-            Methanol.name: np.diag(self.cost_details[f"{Methanol.name}_needs"].values),
-            SodiumHydroxide.name: np.diag(self.cost_details[f"{SodiumHydroxide.name}_needs"].values),
-            Water.name: np.diag(self.cost_details[f"{Water.name}_needs"].values),
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

@@ -61,18 +61,6 @@ class CoElectrolysis(SyngasTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        co2_needs = self.get_theoretical_CO2_needs()
-        water_needs = self.get_theoretical_water_needs()
-        efficiency = self.compute_efficiency()
-        init_grad = np.diag(1 / efficiency)
-        return {
-            CO2.name: init_grad * co2_needs,
-            Water.name: init_grad * water_needs,
-        }
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 

@@ -67,19 +67,6 @@ class AutothermalReforming(SyngasTechno):
             Methane.name: np.diag(methane_needs / efficiency)
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        co2_needs = self.get_theoretical_CO2_needs()
-        oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        init_grad = np.diag(1 / efficiency)
-        return {
-            CO2.name: init_grad * co2_needs,
-            Oxygen.name: init_grad * oxygen_needs,
-        }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane

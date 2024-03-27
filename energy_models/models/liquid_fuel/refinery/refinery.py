@@ -88,16 +88,6 @@ class Refinery(LiquidFuelTechno):
                     'efficiency'].values * self.techno_infos_dict['hydrogen_demand'],
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        oil_needs = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'].values
-        return {
-            self.OIL_RESOURCE_NAME: np.identity(
-                len(self.years)) * oil_needs,
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

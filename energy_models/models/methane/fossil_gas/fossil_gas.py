@@ -57,15 +57,6 @@ class FossilGas(MethaneTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resource prices
-        Work also for total CO2_emissions vs resource CO2 emissions
-        '''
-        natural_gas_needs = self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'].values
-        return {self.NATURAL_GAS_RESOURCE_NAME: np.identity(len(self.years)) * natural_gas_needs,
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

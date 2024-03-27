@@ -72,13 +72,6 @@ class CoalExtraction(SolidFuelTechno):
                 # efficiency,
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        coal_needs = self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'].values
-        return {self.COAL_RESOURCE_NAME: np.identity(len(self.years)) * coal_needs, }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

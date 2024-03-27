@@ -75,15 +75,6 @@ class Amine(CCTechno):
                 Methane.name: np.identity(len(self.years)) * heat_needs
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        amine_needs = self.compute_amine_need()
-        efficiency = self.compute_efficiency()
-        return {ResourceGlossary.AmineResource: np.identity(len(self.years)) * amine_needs / efficiency,
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

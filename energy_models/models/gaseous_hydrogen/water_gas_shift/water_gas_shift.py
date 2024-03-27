@@ -548,17 +548,6 @@ class WGS(GaseousHydrogenTechno):
                 len(self.years)) * elec_needs
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices 
-        '''
-        water_needs = self.get_theoretical_water_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
-        }
-
     def compute_dprod_dfluegas(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
 
         # dpprod_dpfluegas = np.zeros(dcapexdfluegas.shape())

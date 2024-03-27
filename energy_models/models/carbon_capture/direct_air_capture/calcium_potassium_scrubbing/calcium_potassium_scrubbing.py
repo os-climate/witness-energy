@@ -85,18 +85,6 @@ class CalciumPotassium(CCTechno):
                 Methane.name: np.identity(len(self.years)) * heat_needs
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        calcium_needs = self.compute_calcium_need()
-        potassium_needs = self.compute_potassium_need()
-        efficiency = self.techno_infos_dict[GlossaryEnergy.EnergyEfficiency]
-        return {
-            ResourceGlossary.CalciumResource: np.identity(len(self.years)) * calcium_needs / efficiency,
-            ResourceGlossary.PotassiumResource: np.identity(len(self.years)) * potassium_needs / efficiency,
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

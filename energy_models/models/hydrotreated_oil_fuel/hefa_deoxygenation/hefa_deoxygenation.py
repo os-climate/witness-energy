@@ -81,19 +81,6 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency}
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-
-        naturaloil_data = NaturalOil.data_energy_dict
-        efficiency = self.techno_infos_dict['efficiency']
-        oil_needs = self.get_theoretical_natural_oil_needs() / naturaloil_data['calorific_value'] / efficiency
-        return {
-            NaturalOil.name: np.identity(
-                len(self.years)) * oil_needs,
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
@@ -140,8 +127,7 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
                                                       self.cost_details['efficiency']
 
         self.carbon_intensity[NaturalOil.name] = self.resources_CO2_emissions[NaturalOil.name] * \
-                                                 self.cost_details[f'{NaturalOil.name}_needs'] / \
-                                                 self.cost_details['efficiency']
+                                                 self.cost_details[f'{NaturalOil.name}_needs']
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[NaturalOil.name] \
                + self.carbon_intensity[GaseousHydrogen.name]
@@ -179,3 +165,10 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
                 self.data_energy_dict['calorific_value'] * self.data_energy_dict['molar_mass'])
 
         return water_prod
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        return {
+            NaturalOil.name: np.diag(self.cost_details[f"{NaturalOil.name}_needs"])
+        }

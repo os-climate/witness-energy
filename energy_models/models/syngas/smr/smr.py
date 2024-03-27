@@ -71,16 +71,6 @@ class SMR(SyngasTechno):
                 len(self.years)) * elec_needs
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices 
-        '''
-        water_needs = self.get_theoretical_water_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Water.name: np.diag(water_needs / efficiency),
-        }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane

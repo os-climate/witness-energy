@@ -78,16 +78,6 @@ class CO2Hydrogenation(MethanolTechno):
             Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        efficiency = self.techno_infos_dict['efficiency']
-        water_needs = self.get_theoretical_water_needs()
-
-        return {Water.name: np.identity(len(self.years)) * water_needs / efficiency,
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

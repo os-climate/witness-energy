@@ -764,7 +764,7 @@ class TechnoType:
 
     def grad_price_vs_resources_price(self):
 
-        return {}
+        return {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
 
     def compute_expo_factor(self, data_config):
 
