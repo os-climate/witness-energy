@@ -30,12 +30,10 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
 
     """
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
+        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * self.prices[Electricity.name]
 
         # Cost of hydrogen for 1kwh of LH2
-        self.cost_details[GaseousHydrogen.name] = self.prices[GaseousHydrogen.name] * \
-                                                  self.cost_details['hydrogen_needs']
+        self.cost_details[GaseousHydrogen.name] = self.prices[GaseousHydrogen.name] * self.cost_details['hydrogen_needs']
 
 
     def compute_other_energies_needs(self):

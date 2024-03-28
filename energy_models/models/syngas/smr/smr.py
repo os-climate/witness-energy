@@ -36,14 +36,13 @@ class SMR(SyngasTechno):
                                                         self.prices[GlossaryEnergy.electricity]
 
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['CH4_needs']
-                                                    / self.cost_details['efficiency'])
+        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs'])
 
 
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
         # need in kg to produce 1kwh of syngas
-        self.cost_details['CH4_needs'] = self.get_theoretical_CH4_needs()
+        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -78,8 +77,7 @@ class SMR(SyngasTechno):
         '''
 
         self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-                                                   self.cost_details['CH4_needs'] / \
-                                                   self.cost_details['efficiency']
+                                                   self.cost_details[f'{Methane.name}_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']
@@ -129,10 +127,9 @@ class SMR(SyngasTechno):
         """
 
         # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
                                                                                     self.production_detailed[
-                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                    self.cost_details['efficiency']
+                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             'elec_needs'] * \

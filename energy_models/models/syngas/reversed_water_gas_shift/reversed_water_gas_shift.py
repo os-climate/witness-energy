@@ -402,14 +402,13 @@ class RWGS(SyngasTechno):
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
-        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
-                                              / self.cost_details['efficiency'])
+        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs'])
 
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
 
         # Cost of methane for 1 kWH of H2
-        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio)
+        self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -456,9 +455,7 @@ class RWGS(SyngasTechno):
 
         self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
                                                                                    self.production_detailed[
-                                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                   self.cost_details[
-                                                                                       'efficiency']  # in kWH
+                                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
                                                                                 self.production_detailed[
@@ -514,9 +511,7 @@ class RWGS(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * \
-                                             self.cost_details['syngas_needs'] / \
-                                             self.cost_details['efficiency']
+        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * self.cost_details['syngas_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details['elec_needs']

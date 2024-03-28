@@ -26,9 +26,7 @@ from energy_models.core.techno_type.base_techno_models.high_heat_techno import h
 class CHPHighHeat(highheattechno):
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[f'{Methane.name}'] = \
-            self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs']
+        self.cost_details[f'{Methane.name}'] = self.prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs']
 
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()

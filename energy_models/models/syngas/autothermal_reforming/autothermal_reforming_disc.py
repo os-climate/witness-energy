@@ -26,7 +26,7 @@ from energy_models.models.syngas.autothermal_reforming.autothermal_reforming imp
 class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Authothermal Reforming Model',
+        'label': 'Autothermal Reforming Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

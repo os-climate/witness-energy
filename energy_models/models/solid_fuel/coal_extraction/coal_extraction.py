@@ -38,18 +38,10 @@ class CoalExtraction(SolidFuelTechno):
             self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   / self.cost_details['efficiency'])
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
-
-        # self.cost_details['fuel_needs'] = self.get_fuel_needs()
-        # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
-        #                                         / self.cost_details['efficiency'])
-
-        # + self.cost_details[LiquidFuel.name]
+        self.cost_details['elec_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
     def compute_other_primary_energy_costs(self):
         """

@@ -41,19 +41,12 @@ class BiomassFermentation(EthanolTechno):
 
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[BiomassDry.name] = \
-            self.prices[BiomassDry.name] * \
-            self.cost_details[f'{BiomassDry.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.cost_details[Electricity.name] = \
-            self.prices[Electricity.name] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.cost_details[BiomassDry.name] = self.prices[BiomassDry.name] * self.cost_details[f'{BiomassDry.name}_needs']
+        self.cost_details[Electricity.name] = self.prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
 
     def compute_other_energies_needs(self):
-        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs()
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
+        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):

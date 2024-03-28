@@ -29,10 +29,10 @@ class BiogasFired(ElectricityTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of biogas for 1 kWH
         self.cost_details[BioGas.name] = list(
-            self.prices[BioGas.name] * self.techno_infos_dict['biogas_needs'])
+            self.prices[BioGas.name] * self.cost_details[f'{BioGas.name}_needs'])
     
     def compute_other_energies_needs(self):
-        pass
+        self.cost_details[f'{BioGas.name}_needs'] = self.techno_infos_dict['biogas_needs']
 
     def compute_other_primary_energy_costs(self):
         """

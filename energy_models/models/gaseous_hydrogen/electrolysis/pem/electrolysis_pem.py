@@ -39,8 +39,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
+        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * self.prices[Electricity.name]
     
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to

@@ -22,8 +22,7 @@ from energy_models.core.techno_type.base_techno_models.wet_biomass_techno import
 class WetCropResidues(WetBiomassTechno):
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
     
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()

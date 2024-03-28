@@ -25,12 +25,10 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 
 class Pelletizing(SolidFuelTechno):
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
         # Cost of biomass for 1 kWh of pellet
-        self.cost_details[BiomassDry.name] = list(
-            self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
+        self.cost_details[BiomassDry.name] = list(self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
 
 
     def compute_other_energies_needs(self):
