@@ -560,7 +560,6 @@ class TechnoType:
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
         self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
         self.compute_cost_of_resources_usage_generic_method()
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
@@ -1086,10 +1085,6 @@ class TechnoType:
 
 
     def compute_resources_needs(self):
-        """To be overloaded when techno relies on resources"""
-        pass
-
-    def compute_cost_of_resources_usage(self):
         """To be overloaded when techno relies on resources"""
         pass
 

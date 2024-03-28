@@ -31,10 +31,6 @@ class SMR(SyngasTechno):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_cost_of_resources_usage(self):
-        # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'])
-
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
                                                         self.prices[GlossaryEnergy.electricity]
@@ -56,7 +52,7 @@ class SMR(SyngasTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[
+        return self.cost_of_resources_usage[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[
             GlossaryEnergy.electricity]
 
     def grad_price_vs_energy_price(self):

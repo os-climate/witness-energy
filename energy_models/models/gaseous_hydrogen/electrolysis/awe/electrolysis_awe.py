@@ -37,10 +37,6 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         # Cost of water for 1 kWH of H2
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
 
-    def compute_cost_of_resources_usage(self):
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
-
-
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
                                               self.prices[Electricity.name]
@@ -58,7 +54,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
 
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[Water.name]
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[Water.name]
 
     def grad_price_vs_energy_price(self):
         '''

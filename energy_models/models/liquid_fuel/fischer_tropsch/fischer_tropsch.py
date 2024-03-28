@@ -416,7 +416,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': self.syngas_energy_dict,
-                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict["RWGS"]
+                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict[GlossaryEnergy.ReversedWaterGasShift]
                        }
         if self.is_stream_demand:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -471,7 +471,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': self.gaseous_hydrogen_energy_dict,
-                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict["WGS"]
+                       GlossaryEnergy.ResourcesUsedForProductionValue: ResourceGlossary.TechnoResourceUsedDict[GlossaryEnergy.WaterGasShift]
                        }
         if self.is_stream_demand:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio

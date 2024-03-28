@@ -32,13 +32,6 @@ class Nuclear(ElectricityTechno):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs()
         # self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'] = self.get_theoretical_copper_needs()
 
-    def compute_cost_of_resources_usage(self):
-        self.cost_details[self.URANIUM_RESOURCE_NAME] = list(self.resources_prices[self.URANIUM_RESOURCE_NAME] *
-                                                             self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'])
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
-        # self.cost_details[self.COPPER_RESOURCE_NAME] = list(self.resources_prices[self.COPPER_RESOURCE_NAME] *
-        #                                             self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'])
-
     def compute_specifif_costs_of_technos(self):
         self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost()
 
@@ -46,11 +39,9 @@ class Nuclear(ElectricityTechno):
         """
         Compute primary costs which depends on the technology
         """
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_specifif_costs_of_technos()
+        super().compute_other_primary_energy_costs()
 
-        return self.cost_details[f'{self.URANIUM_RESOURCE_NAME}'] + self.cost_details[Water.name] + self.cost_details['waste_disposal']# + self.cost_details[f'{self.COPPER_RESOURCE_NAME}']
+        return self.cost_of_resources_usage[f'{self.URANIUM_RESOURCE_NAME}'] + self.cost_of_resources_usage[Water.name] + self.cost_details['waste_disposal']# + self.cost_details[f'{self.COPPER_RESOURCE_NAME}']
 
     def compute_consumption_and_production(self):
         """

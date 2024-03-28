@@ -38,13 +38,6 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
 
-    def compute_cost_of_resources_usage(self):
-        # Cost of water for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
-
-        self.cost_details[self.PLATINUM_RESOURCE_NAME] = list(self.resources_prices[self.PLATINUM_RESOURCE_NAME] *
-                                                              self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'])
-
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
                                               self.prices[Electricity.name]
@@ -61,8 +54,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[Water.name] + self.cost_details[
-            self.PLATINUM_RESOURCE_NAME]
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[Water.name] + self.cost_of_resources_usage[self.PLATINUM_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''

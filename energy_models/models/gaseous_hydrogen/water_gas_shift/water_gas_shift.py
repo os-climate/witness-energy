@@ -504,10 +504,6 @@ class WGS(GaseousHydrogenTechno):
         # need in kg
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs()/ self.cost_details['efficiency']
 
-    def compute_cost_of_resources_usage(self):
-        # Cost of water for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
-
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
@@ -532,7 +528,7 @@ class WGS(GaseousHydrogenTechno):
 
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[Water.name]
+        return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_of_resources_usage[Water.name]
 
     def grad_price_vs_energy_price(self):
         '''

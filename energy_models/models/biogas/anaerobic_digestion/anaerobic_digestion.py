@@ -35,11 +35,6 @@ class AnaerobicDigestion(BioGasTechno):
                                                  self.data_energy_dict['density'] / \
                                                  self.data_energy_dict['calorific_value']
 
-    def compute_cost_of_resources_usage(self):
-        # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(
-            self.resources_prices[ResourceGlossary.WetBiomassResource] * self.cost_details[f"{WetBiomass.name}_needs"]
-        )
     def compute_other_energies_needs(self):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
 
@@ -49,7 +44,7 @@ class AnaerobicDigestion(BioGasTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[WetBiomass.name]
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[WetBiomass.name]
 
     def grad_price_vs_energy_price(self):
         '''
