@@ -156,7 +156,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
         # now syngas is in % grad is divided by 100
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'elec_needs'), ('syngas_ratio',), -np.identity(
+            (GlossaryEnergy.TechnoDetailedPricesValue, f'{GlossaryEnergy.electricity}_needs'), ('syngas_ratio',), -np.identity(
                 len(years)) * self.techno_model.slope_elec_demand / 100.0)
 
         dprice_techno_dsyngas_ratio = self.techno_model.compute_drwgs_dsyngas_ratio()

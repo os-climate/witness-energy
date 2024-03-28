@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassGasification(SyngasTechno):
@@ -29,18 +30,18 @@ class BiomassGasification(SyngasTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of syngas
         self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+            self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
 
         # Cost of biomass for 1 kWH of syngas
         # prices is in $/kg and needs in kWh/kWh
         self.cost_details[BiomassDry.name] = list(
-            self.prices[BiomassDry.name] * self.cost_details['biomass_needs'])
+            self.energy_prices[BiomassDry.name] * self.cost_details[f'{BiomassDry.name}_needs'])
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of syngas
 
-        self.cost_details['biomass_needs'] = self.techno_infos_dict['biomass_demand']
+        self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
 
     def compute_other_primary_energy_costs(self):
@@ -75,11 +76,11 @@ class BiomassGasification(SyngasTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           'biomass_needs'] * \
+                                                                                           f'{BiomassDry.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
@@ -95,9 +96,9 @@ class BiomassGasification(SyngasTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details['biomass_needs']
+                                                 self.cost_details[f'{BiomassDry.name}_needs']
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

@@ -34,7 +34,7 @@ class Transesterification(BioDieselTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of biodiesel
         self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'] )
+            self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'] )
 
 
     def compute_resources_needs(self):

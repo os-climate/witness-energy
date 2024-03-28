@@ -112,12 +112,31 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "subtype_descriptor": {"list": "string"},
     }
 
+    EnergiesUsedForProductionValue = "Energies used for production"
+    EnergiesUsedForProduction = {
+        "var_name": EnergiesUsedForProductionValue,
+        "type": "list",
+        # "structuring": True,
+        "subtype_descriptor": {"list": "string"},
+    }
+
     CostOfResourceUsageValue = "cost_of_resources_usage"
     CostOfResourceUsageDf = {
         "var_name": CostOfResourceUsageValue,
         "type": "dataframe",
         "unit": "?",
         "description": "Cost of usage for each resource",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
+        }
+    }
+
+    CostOfEnergiesUsageValue = "cost_of_energies_usage"
+    CostOfEnergiesUsageDf = {
+        "var_name": CostOfEnergiesUsageValue,
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Cost of usage for each energy",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
         }

@@ -436,7 +436,7 @@ class WGS(GaseousHydrogenTechno):
         factory_grad = self.compute_dfactory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.energy_prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
         dwater_dsyngas_ratio = np.identity(len(years)) * self.compute_dwater_needs_dsyngas_ratio() * \
                                self.resources_prices[Water.name].to_numpy(
                                ) / efficiency[:, np.newaxis]
@@ -490,7 +490,7 @@ class WGS(GaseousHydrogenTechno):
         factory_grad = self.compute_dfactory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.energy_prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
         dwater_dsyngas_ratio = np.identity(len(years)) * self.compute_dwater_needs_dsyngas_ratio() * \
                                self.resources_prices[Water.name].to_numpy(
                                ) / efficiency[:, np.newaxis]
@@ -505,7 +505,7 @@ class WGS(GaseousHydrogenTechno):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs()/ self.cost_details['efficiency']
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
         self.syngas_ratio = self.syngas_ratio[0:len(
             self.cost_details[GlossaryEnergy.Years])]
@@ -514,9 +514,9 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
         # Cost of methane for 1 kWH of H2
-        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs'])
+        self.cost_details[Syngas.name] = list(self.energy_prices[Syngas.name] * self.cost_details['syngas_needs'])
 
     def compute_other_primary_energy_costs(self):
         """
@@ -582,7 +582,7 @@ class WGS(GaseousHydrogenTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
@@ -606,7 +606,7 @@ class WGS(GaseousHydrogenTechno):
                                              self.cost_details['syngas_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
                                             self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 

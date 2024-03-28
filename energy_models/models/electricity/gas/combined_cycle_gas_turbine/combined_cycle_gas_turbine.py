@@ -28,7 +28,7 @@ class CCGasT(ElectricityTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH
         self.cost_details[Methane.name] = list(
-            self.prices[Methane.name] * self.cost_details[f'{Methane.name}_needs'])
+            self.energy_prices[Methane.name] * self.cost_details[f'{Methane.name}_needs'])
     
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict[f'{Methane.name}_needs']

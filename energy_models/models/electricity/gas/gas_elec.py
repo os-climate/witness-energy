@@ -31,10 +31,10 @@ class GasElec(ElectricityTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH
         self.cost_details[Methane.name] = list(
-            self.prices[Methane.name] * self.techno_infos_dict['kwh_methane/kwh'])
+            self.energy_prices[Methane.name] * self.cost_details[f'{Methane.name}_needs'])
     
     def compute_other_energies_needs(self):
-        pass
+        self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict['kwh_methane/kwh']
 
     def compute_other_primary_energy_costs(self):
         """

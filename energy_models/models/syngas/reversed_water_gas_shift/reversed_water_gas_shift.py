@@ -253,7 +253,7 @@ class RWGS(SyngasTechno):
         efficiency = self.compute_efficiency()
 
         dsyngas_price_dsyngas_ratio = np.identity(len(
-            self.years)) * dsyngas_needs_dsyngas_ratio * self.prices[Syngas.name].to_numpy() / efficiency[:,
+            self.years)) * dsyngas_needs_dsyngas_ratio * self.energy_prices[Syngas.name].to_numpy() / efficiency[:,
                                                                                                np.newaxis]
 
         return dsyngas_price_dsyngas_ratio
@@ -263,7 +263,7 @@ class RWGS(SyngasTechno):
             len(self.years)) * self.slope_elec_demand
 
         delectricity_price_dsyngas_ratio = delectricity_needs_dsyngas_ratio * \
-                                           self.prices[Electricity.name].to_numpy()
+                                           self.energy_prices[Electricity.name].to_numpy()
 
         return delectricity_price_dsyngas_ratio
 
@@ -337,7 +337,7 @@ class RWGS(SyngasTechno):
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-                                self.prices[Syngas.name].to_numpy() / efficiency.values[:, np.newaxis]
+                                self.energy_prices[Syngas.name].to_numpy() / efficiency.values[:, np.newaxis]
 
         dprice_dco2_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_dco2_price_dsyngas_ratio()
@@ -359,7 +359,7 @@ class RWGS(SyngasTechno):
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.energy_prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
 
         dprice_dco2_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_dco2_price_dsyngas_ratio()
@@ -400,12 +400,12 @@ class RWGS(SyngasTechno):
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
 
-        self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs'])
+        self.cost_details[Syngas.name] = list(self.energy_prices[Syngas.name] * self.cost_details['syngas_needs'])
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
         # Cost of methane for 1 kWH of H2
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
@@ -449,7 +449,7 @@ class RWGS(SyngasTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -514,7 +514,7 @@ class RWGS(SyngasTechno):
         self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * self.cost_details['syngas_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2Resource] * \
                                                self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]

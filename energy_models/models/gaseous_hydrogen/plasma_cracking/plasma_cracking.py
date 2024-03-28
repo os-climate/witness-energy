@@ -32,12 +32,12 @@ class PlasmaCracking(GaseousHydrogenTechno):
     """
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * self.prices[Electricity.name]
-        self.cost_details[Methane.name] = self.cost_details['fuel_needs'] * self.prices[Methane.name]
+        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
+        self.cost_details[Methane.name] = self.cost_details[f'{GlossaryEnergy.methane}_needs'] * self.energy_prices[Methane.name]
     
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        self.cost_details['fuel_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -73,11 +73,11 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{GlossaryEnergy.methane}_needs'] * \
                                                                                     self.production_detailed[
                                                                                         f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                     self.cost_details[
@@ -90,10 +90,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.cost_details['fuel_needs'] / self.cost_details['efficiency']
+                                              self.cost_details[f'{GlossaryEnergy.methane}_needs'] / self.cost_details['efficiency']
 
         # self.energy_CO2_emissions[GlossaryEnergy.carbon_storage]
         C_per_h2 = self.get_theoretical_graphene_production()
@@ -168,7 +168,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                                             f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
-                                 'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
+                                 'hydrogen_price': self.energy_prices[GaseousHydrogenTechno.energy_name],
                                  # 'carbon_price': ResourceGlossary.Carbon['price'],
                                  'carbon_price': self.resources_prices[Carbon.name],
                                  'is_prod_inf_demand': False,
@@ -209,7 +209,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         return a + b
 
     def grad_hydrogen_price_vs_energy_prices(self, energy):
-        energy_prices = self.prices
+        energy_prices = self.energy_prices
         if energy == GaseousHydrogenTechno.energy_name:
             return np.identity(len(energy_prices))
         else:

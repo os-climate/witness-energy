@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
@@ -38,13 +39,13 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
+        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
+                                              self.energy_prices[Electricity.name]
     
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
-        self.cost_details['elec_needs'] = 1.0 / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -74,7 +75,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
                                             self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
@@ -126,7 +127,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 

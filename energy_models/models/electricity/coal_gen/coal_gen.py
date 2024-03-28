@@ -36,7 +36,7 @@ class CoalGen(ElectricityTechno):
         # Cost of solid_fuel for 1 kWH of electricity - Efficiency removed as data is
         # the process global solid_fuel consumption
         self.cost_details[SolidFuel.name] = list(
-            self.prices[SolidFuel.name] * self.cost_details['solid_fuel_needs'])
+            self.energy_prices[SolidFuel.name] * self.cost_details['solid_fuel_needs'])
 
 
     def compute_other_energies_needs(self):

@@ -38,7 +38,7 @@ class AutothermalReforming(SyngasTechno):
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH of H2
-        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs'])
+        self.cost_details[f'{Methane.name}'] = list(self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs'])
 
     def compute_other_energies_needs(self):
         # need in kwh to produce 1kwh of syngas
