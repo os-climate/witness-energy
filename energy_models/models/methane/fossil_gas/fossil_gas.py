@@ -29,13 +29,6 @@ class FossilGas(MethaneTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 
-    def compute_cost_of_resources_usage(self):
-        # resources price [$/t] since needs are in [kg/kWh] to have cost in
-        # [$/MWh]
-        self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
-            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[
-                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
-
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
@@ -53,7 +46,7 @@ class FossilGas(MethaneTechno):
         super().compute_other_primary_energy_costs()
 
         # cost to produce 1Kwh of methane
-        return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[self.NATURAL_GAS_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''

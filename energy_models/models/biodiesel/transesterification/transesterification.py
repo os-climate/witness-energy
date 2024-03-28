@@ -43,30 +43,6 @@ class Transesterification(BioDieselTechno):
         # need in kWh/kwh biodiesel
 
 
-    def compute_cost_of_resources_usage(self):
-
-        # Cost of methanol for 1 kWH of biodiesel
-        # $/kWh
-        self.cost_details[Methanol.name] = list(
-            self.resources_prices[Methanol.name] * self.cost_details[f'{Methanol.name}_needs'] )
-
-        # Cost of natural oil for 1 kWH of biodiesel
-        # $/kwh
-        self.cost_details[NaturalOil.name] = list(self.resources_prices[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs'] )
-
-        # Cost of sodium hydroxyde for 1 kWH of biodiesel
-        # $/kwh
-        # as potassium hydroxide can also be used, the price of the catalyst is the average of
-        # potassium hydroxide and sodium hydroxide price
-
-        # before we used to do an average of sodium and potassium, now only sodium
-        self.cost_details[SodiumHydroxide.name] = list(self.resources_prices[SodiumHydroxide.name] * self.cost_details[f'{SodiumHydroxide.name}_needs'])
-
-        # Cost of 1kg of water for 1 kWH of biodiesel
-        # $/kWh
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'])
-
-
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of biodiesel
         self.cost_details[Electricity.name] = list(
@@ -81,9 +57,8 @@ class Transesterification(BioDieselTechno):
         Compute primary costs to produce 1kWh of biodiesel
         """
         super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Methanol.name] + self.cost_details[NaturalOil.name] \
-               + self.cost_details[SodiumHydroxide.name] + self.cost_details[Water.name] \
+        return self.cost_of_resources_usage[Methanol.name] + self.cost_of_resources_usage[NaturalOil.name] \
+               + self.cost_of_resources_usage[SodiumHydroxide.name] + self.cost_of_resources_usage[Water.name] \
                + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):

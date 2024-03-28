@@ -38,10 +38,7 @@ class BiomassFermentation(EthanolTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_cost_of_resources_usage(self):
-        self.cost_details[Water.name] = \
-            self.resources_prices[Water.name] * \
-            self.cost_details[f'{Water.name}_needs']
+
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[BiomassDry.name] = \
@@ -65,7 +62,7 @@ class BiomassFermentation(EthanolTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[BiomassDry.name] + self.cost_details[Water.name] + self.cost_details[Electricity.name]
+        return self.cost_details[BiomassDry.name] + self.cost_of_resources_usage[Water.name] + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''

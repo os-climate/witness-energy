@@ -32,12 +32,6 @@ class CoalGen(ElectricityTechno):
         # need in kg/kWh
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
-    def compute_cost_of_resources_usage(self):
-        # Cost of water for 1 kWH of electricity - Efficiency removed as data
-        # is the process global water consumption
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details[f"{ResourceGlossary.WaterResource}_needs"])
-
     def compute_cost_of_other_energies_usage(self):
         # Cost of solid_fuel for 1 kWH of electricity - Efficiency removed as data is
         # the process global solid_fuel consumption
@@ -56,7 +50,7 @@ class CoalGen(ElectricityTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[SolidFuel.name] + self.cost_details[Water.name]
+        return self.cost_details[SolidFuel.name] + self.cost_of_resources_usage[Water.name]
 
     def compute_consumption_and_production(self):
         """

@@ -29,19 +29,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CalciumPotassium(CCTechno):
 
     def compute_resources_needs(self):
-        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict[
+        self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs'] = self.compute_potassium_need() / self.techno_infos_dict[
             GlossaryEnergy.EnergyEfficiency]
-        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
+        self.cost_details[f'{ResourceGlossary.CalciumResource}_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
             GlossaryEnergy.EnergyEfficiency]
-
-    def compute_cost_of_resources_usage(self):
-        self.cost_details['potassium'] = list(
-            self.resources_prices[ResourceGlossary.PotassiumResource] * self.cost_details['potassium_needs']
-            )
-
-        self.cost_details['calcium'] = list(
-            self.resources_prices[ResourceGlossary.CalciumResource] * self.cost_details['calcium_needs']
-        )
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
@@ -58,7 +49,7 @@ class CalciumPotassium(CCTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details['potassium'] + self.cost_details['calcium'] + \
+        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.PotassiumResource] + self.cost_of_resources_usage[ResourceGlossary.CalciumResource] + \
                self.cost_details[Methane.name]
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -73,11 +64,11 @@ class CalciumPotassium(CCTechno):
 
         self.carbon_intensity[ResourceGlossary.PotassiumResource] = self.resources_CO2_emissions[
                                                                         ResourceGlossary.PotassiumResource] * \
-                                                                    self.cost_details['potassium_needs']
+                                                                    self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs']
 
         self.carbon_intensity[ResourceGlossary.CalciumResource] = self.resources_CO2_emissions[
                                                                       ResourceGlossary.CalciumResource] * \
-                                                                  self.cost_details['calcium_needs']
+                                                                  self.cost_details[f'{ResourceGlossary.CalciumResource}_needs']
 
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
             ResourceGlossary.PotassiumResource] + self.carbon_intensity[ResourceGlossary.CalciumResource]
@@ -122,11 +113,11 @@ class CalciumPotassium(CCTechno):
                                                                             self.production_detailed[
                                                                                 f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'calcium ({self.mass_unit})'] = self.cost_details['calcium_needs'] * \
+        self.consumption_detailed[f'calcium ({self.mass_unit})'] = self.cost_details[f'{ResourceGlossary.CalciumResource}_needs'] * \
                                                                    self.production_detailed[
                                                                        f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'potassium ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
+        self.consumption_detailed[f'potassium ({self.mass_unit})'] = self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs'] * \
                                                                      self.production_detailed[
                                                                          f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 

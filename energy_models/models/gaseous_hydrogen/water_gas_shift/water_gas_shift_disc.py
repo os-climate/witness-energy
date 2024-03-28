@@ -192,7 +192,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                    ResourceGlossary.WaterResource].to_numpy() / eff_new_axis
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, ResourceGlossary.WaterResource), ('syngas_ratio',),
+            (GlossaryEnergy.CostOfResourceUsageValue, ResourceGlossary.WaterResource), ('syngas_ratio',),
             dwater_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(

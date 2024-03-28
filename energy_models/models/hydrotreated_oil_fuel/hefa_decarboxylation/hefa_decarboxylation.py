@@ -39,7 +39,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
     elec_consumption_factor = .185
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[NaturalOil.name] = list(
+        self.cost_of_resources_usage[NaturalOil.name] = list(
             self.resources_prices[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details[
                 'efficiency'])
 
@@ -68,7 +68,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[NaturalOil.name] + self.cost_details[GaseousHydrogen.name] + self.cost_details[
+        return self.cost_of_resources_usage[NaturalOil.name] + self.cost_details[GaseousHydrogen.name] + self.cost_details[
             Electricity.name]
 
     def grad_price_vs_energy_price(self):
