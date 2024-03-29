@@ -164,7 +164,7 @@ class CCTechno(TechnoType):
 
             grad = np.array(slopes)[:, np.newaxis] \
                    * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] * \
-                   self.prices[energy_name].values[:, np.newaxis]
+                   self.energy_prices[energy_name].values[:, np.newaxis]
         else:
             grad = 0.0
         return np.identity(len(fg_mean_ratio)) * grad

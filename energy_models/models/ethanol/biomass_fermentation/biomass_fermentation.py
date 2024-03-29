@@ -41,19 +41,12 @@ class BiomassFermentation(EthanolTechno):
 
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[BiomassDry.name] = \
-            self.prices[BiomassDry.name] * \
-            self.cost_details[f'{BiomassDry.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.cost_details[Electricity.name] = \
-            self.prices[Electricity.name] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.cost_details[BiomassDry.name] = self.energy_prices[BiomassDry.name] * self.cost_details[f'{BiomassDry.name}_needs']
+        self.cost_details[Electricity.name] = self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
 
     def compute_other_energies_needs(self):
-        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs()
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
+        self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -76,15 +69,6 @@ class BiomassFermentation(EthanolTechno):
                 BiomassDry.name: np.identity(len(self.years)) * biomass_needs / efficiency,
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        efficiency = self.techno_infos_dict['efficiency']
-        water_needs = self.get_theoretical_water_needs()
-
-        return {Water.name: np.identity(len(self.years)) * water_needs / efficiency,
-                }
 
     def compute_consumption_and_production(self):
         """

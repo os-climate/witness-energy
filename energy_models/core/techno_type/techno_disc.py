@@ -94,7 +94,8 @@ class TechnoDiscipline(SoSWrapp):
                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction
+        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
+        GlossaryEnergy.EnergiesUsedForProductionValue: GlossaryEnergy.EnergiesUsedForProduction
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -149,6 +150,13 @@ class TechnoDiscipline(SoSWrapp):
                     cost_of_resource_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in resources_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfResourceUsageValue] = cost_of_resource_usage_var
 
+            if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
+                energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
+                if energies_used_for_production is not None:
+                    cost_of_energies_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfEnergiesUsageDf)
+                    cost_of_energies_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in energies_used_for_production})
+                    dynamic_outputs[GlossaryEnergy.CostOfEnergiesUsageValue] = cost_of_energies_usage_var
+
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
@@ -194,6 +202,12 @@ class TechnoDiscipline(SoSWrapp):
             if resource_used_for_prod is None:
                 resource_used_for_prod = ResourceGlossary.TechnoResourceUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoResourceUsedDict else []
                 self.update_default_value(GlossaryEnergy.ResourcesUsedForProductionValue, 'in', resource_used_for_prod)
+
+        if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
+            energies_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
+            if energies_used_for_prod is None:
+                energies_used_for_prod = ResourceGlossary.TechnoEnergiesUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoEnergiesUsedDict else []
+                self.update_default_value(GlossaryEnergy.EnergiesUsedForProductionValue, 'in', energies_used_for_prod)
 
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -242,7 +256,8 @@ class TechnoDiscipline(SoSWrapp):
                         'non_use_capital': self.techno_model.non_use_capital,
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
-                        GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage
+                        GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage,
+                        GlossaryEnergy.CostOfEnergiesUsageValue: self.techno_model.cost_of_energies_usage,
                         }
 
         self.store_sos_outputs_values(outputs_dict)

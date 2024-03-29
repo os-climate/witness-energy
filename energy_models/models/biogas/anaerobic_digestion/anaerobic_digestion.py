@@ -21,12 +21,13 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.biogas_techno import BioGasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class AnaerobicDigestion(BioGasTechno):
     def compute_cost_of_other_energies_usage(self):
         # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
 
 
     def compute_resources_needs(self):
@@ -36,7 +37,7 @@ class AnaerobicDigestion(BioGasTechno):
                                                  self.data_energy_dict['calorific_value']
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
     def compute_other_primary_energy_costs(self):
         """
@@ -55,15 +56,6 @@ class AnaerobicDigestion(BioGasTechno):
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs}
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        wet_biomass_needs = self.techno_infos_dict[f"{WetBiomass.name}_needs"] / \
-                            self.data_energy_dict['density'] / \
-                            self.data_energy_dict['calorific_value']
-        return {ResourceGlossary.WetBiomassResource: np.identity(len(self.years)) * wet_biomass_needs}
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
@@ -75,7 +67,7 @@ class AnaerobicDigestion(BioGasTechno):
                                                                              self.production_detailed[
                                                                                  f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -89,6 +81,6 @@ class AnaerobicDigestion(BioGasTechno):
                                                       self.cost_details[f"{WetBiomass.name}_needs"]
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         return self.carbon_intensity[f'{WetBiomass.name}'] + self.carbon_intensity[Electricity.name]

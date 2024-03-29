@@ -28,11 +28,10 @@ class BiomassFired(ElectricityTechno):
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of biomass for 1 kWH
-        self.cost_details[BiomassDry.name] = list(
-            self.prices[BiomassDry.name] * self.techno_infos_dict['biomass_needs'])
+        self.cost_details[BiomassDry.name] = list(self.energy_prices[BiomassDry.name] * self.cost_details[f'{BiomassDry.name}_needs'])
     
     def compute_other_energies_needs(self):
-        pass
+        self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_needs']
 
     def compute_other_primary_energy_costs(self):
         """

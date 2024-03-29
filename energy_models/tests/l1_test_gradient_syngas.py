@@ -302,7 +302,6 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -381,7 +380,10 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',

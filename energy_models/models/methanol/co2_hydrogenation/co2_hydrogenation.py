@@ -29,29 +29,16 @@ class CO2Hydrogenation(MethanolTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-
-
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[CarbonCapture.name] = \
-            self.prices[CarbonCapture.name] * \
-            self.cost_details[f'{CarbonCapture.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.cost_details[GaseousHydrogen.name] = \
-            self.prices[GaseousHydrogen.name] * \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.cost_details[Electricity.name] = \
-            self.prices[Electricity.name] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.cost_details[CarbonCapture.name] = self.energy_prices[CarbonCapture.name] * self.cost_details[f'{CarbonCapture.name}_needs']
+        self.cost_details[GaseousHydrogen.name] = self.energy_prices[GaseousHydrogen.name] * self.cost_details[f'{GaseousHydrogen.name}_needs']
+        self.cost_details[Electricity.name] = self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
 
 
     def compute_other_energies_needs(self):
-        self.cost_details[f'{CarbonCapture.name}_needs'] = self.get_theoretical_co2_needs()
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
+        self.cost_details[f'{CarbonCapture.name}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -77,16 +64,6 @@ class CO2Hydrogenation(MethanolTechno):
             GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency,
             Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
         }
-
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        efficiency = self.techno_infos_dict['efficiency']
-        water_needs = self.get_theoretical_water_needs()
-
-        return {Water.name: np.identity(len(self.years)) * water_needs / efficiency,
-                }
 
     def compute_consumption_and_production(self):
         """
