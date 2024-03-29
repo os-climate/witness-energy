@@ -21,18 +21,19 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class DirectAirCaptureTechno(CCTechno):
 
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Renewable.name] = list(self.prices[Renewable.name] * self.cost_details['elec_needs'])
-        self.cost_details[Fossil.name] = list(self.prices[Fossil.name] * self.cost_details['heat_needs'])
+        self.cost_details[Renewable.name] = list(self.energy_prices[Renewable.name] * self.cost_details[f'{GlossaryEnergy.renewable}_needs'])
+        self.cost_details[Fossil.name] = list(self.energy_prices[Fossil.name] * self.cost_details[f'{Fossil.name}_needs'])
     
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        self.cost_details['heat_needs'] = self.get_heat_needs()
+        self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
 
     def compute_other_primary_energy_costs(self):
@@ -50,10 +51,10 @@ class DirectAirCaptureTechno(CCTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_intensity[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details['heat_needs']
+        self.carbon_intensity[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details[f'{Fossil.name}_needs']
 
         self.carbon_intensity[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details[
-            'elec_needs']
+            f'{GlossaryEnergy.renewable}_needs']
 
         return self.carbon_intensity[Fossil.name] + self.carbon_intensity[Renewable.name] - 1.0
 
@@ -76,16 +77,16 @@ class DirectAirCaptureTechno(CCTechno):
 
         # Consumption
 
-        self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+        self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.renewable}_needs'] * \
                                                                               self.production_detailed[
                                                                                   f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+        self.consumption_detailed[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details[f'{Fossil.name}_needs'] * \
                                                                            self.production_detailed[
                                                                                f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            'heat_needs'] * \
+                                                                                            f'{Fossil.name}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                                         Fossil.data_energy_dict[

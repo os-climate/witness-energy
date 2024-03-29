@@ -17,16 +17,16 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.base_techno_models.wet_biomass_techno import WetBiomassTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class AnimalManure(WetBiomassTechno):
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
     def compute_other_primary_energy_costs(self):
         """
@@ -42,7 +42,7 @@ class AnimalManure(WetBiomassTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.consumption_detailed[f'{Electricity.name} (kWh)'] = self.cost_details['elec_needs'] * \
+        self.consumption_detailed[f'{Electricity.name} (kWh)'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
                                                                  self.production_detailed[
                                                                      f'{WetBiomassTechno.energy_name} (kWh)']  # in kWH
 
@@ -56,6 +56,6 @@ class AnimalManure(WetBiomassTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         return self.carbon_intensity[Electricity.name]

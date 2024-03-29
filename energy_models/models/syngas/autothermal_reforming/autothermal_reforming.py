@@ -38,12 +38,11 @@ class AutothermalReforming(SyngasTechno):
 
     def compute_cost_of_other_energies_usage(self):
         # Cost of methane for 1 kWH of H2
-        self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['methane_needs']
-                                                    / self.cost_details['efficiency'])
+        self.cost_details[f'{Methane.name}'] = list(self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs'])
 
     def compute_other_energies_needs(self):
         # need in kwh to produce 1kwh of syngas
-        self.cost_details['methane_needs'] = self.get_theoretical_CH4_needs()
+        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -67,19 +66,6 @@ class AutothermalReforming(SyngasTechno):
             Methane.name: np.diag(methane_needs / efficiency)
         }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        co2_needs = self.get_theoretical_CO2_needs()
-        oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        init_grad = np.diag(1 / efficiency)
-        return {
-            CO2.name: init_grad * co2_needs,
-            Oxygen.name: init_grad * oxygen_needs,
-        }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane
@@ -87,8 +73,7 @@ class AutothermalReforming(SyngasTechno):
         '''
 
         self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-                                                   self.cost_details['methane_needs'] / \
-                                                   self.cost_details['efficiency']
+                                                   self.cost_details[f'{Methane.name}_needs']
         self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
                                           self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
         self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
@@ -96,16 +81,6 @@ class AutothermalReforming(SyngasTechno):
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
             Oxygen.name]
-
-    def grad_co2_emissions_vs_resources_co2_emissions(self):
-        '''
-        Compute the gradient of global CO2 emissions vs resources CO2 emissions
-        '''
-        co2_needs = self.get_theoretical_CO2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            CO2.name: np.diag(co2_needs / efficiency),
-        }
 
     def get_theoretical_CH4_needs(self):
         """
@@ -180,12 +155,11 @@ class AutothermalReforming(SyngasTechno):
                                                                                f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                            self.cost_details['efficiency']
 
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
                                                                                     self.production_detailed[
-                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                    self.cost_details['efficiency']
+                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
+        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
         #     self.cost_details['efficiency']
 

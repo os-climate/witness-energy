@@ -22,6 +22,7 @@ from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectrolysisPEM(GaseousHydrogenTechno):
@@ -39,13 +40,12 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
+        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
     
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
-        self.cost_details['elec_needs'] = 1.0 / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
 
     def compute_other_primary_energy_costs(self):
@@ -66,17 +66,6 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
                 }
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        water_needs = self.get_water_needs()
-        platinum_needs = self.get_theoretical_platinum_needs()
-        return {
-            Water.name: np.identity(len(self.years)) * water_needs,
-            self.PLATINUM_RESOURCE_NAME: np.identity(len(self.years)) * platinum_needs
-        }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod
@@ -84,7 +73,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
                                             self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
         self.carbon_intensity[self.PLATINUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.PLATINUM_RESOURCE_NAME] * \
@@ -153,7 +142,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 

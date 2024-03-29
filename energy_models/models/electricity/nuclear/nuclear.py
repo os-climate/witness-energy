@@ -236,16 +236,3 @@ class Nuclear(ElectricityTechno):
             capex_calc_list = capex_init * np.ones(len(invest_list))
 
         return capex_calc_list.tolist()
-
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        water_needs = self.get_theoretical_water_needs()
-        uranium_needs = self.get_theoretical_uranium_fuel_needs()
-        efficiency = self.compute_efficiency()
-        
-        return {
-            Water.name: np.identity(len(self.years)) * water_needs,
-            self.URANIUM_RESOURCE_NAME: np.identity(len(self.years)) * uranium_needs,
-        }

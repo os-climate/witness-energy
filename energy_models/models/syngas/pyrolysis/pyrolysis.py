@@ -93,12 +93,3 @@ class Pyrolysis(SyngasTechno):
         Overwrite techno_type method
         '''
         return {SyngasTechno.energy_name: 0 * np.identity(len(self.years))}
-
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        syngas_kg = 1.0 * self.techno_infos_dict['syngas_yield']
-        syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
-        wood_needs = 1 / syngas_kwh
-        return {ResourceGlossary.WoodResource: np.identity(len(self.years)) * wood_needs}

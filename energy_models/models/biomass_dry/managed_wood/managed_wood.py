@@ -35,10 +35,10 @@ class ManagedWood(BiomassDryTechno):
 
     def compute_cost_of_other_energies_usage(self):
         self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
+            self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
 
     def compute_other_energies_needs(self):
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
     def compute_other_primary_energy_costs(self):
         """
@@ -101,7 +101,7 @@ class ManagedWood(BiomassDryTechno):
 
         # compute electricity and consumption CO2 from biomass_dry for energy
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -116,7 +116,7 @@ class ManagedWood(BiomassDryTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         return self.carbon_intensity[Electricity.name]
 
