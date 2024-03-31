@@ -31,9 +31,6 @@ class NaturalGasLowHeat(lowheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[f'{Methane.name}'] = self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs']
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
@@ -51,7 +48,7 @@ class NaturalGasLowHeat(lowheattechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[f'{Methane.name}']
+        return self.cost_of_energies_usage[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''

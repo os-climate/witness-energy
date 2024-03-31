@@ -25,10 +25,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class AnaerobicDigestion(BioGasTechno):
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
 
     def compute_resources_needs(self):
         # Wet biomass_needs are in kg/m^3
@@ -45,7 +41,7 @@ class AnaerobicDigestion(BioGasTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[WetBiomass.name]
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[WetBiomass.name]
 
     def grad_price_vs_energy_price(self):
         '''

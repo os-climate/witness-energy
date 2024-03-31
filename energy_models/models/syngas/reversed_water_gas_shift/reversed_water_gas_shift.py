@@ -398,12 +398,6 @@ class RWGS(SyngasTechno):
     def compute_resources_needs(self):
         self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
-        self.cost_details[Syngas.name] = list(self.energy_prices[Syngas.name] * self.cost_details['syngas_needs'])
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
@@ -418,7 +412,7 @@ class RWGS(SyngasTechno):
 
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_of_resources_usage[CO2.name]
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_energies_usage[Syngas.name] + self.cost_of_resources_usage[CO2.name]
 
     def grad_price_vs_energy_price(self):
         '''

@@ -27,11 +27,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class Amine(CCTechno):
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-        self.cost_details[Methane.name] = list(self.energy_prices[Methane.name] * self.cost_details[f"{Methane.name}_needs"])
-
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f"{Methane.name}_needs"] = self.get_heat_needs()
@@ -45,9 +40,9 @@ class Amine(CCTechno):
 
         """
         super().compute_other_primary_energy_costs()
-        a = 1
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.AmineResource] + \
-               self.cost_details[Methane.name]
+
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.AmineResource] + \
+               self.cost_of_energies_usage[Methane.name]
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

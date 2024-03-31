@@ -24,12 +24,6 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 class CCGasT(ElectricityTechno):
     COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
-
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of methane for 1 kWH
-        self.cost_details[Methane.name] = list(
-            self.energy_prices[Methane.name] * self.cost_details[f'{Methane.name}_needs'])
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict[f'{Methane.name}_needs']
 
@@ -39,7 +33,7 @@ class CCGasT(ElectricityTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Methane.name]
+        return self.cost_of_energies_usage[Methane.name]
 
     def compute_consumption_and_production(self):
         """

@@ -22,9 +22,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class AnimalManure(WetBiomassTechno):
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
@@ -34,7 +31,7 @@ class AnimalManure(WetBiomassTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name]
+        return self.cost_of_energies_usage[Electricity.name]
 
     def compute_consumption_and_production(self):
         """

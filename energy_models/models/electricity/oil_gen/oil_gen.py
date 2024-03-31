@@ -32,11 +32,6 @@ class OilGen(ElectricityTechno):
         # need in kg/kWh
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is
-        # the process global liquid_fuel consumption
-        self.cost_details[LiquidFuel.name] = list(self.energy_prices[LiquidFuel.name] * self.cost_details[f'{LiquidFuel.name}_needs'])
-    
     def compute_other_energies_needs(self):
         # in kwh of fuel by kwh of electricity
         self.cost_details[f'{LiquidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / self.cost_details['efficiency']
@@ -48,7 +43,7 @@ class OilGen(ElectricityTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[LiquidFuel.name] + self.cost_of_resources_usage[Water.name]
+        return self.cost_of_energies_usage[LiquidFuel.name] + self.cost_of_resources_usage[Water.name]
 
     def compute_consumption_and_production(self):
         """

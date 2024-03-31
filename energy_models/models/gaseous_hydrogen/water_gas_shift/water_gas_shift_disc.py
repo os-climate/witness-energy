@@ -175,7 +175,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             np.identity(len(self.techno_model.years)) * dwater_needs_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, GlossaryEnergy.electricity), ('syngas_ratio',),
+            (GlossaryEnergy.CostOfEnergiesUsageValue, GlossaryEnergy.electricity), ('syngas_ratio',),
             np.zeros(len(self.techno_model.years), ))
 
         efficiency = self.techno_model.compute_efficiency()
@@ -184,7 +184,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             self.techno_model.years)) * dsyngas_needs_dsyngas_ratio * self.techno_model.energy_prices[
                                     GlossaryEnergy.syngas].to_numpy() / eff_new_axis
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, GlossaryEnergy.syngas), ('syngas_ratio',),
+            (GlossaryEnergy.CostOfEnergiesUsageValue, GlossaryEnergy.syngas), ('syngas_ratio',),
             dsyngas_dsyngas_ratio / 100.0)
 
         dwater_dsyngas_ratio = np.identity(len(

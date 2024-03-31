@@ -18,6 +18,7 @@ import numpy as np
 
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
+from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import GenericFlueGasTechnoModel
 
@@ -46,11 +47,11 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
         return elec_need + heat_need
 
     def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Renewable.name] = list(self.energy_prices[Renewable.name] * self.cost_details[f'{GlossaryEnergy.renewable}_needs'])
+        TechnoType.compute_cost_of_other_energies_usage(self)
 
-        self.cost_details[Renewable.name] *= self.compute_electricity_variation_from_fg_ratio(
+        self.cost_of_energies_usage[Renewable.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-    
+
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
@@ -60,7 +61,7 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Renewable.name]
+        return self.cost_of_energies_usage[Renewable.name]
 
     def grad_price_vs_energy_price(self):
         '''

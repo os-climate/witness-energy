@@ -33,9 +33,6 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
     def compute_resources_needs(self):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
-    
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
@@ -49,7 +46,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[Water.name]
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[Water.name]
 
     def grad_price_vs_energy_price(self):
         '''

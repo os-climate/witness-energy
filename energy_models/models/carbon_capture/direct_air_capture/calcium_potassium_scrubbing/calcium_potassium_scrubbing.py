@@ -34,10 +34,6 @@ class CalciumPotassium(CCTechno):
         self.cost_details[f'{ResourceGlossary.CalciumResource}_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
             GlossaryEnergy.EnergyEfficiency]
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-        self.cost_details[Methane.name] = list(self.energy_prices[Methane.name] * self.cost_details[f'{Methane.name}_needs'])
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Methane.name}_needs'] = self.get_heat_needs()
@@ -49,8 +45,8 @@ class CalciumPotassium(CCTechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.PotassiumResource] + self.cost_of_resources_usage[ResourceGlossary.CalciumResource] + \
-               self.cost_details[Methane.name]
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[ResourceGlossary.PotassiumResource] + self.cost_of_resources_usage[ResourceGlossary.CalciumResource] + \
+               self.cost_of_energies_usage[Methane.name]
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

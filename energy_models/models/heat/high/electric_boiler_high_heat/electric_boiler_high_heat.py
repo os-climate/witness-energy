@@ -30,9 +30,6 @@ class ElectricBoilerHighHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
@@ -44,7 +41,7 @@ class ElectricBoilerHighHeat(highheattechno):
 
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[Electricity.name]
+        return self.cost_of_energies_usage[Electricity.name]
 
     def configure_input(self, inputs_dict):
         '''

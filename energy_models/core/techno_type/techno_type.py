@@ -556,7 +556,7 @@ class TechnoType:
 
         self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
 
-    def compute_cost_of_other_energies_usage_generic_method(self):
+    def compute_cost_of_other_energies_usage(self):
         """Will replace non generic method in future dev"""
         cost_of_energies_usage = {
             GlossaryEnergy.Years: self.years,
@@ -565,9 +565,6 @@ class TechnoType:
             cost_of_energies_usage[energy] = self.cost_details[f"{energy}_needs"].values * self.energy_prices[energy].values
 
         self.cost_of_energies_usage = pd.DataFrame(cost_of_energies_usage)
-        if len(self.energies_used_for_production):
-            a = (self.cost_of_energies_usage[self.energies_used_for_production].values - self.cost_details[self.energies_used_for_production].values).std() < 1e-16
-            b = 1
 
     @abstractmethod
     def compute_other_primary_energy_costs(self):
@@ -578,7 +575,6 @@ class TechnoType:
         self.compute_cost_of_resources_usage()
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
-        self.compute_cost_of_other_energies_usage_generic_method()
         self.compute_specifif_costs_of_technos()
 
         return 0.0
@@ -1105,10 +1101,6 @@ class TechnoType:
         pass
 
     def compute_other_energies_needs(self):
-        """To be overloaded when techno uses other technos productions to produce its energy"""
-        pass
-
-    def compute_cost_of_other_energies_usage(self):
         """To be overloaded when techno uses other technos productions to produce its energy"""
         pass
 

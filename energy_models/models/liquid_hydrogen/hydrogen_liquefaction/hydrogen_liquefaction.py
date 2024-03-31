@@ -30,13 +30,6 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
     inputs
 
     """
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
-
-        # Cost of hydrogen for 1kwh of LH2
-        self.cost_details[GaseousHydrogen.name] = self.energy_prices[GaseousHydrogen.name] * self.cost_details[f'{GaseousHydrogen.name}_needs']
-
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
@@ -52,7 +45,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         super().compute_other_primary_energy_costs()
 
 
-        return self.cost_details[Electricity.name] + self.cost_details[GaseousHydrogen.name]
+        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_energies_usage[GaseousHydrogen.name]
 
     def grad_price_vs_energy_price(self):
         '''

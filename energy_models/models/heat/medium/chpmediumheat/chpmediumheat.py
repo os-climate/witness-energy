@@ -25,9 +25,6 @@ from energy_models.core.techno_type.base_techno_models.medium_heat_techno import
 
 class CHPMediumHeat(mediumheattechno):
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[f'{Methane.name}'] = self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs']
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
@@ -45,7 +42,7 @@ class CHPMediumHeat(mediumheattechno):
         """
         super().compute_other_primary_energy_costs()
 
-        return self.cost_details[f'{Methane.name}']
+        return self.cost_of_energies_usage[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''
