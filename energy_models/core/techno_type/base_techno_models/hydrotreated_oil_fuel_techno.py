@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from abc import abstractmethod
 
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.techno_type.techno_type import TechnoType

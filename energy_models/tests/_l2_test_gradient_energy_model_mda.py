@@ -14,14 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from collections import defaultdict
 from os.path import join, dirname
 from pathlib import Path
 from shutil import rmtree
 from time import sleep
 
 import numpy as np
-import pandas as pd
-from collections import defaultdict
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open

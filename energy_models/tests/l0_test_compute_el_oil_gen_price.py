@@ -19,7 +19,6 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
