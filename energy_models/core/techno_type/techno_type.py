@@ -42,6 +42,7 @@ class TechnoType:
     def __init__(self, name):
         self.cost_of_resources_usage = None
         self.cost_of_energies_usage = None
+        self.specific_costs = None
         self.years = None
         self.cost_details = None
         self.production_detailed = None
@@ -454,7 +455,7 @@ class TechnoType:
 
         self.energy_prices = self.energy_prices.loc[self.energy_prices[GlossaryEnergy.Years]
                                                     <= self.cost_details[GlossaryEnergy.Years].max()]
-        self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs()
+        self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
         # self.cost_details['CAPEX_heat_tech'] = self.cost_details[f'Capex_{self.name}'] * self.crf
@@ -576,8 +577,7 @@ class TechnoType:
         self.compute_other_energies_needs()
         self.compute_cost_of_other_energies_usage()
         self.compute_specifif_costs_of_technos()
-
-        return 0.0
+        self.compute_sum_all_costs()
 
     def is_invest_before_year(self, year):
         '''
@@ -1106,7 +1106,9 @@ class TechnoType:
 
     def compute_specifif_costs_of_technos(self):
         """To be overloaded when techno relies on resources"""
-        pass
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years
+        })
 
     def compute_co2_tax(self):
         '''
@@ -1645,3 +1647,8 @@ class TechnoType:
             resource: np.diag(self.cost_details[f"{resource}_needs"].values) for resource in self.resources_used_for_production
         }
 
+    def compute_sum_all_costs(self):
+        all_costs = self.cost_of_resources_usage[self.resources_used_for_production].values.sum(axis=1) +\
+                    self.cost_of_energies_usage[self.energies_used_for_production].values.sum(axis=1) +\
+                    self.specific_costs.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
+        self.cost_details['energy_costs'] = all_costs

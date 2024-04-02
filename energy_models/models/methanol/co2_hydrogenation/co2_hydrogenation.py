@@ -35,15 +35,6 @@ class CO2Hydrogenation(MethanolTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of methanol
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[CarbonCapture.name] + self.cost_of_energies_usage[GaseousHydrogen.name] + \
-               self.cost_of_resources_usage[Water.name] + self.cost_of_energies_usage[Electricity.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

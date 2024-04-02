@@ -22,12 +22,6 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 class Hydropower(ElectricityTechno):
     COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        return 0
-
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment

@@ -41,15 +41,6 @@ class CoalExtraction(SolidFuelTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[self.COAL_RESOURCE_NAME]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

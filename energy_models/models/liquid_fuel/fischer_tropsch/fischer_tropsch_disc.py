@@ -420,6 +420,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         techno_detailed_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedPricesValue)
         cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
@@ -459,7 +460,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         new_chart.series.append(serie)
         # Transport price
         if 'WGS' in techno_detailed_prices:
-            WGS_cost = techno_detailed_prices[GlossaryEnergy.syngas].values - \
+            WGS_cost = specific_costs[GlossaryEnergy.syngas].values - \
                        techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values
             # Factory price
             serie = InstanciatedSeries(
@@ -468,7 +469,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
             new_chart.series.append(serie)
         if 'RWGS' in techno_detailed_prices:
-            WGS_cost = cost_of_energies_usage[GlossaryEnergy.syngas].values - \
+            WGS_cost = specific_costs[GlossaryEnergy.syngas].values - \
                        techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values
             # Factory price
             serie = InstanciatedSeries(
@@ -477,7 +478,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
-            WGS_cost = cost_of_energies_usage[GlossaryEnergy.syngas].values - \
+            WGS_cost = specific_costs[GlossaryEnergy.syngas].values - \
                        techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values
             # Factory price
             serie = InstanciatedSeries(
@@ -503,6 +504,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
         cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
             'calorific_value']
         chart_name = f'Detailed prices [$/t] of {self.techno_name} technology over the years'
@@ -551,7 +553,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         new_chart.series.append(serie)
         # Transport price
         if 'WGS' in techno_detailed_prices:
-            WGS_cost = (cost_of_energies_usage[GlossaryEnergy.syngas].values -
+            WGS_cost = (specific_costs[GlossaryEnergy.syngas].values -
                         techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values) * calorific_value
             # Factory price
             serie = InstanciatedSeries(
@@ -560,7 +562,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
             new_chart.series.append(serie)
         if 'RWGS' in techno_detailed_prices:
-            WGS_cost = (cost_of_energies_usage[GlossaryEnergy.syngas].values -
+            WGS_cost = (specific_costs[GlossaryEnergy.syngas].values -
                         techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values) * calorific_value
             # Factory price
             serie = InstanciatedSeries(
@@ -569,7 +571,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
-            WGS_cost = (cost_of_energies_usage[GlossaryEnergy.syngas].values -
+            WGS_cost = (specific_costs[GlossaryEnergy.syngas].values -
                         techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values) * calorific_value
             # Factory price
             serie = InstanciatedSeries(

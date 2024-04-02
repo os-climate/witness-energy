@@ -40,15 +40,6 @@ class CoElectrolysis(SyngasTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of syngas 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[Water.name] + self.cost_of_resources_usage[CO2.name] + self.cost_of_energies_usage[Electricity.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

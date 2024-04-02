@@ -251,7 +251,7 @@ class FischerTropsch(LiquidFuelTechno):
         self.cost_details['syngas_needs_for_FT'] = self.get_theoretical_syngas_needs_for_FT(
         )
 
-        self.cost_of_energies_usage[Syngas.name] = self.cost_details[self.sg_transformation_name] * \
+        syngas_costs = self.cost_details[self.sg_transformation_name] * \
                                          self.cost_details['syngas_needs_for_FT'] / \
                                          self.cost_details['efficiency']
 
@@ -259,15 +259,11 @@ class FischerTropsch(LiquidFuelTechno):
                                                                               self.cost_details['syngas_needs_for_FT'] / \
                                                                               self.cost_details['efficiency']
 
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            Syngas.name: syngas_costs
+        })
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-        self.compute_specifif_costs_of_technos()
-
-        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_energies_usage[Syngas.name]
 
     def grad_price_vs_energy_price(self):
         '''

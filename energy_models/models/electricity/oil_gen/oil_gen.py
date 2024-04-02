@@ -37,14 +37,6 @@ class OilGen(ElectricityTechno):
         self.cost_details[f'{LiquidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / self.cost_details['efficiency']
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[LiquidFuel.name] + self.cost_of_resources_usage[Water.name]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

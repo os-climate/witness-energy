@@ -47,14 +47,6 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1MWh of hydrotreated_oil_fuel
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[NaturalOil.name] + self.cost_of_energies_usage[GaseousHydrogen.name] + self.cost_of_energies_usage[Electricity.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

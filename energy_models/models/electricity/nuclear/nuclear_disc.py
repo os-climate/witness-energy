@@ -165,8 +165,8 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         # decommissioning price part
         techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
-        techno_detailed_prices = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedPricesValue)
+        techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
+        specific_costs_technos = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         ratio = techno_infos_dict['decommissioning_cost'] / \
                 techno_infos_dict['Capex_init']
         decommissioning_price = ratio * \
@@ -178,9 +178,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         new_chart.series.append(serie)
 
-        waste_disposal_levy_mwh = techno_detailed_prices['waste_disposal']
+        waste_disposal_levy_mwh = specific_costs_technos['waste_disposal']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            specific_costs_technos[GlossaryEnergy.Years].values.tolist(),
             waste_disposal_levy_mwh.tolist(), 'Waste Disposal (part of Energy)', 'lines')
 
         new_chart.series.append(serie)

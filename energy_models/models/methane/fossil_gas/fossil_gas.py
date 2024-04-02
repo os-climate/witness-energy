@@ -36,16 +36,6 @@ class FossilGas(MethaneTechno):
         # needs in [kg/kWh]
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        # cost to produce 1Kwh of methane
-        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_resources_usage[self.NATURAL_GAS_RESOURCE_NAME]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices

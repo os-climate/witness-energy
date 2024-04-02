@@ -29,13 +29,6 @@ class BiomassFired(ElectricityTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_needs']
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        super().compute_other_primary_energy_costs()
-        return self.cost_of_energies_usage[BiomassDry.name]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

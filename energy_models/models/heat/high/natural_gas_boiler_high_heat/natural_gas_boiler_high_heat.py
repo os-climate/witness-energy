@@ -41,14 +41,6 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of heat
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Methane.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
@@ -116,8 +108,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
 
     def compute_heat_flux(self):
         land_rate = self.land_rate
-        heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate / heat_price
+        self.heat_flux = land_rate / self.cost_details['energy_costs'].values
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
                                                     'heat_flux': self.heat_flux})
         return self.heat_flux_distribution

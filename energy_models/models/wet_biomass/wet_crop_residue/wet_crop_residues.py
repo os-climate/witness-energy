@@ -26,14 +26,6 @@ class WetCropResidues(WetBiomassTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of wood
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Electricity.name]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

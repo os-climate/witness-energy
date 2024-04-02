@@ -32,16 +32,6 @@ class DirectAirCaptureTechno(CCTechno):
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Renewable.name] + self.cost_of_energies_usage[Fossil.name]
-
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from coal extraction and electricity production

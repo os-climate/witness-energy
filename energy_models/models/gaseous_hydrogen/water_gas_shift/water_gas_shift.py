@@ -512,15 +512,6 @@ class WGS(GaseousHydrogenTechno):
 
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_energies_usage[Syngas.name] + self.cost_of_resources_usage[Water.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

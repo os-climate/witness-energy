@@ -35,14 +35,6 @@ class UpgradingBiogas(MethaneTechno):
         self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
 
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_energies_usage[Electricity.name] + self.cost_of_energies_usage[BioGas.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 
