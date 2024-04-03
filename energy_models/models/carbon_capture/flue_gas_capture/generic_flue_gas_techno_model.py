@@ -39,19 +39,14 @@ class GenericFlueGasTechnoModel(CCTechno):
             self.fg_ratio_effect = True
 
     def compute_other_energies_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        elec_needs = self.get_electricity_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / self.techno_infos_dict[
-            'efficiency'] * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-                }
+        return {Electricity.name: np.diag(self.cost_details[f'{Electricity.name}_needs'].values)}
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)
@@ -60,12 +55,6 @@ class GenericFlueGasTechnoModel(CCTechno):
 
         return capex_calc_list
 
-    def compute_cost_of_other_energies_usage(self):
-        super().compute_cost_of_other_energies_usage()
-
-        self.cost_of_energies_usage[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
@@ -73,5 +62,6 @@ class GenericFlueGasTechnoModel(CCTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] / self.compute_electricity_variation_from_fg_ratio(
+            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
