@@ -772,7 +772,7 @@ class TechnoType:
 
     def grad_price_vs_energy_price(self):
 
-        return {}
+        return {energy: np.diag(self.cost_details[f'{energy}_needs'].values) for energy in self.energies_used_for_production}
 
     def grad_price_vs_resources_price(self):
 

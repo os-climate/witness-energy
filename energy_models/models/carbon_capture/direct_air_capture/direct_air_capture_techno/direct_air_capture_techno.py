@@ -44,17 +44,6 @@ class DirectAirCaptureTechno(CCTechno):
 
         return self.carbon_intensity[Fossil.name] + self.carbon_intensity[Renewable.name] - 1.0
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        heat_needs = self.get_heat_needs()
-        return {Renewable.name: np.identity(len(self.years)) * elec_needs,
-                Fossil.name: np.identity(len(self.years)) * heat_needs,
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

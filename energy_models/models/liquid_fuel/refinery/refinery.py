@@ -57,16 +57,6 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.techno_infos_dict['hydrogen_demand'] / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-
-        return {Electricity.name: np.diag(self.cost_details[f'{GlossaryEnergy.electricity}_needs'].values),
-                GaseousHydrogen.name: np.diag(self.cost_details[f'{GaseousHydrogen.name}_needs'].values),
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

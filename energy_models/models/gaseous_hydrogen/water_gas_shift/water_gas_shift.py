@@ -512,24 +512,6 @@ class WGS(GaseousHydrogenTechno):
 
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        # CO2_needs = self.get_theoretical_CO2_needs()
-        syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
-        elec_needs = self.get_electricity_needs()
-
-        # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Syngas.name: np.identity(
-                len(self.years)) * syngas_needs / efficiency[:, np.newaxis],
-            Electricity.name: np.identity(
-                len(self.years)) * elec_needs
-        }
-
     def compute_dprod_dfluegas(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
 
         # dpprod_dpfluegas = np.zeros(dcapexdfluegas.shape())

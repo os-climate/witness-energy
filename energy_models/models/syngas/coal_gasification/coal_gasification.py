@@ -30,15 +30,6 @@ class CoalGasification(SyngasTechno):
         self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        fuel_needs = self.get_fuel_needs()
-        return {SolidFuel.name: np.identity(len(self.years)) * fuel_needs,
-                }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from biomass and positive from elec

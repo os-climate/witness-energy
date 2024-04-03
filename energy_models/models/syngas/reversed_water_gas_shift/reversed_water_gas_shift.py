@@ -405,21 +405,6 @@ class RWGS(SyngasTechno):
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        # get slope to use it for grad
-        syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
-        efficiency = self.compute_efficiency()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Syngas.name: np.identity(
-                    len(self.years)) * syngas_needs / efficiency[:, np.newaxis]
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

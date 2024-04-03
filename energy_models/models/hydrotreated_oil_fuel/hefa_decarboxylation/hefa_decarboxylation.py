@@ -47,18 +47,6 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.elec_consumption_factor
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency}
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

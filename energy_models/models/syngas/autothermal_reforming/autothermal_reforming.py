@@ -41,19 +41,6 @@ class AutothermalReforming(SyngasTechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        # CO2_needs = self.get_theoretical_CO2_needs()
-        methane_needs = self.get_theoretical_CH4_needs()
-        # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Methane.name: np.diag(methane_needs / efficiency)
-        }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane

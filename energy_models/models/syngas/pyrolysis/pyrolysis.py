@@ -79,8 +79,3 @@ class Pyrolysis(SyngasTechno):
 
         return self.carbon_intensity[ResourceGlossary.WoodResource]
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Overwrite techno_type method
-        '''
-        return {SyngasTechno.energy_name: 0 * np.identity(len(self.years))}

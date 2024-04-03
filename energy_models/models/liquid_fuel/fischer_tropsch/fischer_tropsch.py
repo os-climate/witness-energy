@@ -270,7 +270,6 @@ class FischerTropsch(LiquidFuelTechno):
         Compute the gradient of global price vs energy prices 
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        # elec_needs = self.get_electricity_needs()
         elec_needs = self.costs_details_sg_techno[f'{GlossaryEnergy.electricity}_needs'] * \
                      self.cost_details['syngas_needs_for_FT'] / \
                      self.techno_infos_dict['efficiency']
@@ -284,16 +283,8 @@ class FischerTropsch(LiquidFuelTechno):
                                  self.cost_details['efficiency'].values}
 
         else:
-
-            if 'complex128' in [self.costs_details_rwgs[f'{GlossaryEnergy.electricity}_needs'].values.dtype,
-                                self.cost_details['syngas_needs_for_FT'].values.dtype]:
-                arr_type = 'complex128'
-            else:
-                arr_type = 'float64'
-
-            dsyngas_dprice = np.zeros(len(self.years), dtype=arr_type)
-            delec_dprice = np.zeros(
-                (len(self.years), len(self.years)), dtype=arr_type)
+            dsyngas_dprice = np.zeros(len(self.years))
+            delec_dprice = np.zeros((len(self.years), len(self.years)))
             for i in range(self.year_end - self.year_start + 1):
                 if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS

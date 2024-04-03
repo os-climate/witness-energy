@@ -36,17 +36,6 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.compute_efficiency()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency.values}
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

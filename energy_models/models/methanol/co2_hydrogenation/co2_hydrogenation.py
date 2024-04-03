@@ -35,21 +35,6 @@ class CO2Hydrogenation(MethanolTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        co2_needs = self.get_theoretical_co2_needs()
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        elec_needs = self.get_theoretical_electricity_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-        return {
-            CarbonCapture.name: np.identity(len(self.years)) * co2_needs / efficiency,
-            GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency,
-            Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

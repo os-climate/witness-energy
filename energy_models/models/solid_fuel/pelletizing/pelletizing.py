@@ -35,18 +35,6 @@ class Pelletizing(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        biomass_dry_needs = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
-                            (1 + self.data_energy_dict['pellets_moisture']
-                             )
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.identity(len(self.years)) * biomass_dry_needs}
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

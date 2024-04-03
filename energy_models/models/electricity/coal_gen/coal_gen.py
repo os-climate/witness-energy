@@ -100,15 +100,6 @@ class CoalGen(ElectricityTechno):
 
         return self.carbon_intensity[SolidFuel.name] + self.carbon_intensity[Water.name]
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        solid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.compute_efficiency()
-        return {SolidFuel.name: np.diag(solid_fuel_needs / efficiency)}
-
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):
         dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(

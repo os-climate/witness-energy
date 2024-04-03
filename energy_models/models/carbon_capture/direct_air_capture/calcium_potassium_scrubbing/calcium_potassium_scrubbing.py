@@ -59,18 +59,6 @@ class CalciumPotassium(CCTechno):
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
             ResourceGlossary.PotassiumResource] + self.carbon_intensity[ResourceGlossary.CalciumResource]
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        heat_needs = self.get_heat_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Methane.name: np.identity(len(self.years)) * heat_needs
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

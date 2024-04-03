@@ -44,16 +44,6 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        efficiency = self.compute_efficiency()
-
-        return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
-                }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod

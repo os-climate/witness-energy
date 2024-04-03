@@ -38,18 +38,6 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                                               self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        hydrogen_needs = 1.0 / self.compute_efficiency()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs,
-                }
-
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod

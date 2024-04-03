@@ -34,21 +34,6 @@ class BiomassGasification(SyngasTechno):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        biomass_needs = self.techno_infos_dict['biomass_demand']
-
-        efficiency = self.compute_efficiency()
-
-        # methane_needs = self.get_theoretical_methane_needs()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.diag(biomass_needs / efficiency)
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

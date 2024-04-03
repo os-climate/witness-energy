@@ -37,15 +37,6 @@ class UnmanagedWood(BiomassDryTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs}
-
     def grad_production_invest(self, capex, production, production_mix):
 
         dcapex_dinvest = self.compute_dcapex_dinvest(self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]

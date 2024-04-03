@@ -34,17 +34,6 @@ class Methanation(MethaneTechno):
         # in kWh of H2 for kWh of CH4
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            GaseousHydrogen.name: np.diag(hydrogen_needs / efficiency)
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

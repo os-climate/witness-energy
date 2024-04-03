@@ -35,18 +35,6 @@ class UpgradingBiogas(MethaneTechno):
         self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        biogas_needs = self.get_biogas_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BioGas.name: np.identity(len(self.years)) * biogas_needs,
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

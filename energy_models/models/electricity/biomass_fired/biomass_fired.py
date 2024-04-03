@@ -99,11 +99,3 @@ class BiomassFired(ElectricityTechno):
 
         return self.carbon_intensity[BiomassDry.name]
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        biomass_needs = self.techno_infos_dict['biomass_needs']
-        # Note that efficiency = 1
-        return {BiomassDry.name: np.identity(len(self.years)) * biomass_needs}

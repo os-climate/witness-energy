@@ -93,15 +93,6 @@ class GasElec(ElectricityTechno):
 
         return self.carbon_intensity[Methane.name]
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        methane_needs = self.techno_infos_dict['kwh_methane/kwh']
-        # efficiency = 1 for both CC and gas turbine
-        return {Methane.name: np.identity(len(self.years)) * methane_needs}
-
     def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from methane consumption

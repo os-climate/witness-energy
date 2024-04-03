@@ -42,18 +42,6 @@ class NaturalGasMediumHeat(mediumheattechno):
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-
-        return {
-            Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
-        }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
