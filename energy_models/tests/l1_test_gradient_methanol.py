@@ -43,8 +43,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
     Methanol Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_co2_hydrogenation_discipline_analytic_grad,
@@ -236,7 +234,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -254,7 +251,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = MethanolJacobianCase()
     cls.setUp()
     cls.test_01_co2_hydrogenation_discipline_analytic_grad()

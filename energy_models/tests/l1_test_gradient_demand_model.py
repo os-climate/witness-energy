@@ -31,8 +31,6 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
     DemandModel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_demand_model_discipline_jacobian
@@ -114,7 +112,6 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = DemandModelJacobianTestCase()
     cls.setUp()
     cls.test_01_demand_model_discipline_jacobian()

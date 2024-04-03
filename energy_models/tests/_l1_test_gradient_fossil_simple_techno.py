@@ -30,8 +30,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
     """FossilSimpleTechnoJacobianTestCase"""
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_discipline_analytic_grad,

@@ -33,8 +33,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
     Consumption CO2 Emissions Discipline jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_Consumption_ccus_disciplinejacobian,
@@ -184,8 +182,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                            f'{self.name}.CCS_price',
                            f'{self.name}.carbon_storage_constraint']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -194,7 +190,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CCUSDiscJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()

@@ -146,8 +146,6 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
         inputs_name = [f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoProductionValue}',

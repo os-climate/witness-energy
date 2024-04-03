@@ -33,8 +33,6 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return []
 
@@ -81,17 +79,13 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
         self.energy_list = [GlossaryEnergy.renewable, GlossaryEnergy.fossil]
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def TearDown(self):
         '''
         To execute after tests
         '''
-        # desactivate dump
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
 
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = []
 
         inputs_names.extend([
@@ -120,8 +114,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list
              if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
-
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.override_dump_jacobian = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
                             discipline=self.disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=self.disc.local_data,
@@ -136,28 +129,27 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax',
                                      f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.TargetProductionConstraintValue}'
                                      ])
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        self.override_dump_jacobian = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
         '''
         For unknown reasons, the test does not pass on the platform (Tekton) but passes locally.
         Therefore, the pkl file is removed after the test is done so that it is automatically regenerated at 
         each execution of the test
-        '''
+        ''' # FIXME: address this --> remove the self.override_dump_jacobian in both tests
         os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        inputs_names = [
-            f'{self.name}.{GlossaryEnergy.CO2TaxesValue}']
+            inputs_names = [
+                f'{self.name}.{GlossaryEnergy.CO2TaxesValue}']
 
-        energy_mix_output = [f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
-                             f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
-                             f'{self.name}.{self.model_name}.energy_prices_after_tax']
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energy_mix_co2_tax.pkl',
-                            discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
-                            local_data=self.disc.local_data,
-                            inputs=inputs_names, outputs=energy_mix_output)
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
-        path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energy_mix_co2_tax.pkl')
-        os.remove(path_pickle)
+            energy_mix_output = [f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
+                                 f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
+                                 f'{self.name}.{self.model_name}.energy_prices_after_tax']
+            self.override_dump_jacobian = True
+            self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energy_mix_co2_tax.pkl',
+                                discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
+                                local_data=self.disc.local_data,
+                                inputs=inputs_names, outputs=energy_mix_output)
+            self.override_dump_jacobian = False
+            path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energy_mix_co2_tax.pkl')
+            os.remove(path_pickle)

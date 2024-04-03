@@ -33,8 +33,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
     Flue gas gradients test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_calcium_looping_discipline_analytic_grad,
