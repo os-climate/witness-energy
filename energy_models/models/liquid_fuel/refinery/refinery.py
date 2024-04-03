@@ -52,24 +52,10 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
         ) / self.data_energy_dict['calorific_value'] / self.cost_details['efficiency']
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-        self.cost_details[GaseousHydrogen.name] = list(self.cost_details[f'{GaseousHydrogen.name}_needs'] * self.energy_prices[GaseousHydrogen.name])
-
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.techno_infos_dict['hydrogen_demand'] / self.cost_details['efficiency']
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
     def grad_price_vs_energy_price(self):
         '''

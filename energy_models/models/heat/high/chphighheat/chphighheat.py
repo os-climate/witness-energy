@@ -24,20 +24,8 @@ from energy_models.core.techno_type.base_techno_models.high_heat_techno import h
 
 
 class CHPHighHeat(highheattechno):
-
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[f'{Methane.name}'] = self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs']
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of heat
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):
         '''

@@ -25,23 +25,10 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 class CoalGasification(SyngasTechno):
     syngas_COH2_ratio = 47.0 / 22.0 * 100.0  # in %
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of biomass for 1 kWH of syngas
-        self.cost_details[SolidFuel.name] = list(
-            self.energy_prices[SolidFuel.name] * self.cost_details['solid_fuel_needs'])
-
     def compute_other_energies_needs(self):
         # in kwh of fuel by kwh of syngas
         self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[SolidFuel.name]
 
     def grad_price_vs_energy_price(self):
         '''

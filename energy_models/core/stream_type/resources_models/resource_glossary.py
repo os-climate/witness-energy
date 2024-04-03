@@ -242,7 +242,7 @@ class ResourceGlossary:
         GlossaryEnergy.UpgradingBiogas: [GlossaryEnergy.electricity, GlossaryEnergy.biogas],
         GlossaryEnergy.CO2Hydrogenation: [f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.electricity, GlossaryEnergy.carbon_capture],
         GlossaryEnergy.CoalExtraction: [GlossaryEnergy.electricity],
-        GlossaryEnergy.Pelletizing: [GlossaryEnergy.electricity],
+        GlossaryEnergy.Pelletizing: [GlossaryEnergy.electricity, GlossaryEnergy.biomass_dry],
         GlossaryEnergy.AutothermalReforming: [GlossaryEnergy.methane],
         GlossaryEnergy.BiomassGasification: [GlossaryEnergy.electricity, GlossaryEnergy.biomass_dry],
         GlossaryEnergy.CoElectrolysis: [GlossaryEnergy.electricity],

@@ -91,11 +91,6 @@ class FischerTropsch(LiquidFuelTechno):
         self.ratio_df = ratio_df
         return ratio_df
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of electricity for 1 kWH of liquid_fuel
-        self.cost_details[Electricity.name] = list(
-            self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
@@ -108,7 +103,7 @@ class FischerTropsch(LiquidFuelTechno):
         # in kwh of fuel by kwh of liquid_fuel
 
         # Cost of electricity for 1 kWH of liquid_fuel
-        self.cost_details[Electricity.name] = list(
+        self.cost_of_energies_usage[Electricity.name] = list(
             self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
         if np.all(self.needed_syngas_ratio > self.syngas_ratio):
             self.sg_transformation_name = 'RWGS'
@@ -256,7 +251,7 @@ class FischerTropsch(LiquidFuelTechno):
         self.cost_details['syngas_needs_for_FT'] = self.get_theoretical_syngas_needs_for_FT(
         )
 
-        self.cost_details[Syngas.name] = self.cost_details[self.sg_transformation_name] * \
+        syngas_costs = self.cost_details[self.sg_transformation_name] * \
                                          self.cost_details['syngas_needs_for_FT'] / \
                                          self.cost_details['efficiency']
 
@@ -264,15 +259,11 @@ class FischerTropsch(LiquidFuelTechno):
                                                                               self.cost_details['syngas_needs_for_FT'] / \
                                                                               self.cost_details['efficiency']
 
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            Syngas.name: syngas_costs
+        })
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-        self.compute_specifif_costs_of_technos()
-
-        return self.cost_details[Electricity.name] + self.cost_details[Syngas.name]
 
     def grad_price_vs_energy_price(self):
         '''

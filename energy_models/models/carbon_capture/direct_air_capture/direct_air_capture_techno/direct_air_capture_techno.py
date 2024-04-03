@@ -27,24 +27,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class DirectAirCaptureTechno(CCTechno):
 
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Renewable.name] = list(self.energy_prices[Renewable.name] * self.cost_details[f'{GlossaryEnergy.renewable}_needs'])
-        self.cost_details[Fossil.name] = list(self.energy_prices[Fossil.name] * self.cost_details[f'{Fossil.name}_needs'])
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

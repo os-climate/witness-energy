@@ -73,7 +73,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'Capex_init_unit': '$/kW',
                                  # IRENA (value from Figure 7.1, page 111)
                                  'capacity_factor': 0.70,
-                                 'biogas_needs': biogas_needs,
+                                 f'{BioGas.name}_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay,

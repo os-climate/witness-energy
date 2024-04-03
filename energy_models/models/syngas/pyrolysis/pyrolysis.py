@@ -36,15 +36,6 @@ class Pyrolysis(SyngasTechno):
         # wood needs in kg to produce 1kWh of syngas
         self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] = 1 / syngas_kwh
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[ResourceGlossary.WoodResource]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

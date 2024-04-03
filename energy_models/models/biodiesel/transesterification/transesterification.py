@@ -31,12 +31,6 @@ class Transesterification(BioDieselTechno):
     """Reaction: in Mt: 1.23 oil + 0.1 methanol = 1.22 biodiesel + 0.12 glycerol or
     in kg 1.0082 oil + 0.082 methanol = 1 biodiesel + 0.0984 glycerol"""
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of electricity for 1 kWH of biodiesel
-        self.cost_details[Electricity.name] = list(
-            self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'] )
-
-
     def compute_resources_needs(self):
         # need in kg/kwh biodiesel
         self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs() / self.cost_details['efficiency']
@@ -50,15 +44,6 @@ class Transesterification(BioDieselTechno):
     
     def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of biodiesel
-        """
-        super().compute_other_primary_energy_costs()
-        return self.cost_of_resources_usage[Methanol.name] + self.cost_of_resources_usage[NaturalOil.name] \
-               + self.cost_of_resources_usage[SodiumHydroxide.name] + self.cost_of_resources_usage[Water.name] \
-               + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''

@@ -128,7 +128,4 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
         #     graph.to_plotly().show()
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 # Cost:- https://www.google.com/search?q=geothermal+energy+cost+%24%2FMWh&rlz=1C1UEAD_enIN1001IN1001&oq=geothermal+energy+cost+%24%2FMWh&aqs=chrome..69i57j0i22i30l2j0i390i650l5.16214j0j7&sourceid=chrome&ie=UTF-8

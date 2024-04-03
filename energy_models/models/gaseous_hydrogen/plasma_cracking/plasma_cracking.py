@@ -31,22 +31,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
     Plasmacracking class
     """
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
-        self.cost_details[Methane.name] = self.cost_details[f'{GlossaryEnergy.methane}_needs'] * self.energy_prices[Methane.name]
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''

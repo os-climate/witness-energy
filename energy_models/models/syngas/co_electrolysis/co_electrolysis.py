@@ -36,22 +36,9 @@ class CoElectrolysis(SyngasTechno):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                              self.energy_prices[Electricity.name]
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of syngas 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[Water.name] + self.cost_of_resources_usage[CO2.name] + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''

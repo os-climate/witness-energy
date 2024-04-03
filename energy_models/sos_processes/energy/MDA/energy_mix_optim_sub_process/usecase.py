@@ -27,8 +27,6 @@ from energy_models.core.energy_study_manager import (
     CCUS_TYPE,
     ENERGY_TYPE,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
@@ -61,6 +59,8 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 

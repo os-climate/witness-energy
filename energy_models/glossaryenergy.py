@@ -108,7 +108,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     ResourcesUsedForProduction = {
         "var_name": ResourcesUsedForProductionValue,
         "type": "list",
-        #"structuring": True,
         "subtype_descriptor": {"list": "string"},
     }
 
@@ -116,7 +115,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     EnergiesUsedForProduction = {
         "var_name": EnergiesUsedForProductionValue,
         "type": "list",
-        # "structuring": True,
         "subtype_descriptor": {"list": "string"},
     }
 
@@ -140,6 +138,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
         }
+    }
+
+    SpecificCostsForProductionValue = "Specific costs for production"
+    SpecificCostsForProduction = {
+        "var_name": SpecificCostsForProductionValue,
+        "type": "dataframe",
+        "description": "Costs that are specific to the techno",
+        "dynamic_dataframe_columns": True
     }
 
     CCSTechnoInvest = {

@@ -31,9 +31,6 @@ class NaturalGasMediumHeat(mediumheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_cost_of_other_energies_usage(self):
-
-        self.cost_details[f'{Methane.name}'] = self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs']
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
@@ -44,14 +41,6 @@ class NaturalGasMediumHeat(mediumheattechno):
         # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of heat
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):
         '''
@@ -120,8 +109,7 @@ class NaturalGasMediumHeat(mediumheattechno):
 
     def compute_heat_flux(self):
         land_rate = self.land_rate
-        heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate / heat_price
+        self.heat_flux = land_rate / self.cost_details['energy_costs'].values
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
                                                     'heat_flux': self.heat_flux})
         return self.heat_flux_distribution

@@ -38,23 +38,11 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
 
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
-
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * self.energy_prices[Electricity.name]
-    
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_of_resources_usage[Water.name] + self.cost_of_resources_usage[self.PLATINUM_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''

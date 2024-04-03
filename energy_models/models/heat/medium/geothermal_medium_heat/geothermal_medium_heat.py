@@ -35,17 +35,6 @@ class GeothermalHeat(mediumheattechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
         
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = self.energy_prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kWh of Geothermal Heat Generation
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name]
-
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = elec_needs  # self.get_theoretical_heat_generated()
@@ -104,8 +93,7 @@ class GeothermalHeat(mediumheattechno):
 
     def compute_heat_flux(self):
         land_rate = self.land_rate
-        heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate / heat_price
+        self.heat_flux = land_rate / self.cost_details['energy_costs'].values
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
                                                     'heat_flux': self.heat_flux})
         return self.heat_flux_distribution

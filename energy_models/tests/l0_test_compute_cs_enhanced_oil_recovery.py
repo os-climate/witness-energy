@@ -20,14 +20,8 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery import EnhancedOilRecovery
-from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery_disc import \
-    EnhancedOilRecoveryDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 

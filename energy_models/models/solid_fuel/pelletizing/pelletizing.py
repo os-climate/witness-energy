@@ -25,30 +25,15 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Pelletizing(SolidFuelTechno):
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
-        # Cost of biomass for 1 kWh of pellet
-        self.cost_details[BiomassDry.name] = list(self.energy_prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
-
-
     def compute_other_energies_needs(self):
         # in kg of fuel by kg of pellets depends on moisture level
-        self.cost_details['biomass_dry_needs'] = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
+        self.cost_details[f'{BiomassDry.name}_needs'] = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
                                                  (1 + self.data_energy_dict['pellets_moisture'])
 
         # electricity needed for conditioning, storage + production of 1kg of pellets
         # plus electricity needed for chipping dry biomass
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -85,7 +70,7 @@ class Pelletizing(SolidFuelTechno):
                                                                                             f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           'biomass_dry_needs'] * \
+                                                                                           f'{BiomassDry.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
 
@@ -97,6 +82,6 @@ class Pelletizing(SolidFuelTechno):
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                   self.cost_details[f'{GlossaryEnergy.electricity}_needs']
         self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details['biomass_dry_needs']
+                                                 self.cost_details[f'{BiomassDry.name}_needs']
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]
