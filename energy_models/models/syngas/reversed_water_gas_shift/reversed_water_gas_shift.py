@@ -475,23 +475,6 @@ class RWGS(SyngasTechno):
 
         return dco2_emissions_dsyngas_ratio
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * self.cost_details['syngas_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2Resource] * \
-                                               self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
-
-        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            f'{CO2.name}']
-
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = self.resources_CO2_emissions[

@@ -114,19 +114,6 @@ class Refinery(LiquidFuelTechno):
                                                                                   self.production_detailed[
                                                                                       f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * self.cost_details[f'{GaseousHydrogen.name}_needs']
-        self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
-
-        return self.carbon_intensity[Electricity.name] + \
-            self.carbon_intensity[self.OIL_RESOURCE_NAME] + \
-            self.carbon_intensity[GaseousHydrogen.name]
-
     def compute_prod_from_invest(self, construction_delay):
         '''
         Compute the energy production of a techno from investment in TWh

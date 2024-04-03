@@ -158,16 +158,6 @@ class UnmanagedWood(BiomassDryTechno):
                                                                      self.production_detailed[
                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[Electricity.name]
-
     def compute_price(self):
         prices = BiomassDryTechno.compute_price(self)
         unmanaged_price = deepcopy(self.cost_details[self.name])

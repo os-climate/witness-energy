@@ -39,19 +39,6 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account positive CO2 from methane and elec prod
-        Carbon capture (Methane is not burned but transformed is not taken into account)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
-
     def get_water_needs(self):
         ''' 
         Get water needs in kg Water /kWh H2

@@ -62,33 +62,6 @@ class CO2Hydrogenation(MethanolTechno):
             self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[CarbonCapture.name] = \
-            self.energy_CO2_emissions[CarbonCapture.name] * \
-            self.cost_details[f'{CarbonCapture.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[GaseousHydrogen.name] = \
-            self.energy_CO2_emissions[GaseousHydrogen.name] * \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[Electricity.name] = \
-            self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[Water.name] = \
-            self.resources_CO2_emissions[Water.name] * \
-            self.cost_details[f'{Water.name}_needs']
-
-        return self.carbon_intensity[CarbonCapture.name] + self.carbon_intensity[GaseousHydrogen.name] + \
-               self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
-
     def get_theoretical_co2_needs(self):
         """
         """

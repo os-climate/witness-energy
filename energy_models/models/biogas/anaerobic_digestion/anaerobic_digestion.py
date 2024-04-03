@@ -50,16 +50,3 @@ class AnaerobicDigestion(BioGasTechno):
                                                                                         self.production_detailed[
                                                                                             f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity production and negative CO2 from biomass
-        '''
-
-        self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[
-                                                          ResourceGlossary.WetBiomassResource] * \
-                                                      self.cost_details[f"{WetBiomass.name}_needs"]
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[f'{WetBiomass.name}'] + self.carbon_intensity[Electricity.name]

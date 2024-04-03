@@ -61,15 +61,3 @@ class Pelletizing(SolidFuelTechno):
                                                                                            f'{BiomassDry.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details[f'{BiomassDry.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

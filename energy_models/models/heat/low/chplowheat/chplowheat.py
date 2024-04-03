@@ -59,16 +59,6 @@ class CHPLowHeat(lowheattechno):
              (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[
                 f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account CO2 from Methane production
-        '''
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.cost_details[f'{Methane.name}_needs']
-
-        return self.carbon_intensity[f'{Methane.name}']
-
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh
         methane_demand = self.techno_infos_dict['methane_demand']

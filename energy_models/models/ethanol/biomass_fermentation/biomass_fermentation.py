@@ -71,26 +71,6 @@ class BiomassFermentation(EthanolTechno):
                                                                         self.production_detailed[
                                                                             f'{Ethanol.name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{Electricity.name}_needs'] / \
-                                                  self.cost_details['efficiency']
-
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details[f'{BiomassDry.name}_needs'] / \
-                                                 self.cost_details['efficiency']
-
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f'{Water.name}_needs'] / \
-                                            self.cost_details['efficiency']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name] + \
-               self.carbon_intensity[Water.name]
-
     def get_theoretical_biomass_needs(self):
         """
         56 pounds of corn --> 17 pounds of captured CO2 + 2.9 gallons on Ethanol

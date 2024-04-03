@@ -60,26 +60,6 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                                                                     self.cost_details[
                                                                                         'efficiency']  # in kWH
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account positive CO2 from methane and elec prod
-        Carbon capture (Methane is not burned but transformed is not taken into account)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.cost_details[f'{GlossaryEnergy.methane}_needs'] / self.cost_details['efficiency']
-
-        # self.energy_CO2_emissions[GlossaryEnergy.carbon_storage]
-        C_per_h2 = self.get_theoretical_graphene_production()
-        self.carbon_intensity['carbon storage'] = -C_per_h2 * \
-                                                  CO2.data_energy_dict['molar_mass'] / \
-                                                  Carbon.data_energy_dict['molar_mass']
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity[
-            'carbon storage']
-
     def get_theoretical_graphene_production(self):
         ''' 
         Get methane needs in kg C /kWh H2

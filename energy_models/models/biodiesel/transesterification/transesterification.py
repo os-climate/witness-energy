@@ -76,22 +76,6 @@ class Transesterification(BioDieselTechno):
         self.consumption_detailed[f'{Methanol.name} ({self.mass_unit})'] = self.cost_details[f'{Methanol.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
-        self.carbon_intensity[SodiumHydroxide.name] = self.resources_CO2_emissions[SodiumHydroxide.name] * self.cost_details[f'{SodiumHydroxide.name}_needs']
-        self.carbon_intensity[NaturalOil.name] = self.resources_CO2_emissions[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs']
-        self.carbon_intensity[Methanol.name] = self.resources_CO2_emissions[Methanol.name] * self.cost_details[f'{Methanol.name}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * self.cost_details[f'{Water.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[SodiumHydroxide.name] + \
-               self.carbon_intensity[NaturalOil.name] + self.carbon_intensity[Methanol.name] + \
-               self.carbon_intensity[Water.name]
-
-
     def get_theoretical_methanol_needs(self):
         """
         Get methanol needs in kg methanol / kWh biodiesel

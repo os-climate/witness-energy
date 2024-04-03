@@ -563,23 +563,6 @@ class WGS(GaseousHydrogenTechno):
         #     self.techno_infos_dict['low_heat_production'] * \
         #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * \
-                                             self.cost_details['syngas_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + \
-            self.carbon_intensity[Water.name]
-
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)

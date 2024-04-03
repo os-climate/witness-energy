@@ -34,7 +34,7 @@ class Amine(CCTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
-    def compute_CO2_emissions_from_input_resources(self):
+    def compute_CO2_emissions_from_resources_and_energies(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''

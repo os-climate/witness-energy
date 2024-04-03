@@ -108,21 +108,3 @@ class UpgradingBiogas(MethaneTechno):
                        (mol_CH4 * self.data_energy_dict['molar_mass'])
 
         return co2_prod
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity production and negative CO2 from biogas
-        '''
-
-        self.carbon_intensity[f'{BioGas.name}'] = self.energy_CO2_emissions[f'{BioGas.name}'] * \
-                                                  self.cost_details[f'{BioGas.name}_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        # This CO2 is captured we do not take it into account in the CO2 emissions
-        #         co2_prod = self.get_theoretical_co2_prod()
-        #         self.carbon_emissions['CO2'] = -self.resources_CO2_emissions['CO2'] * \
-        #             co2_prod
-        # + self.carbon_emissions['CO2']
-        return self.carbon_intensity[f'{BioGas.name}'] + self.carbon_intensity[Electricity.name]

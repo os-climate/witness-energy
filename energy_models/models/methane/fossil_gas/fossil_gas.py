@@ -68,17 +68,3 @@ class FossilGas(MethaneTechno):
                                                                                                 f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                                             self.cost_details[
                                                                                                 f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity production 
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME] = \
-            self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \
-            self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME]

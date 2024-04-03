@@ -38,20 +38,6 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                                               self.cost_details['efficiency']
 
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account positive CO2 from methane and elec prod
-        Carbon capture (Methane is not burned but transformed is not taken into account)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                      self.cost_details[f'{GaseousHydrogen.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[GaseousHydrogen.name]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

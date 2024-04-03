@@ -60,18 +60,6 @@ class Methanation(MethaneTechno):
                                                                                             self.production_detailed[
                                                                                                 f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from hydrogen
-        '''
-
-        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                      self.cost_details[f'{GaseousHydrogen.name}_needs']
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                               self.cost_details[f'{CO2.name}_needs']
-
-        return self.carbon_intensity[GaseousHydrogen.name] + self.carbon_intensity[f'{CO2.name}']
-
     def get_h2o_production(self):
         """
         Get water produced when producing 1kWh of CH4

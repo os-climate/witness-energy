@@ -91,6 +91,7 @@ class TechnoType:
         self.resources_price = None
         self.resources_CO2_emissions = None
         self.carbon_intensity = None
+        self.carbon_intensity_generic = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
         self.capital_recovery_factor = None
@@ -173,6 +174,7 @@ class TechnoType:
         self.aging_distribution = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.carbon_intensity = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.carbon_intensity_generic = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.land_use = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
@@ -1079,21 +1081,16 @@ class TechnoType:
             elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
                 self.carbon_intensity['production'] = self.techno_infos_dict['CO2_from_production']
 
-        # Add carbon emission from input energies (resources or other
-        # energies)
+        # Add carbon emission from input energies (resources or other  energies)
+        co2_emissions_from_resources_and_energies = self.compute_CO2_emissions_from_resources_and_energies()
 
-        co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_resources(
-        )
+        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + co2_emissions_from_resources_and_energies
 
-        # Add CO2 from production + C02 from input energies
-        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + \
-                                           co2_emissions_frominput_energies
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to be overload in some technologies where input energies need to be taken into account for CO2 emissions
-        '''
-        return 0.0
+    def compute_CO2_emissions_from_resources_and_energies(self):
+        """Computes the CO2 emissions due to resources and energies usage"""
+        self.compute_co2_emissions_from_ressources_usage()
+        self.compute_co2_emissions_from_energies_usage()
+        return self.carbon_intensity_generic.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
 
 
     def compute_resources_needs(self):
@@ -1652,3 +1649,12 @@ class TechnoType:
                     self.cost_of_energies_usage[self.energies_used_for_production].values.sum(axis=1) +\
                     self.specific_costs.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
         self.cost_details['energy_costs'] = all_costs
+
+    def compute_co2_emissions_from_ressources_usage(self):
+        """Computes the co2 emissions due to resources usage"""
+        for resource in self.resources_used_for_production:
+            self.carbon_intensity_generic[resource] = self.cost_details[f"{resource}_needs"] * self.resources_CO2_emissions[resource]
+    def compute_co2_emissions_from_energies_usage(self):
+        """Computes the co2 emissions due to energies usage"""
+        for energy in self.energies_used_for_production:
+            self.carbon_intensity_generic[energy] = self.cost_details[f"{energy}_needs"] * self.energy_CO2_emissions[energy]

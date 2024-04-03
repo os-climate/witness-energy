@@ -38,27 +38,6 @@ class CalciumPotassium(CCTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Methane.name}_needs'] = self.get_heat_needs()
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from coal extraction and electricity production
-        '''
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details[f'{Methane.name}_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
-            f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[ResourceGlossary.PotassiumResource] = self.resources_CO2_emissions[
-                                                                        ResourceGlossary.PotassiumResource] * \
-                                                                    self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs']
-
-        self.carbon_intensity[ResourceGlossary.CalciumResource] = self.resources_CO2_emissions[
-                                                                      ResourceGlossary.CalciumResource] * \
-                                                                  self.cost_details[f'{ResourceGlossary.CalciumResource}_needs']
-
-        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            ResourceGlossary.PotassiumResource] + self.carbon_intensity[ResourceGlossary.CalciumResource]
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

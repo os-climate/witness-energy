@@ -83,16 +83,6 @@ class GasElec(ElectricityTechno):
         co2_prod = methane_co2 / calorific_value * methane_need
         return co2_prod
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from methane extraction
-        '''
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.techno_infos_dict['kwh_methane/kwh']
-
-        return self.carbon_intensity[Methane.name]
-
     def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from methane consumption

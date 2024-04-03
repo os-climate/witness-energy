@@ -72,28 +72,6 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         self.consumption_detailed[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[f'{NaturalOil.name}_needs'] * \
                                                                                        self.production_detailed[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_resources(self):
-        """
-        Need to take into account  CO2 from electricity/hydrogen production
-        """
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{Electricity.name}_needs']
-
-        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                      self.cost_details[f'{GaseousHydrogen.name}_needs']
-
-        self.carbon_intensity[NaturalOil.name] = self.resources_CO2_emissions[NaturalOil.name] * \
-                                                 self.cost_details[f'{NaturalOil.name}_needs']
-
-        # Theoretical C02 production in kg
-        carbon_production_factor = self.get_theoretical_co2_prod()
-        self.carbon_intensity[CarbonCapture.name] = carbon_production_factor
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[NaturalOil.name] \
-               + self.carbon_intensity[GaseousHydrogen.name] + \
-               self.carbon_intensity[CarbonCapture.name]
-
     def get_theoretical_natural_oil_needs(self):
         """
        oil + 6H2 = 3fuel + 3C02 (hydrogenation + decarboxylation)

@@ -562,7 +562,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         return delec_consumption
 
-    def compute_CO2_emissions_from_input_resources(self):
+    def compute_CO2_emissions_from_resources_and_energies(self):
         ''' 
         Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
         '''

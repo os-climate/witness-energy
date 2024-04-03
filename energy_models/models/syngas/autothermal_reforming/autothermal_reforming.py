@@ -41,22 +41,6 @@ class AutothermalReforming(SyngasTechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-                                                   self.cost_details[f'{Methane.name}_needs']
-        self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
-                                          self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
-        self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
-                                             self.cost_details[f'{ResourceGlossary.OxygenResource}_needs']
-
-        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
-            Oxygen.name]
-
     def get_theoretical_CH4_needs(self):
         """
         Get methane needs in kWh CH4 /kWh syngas

@@ -88,18 +88,6 @@ class CoalGen(ElectricityTechno):
 
         return copper_need
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from coal extraction and electricity production
-        '''
-
-        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-                                                self.cost_details['solid_fuel_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[SolidFuel.name] + self.carbon_intensity[Water.name]
-
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):
         dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(

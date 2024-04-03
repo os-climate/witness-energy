@@ -40,24 +40,6 @@ class CoElectrolysis(SyngasTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and positive from elec
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                               self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
-
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[Water.name] + \
-            self.carbon_intensity[Electricity.name]
-
     def get_theoretical_CO2_needs(self):
         ''' 
         Get water needs in kg CO2 /kWh syngas

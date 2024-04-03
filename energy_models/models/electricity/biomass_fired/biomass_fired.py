@@ -88,14 +88,3 @@ class BiomassFired(ElectricityTechno):
         copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from methane extraction
-        '''
-
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.techno_infos_dict['biomass_needs']
-
-        return self.carbon_intensity[BiomassDry.name]
-

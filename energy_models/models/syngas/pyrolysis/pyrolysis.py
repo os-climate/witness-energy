@@ -66,16 +66,3 @@ class Pyrolysis(SyngasTechno):
         # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
         #     self.techno_infos_dict['medium_heat_production'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in TWH
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and positive from elec
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[ResourceGlossary.WoodResource] = self.resources_CO2_emissions[
-                                                                   ResourceGlossary.WoodResource] * \
-                                                               self.cost_details[f"{ResourceGlossary.WoodResource}_needs"]
-
-        return self.carbon_intensity[ResourceGlossary.WoodResource]
-

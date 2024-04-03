@@ -38,13 +38,3 @@ class AnimalManure(WetBiomassTechno):
         self.production_detailed[f'{CO2.name} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
                                                        self.data_energy_dict['calorific_value'] * \
                                                        self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[Electricity.name]

@@ -70,25 +70,6 @@ class CoalExtraction(SolidFuelTechno):
                                                                                      SolidFuel.data_energy_dict[
                                                                                          'calorific_value']  # in Mt
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[self.COAL_RESOURCE_NAME] = self.resources_CO2_emissions[self.COAL_RESOURCE_NAME] * \
-                                                         self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs']
-
-        # if LiquidFuel.name in self.energy_CO2_emissions:
-        #     self.carbon_emissions[LiquidFuel.name] = self.energy_CO2_emissions[f'{LiquidFuel.name}'] * \
-        #         self.cost_details['fuel_needs']
-        # else:
-        #     self.carbon_emissions[LiquidFuel.name] = 25.33 * \
-        #         self.cost_details['fuel_needs']
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[self.COAL_RESOURCE_NAME]
-        # + self.carbon_emissions[LiquidFuel.name]
-
     def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from coal mines

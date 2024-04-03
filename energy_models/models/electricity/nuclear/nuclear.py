@@ -87,19 +87,6 @@ class Nuclear(ElectricityTechno):
                                                                                        self.installed_power[
                                                                                            'new_power_production']  # in Mt
 
-    def compute_CO2_emissions_from_input_resources(self):
-        """
-        Need to take into account  CO2 from electricity/hydrogen production
-        """
-
-        self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
-                                                            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
-
-    # @staticmethod
     def get_theoretical_uranium_fuel_needs(self):
         """
         Get Uranium fuel needs in kg Uranium fuel /kWh electricty

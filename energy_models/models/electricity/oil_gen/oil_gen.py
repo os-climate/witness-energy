@@ -90,18 +90,6 @@ class OilGen(ElectricityTechno):
 
         return copper_need
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from coal extraction and electricity production
-        '''
-
-        self.carbon_intensity[LiquidFuel.name] = self.energy_CO2_emissions[LiquidFuel.name] * \
-                                                 self.cost_details[f'{LiquidFuel.name}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[LiquidFuel.name] + self.carbon_intensity[Water.name]
-
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 
