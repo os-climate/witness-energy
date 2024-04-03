@@ -35,8 +35,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
     GHGEnergy Emissions Discipline jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_GHGEnergy_emissions_discipline_CO2_per_use_jacobian,
@@ -201,8 +199,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs = [
             f'{self.name}.GHG_total_energy_emissions']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -231,8 +227,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                                f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -254,8 +248,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_emission_energy_mix.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -276,8 +268,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_{self.model_name}_energy_production_detailed.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -287,7 +277,6 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = GHGEnergyEmissionsDiscJacobianTestCase()
     cls.setUp()
     # cls.launch_data_pickle_generation()

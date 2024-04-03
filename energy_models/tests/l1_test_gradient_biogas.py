@@ -34,8 +34,6 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
     Anaerobic Digestion prices test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_biomass_gas_discipline_analytic_grad,

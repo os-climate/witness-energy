@@ -30,8 +30,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
     Energy process MDA test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_check_gradient_with_newtonraphson,

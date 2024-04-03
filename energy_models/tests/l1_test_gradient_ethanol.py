@@ -36,8 +36,6 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
     Ethanol Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_biomass_fermentation_discipline_analytic_grad,
@@ -152,7 +150,6 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EthanolJacobianCase()
     cls.setUp()
     cls.test_01_biomass_fermentation_discipline_analytic_grad()

@@ -39,8 +39,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     Liquid Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_refinery_jacobian,
@@ -350,7 +348,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -509,7 +506,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -518,7 +514,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidFuelJacobianCase()
     cls.setUp()
     cls.test_05_liquid_fuel_discipline_jacobian()

@@ -36,8 +36,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
     LiquidHydrogen jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_hydrogen_liquefaction_jacobian,
@@ -301,7 +299,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -311,7 +308,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidHydrogenJacobianTestCase()
     cls.setUp()
     cls.test_02_liquid_hydrogen_discipline_jacobian()
