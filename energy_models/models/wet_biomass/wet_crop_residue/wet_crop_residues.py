@@ -22,20 +22,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class WetCropResidues(WetBiomassTechno):
 
-    def compute_cost_of_other_energies_usage(self):
-        self.cost_details[Electricity.name] = list(self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-    
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of wood
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name]
 
     def compute_consumption_and_production(self):
         """

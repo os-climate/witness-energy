@@ -16,11 +16,13 @@ limitations under the License.
 '''
 
 import numpy as np
+import pandas as pd
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Nuclear(ElectricityTechno):
@@ -33,15 +35,10 @@ class Nuclear(ElectricityTechno):
         # self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'] = self.get_theoretical_copper_needs()
 
     def compute_specifif_costs_of_technos(self):
-        self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost()
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[f'{self.URANIUM_RESOURCE_NAME}'] + self.cost_of_resources_usage[Water.name] + self.cost_details['waste_disposal']# + self.cost_details[f'{self.COPPER_RESOURCE_NAME}']
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            'waste_disposal': self.compute_nuclear_waste_disposal_cost()
+        })
 
     def compute_consumption_and_production(self):
         """

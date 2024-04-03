@@ -27,31 +27,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class BiomassGasification(SyngasTechno):
     syngas_COH2_ratio = 26.0 / 31.0 * 100.0  # in %
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of electricity for 1 kWH of syngas
-        self.cost_details[Electricity.name] = list(
-            self.energy_prices[Electricity.name] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
-
-        # Cost of biomass for 1 kWH of syngas
-        # prices is in $/kg and needs in kWh/kWh
-        self.cost_details[BiomassDry.name] = list(
-            self.energy_prices[BiomassDry.name] * self.cost_details[f'{BiomassDry.name}_needs'])
-
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of syngas
 
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 
     def grad_price_vs_energy_price(self):
         '''

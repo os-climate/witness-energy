@@ -14,26 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilSimpleTechno(FossilTechno):
 
 
     def compute_specifif_costs_of_technos(self):
-        self.cost_details['resource_price'] = self.techno_infos_dict['resource_price']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details['resource_price']
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
+        })
 
     def compute_consumption_and_production(self):
         """

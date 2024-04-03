@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from abc import abstractmethod
 from copy import deepcopy
 
 from energy_models.core.stream_type.energy_models.syngas import Syngas, compute_molar_mass, \

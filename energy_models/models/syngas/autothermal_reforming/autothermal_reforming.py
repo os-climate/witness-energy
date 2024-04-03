@@ -36,22 +36,10 @@ class AutothermalReforming(SyngasTechno):
         self.cost_details[f'{ResourceGlossary.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
 
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of methane for 1 kWH of H2
-        self.cost_details[f'{Methane.name}'] = list(self.energy_prices[f'{Methane.name}'] * self.cost_details[f'{Methane.name}_needs'])
-
     def compute_other_energies_needs(self):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_of_resources_usage[Oxygen.name] + self.cost_details[Methane.name] + self.cost_of_resources_usage[CO2.name]
 
     def grad_price_vs_energy_price(self):
         '''

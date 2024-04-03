@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 import os
 from os.path import dirname
 
+import numpy as np
 import pandas as pd
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \

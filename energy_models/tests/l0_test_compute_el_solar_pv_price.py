@@ -17,18 +17,12 @@ limitations under the License.
 import unittest
 from os.path import join, dirname
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.electricity.solar_pv.solar_pv import SolarPv
-from energy_models.models.electricity.solar_pv.solar_pv_disc import SolarPvDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 

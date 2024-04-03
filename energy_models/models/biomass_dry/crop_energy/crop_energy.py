@@ -44,13 +44,6 @@ class CropEnergy(BiomassDryTechno):
 
         self.land_surface_for_food = inputs_dict[self.LAND_SURFACE_FOR_FOOD_DF]
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of crop
-        """
-
-        return 0.0
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

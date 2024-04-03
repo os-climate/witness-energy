@@ -116,7 +116,8 @@ class TechnoDiscipline(SoSWrapp):
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
         GlossaryEnergy.InstalledPower: {'type': 'dataframe', 'unit': 'MW'},
-        GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf
+        GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf,
+        GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction
     }
     _maturity = 'Research'
 
@@ -258,6 +259,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage,
                         GlossaryEnergy.CostOfEnergiesUsageValue: self.techno_model.cost_of_energies_usage,
+                        GlossaryEnergy.SpecificCostsForProductionValue: self.techno_model.specific_costs
                         }
 
         self.store_sos_outputs_values(outputs_dict)

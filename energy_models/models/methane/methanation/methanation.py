@@ -29,22 +29,10 @@ class Methanation(MethaneTechno):
     def compute_resources_needs(self):
         # in kg of CO2 for kWh of CH4
         self.cost_details[f'{CO2.name}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
-    def compute_cost_of_other_energies_usage(self):
-        # Cost of H2 for 1 kg of CH4 (in kg), price is in $/kg
-        self.cost_details[GaseousHydrogen.name] = list(self.energy_prices[GaseousHydrogen.name] * self.cost_details[f'{GaseousHydrogen.name}_needs'])
 
     def compute_other_energies_needs(self):
         # in kWh of H2 for kWh of CH4
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-
-        super().compute_other_primary_energy_costs()
-
-        return self.cost_details[GaseousHydrogen.name] + self.cost_of_resources_usage[CO2.name]
 
     def grad_price_vs_energy_price(self):
         '''
