@@ -38,7 +38,7 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CHPLowHeat'
+    techno_name = GlossaryEnergy.CHPLowHeat
     energy_name = lowtemperatureheat.name
 
     # Conversions

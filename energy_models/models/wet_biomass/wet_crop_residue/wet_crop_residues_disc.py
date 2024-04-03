@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)
 
-    techno_name = 'WetCropResidues'
+    techno_name = GlossaryEnergy.WetCropResidues
     lifetime = 25
     construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
@@ -69,7 +69,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'Capex_init_unit': 'euro/ha',
                                  'full_load_hours': 8760.0,
                                  'euro_dollar': 1.2195,
-                                 # WBA�World Bioenergy Association, 2021. Global bioenergy statistics.
+                                 # WBA World Bioenergy Association, 2021. Global bioenergy statistics.
                                  # available land in 2017:
                                  # (worldbioenergy.org), 93% is dry biomass
                                  'available_land': 4828000000 * 0.07,

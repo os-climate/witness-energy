@@ -42,7 +42,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         'icon': 'fas fa-atom fa-fw',
         'version': '',
     }
-    techno_name = 'Nuclear'
+    techno_name = GlossaryEnergy.Nuclear
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
@@ -137,13 +137,13 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product:
+                if ResourceGlossary.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.Copper['name'] in reactant:
+            if ResourceGlossary.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
@@ -165,8 +165,8 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         # decommissioning price part
         techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
-        techno_detailed_prices = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedPricesValue)
+        techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
+        specific_costs_technos = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         ratio = techno_infos_dict['decommissioning_cost'] / \
                 techno_infos_dict['Capex_init']
         decommissioning_price = ratio * \
@@ -178,9 +178,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         new_chart.series.append(serie)
 
-        waste_disposal_levy_mwh = techno_detailed_prices['waste_disposal']
+        waste_disposal_levy_mwh = specific_costs_technos['waste_disposal']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            specific_costs_technos[GlossaryEnergy.Years].values.tolist(),
             waste_disposal_levy_mwh.tolist(), 'Waste Disposal (part of Energy)', 'lines')
 
         new_chart.series.append(serie)

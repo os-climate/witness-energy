@@ -19,7 +19,6 @@ import logging
 import numpy as np
 import pandas as pd
 
-from copy import copy, deepcopy
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix

@@ -41,7 +41,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HefaDecarboxylation'
+    techno_name = GlossaryEnergy.HefaDecarboxylation
     energy_name = HydrotreatedOilFuel.name
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2

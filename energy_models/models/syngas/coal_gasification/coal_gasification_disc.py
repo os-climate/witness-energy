@@ -38,7 +38,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = 'CoalGasification'
+    techno_name = GlossaryEnergy.CoalGasification
     lifetime = 20
     construction_delay = 4  # years
     techno_infos_dict_default = {'maturity': 5,

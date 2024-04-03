@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 26/03/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,15 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import pandas as pd
 from energy_models.core.techno_type.base_techno_models.renewable_techno import RenewableTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class RenewableSimpleTechno(RenewableTechno):
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        self.cost_details['resource_price'] = self.techno_infos_dict['resource_price']
-        return self.cost_details['resource_price']
+    def compute_specifif_costs_of_technos(self):
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
+        })

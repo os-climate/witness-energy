@@ -40,7 +40,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'NaturalGasBoilerLowHeat'
+    techno_name = GlossaryEnergy.NaturalGasBoilerLowHeat
     energy_name = lowtemperatureheat.name
 
     # Conversions
@@ -147,9 +147,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
         self.techno_model.configure_input(inputs_dict)
 
-    def setup_sos_disciplines(self):
-        super().setup_sos_disciplines()
-
+    def add_additionnal_dynamic_output(self):
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
                                         'dataframe_descriptor': {
@@ -158,7 +156,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
                                             },
                                         }
 
-        self.add_outputs(dynamic_outputs)
+        return dynamic_outputs
 
     def run(self):
         '''

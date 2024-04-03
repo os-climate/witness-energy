@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class CoalGenPriceTestCase(unittest.TestCase):
 
         transport_cost = 0
         # It is noteworthy that the cost of transmission has generally been held (and can
-        # continue to be held)    within the �10-12/MWhr range despite transmission distances
+        # continue to be held)    within the 10-12/MWhr range despite transmission distances
         # increasing by almost an order of magnitude from an average of 20km for the
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
@@ -98,9 +98,9 @@ class CoalGenPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.Water['name']])
+            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.Water['name']
+        self.resources_price[ResourceGlossary.WaterResource
         ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(

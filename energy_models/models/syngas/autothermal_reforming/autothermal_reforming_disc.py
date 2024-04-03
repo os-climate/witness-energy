@@ -20,13 +20,13 @@ import pandas as pd
 
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import AuthothermalReforming
+from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import AutothermalReforming
 
 
 class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Authothermal Reforming Model',
+        'label': 'Autothermal Reforming Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -39,7 +39,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'AutothermalReforming'
+    techno_name = GlossaryEnergy.AutothermalReforming
     lifetime = 15
     construction_delay = 3  # years
     # 'reaction': '2CH4 + CO2 + O2 = 3H2 + 3CO + H2O',
@@ -69,7 +69,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
                                  GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
-    syngas_ratio = AuthothermalReforming.syngas_COH2_ratio
+    syngas_ratio = AutothermalReforming.syngas_COH2_ratio
 
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0, 0.0]})
@@ -97,5 +97,5 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = AuthothermalReforming(self.techno_name)
+        self.techno_model = AutothermalReforming(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

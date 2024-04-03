@@ -33,16 +33,9 @@ class UnmanagedWood(BiomassDryTechno):
         self.price_mix = None
         self.mean_age_df = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of wood
-        """
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
-
-        return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -165,7 +158,7 @@ class UnmanagedWood(BiomassDryTechno):
                                                                                                        name_wood]
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -180,7 +173,7 @@ class UnmanagedWood(BiomassDryTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         return self.carbon_intensity[Electricity.name]
 

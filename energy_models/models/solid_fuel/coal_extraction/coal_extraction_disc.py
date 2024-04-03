@@ -41,7 +41,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
         'icon': 'fas fa-cube fa-fw',
         'version': '',
     }
-    techno_name = 'CoalExtraction'
+    techno_name = GlossaryEnergy.CoalExtraction
     lifetime = 35
     construction_delay = 3
 

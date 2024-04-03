@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from abc import abstractmethod
 
 import numpy as np
 import scipy.interpolate as sc
@@ -66,19 +65,7 @@ class CCTechno(TechnoType):
 
         return energy_demand
 
-    @abstractmethod
-    def compute_other_primary_energy_costs(self):
-        '''
-        Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
-        '''
-
-    @abstractmethod
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get the theoretical CO2 production for a given technology,
-        Need to be overloaded in each technology model (example in SMR)
-        '''
-        return 0.0
+    
 
     @staticmethod
     def compute_capex_variation_from_fg_ratio(fg_mean_ratio, fg_ratio_effect):
@@ -176,7 +163,7 @@ class CCTechno(TechnoType):
 
             grad = np.array(slopes)[:, np.newaxis] \
                    * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] * \
-                   self.prices[energy_name].values[:, np.newaxis]
+                   self.energy_prices[energy_name].values[:, np.newaxis]
         else:
             grad = 0.0
         return np.identity(len(fg_mean_ratio)) * grad

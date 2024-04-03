@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 26/03/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 class SodiumHydroxide(BaseStream):
     """Sodium hydroxide, also known as lye and caustic soda is an inorganic compound with the formula NaOH.
     It is used as a catalyst in the transesterifiction process to produce biodiesel"""
-    name = ResourceGlossary.SodiumHydroxide['name']
+    name = ResourceGlossary.SodiumHydroxideResource
     data_energy_dict = {'reference': 'https://en.wikipedia.org/wiki/Sodium_hydroxide',
                         'chemical_formula': 'NaOH',
                         'maturity': 5,

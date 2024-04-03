@@ -17,18 +17,12 @@ limitations under the License.
 import unittest
 from os.path import join, dirname
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.electricity.wind_onshore.wind_onshore import WindOnshore
-from energy_models.models.electricity.wind_onshore.wind_onshore_disc import WindOnshoreDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -102,46 +96,6 @@ class WindOnshoreTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_wind_onshore_price(self):
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': WindOnshoreDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: WindOnshoreDiscipline.invest_before_year_start,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       'initial_production': WindOnshoreDiscipline.initial_production,
-                       'initial_age_distrib': WindOnshoreDiscipline.initial_age_distribution,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        model = WindOnshore('WindOnShore')
-        model.configure_parameters(inputs_dict)
-        model.configure_parameters_update(inputs_dict)
-        price_details = model.compute_price()
 
     def test_03_wind_on_shore_discipline(self):
         self.name = 'Test'

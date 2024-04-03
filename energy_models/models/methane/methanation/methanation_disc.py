@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'Methanation'
+    techno_name = GlossaryEnergy.Methanation
     lifetime = 15
     # Thema, M., Bauer, F. and Sterner, M., 2019.
     # Power-to-Gas: Electrolysis and methanation status review.
@@ -51,7 +51,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                  'Opex_percentage': 0.02,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
-                                 # Rosenfeld, D.C., B�hm, H., Lindorfer, J. and Lehner, M., 2020.
+                                 # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.
                                  # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
                                  # A techno-economic and environmental study.
                                  # Renewable energy, 147, pp.1511-1524.

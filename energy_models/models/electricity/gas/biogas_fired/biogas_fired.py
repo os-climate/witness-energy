@@ -24,17 +24,10 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class BiogasFired(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        # Cost of biogas for 1 kWH
-        self.cost_details[BioGas.name] = list(
-            self.prices[BioGas.name] * self.techno_infos_dict['biogas_needs'])
-
-        return self.cost_details[BioGas.name]
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{BioGas.name}_needs'] = self.techno_infos_dict[f'{BioGas.name}_needs']
 
     def compute_consumption_and_production(self):
         """
@@ -46,7 +39,7 @@ class BiogasFired(ElectricityTechno):
 
         # Consumption
         self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                       'biogas_needs'] * \
+                                                                                       f'{BioGas.name}_needs'] * \
                                                                                    self.production_detailed[
                                                                                        f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
@@ -89,7 +82,7 @@ class BiogasFired(ElectricityTechno):
         # kg of C02 per kWh of biogas burnt
         biogas_co2 = biogas_data['CO2_per_use']
         # Amount of biogas in kwh for 1 kwh of elec
-        biogas_need = self.techno_infos_dict['biogas_needs']
+        biogas_need = self.techno_infos_dict[f'{BioGas.name}_needs']
 
         co2_prod = biogas_co2 * biogas_need
         return co2_prod
@@ -100,7 +93,7 @@ class BiogasFired(ElectricityTechno):
         '''
 
         self.carbon_intensity[BioGas.name] = self.energy_CO2_emissions[BioGas.name] * \
-                                             self.techno_infos_dict['biogas_needs']
+                                             self.techno_infos_dict[f'{BioGas.name}_needs']
 
         return self.carbon_intensity[BioGas.name]
 
@@ -109,6 +102,6 @@ class BiogasFired(ElectricityTechno):
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        biogas_needs = self.techno_infos_dict['biogas_needs']
+        biogas_needs = self.techno_infos_dict[f'{BioGas.name}_needs']
         # Note that efficiency = 1
         return {BioGas.name: np.identity(len(self.years)) * biogas_needs}

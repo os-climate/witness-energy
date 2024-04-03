@@ -20,14 +20,8 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery import EnhancedOilRecovery
-from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery_disc import \
-    EnhancedOilRecoveryDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -82,50 +76,6 @@ class EnhancedOilRecoveryPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_enhanced_oil_recovery_price(self):
-
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': EnhancedOilRecoveryDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: EnhancedOilRecoveryDiscipline.invest_before_year_start,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyPricesValue: pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            GlossaryEnergy.YearEndDefault + 1)}),
-                       'initial_production': EnhancedOilRecoveryDiscipline.initial_storage,
-                       'initial_age_distrib': EnhancedOilRecoveryDiscipline.initial_age_distribution,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonStorage.data_energy_dict,
-                       }
-
-        enhanced_oil_recovery_model = EnhancedOilRecovery(
-            'EnhancedOilRecovery')
-        enhanced_oil_recovery_model.configure_parameters(inputs_dict)
-        enhanced_oil_recovery_model.configure_parameters_update(inputs_dict)
-        price_details = enhanced_oil_recovery_model.compute_price()
 
     def test_03_enhanced_oil_recovery_discipline(self):
 

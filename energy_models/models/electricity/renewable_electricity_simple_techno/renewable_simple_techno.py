@@ -20,13 +20,7 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class RenewableElectricitySimpleTechno(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology
-        """
-        return 0
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
     # def compute_consumption_and_power_production(self):
     #     """

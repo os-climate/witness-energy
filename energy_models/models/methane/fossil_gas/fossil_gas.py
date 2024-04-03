@@ -21,30 +21,20 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilGas(MethaneTechno):
-    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
+    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
+    def compute_resources_needs(self):
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
-        ) / Methane.data_energy_dict['calorific_value']  # kg/kWh
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
-        # resources price [$/t] since needs are in [kg/kWh] to have cost in
-        # [$/MWh]
-        self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
-            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[
-                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
-        # cost to produce 1Kwh of methane
-        return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]
+
 
     def grad_price_vs_energy_price(self):
         '''
@@ -53,15 +43,6 @@ class FossilGas(MethaneTechno):
         '''
         elec_needs = self.get_electricity_needs()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                }
-
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resource prices
-        Work also for total CO2_emissions vs resource CO2 emissions
-        '''
-        natural_gas_needs = self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'].values
-        return {self.NATURAL_GAS_RESOURCE_NAME: np.identity(len(self.years)) * natural_gas_needs,
                 }
 
     def compute_consumption_and_production(self):
@@ -73,7 +54,7 @@ class FossilGas(MethaneTechno):
         # compute CH4 production in kWh
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -103,7 +84,7 @@ class FossilGas(MethaneTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME] = \
             self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \

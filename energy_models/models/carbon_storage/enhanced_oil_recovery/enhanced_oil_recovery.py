@@ -21,11 +21,10 @@ from energy_models.core.techno_type.base_techno_models.carbon_storage_techno imp
 
 class EnhancedOilRecovery(CSTechno):
 
-    def compute_crf(self, data_config):
+    def compute_capital_recovery_factor(self, data_config):
         return 1
 
-    def compute_other_primary_energy_costs(self):
-        return 0
+    
 
     def compute_consumption_and_production(self):
         """

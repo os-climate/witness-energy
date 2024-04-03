@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 26/03/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class Oxygen(BaseStream):
-    name = ResourceGlossary.Oxygen['name']
+    name = ResourceGlossary.OxygenResource
     data_energy_dict = {
         'maturity': 10,
         'WACC': 0.1,

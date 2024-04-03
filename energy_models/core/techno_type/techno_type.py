@@ -40,6 +40,9 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.cost_of_resources_usage = None
+        self.cost_of_energies_usage = None
+        self.specific_costs = None
         self.years = None
         self.cost_details = None
         self.production_detailed = None
@@ -69,9 +72,11 @@ class TechnoType:
         self.production = None
         self.consumption = None
         self.name = name
+        self.resources_used_for_production = []
+        self.energies_used_for_production = []
 
         self.invest_years = None  # Investment per year
-        self.prices = None  # Input energy price
+        self.energy_prices = None  # Input energy price
         self.energy_CO2_emissions = None
         # -- Outputs attributes computed by run method
         # -- Contains: energy produced, price, CO2 emissions, energy consumption (per energy type)
@@ -88,7 +93,7 @@ class TechnoType:
         self.carbon_intensity = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
-        self.crf = None
+        self.capital_recovery_factor = None
         self.nb_years_amort_capex = 10
         self.scaling_factor_invest_level = None
         self.scaling_factor_techno_production = None
@@ -230,6 +235,9 @@ class TechnoType:
             self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
                 GlossaryEnergy.UtilisationRatioValue].values
 
+        self.resources_used_for_production = inputs_dict[GlossaryEnergy.ResourcesUsedForProductionValue]
+        self.energies_used_for_production = inputs_dict[GlossaryEnergy.EnergiesUsedForProductionValue]
+
     def configure_parameters_update(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
@@ -239,7 +247,7 @@ class TechnoType:
         self.resources_prices = inputs_dict[GlossaryEnergy.ResourcesPriceValue].loc[
             inputs_dict[GlossaryEnergy.ResourcesPriceValue][GlossaryEnergy.Years]
             <= self.year_end]
-        self.prices = inputs_dict[GlossaryEnergy.EnergyPricesValue]
+        self.energy_prices = inputs_dict[GlossaryEnergy.EnergyPricesValue]
 
         self.invest_level = inputs_dict[GlossaryEnergy.InvestLevelValue].loc[
             inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years]
@@ -424,7 +432,7 @@ class TechnoType:
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
                     self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
         dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return dnon_use_capital_dratio
+        return np.diag(dnon_use_capital_dratio / 100.)
 
     def compute_price(self):
         """
@@ -441,18 +449,13 @@ class TechnoType:
         self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
             self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
-        self.crf = self.compute_crf(self.techno_infos_dict)
+        self.capital_recovery_factor = self.compute_capital_recovery_factor(self.techno_infos_dict)
 
-        # Compute efficiency evolving in time or not
-        if self.techno_infos_dict['techno_evo_eff'] == 'yes':
-            self.cost_details['efficiency'] = self.configure_efficiency()
-        else:
-            self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
+        self.compute_efficiency()
 
-        self.prices = self.prices.loc[self.prices[GlossaryEnergy.Years]
-                                      <= self.cost_details[GlossaryEnergy.Years].max()]
-        self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
-        )
+        self.energy_prices = self.energy_prices.loc[self.energy_prices[GlossaryEnergy.Years]
+                                                    <= self.cost_details[GlossaryEnergy.Years].max()]
+        self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
         # self.cost_details['CAPEX_heat_tech'] = self.cost_details[f'Capex_{self.name}'] * self.crf
@@ -460,7 +463,7 @@ class TechnoType:
         # self.cost_details[GlossaryEnergy.CO2TaxesValue] = self.cost_details[f'Capex_{self.name}'] * self.crf
 
         self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
-                                                    (self.crf + self.techno_infos_dict['Opex_percentage'])
+                                                    (self.capital_recovery_factor + self.techno_infos_dict['Opex_percentage'])
 
         if 'decommissioning_percentage' in self.techno_infos_dict:
             self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'] * \
@@ -495,8 +498,8 @@ class TechnoType:
             len_y = max(self.cost_details[GlossaryEnergy.Years]) + \
                     1 - min(self.cost_details[GlossaryEnergy.Years])
             self.cost_details[f'{self.name}_factory_amort'] = (
-                        np.tril(np.triu(np.ones((len_y, len_y)), k=0), k=self.nb_years_amort_capex - 1).transpose() *
-                        np.array(self.cost_details[f'{self.name}_factory'].values / self.nb_years_amort_capex)).T.sum(
+                    np.tril(np.triu(np.ones((len_y, len_y)), k=0), k=self.nb_years_amort_capex - 1).transpose() *
+                    np.array(self.cost_details[f'{self.name}_factory'].values / self.nb_years_amort_capex)).T.sum(
                 axis=0)
             # pylint: enable=no-member
             self.cost_details[f'{self.name}_amort'] = self.cost_details[f'{self.name}_factory_amort'] + \
@@ -518,7 +521,7 @@ class TechnoType:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
 
         # CAPEX in ($/MWh)
-        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.capital_recovery_factor
 
         # Running OPEX in ($/MWh)
         self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
@@ -542,11 +545,39 @@ class TechnoType:
 
         return techno_prices[[GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']]
 
+    def compute_cost_of_resources_usage(self):
+        """
+        Cost of resource R = need of resource R x price of resource R
+        """
+        cost_of_resource_usage =  {
+            GlossaryEnergy.Years: self.years,
+        }
+        for resource in self.resources_used_for_production:
+            cost_of_resource_usage[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_prices[resource].values
+
+        self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
+
+    def compute_cost_of_other_energies_usage(self):
+        """Will replace non generic method in future dev"""
+        cost_of_energies_usage = {
+            GlossaryEnergy.Years: self.years,
+        }
+        for energy in self.energies_used_for_production:
+            cost_of_energies_usage[energy] = self.cost_details[f"{energy}_needs"].values * self.energy_prices[energy].values
+
+        self.cost_of_energies_usage = pd.DataFrame(cost_of_energies_usage)
+
     @abstractmethod
     def compute_other_primary_energy_costs(self):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+        self.compute_resources_needs()
+        self.compute_cost_of_resources_usage()
+        self.compute_other_energies_needs()
+        self.compute_cost_of_other_energies_usage()
+        self.compute_specifif_costs_of_technos()
+        self.compute_sum_all_costs()
 
     def is_invest_before_year(self, year):
         '''
@@ -745,7 +776,7 @@ class TechnoType:
 
     def grad_price_vs_resources_price(self):
 
-        return {}
+        return {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
 
     def compute_expo_factor(self, data_config):
 
@@ -754,15 +785,17 @@ class TechnoType:
 
         return expo_factor
 
-    def compute_crf(self, data_config):
+    def compute_capital_recovery_factor(self, data_config):
         """
         Compute annuity factor with the Weighted averaged cost of capital
         and the lifetime of the selected solution
         """
-        crf = (data_config['WACC'] * (1.0 + data_config['WACC']) ** data_config['lifetime']) / \
-              ((1.0 + data_config['WACC']) ** data_config['lifetime'] - 1.0)
+        wacc = self.techno_infos_dict['WACC']
+        lifetime = self.techno_infos_dict['lifetime']
 
-        return crf
+        capital_recovery_factor = (wacc * (1.0 + wacc) ** lifetime) / ((1.0 + wacc) ** lifetime - 1.0)
+
+        return capital_recovery_factor
 
     def check_capex_unity(self, data_tocheck):
         """
@@ -953,8 +986,9 @@ class TechnoType:
 
         return fuel_need
 
-    def configure_efficiency(self):
-        if 'techno_evo_time' in self.techno_infos_dict:
+    def compute_efficiency(self):
+        # Compute efficiency evolving in time or not
+        if 'techno_evo_time' in self.techno_infos_dict and self.techno_infos_dict['techno_evo_eff'] == 'yes':
             middle_evolution_year = self.techno_infos_dict['techno_evo_time']
             efficiency_max = self.techno_infos_dict['efficiency_max']
             efficiency_ini = self.techno_infos_dict['efficiency']
@@ -963,18 +997,16 @@ class TechnoType:
             if 'efficiency evolution slope' in self.techno_infos_dict:
                 efficiency_slope = self.techno_infos_dict['efficiency evolution slope']
 
-            years = self.years - \
-                    self.years[0]
+            years = self.years - self.years[0]
 
             eff_list = [self.sigmoid_function(
                 i, efficiency_max, efficiency_ini, middle_evolution_year, efficiency_slope) for i in years]
             efficiency = pd.Series(eff_list)
 
         else:
-            efficiency_ini = self.techno_infos_dict['efficiency']
-            years = self.years - \
-                    self.years[0]
-            efficiency = efficiency_ini * np.ones(len(years))
+            efficiency = self.techno_infos_dict['efficiency'] * np.ones_like(self.years)
+
+        self.cost_details['efficiency'] = efficiency
         return efficiency
 
     def sigmoid_function(self, x, eff_max, eff_ini, l, slope):
@@ -1063,6 +1095,21 @@ class TechnoType:
         '''
         return 0.0
 
+
+    def compute_resources_needs(self):
+        """To be overloaded when techno relies on resources"""
+        pass
+
+    def compute_other_energies_needs(self):
+        """To be overloaded when techno uses other technos productions to produce its energy"""
+        pass
+
+    def compute_specifif_costs_of_technos(self):
+        """To be overloaded when techno relies on resources"""
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years
+        })
+
     def compute_co2_tax(self):
         '''
         CO2 taxes are in $/tCO2
@@ -1103,7 +1150,7 @@ class TechnoType:
 
         age_distrib_prod_sum = self.age_distrib_prod_df.groupby([GlossaryEnergy.Years], as_index=False).agg(
             {f'distrib_prod ({self.product_energy_unit})': 'sum'}
-            )
+        )
         if f'{self.energy_name} ({self.product_energy_unit})' in self.production_detailed:
             del self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
 
@@ -1302,7 +1349,7 @@ class TechnoType:
                 if ratio_name in col and ratio_name != GlossaryEnergy.Years:
                     dprod_dratio = (np.identity(len(self.years)) * prod.values) * \
                                    dapplied_ratio_dratio[ratio_name]
-        return dprod_dratio
+        return dprod_dratio / 100.
 
     def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
         '''
@@ -1584,3 +1631,24 @@ class TechnoType:
         self.production_woratio = copy(self.production_detailed)
         self.consumption_woratio = copy(self.consumption_detailed)
         self.land_use_woratio = copy(self.land_use)
+
+    def d_non_use_capital_d_utilisation_ratio(self):
+        techno_capital = self.techno_capital[GlossaryEnergy.Capital].values
+        d_non_use_capital_d_utilisation_ratio = np.diag(
+            - techno_capital * self.applied_ratio['applied_ratio'] / 100.
+        )
+        return d_non_use_capital_d_utilisation_ratio
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        return {
+            resource: np.diag(self.cost_details[f"{resource}_needs"].values) for resource in self.resources_used_for_production
+        }
+
+    def compute_sum_all_costs(self):
+        all_costs = self.cost_of_resources_usage[self.resources_used_for_production].values.sum(axis=1) +\
+                    self.cost_of_energies_usage[self.energies_used_for_production].values.sum(axis=1) +\
+                    self.specific_costs.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
+        self.cost_details['energy_costs'] = all_costs

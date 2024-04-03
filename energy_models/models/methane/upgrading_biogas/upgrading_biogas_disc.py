@@ -39,7 +39,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     }
     # -- add specific techno inputs to this
 
-    techno_name = 'UpgradingBiogas'
+    techno_name = GlossaryEnergy.UpgradingBiogas
     lifetime = 20
     construction_delay = 2  # years
     # 'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',

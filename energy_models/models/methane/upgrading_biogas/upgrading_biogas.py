@@ -23,28 +23,17 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.monotethanolamine import Monotethanolamine
 from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class UpgradingBiogas(MethaneTechno):
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs to produce 1kg of CH4
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
 
-        self.cost_details['biogas_needs'] = self.get_biogas_needs()
+        self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
 
-        # Cost of electricity for 1 kWH of H2
-        self.cost_details[Electricity.name] = list(
-            self.prices[Electricity.name] * self.cost_details['elec_needs'])
-        # Cost of methane for 1 kWH of H2
-        self.cost_details[BioGas.name] = list(
-            self.prices[BioGas.name] * self.cost_details['biogas_needs'])
-
-        return self.cost_details[Electricity.name] + self.cost_details[BioGas.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -72,10 +61,10 @@ class UpgradingBiogas(MethaneTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
+        self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details[f'{BioGas.name}_needs'] * \
                                                                                    self.production_detailed[
                                                                                        f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
@@ -138,10 +127,10 @@ class UpgradingBiogas(MethaneTechno):
         '''
 
         self.carbon_intensity[f'{BioGas.name}'] = self.energy_CO2_emissions[f'{BioGas.name}'] * \
-                                                  self.cost_details['biogas_needs']
+                                                  self.cost_details[f'{BioGas.name}_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         # This CO2 is captured we do not take it into account in the CO2 emissions
         #         co2_prod = self.get_theoretical_co2_prod()

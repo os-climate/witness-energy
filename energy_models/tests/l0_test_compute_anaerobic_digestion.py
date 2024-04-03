@@ -59,7 +59,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomass['name']: electricity_price / 100.0
+            {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomassResource: electricity_price / 100.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(

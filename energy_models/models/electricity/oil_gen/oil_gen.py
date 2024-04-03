@@ -26,32 +26,16 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class OilGen(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        # in kwh of fuel by kwh of electricity
-        self.cost_details['liquid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
-                                                 self.cost_details['efficiency']
-
+    def compute_resources_needs(self):
         # need in kg/kWh
-        self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
+        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
-        # Cost of liquid_fuel for 1 kWH of electricity - Efficiency removed as data is
-        # the process global liquid_fuel consumption
-        self.cost_details[LiquidFuel.name] = list(
-            self.prices[LiquidFuel.name] * self.cost_details['liquid_fuel_needs'])
+    def compute_other_energies_needs(self):
+        # in kwh of fuel by kwh of electricity
+        self.cost_details[f'{LiquidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / self.cost_details['efficiency']
 
-        # Cost of water for 1 kWH of electricity - Efficiency removed as data
-        # is the process global water consumption
-        self.cost_details[Water.name] = list(
-            self.resources_prices[Water.name] * self.cost_details['water_needs'])
-
-        # + self.cost_details[GlossaryEnergy.electricity]
-        return self.cost_details[LiquidFuel.name] + self.cost_details[Water.name]
 
     def compute_consumption_and_production(self):
         """
@@ -63,10 +47,10 @@ class OilGen(ElectricityTechno):
 
         # Consumption
         self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           'liquid_fuel_needs'] * \
+                                                                                           f'{LiquidFuel.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
                                                                         self.production_detailed[
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
@@ -112,9 +96,9 @@ class OilGen(ElectricityTechno):
         '''
 
         self.carbon_intensity[LiquidFuel.name] = self.energy_CO2_emissions[LiquidFuel.name] * \
-                                                 self.cost_details['liquid_fuel_needs']
+                                                 self.cost_details[f'{LiquidFuel.name}_needs']
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
 
         return self.carbon_intensity[LiquidFuel.name] + self.carbon_intensity[Water.name]
 
@@ -124,15 +108,9 @@ class OilGen(ElectricityTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         liquid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.configure_efficiency()
-        return {LiquidFuel.name: np.identity(len(self.years)) * liquid_fuel_needs / efficiency[:, np.newaxis]}
+        efficiency = self.compute_efficiency()
+        return {LiquidFuel.name: np.diag(liquid_fuel_needs / efficiency)}
 
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        water_needs = self.techno_infos_dict['water_demand']
-        return {Water.name: np.identity(len(self.years)) * water_needs}
 
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):

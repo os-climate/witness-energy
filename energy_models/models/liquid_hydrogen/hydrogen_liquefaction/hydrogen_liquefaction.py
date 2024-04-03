@@ -20,6 +20,7 @@ import numpy as np
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.techno_type.base_techno_models.liquid_hydrogen_techno import LiquidHydrogenTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HydrogenLiquefaction(LiquidHydrogenTechno):
@@ -29,26 +30,13 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
     inputs
 
     """
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
         # for 1kwh of gas hydrogen, we get 0.98
-        self.cost_details['hydrogen_needs'] = 1 / \
+        self.cost_details[f'{GaseousHydrogen.name}_needs'] = 1 / \
                                               self.cost_details['efficiency']
 
-        self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-                                              self.prices[Electricity.name]
-
-        # Cost of hydrogen for 1kwh of LH2
-        self.cost_details[GaseousHydrogen.name] = self.prices[GaseousHydrogen.name] * \
-                                                  self.cost_details['hydrogen_needs']
-
-        return self.cost_details[Electricity.name] + self.cost_details[GaseousHydrogen.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -56,7 +44,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        hydrogen_needs = 1.0 / self.configure_efficiency()
+        hydrogen_needs = 1.0 / self.compute_efficiency()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs,
@@ -69,10 +57,10 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
 
         self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                      self.cost_details['hydrogen_needs']
+                                                      self.cost_details[f'{GaseousHydrogen.name}_needs']
 
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[GaseousHydrogen.name]
 
@@ -84,12 +72,12 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                                'hydrogen_needs'] * \
+                                                                                                f'{GaseousHydrogen.name}_needs'] * \
                                                                                             self.production_detailed[
                                                                                                 f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 

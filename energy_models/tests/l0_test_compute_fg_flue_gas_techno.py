@@ -16,19 +16,12 @@ limitations under the License.
 '''
 import unittest
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import FlueGasTechno
-from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno_disc import \
-    FlueGasTechnoDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -100,48 +93,6 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_flue_gas_techno_price(self):
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': FlueGasTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: FlueGasTechnoDiscipline.invest_before_year_start,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       GlossaryEnergy.FlueGasMean: self.flue_gas_mean,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       'initial_production': FlueGasTechnoDiscipline.initial_capture,
-                       'initial_age_distrib': FlueGasTechnoDiscipline.initial_age_distribution,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict,
-                       }
-
-        flue_gas_techno_model = FlueGasTechno(
-            'Flue_gas_capture.FlueGasTechno')
-        flue_gas_techno_model.configure_parameters(inputs_dict)
-        flue_gas_techno_model.configure_parameters_update(inputs_dict)
-        price_details = flue_gas_techno_model.compute_price()
 
     def test_03_flue_gas_techno_discipline(self):
         self.name = 'Test'

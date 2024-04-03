@@ -20,7 +20,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 
 class CO2(BaseStream):
-    name = ResourceGlossary.CO2['name']
+    name = ResourceGlossary.CO2Resource
 
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,

@@ -40,7 +40,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'GeothermalMediumHeat'
+    techno_name = GlossaryEnergy.GeothermalMediumHeat
     energy_name = mediumtemperatureheat.name
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
@@ -117,9 +117,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
         self.techno_model.configure_input(inputs_dict)
 
-    def setup_sos_disciplines(self):
-        super().setup_sos_disciplines()
-
+    def add_additionnal_dynamic_output(self):
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
                                         'dataframe_descriptor': {
@@ -128,7 +126,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                             },
                                         }
 
-        self.add_outputs(dynamic_outputs)
+        return dynamic_outputs
 
     def run(self):
         '''

@@ -20,14 +20,9 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -96,18 +91,18 @@ class WGSPriceTestCase(unittest.TestCase):
                                      }
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             ResourceGlossary.Water['name']: 31 * [0.002],
-             ResourceGlossary.Uranium['name']: 1390,
-             ResourceGlossary.CO2['name']: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995,
+             ResourceGlossary.WaterResource: 31 * [0.002],
+             ResourceGlossary.UraniumResource: 1390,
+             ResourceGlossary.CO2Resource: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995,
                                             0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063,
                                             0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
                                             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
-             ResourceGlossary.BiomassDry['name']: [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
+             ResourceGlossary.BiomassDryResource: [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812],
-             ResourceGlossary.WetBiomass['name']: [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
+             ResourceGlossary.WetBiomassResource: [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056]
@@ -124,56 +119,6 @@ class WGSPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_wgs_price_vssyngas_ratio(self):
-
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-
-        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
-                       GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
-                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
-                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
-                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.InvestLevelValue: self.invest_level,
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
-                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue: self.margin,
-                       GlossaryEnergy.TransportCostValue: self.transport,
-                       GlossaryEnergy.TransportMarginValue: self.margin,
-                       'initial_production': WaterGasShiftDiscipline.initial_production,
-                       'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
-                       'syngas_ratio': self.syngas_ratio,
-                       'needed_syngas_ratio': 0.0,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        sg_ratio_list = np.linspace(0, 2, 10)
-        price_list = []
-        syngas_needs_list = []
-        for sg_ratio in sg_ratio_list:
-            inputs_dict['syngas_ratio'] = self.syngas_ratio * sg_ratio
-            smr_model = WGS('WGS')
-            smr_model.configure_parameters(inputs_dict)
-            smr_model.configure_parameters_update(inputs_dict)
-            price_details = smr_model.compute_price()
-            syngas_needs_list.append(price_details['syngas_needs'].values[0])
-            price_list.append(price_details['WGS'].values[0])
 
     def test_02_wgs_discipline_forH2(self):
 

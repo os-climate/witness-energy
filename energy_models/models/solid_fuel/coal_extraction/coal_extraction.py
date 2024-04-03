@@ -23,36 +23,23 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import SolidFuelTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalExtraction(SolidFuelTechno):
-    COAL_RESOURCE_NAME = ResourceGlossary.Coal['name']
+    COAL_RESOURCE_NAME = ResourceGlossary.CoalResource
 
     def __init__(self, name):
         super().__init__(name)
         self.emission_factor_mt_twh = None
 
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
-
-        self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   / self.cost_details['efficiency'])
-
-        # self.cost_details['fuel_needs'] = self.get_fuel_needs()
-        # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
-        #                                         / self.cost_details['efficiency'])
+    def compute_resources_needs(self):
         # calorific value in kWh/kg * 1000 to have needs in t/kWh
         self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(
             self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(
-            self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
 
-        # + self.cost_details[LiquidFuel.name]
-        return self.cost_details[Electricity.name] + self.cost_details[self.COAL_RESOURCE_NAME]
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
     def grad_price_vs_energy_price(self):
         '''
@@ -65,13 +52,6 @@ class CoalExtraction(SolidFuelTechno):
                 # LiquidFuel.name: np.identity(len(self.years)) * fuel_needs /
                 # efficiency,
                 }
-
-    def grad_price_vs_resources_price(self):
-        '''
-        Compute the gradient of global price vs resources prices
-        '''
-        coal_needs = self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'].values
-        return {self.COAL_RESOURCE_NAME: np.identity(len(self.years)) * coal_needs, }
 
     def compute_consumption_and_production(self):
         """
@@ -87,7 +67,7 @@ class CoalExtraction(SolidFuelTechno):
         self.compute_ch4_emissions()
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            'elec_needs'] * \
+                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
@@ -108,7 +88,7 @@ class CoalExtraction(SolidFuelTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details['elec_needs']
+                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
         self.carbon_intensity[self.COAL_RESOURCE_NAME] = self.resources_CO2_emissions[self.COAL_RESOURCE_NAME] * \
                                                          self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs']
 

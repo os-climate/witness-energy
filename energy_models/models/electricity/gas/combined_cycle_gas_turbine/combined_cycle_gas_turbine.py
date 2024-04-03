@@ -23,17 +23,9 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class CCGasT(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
-
-    def compute_other_primary_energy_costs(self):
-        """
-        Compute primary costs which depends on the technology 
-        """
-        # Cost of methane for 1 kWH
-        self.cost_details[Methane.name] = list(
-            self.prices[Methane.name] * self.techno_infos_dict['methane_needs'])
-
-        return self.cost_details[Methane.name]
+    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict[f'{Methane.name}_needs']
 
     def compute_consumption_and_production(self):
         """
@@ -52,7 +44,7 @@ class CCGasT(ElectricityTechno):
 
         # Consumption
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                        'methane_needs'] * \
+                                                                                        f'{Methane.name}_needs'] * \
                                                                                     self.production_detailed[
                                                                                         f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
@@ -90,7 +82,7 @@ class CCGasT(ElectricityTechno):
         # kg of C02 per kg of methane burnt
         methane_co2 = methane_data['CO2_per_use']
         # Amount of methane in kwh for 1 kwh of elec
-        methane_need = self.techno_infos_dict['methane_needs']
+        methane_need = self.techno_infos_dict[f'{Methane.name}_needs']
         calorific_value = methane_data['calorific_value']  # kWh/kg
 
         co2_prod = methane_co2 / calorific_value * methane_need

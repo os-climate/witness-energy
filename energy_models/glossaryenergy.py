@@ -104,6 +104,50 @@ class GlossaryEnergy(GlossaryWitnessCore):
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
+    ResourcesUsedForProductionValue = "Resources used for production"
+    ResourcesUsedForProduction = {
+        "var_name": ResourcesUsedForProductionValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+    }
+
+    EnergiesUsedForProductionValue = "Energies used for production"
+    EnergiesUsedForProduction = {
+        "var_name": EnergiesUsedForProductionValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+    }
+
+    CostOfResourceUsageValue = "cost_of_resources_usage"
+    CostOfResourceUsageDf = {
+        "var_name": CostOfResourceUsageValue,
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Cost of usage for each resource",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
+        }
+    }
+
+    CostOfEnergiesUsageValue = "cost_of_energies_usage"
+    CostOfEnergiesUsageDf = {
+        "var_name": CostOfEnergiesUsageValue,
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Cost of usage for each energy",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
+        }
+    }
+
+    SpecificCostsForProductionValue = "Specific costs for production"
+    SpecificCostsForProduction = {
+        "var_name": SpecificCostsForProductionValue,
+        "type": "dataframe",
+        "description": "Costs that are specific to the techno",
+        "dynamic_dataframe_columns": True
+    }
+
     CCSTechnoInvest = {
         "type": "dataframe",
         "unit": "G$",
@@ -305,3 +349,83 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
     }
+
+    # techno names
+    GeothermalLowHeat = "GeothermalLowHeat"
+    CropEnergy = "CropEnergy"
+    ManagedWood = "ManagedWood"
+    UnmanagedWood = "UnmanagedWood"
+    BiomassBuryingFossilization = "BiomassBuryingFossilization"
+    CarbonStorageTechno = "CarbonStorageTechno"
+    DeepOceanInjection = "DeepOceanInjection"
+    DeepSalineFormation = "DeepSalineFormation"
+    DepletedOilGas = "DepletedOilGas"
+    EnhancedOilRecovery = "EnhancedOilRecovery"
+    GeologicMineralization = "GeologicMineralization"
+    PureCarbonSolidStorage = "PureCarbonSolidStorage"
+    Reforestation = "Reforestation"
+    BiomassFired = "BiomassFired"
+    CoalGen = "CoalGen"
+    BiogasFired = "BiogasFired"
+    CombinedCycleGasTurbine = "CombinedCycleGasTurbine"
+    GasTurbine = "GasTurbine"
+    Geothermal = "Geothermal"
+    Hydropower = "Hydropower"
+    Nuclear = "Nuclear"
+    OilGen = "OilGen"
+    RenewableElectricitySimpleTechno = "RenewableElectricitySimpleTechno"
+    SolarPv = "SolarPv"
+    SolarThermal = "SolarThermal"
+    WindOffshore = "WindOffshore"
+    WindOnshore = "WindOnshore"
+    BiomassFermentation = "BiomassFermentation"
+    FossilSimpleTechno = "FossilSimpleTechno"
+    ElectrolysisAWE = "Electrolysis.AWE"
+    ElectrolysisPEM = "Electrolysis.PEM"
+    ElectrolysisSOEC = "Electrolysis.SOEC"
+    PlasmaCracking = "PlasmaCracking"
+    WaterGasShift = "WaterGasShift"
+    CHPHighHeat = "CHPHighHeat"
+    ElectricBoilerHighHeat = "ElectricBoilerHighHeat"
+    GeothermalHighHeat = "GeothermalHighHeat"
+    HeatPumpHighHeat = "HeatPumpHighHeat"
+    NaturalGasBoilerHighHeat = "NaturalGasBoilerHighHeat"
+    CHPLowHeat = "CHPLowHeat"
+    ElectricBoilerLowHeat = "ElectricBoilerLowHeat"
+    GeothermalLowHeat = "GeothermalLowHeat"
+    HeatPumpLowHeat = "HeatPumpLowHeat"
+    NaturalGasBoilerLowHeat = "NaturalGasBoilerLowHeat"
+    CHPMediumHeat = "CHPMediumHeat"
+    ElectricBoilerMediumHeat = "ElectricBoilerMediumHeat"
+    GeothermalMediumHeat = "GeothermalMediumHeat"
+    HeatPumpMediumHeat = "HeatPumpMediumHeat"
+    NaturalGasBoilerMediumHeat = "NaturalGasBoilerMediumHeat"
+    HefaDecarboxylation = "HefaDecarboxylation"
+    HefaDeoxygenation = "HefaDeoxygenation"
+    FischerTropsch = "FischerTropsch"
+    Refinery = "Refinery"
+    HydrogenLiquefaction = "HydrogenLiquefaction"
+    FossilGas = "FossilGas"
+    Methanation = "Methanation"
+    UpgradingBiogas = "UpgradingBiogas"
+    CO2Hydrogenation = "CO2Hydrogenation"
+    RenewableSimpleTechno = "RenewableSimpleTechno"
+    CoalExtraction = "CoalExtraction"
+    Pelletizing = "Pelletizing"
+    AutothermalReforming = "AutothermalReforming"
+    BiomassGasification = "BiomassGasification"
+    CoElectrolysis = "CoElectrolysis"
+    CoalGasification = "CoalGasification"
+    Pyrolysis = "Pyrolysis"
+    ReversedWaterGasShift = "ReversedWaterGasShift"
+    SMR = "SMR"
+    AnimalManure = "AnimalManure"
+    WetCropResidues = "WetCropResidues"
+
+
+
+
+
+
+
+
