@@ -25,10 +25,10 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
 
-
-class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
-    """RenewableSimpleTechnoJacobianTestCase"""
+class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
+    """FossilSimpleTechnoJacobianTestCase"""
 
     def analytic_grad_entry(self):
         return [
@@ -39,8 +39,8 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'RenewableSimpleTechno'
-        self.year_end = GlossaryEnergy.YearEndDefault
+        self.energy_name = 'FossilSimpleTechno'
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -97,16 +97,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = 'FossilSimpleTechno'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': self.name,
+                   'ns_fossil': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc.FossilSimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -115,24 +115,11 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        techno_infos_dict = {'maturity': 0,
-                             'Opex_percentage': 0.12,
-                             'WACC': 0.058,
-                             'learning_rate': 0.00,
-                             'lifetime': 25,
-                             'lifetime_unit': GlossaryEnergy.Years,
-                             'Capex_init': 230.0,
-                             'Capex_init_unit': '$/MWh',
-                             'techno_evo_eff': 'no',
-                             'efficiency': 1.0,
-                             'CO2_from_production': 0.0,
-                             'CO2_from_production_unit': 'kg/kg',
-                             GlossaryEnergy.ConstructionDelay: 3,
-                             'resource_price': 70.0,
-                             'resource_price_unit': '$/MWh'}
+        techno_infos_dict = FossilSimpleTechnoDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         invest_before_ystart = pd.DataFrame(
-            {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 635.0, 638.0]})
+            {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
@@ -172,16 +159,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_02_discipline_analytic_grad_construction_delay_0(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = 'FossilSimpleTechno'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': self.name,
+                   'ns_fossil': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc.FossilSimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -189,21 +176,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = {'maturity': 0,
-                             'Opex_percentage': 0.12,
-                             'WACC': 0.058,
-                             'learning_rate': 0.00,
-                             'lifetime': 30,
-                             'lifetime_unit': GlossaryEnergy.Years,
-                             'Capex_init': 230.0,
-                             'Capex_init_unit': '$/MWh',
-                             'techno_evo_eff': 'no',
-                             'efficiency': 1.0,
-                             'CO2_from_production': 0.0,
-                             'CO2_from_production_unit': 'kg/kg',
-                             GlossaryEnergy.ConstructionDelay: 0,
-                             'resource_price': 70.0,
-                             'resource_price_unit': '$/MWh'}
+        techno_infos_dict = {'maturity': 0, 'Opex_percentage': 0.024, 'WACC': 0.058, 'learning_rate': 0.00,
+                             'lifetime_unit': GlossaryEnergy.Years, 'Capex_init': 100.,
+                             'Capex_init_unit': '$/MWh', 'techno_evo_eff': 'no', 'efficiency': 1.0,
+                             'CO2_from_production': 0.37077040550222284, 'CO2_from_production_unit': 'kg/kg',
+                             GlossaryEnergy.ConstructionDelay: 0, 'resource_price': 75.0,
+                             'resource_price_unit': '$/MWh', 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
+                             'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
+                             'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+                             'CH4_emission_factor_unit': 'Mt/TWh',
+                             "lifetime": GlossaryEnergy.LifetimeDefaultValueGradientTest}
 
         invest_before_ystart = pd.DataFrame(
             {'past years': [], GlossaryEnergy.InvestValue: []})
