@@ -31,8 +31,17 @@ class DirectAirCaptureTechno(CCTechno):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
+    def compute_production(self):
 
-    def compute_consumption_and_production(self):
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+                                                                                            f'{Fossil.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        Fossil.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Fossil.data_energy_dict[
+                                                                                            'calorific_value']
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -48,11 +57,3 @@ class DirectAirCaptureTechno(CCTechno):
                                                                            self.production_detailed[
                                                                                f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            f'{Fossil.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Fossil.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Fossil.data_energy_dict[
-                                                                                            'calorific_value']

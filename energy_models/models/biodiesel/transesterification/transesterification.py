@@ -45,18 +45,16 @@ class Transesterification(BioDieselTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
-        # Production
+    def compute_production(self):
         self.production_detailed[f'{Glycerol.name} ({self.mass_unit})'] = 0.12 * self.production_detailed[
             f'{BioDiesel.name} ({self.product_energy_unit})'] / \
                                                                           self.data_energy_dict['calorific_value']
 
-        # Consumption
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{Electricity.name}_needs'] * \
                                                                                         self.production_detailed[

@@ -36,11 +36,7 @@ class Pyrolysis(SyngasTechno):
         # wood needs in kg to produce 1kWh of syngas
         self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] = 1 / syngas_kwh
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
+    def compute_production(self):
 
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
@@ -58,6 +54,12 @@ class Pyrolysis(SyngasTechno):
                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                   self.techno_infos_dict['bio_oil_yield'] / \
                                                                   self.techno_infos_dict['syngas_yield']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
 
         self.consumption_detailed[f'wood ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] * \
                                                                 self.production_detailed[

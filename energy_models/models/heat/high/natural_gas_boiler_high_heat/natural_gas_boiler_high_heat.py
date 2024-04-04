@@ -41,7 +41,16 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        # CO2 production
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.consumption_detailed[
+                                                                                            f'{Methane.name} ({self.product_energy_unit})']
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
@@ -53,13 +62,6 @@ class NaturalGasBoilerHighHeat(highheattechno):
                                                                                     self.production_detailed[
                                                                                         f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
-        # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.consumption_detailed[
-                                                                                            f'{Methane.name} ({self.product_energy_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh 

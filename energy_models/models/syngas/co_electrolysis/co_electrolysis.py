@@ -86,18 +86,20 @@ class CoElectrolysis(SyngasTechno):
 
         return oxygen_production
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         o2_production = self.get_oxygen_production()
 
         self.production_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = o2_production / \
                                                                           self.data_energy_dict['calorific_value'] * \
                                                                           self.production_detailed[
                                                                               f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \

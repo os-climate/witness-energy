@@ -90,17 +90,23 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         return platinum_needs
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         o2_needs = self.get_oxygen_produced()
         self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
                                                              self.data_energy_dict['calorific_value'] * \
                                                              self.production_detailed[
                                                                  f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        # Production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
+        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
@@ -116,8 +122,3 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
                                                                                              f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
                                                                                          self.production_detailed[
                                                                                              f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-
-        # Production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH

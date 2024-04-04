@@ -36,7 +36,22 @@ class FossilGas(MethaneTechno):
         # needs in [kg/kWh]
 
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        # kg/kWh corresponds to Mt/TWh
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] / \
+                                                                                        self.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.compute_ghg_emissions(Methane.emission_name)
+        # self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        #      self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
+        #       self.techno_infos_dict['efficiency']
+
+
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -48,20 +63,6 @@ class FossilGas(MethaneTechno):
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        # kg/kWh corresponds to Mt/TWh
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-        #      self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
-        #       self.techno_infos_dict['efficiency']
-
-        self.compute_ghg_emissions(Methane.emission_name)
 
         # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption_detailed[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[

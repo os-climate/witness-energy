@@ -38,7 +38,16 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                                               self.cost_details['efficiency']
 
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        pass
+        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
+        #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
+        #     self.techno_infos_dict['efficiency']
+
+        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -54,16 +63,3 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                                                                                                 f'{GaseousHydrogen.name}_needs'] * \
                                                                                             self.production_detailed[
                                                                                                 f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
-        #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
-        #     self.techno_infos_dict['efficiency']
-
-        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
-
-        #
-        # print('')
-        # print(self.production.to_string())
-        # print('')
-        # print(self.consumption.to_string())

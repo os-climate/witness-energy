@@ -48,7 +48,7 @@ class GenericFlueGasTechnoModel(CCTechno):
 
         return capex_calc_list
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """

@@ -36,17 +36,19 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
+    def compute_production(self):
         C_per_h2 = self.get_theoretical_graphene_production()
 
         self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
                                                                         self.production_detailed[
                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[

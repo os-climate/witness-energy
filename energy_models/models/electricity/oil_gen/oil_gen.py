@@ -37,23 +37,8 @@ class OilGen(ElectricityTechno):
         self.cost_details[f'{LiquidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / self.cost_details['efficiency']
 
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # self.compute_power_production()
+    def compute_production(self):
         elec_needs = self.get_electricity_needs()
-
-        # Consumption
-        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           f'{LiquidFuel.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[
-                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
-
         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
             self.production_detailed[
                 f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
@@ -64,6 +49,20 @@ class OilGen(ElectricityTechno):
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
             self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] - \
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
+        # Consumption
+        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                           f'{LiquidFuel.name}_needs'] * \
+                                                                                       self.production_detailed[
+                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
+                                                                        self.production_detailed[
+                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 

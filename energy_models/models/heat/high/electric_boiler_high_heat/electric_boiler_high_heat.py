@@ -47,11 +47,10 @@ class ElectricBoilerHighHeat(highheattechno):
                                                     'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{Electricity.name}_needs'] * \

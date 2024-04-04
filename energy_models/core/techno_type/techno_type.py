@@ -287,11 +287,17 @@ class TechnoType:
         '''
         self.data_energy_dict = inputs_dict['data_fuel_dict']
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
+
+    def compute_production(self):
+        """
+        Compute the production of the technology for a given investment
+        """
+        pass
 
     def compute_consumption_and_installed_power(self):
         """
@@ -1563,7 +1569,8 @@ class TechnoType:
         # -- compute informations
         self.compute_price()
         self.compute_primary_energy_production()
-        self.compute_consumption_and_production()
+        self.compute_consumption()
+        self.compute_production()
         self.compute_primary_installed_power()
         self.compute_consumption_and_installed_power()
 

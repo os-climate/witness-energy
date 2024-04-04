@@ -35,18 +35,20 @@ class Pelletizing(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
         #      self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']) / \
         #       self.techno_infos_dict['efficiency']

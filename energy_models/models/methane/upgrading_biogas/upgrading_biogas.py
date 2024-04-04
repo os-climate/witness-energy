@@ -35,17 +35,24 @@ class UpgradingBiogas(MethaneTechno):
         self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
 
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
                                                                                self.production_detailed[
                                                                                    f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+
+        # production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
@@ -59,10 +66,6 @@ class UpgradingBiogas(MethaneTechno):
                                                                                     self.production_detailed[
                                                                                         f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
-        # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''

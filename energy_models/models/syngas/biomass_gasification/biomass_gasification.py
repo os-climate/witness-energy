@@ -34,7 +34,10 @@ class BiomassGasification(SyngasTechno):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        self.compute_ghg_emissions(Methane.emission_name)
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -54,4 +57,3 @@ class BiomassGasification(SyngasTechno):
                                                                         self.production_detailed[
                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-        self.compute_ghg_emissions(Methane.emission_name)

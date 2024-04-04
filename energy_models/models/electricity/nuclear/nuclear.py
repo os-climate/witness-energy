@@ -40,15 +40,20 @@ class Nuclear(ElectricityTechno):
             'waste_disposal': self.compute_nuclear_waste_disposal_cost()
         })
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
+    def compute_production(self):
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                               self.consumption_detailed[
+                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
         # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
         #       self.techno_infos_dict['efficiency']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
 
         # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
         #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
@@ -71,9 +76,6 @@ class Nuclear(ElectricityTechno):
                                                                         self.production_detailed[
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
-                                                                                               self.consumption_detailed[
-                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
     def compute_consumption_and_installed_power(self):
         """

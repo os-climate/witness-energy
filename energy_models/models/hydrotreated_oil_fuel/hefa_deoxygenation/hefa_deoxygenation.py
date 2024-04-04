@@ -48,17 +48,18 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
 
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
+    def compute_production(self):
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']
         water_prod_factor = self.get_theoretical_water_prod()
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = water_prod_factor * self.production_detailed[
             f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / water_calorific_value
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{Electricity.name}_needs'] * \
