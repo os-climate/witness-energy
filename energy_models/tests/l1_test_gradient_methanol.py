@@ -24,6 +24,7 @@ import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_disciplines.methanol_disc import MethanolDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methanol import Methanol
@@ -53,7 +54,8 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.energy_name = 'methanol'
         self.product_energy_unit = 'TWh'
@@ -83,7 +85,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.8e-9
+                           ])[:len(self.years)] * 0.8e-9
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                           GlossaryEnergy.InvestValue: invest
@@ -135,8 +137,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = CO2HydrogenationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -145,9 +149,11 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
+                           self.years),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -216,7 +222,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         })
         techno_name = 'CO2Hydrogenation'
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': [techno_name],
                        f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoConsumptionValue}': self.co2_hydrogenation_consumption,

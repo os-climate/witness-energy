@@ -51,7 +51,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
         # self.launch_data_pickle_generation()
         self.year_start = GlossaryEnergy.YearStartDefault
-        self.year_end = GlossaryEnergy.YearEndDefault
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',

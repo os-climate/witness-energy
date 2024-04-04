@@ -26,6 +26,8 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
+from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import PelletizingDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -47,12 +49,12 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = GlossaryEnergy.solid_fuel
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
-        self.years = years
         # crude oil price : 1.5$/gallon /43.9
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years,
+            {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                    0.159236536471781, 0.15899046935409588,
                                                    0.15874840310033885,
@@ -72,13 +74,13 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                                                    0.1619200735346165,
                                                    0.16214129913260598, 0.16236574581786147,
                                                    0.16259350059915213,
-                                                   0.1628246539459331]) * 1000.0,
-             GlossaryEnergy.biomass_dry: np.ones(len(years)) * 68.12 / 3.36
+                                                   0.1628246539459331])[:len(self.years)] * 1000.0,
+             GlossaryEnergy.biomass_dry: np.ones(len(self.years)) * 68.12 / 3.36
 
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0,
              GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
@@ -90,10 +92,10 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) / 40 * 1e-9
+                           ])[:len(self.years)] / 40 * 1e-9
 
         self.invest_level_pellet = pd.DataFrame(
-            {GlossaryEnergy.Years: years,
+            {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.InvestValue: np.array([12009047700.0, 13746756900.0, 15735912630.0,
                                                    18012899180.0, 20619365690.0, 23602987910.0,
                                                    23602987910.0, 23602987910.0, 23602987910.0,
@@ -104,10 +106,10 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                                                    23602987910.0, 23602987910.0, 23602987910.0,
                                                    23602987910.0, 23602987910.0, 23602987910.0,
                                                    23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0]) * 1e-9})
+                                                   23602987910.0])[:len(self.years)] * 1e-9})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -115,14 +117,14 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.6})
+            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 7.6})
 
         self.transport_pellet = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0097187})
+            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 0.0097187})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -131,21 +133,21 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                                                 == f'{GlossaryEnergy.solid_fuel}.CoalExtraction']
 
         self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
-        self.resources_price[GlossaryEnergy.Years] = years
+        self.resources_price[GlossaryEnergy.Years] = self.years
         self.resources_price['CO2'] = np.array(
             [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
              0.0542,
              0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
-             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119])[:len(self.years)] * 1000.0
         # ---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
-        resource_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(self.years))))
+        resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -171,12 +173,14 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = CoalExtractionDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -186,6 +190,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -228,10 +233,12 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = PelletizingDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_pellet,
@@ -242,6 +249,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
