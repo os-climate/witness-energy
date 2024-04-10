@@ -293,6 +293,20 @@ class TechnoType:
         Maybe add efficiency in consumption computation ?
         """
 
+    def compute_consumption_generic(self):
+        for resource in self.resources_used_for_production:
+            self.consumption_detailed[f'{resource} ({self.mass_unit})'] =\
+                self.cost_details[f"{resource}_needs"] * \
+                self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
+
+        """
+        for energy in self.energies_used_for_production:
+            self.consumption_detailed[f'{energy} ({self.product_energy_unit})'] = \
+                self.cost_details[f"{energy}_needs"] * \
+                self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
+        """
+        pass
+
     def compute_production(self):
         """
         Compute the production of the technology for a given investment
@@ -1570,6 +1584,7 @@ class TechnoType:
         self.compute_price()
         self.compute_primary_energy_production()
         self.compute_consumption()
+        self.compute_consumption_generic()
         self.compute_production()
         self.compute_primary_installed_power()
         self.compute_consumption_and_installed_power()

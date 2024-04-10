@@ -61,7 +61,7 @@ class Pyrolysis(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.consumption_detailed[f'wood ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] * \
+        self.consumption_detailed[f'{ResourceGlossary.WoodResource} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] * \
                                                                 self.production_detailed[
                                                                     f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
