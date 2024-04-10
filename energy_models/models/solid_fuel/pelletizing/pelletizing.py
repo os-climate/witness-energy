@@ -35,30 +35,20 @@ class Pelletizing(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        biomass_dry_needs = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
-                            (1 + self.data_energy_dict['pellets_moisture']
-                             )
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.identity(len(self.years)) * biomass_dry_needs}
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
         #      self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']) / \
         #       self.techno_infos_dict['efficiency']
@@ -73,15 +63,3 @@ class Pelletizing(SolidFuelTechno):
                                                                                            f'{BiomassDry.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details[f'{BiomassDry.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

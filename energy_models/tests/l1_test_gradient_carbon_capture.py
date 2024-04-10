@@ -37,7 +37,6 @@ from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calciu
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
-
 class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     """
     Carbon capture jacobian test class
@@ -56,24 +55,25 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = GlossaryEnergy.carbon_capture
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         KOH_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0]) * 500.0
+                              1.0, 1.0, 1.0, 1.0])[:len(years)] * 500.0
 
         # KOH price :
         # https://www.made-in-china.com/price/potassium-hydroxide-price.html
         amine_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0]) * 1300.0
+                                1.0, 1.0, 1.0, 1.0])[:len(years)] * 1300.0
 
         CaO_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0]) * 85.0
+                              1.0, 1.0, 1.0, 1.0])[:len(years)] * 85.0
 
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.years = years
 
@@ -97,7 +97,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                                                    0.1619200735346165,
                                                                    0.16214129913260598, 0.16236574581786147,
                                                                    0.16259350059915213,
-                                                                   0.1628246539459331]) * 1000.0,
+                                                                   0.1628246539459331])[:len(years)] * 1000.0,
              GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
@@ -108,7 +108,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                     0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                    0.1628246539459331]) * 1000.0,
+                                    0.1628246539459331])[:len(years)] * 1000.0,
              GlossaryEnergy.methane: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                   0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                   0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
@@ -119,7 +119,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                   0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
                                   0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                   0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                  0.1628246539459331]) * 1000.0,
+                                  0.1628246539459331])[:len(years)] * 1000.0,
              GlossaryEnergy.fossil: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                  0.159236536471781, 0.15899046935409588,
                                  0.15874840310033885,
@@ -139,7 +139,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                  0.1619200735346165,
                                  0.16214129913260598, 0.16236574581786147,
                                  0.16259350059915213,
-                                 0.1628246539459331]) * 1000.0
+                                 0.1628246539459331])[:len(years)] * 1000.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
@@ -155,7 +155,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.02 / 1000 * 1.0e-9
+                           ])[:len(years)] * 0.02 / 1000 * 1.0e-9
 
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, ResourceGlossary.AmineResource: amine_price,
@@ -212,10 +212,13 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = DirectAirCaptureTechnoDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -229,6 +232,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -275,10 +279,13 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CalciumPotassiumScrubbingDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -292,6 +299,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        #
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -337,10 +345,12 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -355,6 +365,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
+
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -475,8 +487,11 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = DirectAirCaptureTechnoDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -487,7 +502,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
                            DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        }
 

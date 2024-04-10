@@ -41,35 +41,6 @@ class AutothermalReforming(SyngasTechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        # CO2_needs = self.get_theoretical_CO2_needs()
-        methane_needs = self.get_theoretical_CH4_needs()
-        # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Methane.name: np.diag(methane_needs / efficiency)
-        }
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-                                                   self.cost_details[f'{Methane.name}_needs']
-        self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
-                                          self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
-        self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
-                                             self.cost_details[f'{ResourceGlossary.OxygenResource}_needs']
-
-        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
-            Oxygen.name]
-
     def get_theoretical_CH4_needs(self):
         """
         Get methane needs in kWh CH4 /kWh syngas
@@ -118,12 +89,7 @@ class AutothermalReforming(SyngasTechno):
 
         return water_needs
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         # kg of H2O produced with 1kg of CH4
         H2Oprod = self.get_h2o_production()
 
@@ -131,6 +97,12 @@ class AutothermalReforming(SyngasTechno):
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \

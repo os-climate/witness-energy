@@ -29,28 +29,27 @@ class BiomassFired(ElectricityTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_needs']
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        co2_prod = self.get_theoretical_co2_prod()
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+                                                                                        self.production_detailed[
+                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # TWh
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-
-        co2_prod = self.get_theoretical_co2_prod()
 
         # Consumption
         self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
                                                                                            'biomass_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        # Production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-                                                                                        self.production_detailed[
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] - \
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # TWh
 
     def compute_consumption_and_installed_power(self):
         """
@@ -88,22 +87,3 @@ class BiomassFired(ElectricityTechno):
         copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from methane extraction
-        '''
-
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.techno_infos_dict['biomass_needs']
-
-        return self.carbon_intensity[BiomassDry.name]
-
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        biomass_needs = self.techno_infos_dict['biomass_needs']
-        # Note that efficiency = 1
-        return {BiomassDry.name: np.identity(len(self.years)) * biomass_needs}

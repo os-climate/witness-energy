@@ -31,31 +31,30 @@ class GasElec(ElectricityTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict['kwh_methane/kwh']
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        co2_prod = self.get_theoretical_co2_prod()
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+                                                                                        self.production_detailed[
+                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
+        self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-
-        co2_prod = self.get_theoretical_co2_prod()
-
         # Consumption
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
                                                                                         'kwh_methane/kwh'] * \
                                                                                     self.production_detailed[
                                                                                         f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        # Production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-                                                                                        self.production_detailed[
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
-        self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def compute_consumption_and_installed_power(self):
         """
@@ -82,25 +81,6 @@ class GasElec(ElectricityTechno):
 
         co2_prod = methane_co2 / calorific_value * methane_need
         return co2_prod
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from methane extraction
-        '''
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.techno_infos_dict['kwh_methane/kwh']
-
-        return self.carbon_intensity[Methane.name]
-
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        methane_needs = self.techno_infos_dict['kwh_methane/kwh']
-        # efficiency = 1 for both CC and gas turbine
-        return {Methane.name: np.identity(len(self.years)) * methane_needs}
 
     def compute_ch4_emissions(self):
         '''

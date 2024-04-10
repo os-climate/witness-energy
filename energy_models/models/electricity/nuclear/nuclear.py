@@ -40,15 +40,20 @@ class Nuclear(ElectricityTechno):
             'waste_disposal': self.compute_nuclear_waste_disposal_cost()
         })
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
+    def compute_production(self):
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                               self.consumption_detailed[
+                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
         # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
         #       self.techno_infos_dict['efficiency']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
 
         # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
         #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
@@ -71,9 +76,6 @@ class Nuclear(ElectricityTechno):
                                                                         self.production_detailed[
                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
-                                                                                               self.consumption_detailed[
-                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
     def compute_consumption_and_installed_power(self):
         """
@@ -87,19 +89,6 @@ class Nuclear(ElectricityTechno):
                                                                                        self.installed_power[
                                                                                            'new_power_production']  # in Mt
 
-    def compute_CO2_emissions_from_input_resources(self):
-        """
-        Need to take into account  CO2 from electricity/hydrogen production
-        """
-
-        self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
-                                                            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
-
-    # @staticmethod
     def get_theoretical_uranium_fuel_needs(self):
         """
         Get Uranium fuel needs in kg Uranium fuel /kWh electricty

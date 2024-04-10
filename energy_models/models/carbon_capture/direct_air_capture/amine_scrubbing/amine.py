@@ -34,7 +34,7 @@ class Amine(CCTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
-    def compute_CO2_emissions_from_input_resources(self):
+    def compute_CO2_emissions_from_resources_and_energies(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''
@@ -50,18 +50,17 @@ class Amine(CCTechno):
         return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
             ResourceGlossary.AmineResource] - 1.0
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        heat_needs = self.get_heat_needs()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Methane.name: np.identity(len(self.years)) * heat_needs
-                }
+    def compute_production(self):
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+                                                                                            f"{Methane.name}_needs"] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'calorific_value']
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -81,14 +80,6 @@ class Amine(CCTechno):
                                                                  self.production_detailed[
                                                                      f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            f"{Methane.name}_needs"] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value']
 
     def compute_amine_need(self):
         """

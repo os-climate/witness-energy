@@ -35,7 +35,7 @@ def launch_data_pickle_generation(directory=''):
 
     ee.factory.set_builders_to_coupling_builder(builder)
     ee.configure()
-    usecase = MDA_Energy(execution_engine=ee)
+    usecase = MDA_Energy(execution_engine=ee, year_end=GlossaryEnergy.YearEndDefaultValueGradientTest)
     usecase.study_name = name
     values_dict = usecase.setup_usecase()
 
@@ -48,7 +48,7 @@ def launch_data_pickle_generation(directory=''):
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
     full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel'
     full_values_dict[f'{name}.max_mda_iter'] = 200
-
+    full_values_dict[f'{name}.year_end'] = GlossaryEnergy.YearEndDefaultValueGradientTest
     ee.load_study_from_input_dict(full_values_dict)
 
     ee.execute()

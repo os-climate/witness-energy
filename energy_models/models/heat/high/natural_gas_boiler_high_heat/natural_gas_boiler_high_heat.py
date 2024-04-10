@@ -41,19 +41,16 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.techno_infos_dict['efficiency']
+    def compute_production(self):
+        # CO2 production
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.consumption_detailed[
+                                                                                            f'{Methane.name} ({self.product_energy_unit})']
 
-        return {
-            Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
-        }
-
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
@@ -65,23 +62,6 @@ class NaturalGasBoilerHighHeat(highheattechno):
                                                                                     self.production_detailed[
                                                                                         f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
-        # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.consumption_detailed[
-                                                                                            f'{Methane.name} ({self.product_energy_unit})']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account CO2 from Methane production
-        '''
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.cost_details[f'{Methane.name}_needs']
-
-        return self.carbon_intensity[f'{Methane.name}']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh 

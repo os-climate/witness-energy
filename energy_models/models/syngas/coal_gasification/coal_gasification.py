@@ -30,26 +30,15 @@ class CoalGasification(SyngasTechno):
         self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        fuel_needs = self.get_fuel_needs()
-        return {SolidFuel.name: np.identity(len(self.years)) * fuel_needs,
-                }
+    def compute_production(self):
 
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from biomass and positive from elec
-        '''
-
-        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-                                                self.cost_details['solid_fuel_needs']
-
-        return self.carbon_intensity[SolidFuel.name]
-
-    def compute_consumption_and_production(self):
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] / \
+                                                                                        self.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -63,9 +52,3 @@ class CoalGasification(SyngasTechno):
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

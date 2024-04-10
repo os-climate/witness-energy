@@ -34,22 +34,10 @@ class BiomassGasification(SyngasTechno):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        biomass_needs = self.techno_infos_dict['biomass_demand']
+    def compute_production(self):
+        self.compute_ghg_emissions(Methane.emission_name)
 
-        efficiency = self.compute_efficiency()
-
-        # methane_needs = self.get_theoretical_methane_needs()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.diag(biomass_needs / efficiency)
-                }
-
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -69,17 +57,3 @@ class BiomassGasification(SyngasTechno):
                                                                         self.production_detailed[
                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-        self.compute_ghg_emissions(Methane.emission_name)
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from biomass and positive from elec
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-                                                 self.cost_details[f'{BiomassDry.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

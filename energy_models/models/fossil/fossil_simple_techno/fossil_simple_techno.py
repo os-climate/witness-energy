@@ -32,12 +32,7 @@ class FossilSimpleTechno(FossilTechno):
             GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
         })
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
+    def compute_production(self):
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels
@@ -54,9 +49,6 @@ class FossilSimpleTechno(FossilTechno):
                                                                                         self.production_detailed[
                                                                                             f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
                                                                                         co2_from_raw_to_net
-        self.compute_ch4_emissions()
-
-    def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from gas production
         The proposed V0 only depends on production.

@@ -35,21 +35,7 @@ class ManagedWood(BiomassDryTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs}
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
@@ -87,6 +73,13 @@ class ManagedWood(BiomassDryTechno):
                                                                                                    self.production_mix[
                                                                                                        name_wood]
 
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
+
         # compute electricity and consumption CO2 from biomass_dry for energy
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
@@ -97,16 +90,6 @@ class ManagedWood(BiomassDryTechno):
                                                                       self.data_energy_dict['high_calorific_value'] * \
                                                                       self.production_detailed[
                                                                           f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[Electricity.name]
 
     def compute_price(self):
         prices = BiomassDryTechno.compute_price(self)

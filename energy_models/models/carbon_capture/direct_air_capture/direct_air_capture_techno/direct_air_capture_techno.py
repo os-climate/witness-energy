@@ -31,31 +31,17 @@ class DirectAirCaptureTechno(CCTechno):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
+    def compute_production(self):
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from coal extraction and electricity production
-        '''
-
-        self.carbon_intensity[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details[f'{Fossil.name}_needs']
-
-        self.carbon_intensity[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details[
-            f'{GlossaryEnergy.renewable}_needs']
-
-        return self.carbon_intensity[Fossil.name] + self.carbon_intensity[Renewable.name] - 1.0
-
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        heat_needs = self.get_heat_needs()
-        return {Renewable.name: np.identity(len(self.years)) * elec_needs,
-                Fossil.name: np.identity(len(self.years)) * heat_needs,
-                }
-
-    def compute_consumption_and_production(self):
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+                                                                                            f'{Fossil.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        Fossil.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Fossil.data_energy_dict[
+                                                                                            'calorific_value']
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -71,11 +57,3 @@ class DirectAirCaptureTechno(CCTechno):
                                                                            self.production_detailed[
                                                                                f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            f'{Fossil.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Fossil.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Fossil.data_energy_dict[
-                                                                                            'calorific_value']
