@@ -39,7 +39,7 @@ def compute_fossil_data(data_name):
 class Fossil(EnergyType):
     name = GlossaryEnergy.fossil
     default_techno_list = ['FossilSimpleTechno']
-    data_energy_dict = {'CO2_per_use': compute_fossil_data('CO2_per_use'),  # mean of CO2 per use of fossil energies
+    data_energy_dict = {GlossaryEnergy.CO2PerUse: compute_fossil_data(GlossaryEnergy.CO2PerUse),  # mean of CO2 per use of fossil energies
                         'CO2_per_use_unit': 'kg/kg',
                         'density': compute_fossil_data('density'),
                         'density_unit': 'kg/m^3',
@@ -77,7 +77,7 @@ class Fossil(EnergyType):
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
         if ghg_type == 'CO2':
-            co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
+            co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
                                 self.data_energy_dict_input['construction_use_part'])
 
@@ -112,10 +112,10 @@ class Fossil(EnergyType):
             prod_liquid_fuel / prod_fossil * (LiquidFuel.data_energy_dict['petrochemical_use_part'] +
                                               LiquidFuel.data_energy_dict['construction_use_part'])
         print('***')
-        co2_per_use_kgkg = data_energy_dict['CO2_per_use'] * \
+        co2_per_use_kgkg = data_energy_dict[GlossaryEnergy.CO2PerUse] * \
             (1.0 - industry_percent)
 
-        self.co2_per_use['CO2_per_use'] = co2_per_use_kgkg / \
+        self.co2_per_use[GlossaryEnergy.CO2PerUse] = co2_per_use_kgkg / \
             data_energy_dict['high_calorific_value']
 
         return self.co2_per_use

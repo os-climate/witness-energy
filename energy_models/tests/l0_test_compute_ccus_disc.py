@@ -53,7 +53,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
             self.energy_production[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
@@ -121,7 +121,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
         }
         for energy in self.energy_list:
-            inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]

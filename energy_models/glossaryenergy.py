@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
 
 
@@ -74,6 +74,38 @@ class GlossaryEnergy(GlossaryWitnessCore):
     lowtemperatureheat = "lowtemperatureheat"
     mediumtemperatureheat = "mediumtemperatureheat"
     hightemperatureheat = "hightemperatureheat"
+
+    AllEnergies = [biogas,
+                   biodiesel,
+                   biomass_dry,
+                   ethanol,
+                   electricity,
+                   fossil,
+                   fuel,
+                   gasoline,
+                   heating_oil,
+                   hydrogen,
+                   kerosene,
+                   liquid_fuel,
+                   liquid_hydrogen,
+                   gaseous_hydrogen,
+                   liquefied_petroleum_gas,
+                   hydrotreated_oil_fuel,
+                   methane,
+                   renewable,
+                   solid_fuel,
+                   syngas,
+                   ultra_low_sulfur_diesel,
+                   wet_biomass,
+                   carbon_capture,
+                   carbon_storage,
+                   direct_air_capture,
+                   flue_gas_capture,
+                   heat,
+                   lowtemperatureheat,
+                   mediumtemperatureheat,
+                   hightemperatureheat, ]
+
     LifetimeName = "lifetime"
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
@@ -126,8 +158,42 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "?",
         "description": "Cost of usage for each resource",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
-        }
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+        },
+    }
+    N2OPerUse = "N2O_per_use"
+    CH4PerUse = "CH4_per_use"
+    CO2PerUse = "CO2_per_use"
+    CO2PerUseDf = {
+        "varname": CO2PerUse,
+        "type": "dataframe",
+        "unit": "kg/kWh",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            CO2PerUse: ("float", None, True),
+        },
+    }
+    CH4PerUseDf = {
+        "varname": CH4PerUse,
+        "type": "dataframe",
+        "unit": "kg/kWh",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            CH4PerUse: ("float", None, True),
+        },
+    }
+    N2OPerUseDf = {
+        "varname": N2OPerUse,
+        "type": "dataframe",
+        "unit": "kg/kWh",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            N2OPerUse: ("float", None, True),
+        },
     }
 
     CostOfEnergiesUsageValue = "cost_of_energies_usage"
@@ -137,8 +203,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "?",
         "description": "Cost of usage for each energy",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False,),
-        }
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+        },
     }
 
     SpecificCostsForProductionValue = "Specific costs for production"
@@ -146,7 +216,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "var_name": SpecificCostsForProductionValue,
         "type": "dataframe",
         "description": "Costs that are specific to the techno",
-        "dynamic_dataframe_columns": True
+        "dynamic_dataframe_columns": True,
     }
 
     CCSTechnoInvest = {
@@ -160,7 +230,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            "invest": ("float", [0., 1e30], True),
+            "invest": ("float", [0.0, 1e30], True),
         },
     }
 
@@ -175,7 +245,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            "invest": ("float", [0., 1e30], True),
+            "invest": ("float", [0.0, 1e30], True),
         },
     }
     TechnoCapitalDf = {
@@ -189,7 +259,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -221,7 +291,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -246,7 +316,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
             EnergyInvestPercentageGDPName: ("float", [0, 100], True),
         },
         "description": "percentage of total energy investment in each of the energy technologies",
@@ -259,8 +333,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Years: (
+                "float",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_forest",
         "dataframe_edition_locked": False,
@@ -274,7 +352,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("float", None, False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_forest",
         "dataframe_edition_locked": False,
@@ -287,8 +365,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Years: (
+                "float",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_crop",
         "dataframe_edition_locked": False,
@@ -331,8 +413,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
-            ForestInvestmentValue: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Years: (
+                "float",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+            ForestInvestmentValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
@@ -344,8 +430,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YearEndDefault], False),
-            CarbonCapturedValue: ("float", [0., 1e30], False),
+            GlossaryWitnessCore.Years: (
+                "float",
+                [1900, GlossaryWitnessCore.YearEndDefault],
+                False,
+            ),
+            CarbonCapturedValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
@@ -422,11 +512,3 @@ class GlossaryEnergy(GlossaryWitnessCore):
     SMR = "SMR"
     AnimalManure = "AnimalManure"
     WetCropResidues = "WetCropResidues"
-
-
-
-
-
-
-
-

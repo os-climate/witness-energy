@@ -29,7 +29,7 @@ class Ethanol(EnergyType):
                         # Engineering ToolBox, (2009). Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
                         # [Accessed 09/05/2022]
-                        'CO2_per_use': 1.91,
+                        GlossaryEnergy.CO2PerUse: 1.91,
                         'CO2_per_use_unit': 'kg/kg',
 
                         'density': 789,

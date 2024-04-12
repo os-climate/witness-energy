@@ -26,7 +26,7 @@ class Kerosene(EnergyType):
                         # https://www.icao.int/environmental-protection/CarbonOffset/Documents/Methodology%20ICAO%20Carbon%20Calculator_v10-2017.pdf
                         # Alternative source:ADEME, CO2 per kg combustion in Europe = 3.15
                         # https://www.bilans-ges.ademe.fr/documentation/UPLOAD_DOC_EN/index.htm?new_liquides.htm
-                        'CO2_per_use': 3.15,
+                        GlossaryEnergy.CO2PerUse: 3.15,
                         'CO2_per_use_unit': 'kg/kg',
                         'NOx_per_energy': 0.1,
                         'NOX_per_energy_unit': 'yy',

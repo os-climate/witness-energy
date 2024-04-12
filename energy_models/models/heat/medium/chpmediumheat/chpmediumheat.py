@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CHPMediumHeat(mediumheattechno):
@@ -39,7 +40,7 @@ class CHPMediumHeat(mediumheattechno):
     def compute_production(self):
         # CO2 production
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
+                                                                                            GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[

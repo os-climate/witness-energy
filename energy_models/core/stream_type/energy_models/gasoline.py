@@ -27,7 +27,7 @@ class Gasoline(EnergyType):
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
                         # [Accessed 12/12/2021].
                         # https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        'CO2_per_use': 3.60,  # before 15/12 : 3.6, # 3.15 + refinery
+                        GlossaryEnergy.CO2PerUse: 3.60,  # before 15/12 : 3.6, # 3.15 + refinery
                         'CO2_per_use_unit': 'kg/kg',
                         'NOx_per_energy': 0.1,
                         'NOX_per_energy_unit': 'yy',

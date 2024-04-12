@@ -44,7 +44,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
     def compute_production(self):
         # CO2 production
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
+                                                                                            GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[

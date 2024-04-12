@@ -463,9 +463,9 @@ class Study(EnergyStudyManager):
     def get_input_value_from_agriculture_mix(self):
         agri_mix_name = "AgricultureMix"
 
-        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "N2O_per_use": 5.34e-5})
-        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CH4_per_use": 0.0})
-        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277})
+        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5})
+        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0})
+        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277})
 
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
         energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})

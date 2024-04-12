@@ -67,7 +67,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.CO2_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
             self.energy_production[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                     'value']
@@ -122,7 +122,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         for energy in self.energy_list:
             if energy == GlossaryEnergy.biomass_dry:
-                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
@@ -131,7 +131,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                         energy]
 
             else:
-                inputs_dict[f'{self.name}.{self.model_name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
@@ -150,9 +150,9 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         coupled_inputs = [
-            f'{self.name}.{self.model_name}.{energy}.CO2_per_use' for energy in self.energy_list if
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2PerUse}' for energy in self.energy_list if
             energy != GlossaryEnergy.biomass_dry]
-        # coupled_inputs.append(f'{self.name}.{self.agriculture_mix_name}.CO2_per_use')
+        # coupled_inputs.append(f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.CO2PerUse}')
         coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
                            f'{self.name}.CO2_emissions_by_use_sinks']
 
@@ -199,7 +199,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         }
         for energy in self.energy_list:
             if energy == GlossaryEnergy.biomass_dry:
-                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
@@ -208,7 +208,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                         energy]
 
             else:
-                inputs_dict[f'{self.name}.{self.model_name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]

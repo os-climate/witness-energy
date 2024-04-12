@@ -56,7 +56,7 @@ class Amine(CCTechno):
                                                                                         self.production_detailed[
                                                                                             f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                                         Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
+                                                                                            GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value']
 

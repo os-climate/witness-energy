@@ -38,7 +38,7 @@ class DirectAirCaptureTechno(CCTechno):
                                                                                         self.production_detailed[
                                                                                             f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                                         Fossil.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
+                                                                                            GlossaryEnergy.CO2PerUse] / \
                                                                                         Fossil.data_energy_dict[
                                                                                             'calorific_value']
     def compute_consumption(self):

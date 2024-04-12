@@ -46,9 +46,9 @@ class EnergyDiscipline(StreamDiscipline):
 
     DESC_OUT = {
         GlossaryEnergy.CO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'CO2_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'CH4_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'N2O_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'}}
+        GlossaryEnergy.CO2PerUse: GlossaryEnergy.CO2PerUseDf,
+        GlossaryEnergy.CH4PerUse: GlossaryEnergy.CH4PerUseDf,
+        GlossaryEnergy.N2OPerUse: GlossaryEnergy.N2OPerUseDf}
 
     DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
@@ -251,14 +251,14 @@ class EnergyDiscipline(StreamDiscipline):
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
         co2_per_use = self.get_sosdisc_outputs(
-            'CO2_per_use')
+            GlossaryEnergy.CO2PerUse)
 
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
             year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
             emission_list = techno_emissions[technology].values + \
-                            co2_per_use['CO2_per_use']
+                            co2_per_use[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'lines')
             new_chart.series.append(serie)
@@ -275,7 +275,7 @@ class EnergyDiscipline(StreamDiscipline):
         technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         co2_per_use = self.get_sosdisc_outputs(
-            'CO2_per_use')
+            GlossaryEnergy.CO2PerUse)
 
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_production = self.get_sosdisc_inputs(
@@ -291,7 +291,7 @@ class EnergyDiscipline(StreamDiscipline):
                 year_list, emission_list.tolist(), technology, 'bar')
             new_chart.series.append(serie)
 
-        co2_per_use = co2_per_use['CO2_per_use'].values * \
+        co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse].values * \
                       energy_production[self.energy_name].values * \
                       scaling_factor_energy_production
         serie = InstanciatedSeries(

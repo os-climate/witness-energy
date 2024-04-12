@@ -30,12 +30,12 @@ class BiomassDry(EnergyType):
                         # http://repo-desa.inta.gob.ar/xmlui/bitstream/handle/20.500.12123/1303/INTA_CRPatagoniaNorte-EEABariloche_WarrenRaffa_D_How_does_crop_residue_removal_affect_soil.pdf?sequence=3
                         # The paper says 42.5% of carbon in biomass meaning
                         # 0.425g of C in 1 kg of biomass meaning in term of CO2
-                        'CO2_per_use': 0.425 * 44.01 / 12.0,
+                        GlossaryEnergy.CO2PerUse: 0.425 * 44.01 / 12.0,
                         'CO2_per_use_unit': 'kg/kg',
                         # Bray & al : Global emissions of NH3, NOx, and N2O from biomass burning and the impact of climate change
                         # https://www.tandfonline.com/doi/epub/10.1080/10962247.2020.1842822?needAccess=true
                         # 0.3 g/kg
-                        'N2O_per_use': 0.3e-3,
+                        GlossaryEnergy.N2OPerUse: 0.3e-3,
                         'N2O_per_use_unit': 'kg/kg',
                         # Whittaker, C., Macalpine, W., Yates, N.E. et al.
                         # Dry Matter Losses and Methane Emissions During Wood

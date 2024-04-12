@@ -345,14 +345,14 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
                 len(carbon_emissions[GlossaryEnergy.Years]))
-            if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+            if GlossaryEnergy.CO2PerUse in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             for emission_type in carbon_emissions:
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
@@ -402,7 +402,7 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
         execution_engine, namespace)
     technologies_list = list(multilevel_df.loc[energy_name].index.values)
     other_emission_type = [col for col in multilevel_df.columns if col not in [
-        'energy', 'technology', 'production', 'CO2_from_production', 'CO2_per_use', 'CO2_after_use']]
+        'energy', 'technology', 'production', 'CO2_from_production', GlossaryEnergy.CO2PerUse, 'CO2_after_use']]
     label_col1 = ['CO2 from production', 'CO2 per use'] + other_emission_type
     label_col2 = technologies_list
     label_col3 = [f'Total CO2 emissions for {energy_name}', ]
@@ -430,14 +430,14 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
             CO2_from_production = np.mean(multilevel_df.loc[(
                 energy_name, technology)]['CO2_from_production'])
             CO2_per_use = np.mean(multilevel_df.loc[(
-                energy_name, technology)]['CO2_per_use'])
+                energy_name, technology)][GlossaryEnergy.CO2PerUse])
             CO2_after_use = np.mean(multilevel_df.loc[(
                 energy_name, technology)]['CO2_after_use'])
             # total
             CO2_from_production_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_from_production'] *
                                              multilevel_df.loc[(energy_name, technology)]['production']) + \
                                       1e-20
-            CO2_per_use_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_per_use'] *
+            CO2_per_use_tot = np.sum(multilevel_df.loc[(energy_name, technology)][GlossaryEnergy.CO2PerUse] *
                                      multilevel_df.loc[(energy_name, technology)]['production']) + \
                               1e-20
             CO2_after_use_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_after_use'] *
@@ -527,14 +527,14 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                 CO2_from_production = multilevel_df.loc[(
                     energy_name, technology)]['CO2_from_production'][i_year]
                 CO2_per_use = multilevel_df.loc[(
-                    energy_name, technology)]['CO2_per_use'][i_year]
+                    energy_name, technology)][GlossaryEnergy.CO2PerUse][i_year]
                 CO2_after_use = multilevel_df.loc[(
                     energy_name, technology)]['CO2_after_use'][i_year]
                 # total
                 CO2_from_production_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_from_production'] *
                                            multilevel_df.loc[(energy_name, technology)]['production'])[i_year] + \
                                           1e-20
-                CO2_per_use_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_per_use'] *
+                CO2_per_use_tot = (multilevel_df.loc[(energy_name, technology)][GlossaryEnergy.CO2PerUse] *
                                    multilevel_df.loc[(energy_name, technology)]['production'])[i_year] + \
                                   1e-20
                 CO2_after_use_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_after_use'] *
@@ -654,7 +654,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     # techno
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
     columns = ['production', 'CO2_from_production',
-               'CO2_per_use', 'CO2_after_use']
+               GlossaryEnergy.CO2PerUse, 'CO2_after_use']
     # Gather all the possible emission types
     other_emission_type = []
     for energy in energy_list:
@@ -688,14 +688,14 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
                 len(carbon_emissions[GlossaryEnergy.Years]))
-            if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+            if GlossaryEnergy.CO2PerUse in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             CO2_from_other_consumption = dict(
                 zip([f'CO2_from_{other_emission}_consumption' for other_emission in other_emission_type],
                     [np.zeros(len(years)) for _ in other_emission_type]))
@@ -714,7 +714,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
             columns_techno = ['energy', 'technology', 'production', 'CO2_from_production',
-                              'CO2_per_use', 'CO2_after_use'] + list(CO2_from_other_consumption.keys())
+                              GlossaryEnergy.CO2PerUse, 'CO2_after_use'] + list(CO2_from_other_consumption.keys())
             techno_df = pd.DataFrame([[energy, techno, production_techno, CO2_from_production, CO2_per_use,
                                        CO2_after_use] + list(CO2_from_other_consumption.values())],
                                      index=idx, columns=columns_techno)

@@ -45,7 +45,7 @@ class PureCarbonSS(CSTechno):
         # COnsumption is real Carbon storage (C)
         self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[
                                                                              f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                         Carbon.data_energy_dict['CO2_per_use']
+                                                                         Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """

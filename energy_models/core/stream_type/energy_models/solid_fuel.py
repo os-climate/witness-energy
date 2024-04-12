@@ -40,11 +40,11 @@ class SolidFuel(EnergyType):
                         # Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
                         # [Accessed 17 12 2021].
-                        'CO2_per_use': 2.42,
+                        GlossaryEnergy.CO2PerUse: 2.42,
                         'CO2_per_use_unit': 'kg/kg',
                         # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
                         # 0.0014 kt/PJ
-                        'N2O_per_use': 0.0014e-3 / 0.277,
+                        GlossaryEnergy.N2OPerUse: 0.0014e-3 / 0.277,
                         'N2O_per_use_unit': 'Mt/TWh',
                         'density': 1300.0,  # at atmospheric pressure and 298K
                         'density_unit': 'kg/m^3',
@@ -95,7 +95,7 @@ class SolidFuel(EnergyType):
         #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
         if ghg_type == 'CO2':
-            co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
+            co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['ironsteel_use_part'] -
                                 self.data_energy_dict_input['cement_use_part'] - self.data_energy_dict_input[
                                     'chemicals_use_part'])

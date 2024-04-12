@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiogasFired(ElectricityTechno):
@@ -79,7 +80,7 @@ class BiogasFired(ElectricityTechno):
         '''
         biogas_data = BioGas.data_energy_dict
         # kg of C02 per kWh of biogas burnt
-        biogas_co2 = biogas_data['CO2_per_use']
+        biogas_co2 = biogas_data[GlossaryEnergy.CO2PerUse]
         # Amount of biogas in kwh for 1 kwh of elec
         biogas_need = self.techno_infos_dict[f'{BioGas.name}_needs']
 

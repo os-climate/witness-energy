@@ -1151,14 +1151,14 @@ class TechnoDiscipline(SoSWrapp):
 
         CO2_per_use = np.zeros(
             len(carbon_emissions[GlossaryEnergy.Years]))
-        if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+        if GlossaryEnergy.CO2PerUse in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
             if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                 CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] / data_fuel_dict[
                                   'high_calorific_value']
             elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                 CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use']
+                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
                 carbon_emissions[GlossaryEnergy.Years].values.tolist(),
                 CO2_per_use.tolist(), f'if {self.energy_name} used', 'bar')
@@ -1198,13 +1198,13 @@ class TechnoDiscipline(SoSWrapp):
 
         CO2_per_use = np.zeros(
             len(carbon_emissions[GlossaryEnergy.Years]))
-        if 'CO2_per_use' in data_fuel_dict:
+        if GlossaryEnergy.CO2PerUse in data_fuel_dict:
             if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                 CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use']
+                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                 CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict['CO2_per_use'] * data_fuel_dict[
+                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] * data_fuel_dict[
                                   'high_calorific_value']
             serie = InstanciatedSeries(
                 carbon_emissions[GlossaryEnergy.Years].values.tolist(),
