@@ -130,7 +130,6 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax',
                                      f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.TargetProductionConstraintValue}'
                                      ])
-        self.override_dump_jacobian = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
         '''
         For unknown reasons, the test does not pass on the platform (Tekton) but passes locally.
@@ -151,6 +150,5 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                 discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                                 local_data=self.disc.local_data,
                                 inputs=inputs_names, outputs=energy_mix_output)
-            self.override_dump_jacobian = False
             path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energy_mix_co2_tax.pkl')
             os.remove(path_pickle)

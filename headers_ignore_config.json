@@ -18,9 +18,13 @@
         "zip",
         "rst",
         "ini",
-        "coveragerc"
+        "coveragerc",
+        "yaml",
+        "bat"
     ],
     "files_to_ignore": [
+        ".readthedocs",
+        "docs/Makefile",
         "default_process_rights.yaml"
     ],
     "airbus_rev_commit": "37fb4ae"
