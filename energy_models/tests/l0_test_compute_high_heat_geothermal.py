@@ -44,7 +44,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           GlossaryEnergy.electricity: np.ones(len(years)) * 0.0,
+                                           GlossaryEnergy.electricity: np.ones(len(years)) * 20.0,
                                            GlossaryEnergy.biomass_dry: np.ones(len(years)) * 45.0,
                                            })
 

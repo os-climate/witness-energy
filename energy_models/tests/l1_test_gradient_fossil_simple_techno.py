@@ -39,6 +39,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
+        self.override_dump_jacobian = True
         self.energy_name = 'FossilSimpleTechno'
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
