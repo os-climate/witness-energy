@@ -72,7 +72,7 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
                                                                                                 f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
 
         naturaloil_data = NaturalOil.data_energy_dict
-        self.consumption_detailed[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[
+        self.consumption_detailed[f'{NaturalOil.name} ({self.mass_unit})'] = self.cost_details[
                                                                                            f'{NaturalOil.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \

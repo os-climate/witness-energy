@@ -65,7 +65,7 @@ class Transesterification(BioDieselTechno):
                                                                                       f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
         naturaloil_data = NaturalOil.data_energy_dict
         naturaloil_calorific_value = naturaloil_data['calorific_value']
-        self.consumption_detailed[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[
+        self.consumption_detailed[f'{NaturalOil.name} ({self.mass_unit})'] = self.cost_details[
                                                                                            f'{NaturalOil.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{BioDiesel.name} ({self.product_energy_unit})'] * \
