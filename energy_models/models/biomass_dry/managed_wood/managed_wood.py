@@ -86,11 +86,6 @@ class ManagedWood(BiomassDryTechno):
                                                                                         self.production_detailed[
                                                                                             f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
-                                                                      self.data_energy_dict['high_calorific_value'] * \
-                                                                      self.production_detailed[
-                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
-
     def compute_price(self):
         prices = BiomassDryTechno.compute_price(self)
         managed_price = deepcopy(self.cost_details[self.name])

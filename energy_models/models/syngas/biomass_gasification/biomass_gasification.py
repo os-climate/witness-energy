@@ -19,6 +19,7 @@ import numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -26,6 +27,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class BiomassGasification(SyngasTechno):
     syngas_COH2_ratio = 26.0 / 31.0 * 100.0  # in %
+
+    def compute_resources_needs(self):
+        self.cost_details[f'{ResourceGlossary.WaterResource}_needs'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
+                                                                        self.data_energy_dict['calorific_value']
 
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
@@ -52,8 +57,3 @@ class BiomassGasification(SyngasTechno):
                                                                                            f'{BiomassDry.name}_needs'] * \
                                                                                        self.production_detailed[
                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
-                                                                        self.data_energy_dict['calorific_value'] * \
-                                                                        self.production_detailed[
-                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
-

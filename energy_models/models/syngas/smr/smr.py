@@ -91,8 +91,3 @@ class SMR(SyngasTechno):
                                                                                         self.production_detailed[
                                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[
-                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                        self.cost_details['efficiency']
-

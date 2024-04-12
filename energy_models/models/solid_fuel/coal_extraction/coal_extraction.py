@@ -91,10 +91,3 @@ class CoalExtraction(SolidFuelTechno):
         # self.consumption[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
         #     self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
         #     self.cost_details['efficiency']  # in kWH
-
-        # Coal Consumption
-        self.consumption_detailed[f'{self.COAL_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[
-                                                                                         f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                     self.cost_details['efficiency'] / \
-                                                                                     SolidFuel.data_energy_dict[
-                                                                                         'calorific_value']  # in Mt

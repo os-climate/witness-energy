@@ -49,10 +49,6 @@ class Pelletizing(SolidFuelTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-        #      self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']) / \
-        #       self.techno_infos_dict['efficiency']
-
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \

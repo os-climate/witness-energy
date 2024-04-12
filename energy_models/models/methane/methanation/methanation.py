@@ -49,11 +49,6 @@ class Methanation(MethaneTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        # Consumption
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f'{CO2.name}_needs'] * \
-                                                                                self.production_detailed[
-                                                                                    f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
-
         self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                                 f'{GaseousHydrogen.name}_needs'] * \
                                                                                             self.production_detailed[

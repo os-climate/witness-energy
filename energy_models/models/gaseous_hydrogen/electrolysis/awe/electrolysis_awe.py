@@ -98,8 +98,3 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] / \
-                                                                        self.data_energy_dict['calorific_value'] * \
-                                                                        self.production_detailed[
-                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg

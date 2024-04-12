@@ -71,9 +71,6 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
                                                                                             self.production_detailed[
                                                                                                 f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
 
-        self.consumption_detailed[f'{NaturalOil.name} ({self.mass_unit})'] = self.cost_details[f'{NaturalOil.name}_needs'] * \
-                                                                                       self.production_detailed[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
-
     def get_theoretical_natural_oil_needs(self):
         """
        oil + 6H2 = 3fuel + 3C02 (hydrogenation + decarboxylation)

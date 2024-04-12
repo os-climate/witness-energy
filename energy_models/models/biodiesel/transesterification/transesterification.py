@@ -59,21 +59,6 @@ class Transesterification(BioDieselTechno):
                                                                                             f'{Electricity.name}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{BioDiesel.name} ({self.product_energy_unit})'] # in kWH
-        self.consumption_detailed[f'{SodiumHydroxide.name} ({self.mass_unit})'] = self.cost_details[
-                                                                                      f'{SodiumHydroxide.name}_needs'] * \
-                                                                                  self.production_detailed[
-                                                                                      f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
-        naturaloil_data = NaturalOil.data_energy_dict
-        naturaloil_calorific_value = naturaloil_data['calorific_value']
-        self.consumption_detailed[f'{NaturalOil.name} ({self.mass_unit})'] = self.cost_details[
-                                                                                           f'{NaturalOil.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{BioDiesel.name} ({self.product_energy_unit})'] * \
-                                                                                       naturaloil_calorific_value
-
-        self.consumption_detailed[f'{Methanol.name} ({self.mass_unit})'] = self.cost_details[f'{Methanol.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
-
     def get_theoretical_methanol_needs(self):
         """
         Get methanol needs in kg methanol / kWh biodiesel

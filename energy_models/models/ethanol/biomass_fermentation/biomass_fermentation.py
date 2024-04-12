@@ -67,9 +67,6 @@ class BiomassFermentation(EthanolTechno):
                                                                                        self.production_detailed[
                                                                                            f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                                        self.cost_details['efficiency']
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[
-                                                                            f'{Ethanol.name} ({self.product_energy_unit})']
 
     def get_theoretical_biomass_needs(self):
         """

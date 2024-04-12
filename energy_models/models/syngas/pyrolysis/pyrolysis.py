@@ -54,17 +54,3 @@ class Pyrolysis(SyngasTechno):
                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                   self.techno_infos_dict['bio_oil_yield'] / \
                                                                   self.techno_infos_dict['syngas_yield']
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        self.consumption_detailed[f'{ResourceGlossary.WoodResource} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] * \
-                                                                self.production_detailed[
-                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['medium_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in TWH

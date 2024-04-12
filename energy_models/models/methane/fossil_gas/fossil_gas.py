@@ -63,9 +63,3 @@ class FossilGas(MethaneTechno):
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
                                                                                             f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
-        self.consumption_detailed[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[
-                                                                                                f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                            self.cost_details[
-                                                                                                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt

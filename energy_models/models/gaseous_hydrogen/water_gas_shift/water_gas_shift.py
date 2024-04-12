@@ -560,9 +560,6 @@ class WGS(GaseousHydrogenTechno):
         self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
                                                                                    self.production_detailed[
                                                                                        f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']   # in kg
-
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

@@ -61,11 +61,6 @@ class CoalGen(ElectricityTechno):
                                                                                           'solid_fuel_needs'] * \
                                                                                       self.production_detailed[
                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[
-                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
-
-
 
     def compute_consumption_and_installed_power(self):
         """

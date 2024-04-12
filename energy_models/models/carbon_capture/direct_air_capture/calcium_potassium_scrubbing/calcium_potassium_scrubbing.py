@@ -66,13 +66,6 @@ class CalciumPotassium(CCTechno):
                                                                             self.production_detailed[
                                                                                 f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{ResourceGlossary.CalciumResource} ({self.mass_unit})'] = self.cost_details[f'{ResourceGlossary.CalciumResource}_needs'] * \
-                                                                   self.production_detailed[
-                                                                       f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        self.consumption_detailed[f'{ResourceGlossary.PotassiumResource} ({self.mass_unit})'] = self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs'] * self.production_detailed[
-                                                                         f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
     def compute_potassium_need(self):
         """
         'reaction': 'CO2 + 2KOH --> H2O + K2CO3'

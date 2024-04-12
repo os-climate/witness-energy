@@ -187,6 +187,7 @@ class ResourceGlossary:
         GlossaryEnergy.SMR: [WaterResource],
         GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource],
         GlossaryEnergy.HefaDeoxygenation: [NaturalOilResource],
+        GlossaryEnergy.BiomassGasification: [WaterResource],
     }
 
     # dictionnary of energies used by each techno

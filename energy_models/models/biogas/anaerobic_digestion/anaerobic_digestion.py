@@ -41,10 +41,6 @@ class AnaerobicDigestion(BioGasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        # Consumption
-        self.consumption_detailed[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details[f"{WetBiomass.name}_needs"] * \
-                                                                             self.production_detailed[
-                                                                                 f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                         self.production_detailed[
