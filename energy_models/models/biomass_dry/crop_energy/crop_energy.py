@@ -185,3 +185,6 @@ class CropEnergy(BiomassDryTechno):
                                        self.techno_infos_dict['density_per_ha']
 
         return dlanduse_dinvest
+
+    def compute_resources_needs(self):
+        self.cost_details[f'{CO2.name}_needs'] = -self.techno_infos_dict['CO2_from_production'] / self.data_energy_dict['high_calorific_value']

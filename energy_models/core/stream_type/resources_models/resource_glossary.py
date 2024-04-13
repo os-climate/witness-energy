@@ -188,6 +188,7 @@ class ResourceGlossary:
         GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource],
         GlossaryEnergy.HefaDeoxygenation: [NaturalOilResource],
         GlossaryEnergy.BiomassGasification: [WaterResource],
+        GlossaryEnergy.CropEnergy: [CO2Resource]
     }
 
     # dictionnary of energies used by each techno
