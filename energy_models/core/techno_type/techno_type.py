@@ -301,7 +301,7 @@ class TechnoType:
 
     def compute_energies_consumption_generic(self):
         for energy in self.energies_used_for_production:
-            self.consumption_detailed[f'{energy} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{energy} (TWh)'] = \
                 self.cost_details[f"{energy}_needs"] * \
                 self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
 
