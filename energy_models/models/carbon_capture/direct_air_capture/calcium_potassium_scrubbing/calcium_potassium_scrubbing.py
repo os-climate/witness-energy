@@ -50,22 +50,6 @@ class CalciumPotassium(CCTechno):
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-
-        self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                self.production_detailed[
-                                                                                    f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-                                                                            self.production_detailed[
-                                                                                f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
     def compute_potassium_need(self):
         """
         'reaction': 'CO2 + 2KOH --> H2O + K2CO3'

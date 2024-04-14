@@ -40,18 +40,6 @@ class BiogasFired(ElectricityTechno):
             self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] - \
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                       f'{BioGas.name}_needs'] * \
-                                                                                   self.production_detailed[
-                                                                                       f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment

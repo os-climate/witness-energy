@@ -20,7 +20,7 @@ import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization import BiomassBF
+from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization import BiomassBuryingFossilization
 
 
 class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
@@ -106,5 +106,5 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassBF(self.techno_name)
+        self.techno_model = BiomassBuryingFossilization(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

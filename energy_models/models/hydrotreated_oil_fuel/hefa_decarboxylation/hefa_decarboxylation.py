@@ -54,23 +54,6 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
                                                                                    f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
                                                                                self.cost_details['efficiency']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
-
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']  # / \
-
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                                f'{GaseousHydrogen.name}_needs'] * \
-                                                                                            self.production_detailed[
-                                                                                                f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
-
     def get_theoretical_natural_oil_needs(self):
         """
        oil + 6H2 = 3fuel + 3C02 (hydrogenation + decarboxylation)

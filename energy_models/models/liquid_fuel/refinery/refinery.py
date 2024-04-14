@@ -90,26 +90,6 @@ class Refinery(LiquidFuelTechno):
                                                                                   self.production_detailed[
                                                                                       f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-
-        liquid_fuel is the total production
-        the break down is made with self.production[GlossaryEnergy.kerosene] ... ect 
-        """
-
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
-                                                                                            self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWh
-
-        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
-        #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
-
     def compute_prod_from_invest(self, construction_delay):
         '''
         Compute the energy production of a techno from investment in TWh

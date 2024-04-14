@@ -502,12 +502,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         self.production = self.production_detailed.fillna(0.0)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_energies_consumption(self):
         # Compute elec demand from WGS
         elec_needs_wgs = self.costs_details_sg_techno[f'{GlossaryEnergy.electricity}_needs'] * \
                          self.cost_details['syngas_needs_for_FT'] / \

@@ -50,15 +50,6 @@ class Transesterification(BioDieselTechno):
             f'{BioDiesel.name} ({self.product_energy_unit})'] / \
                                                                           self.data_energy_dict['calorific_value']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{BioDiesel.name} ({self.product_energy_unit})'] # in kWH
     def get_theoretical_methanol_needs(self):
         """
         Get methanol needs in kg methanol / kWh biodiesel

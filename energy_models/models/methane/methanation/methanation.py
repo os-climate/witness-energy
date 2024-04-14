@@ -43,17 +43,6 @@ class Methanation(MethaneTechno):
                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                                f'{GaseousHydrogen.name}_needs'] * \
-                                                                                            self.production_detailed[
-                                                                                                f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
-
     def get_h2o_production(self):
         """
         Get water produced when producing 1kWh of CH4

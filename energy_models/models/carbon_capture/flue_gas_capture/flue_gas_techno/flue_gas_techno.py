@@ -50,11 +50,7 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
+    def compute_energies_consumption(self):
         # Consumption
         self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.renewable}_needs'] * \
                                                                               self.production_detailed[

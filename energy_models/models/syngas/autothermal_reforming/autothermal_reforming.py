@@ -98,21 +98,6 @@ class AutothermalReforming(SyngasTechno):
                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-                                                                                    self.production_detailed[
-                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-        #     self.cost_details['efficiency']
-
     def get_h2o_production(self):
         """
         Get water produced when producing 1kg of Syngas

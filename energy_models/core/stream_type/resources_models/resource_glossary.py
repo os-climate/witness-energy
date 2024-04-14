@@ -15,6 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -253,6 +254,7 @@ class ResourceGlossary:
         GlossaryEnergy.SMR: [GlossaryEnergy.electricity, GlossaryEnergy.methane],
         GlossaryEnergy.AnimalManure: [GlossaryEnergy.electricity],
         GlossaryEnergy.WetCropResidues: [GlossaryEnergy.electricity],
+        GlossaryEnergy.Geothermal: [GlossaryEnergy.mediumtemperatureheat_energyname]
     }
 
     ResourcesList = [UraniumResource,

@@ -287,19 +287,13 @@ class TechnoType:
         '''
         self.data_energy_dict = inputs_dict['data_fuel_dict']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
     def compute_resource_consumption_generic(self):
         for resource in self.resources_used_for_production:
             self.consumption_detailed[f'{resource} ({self.mass_unit})'] =\
                 self.cost_details[f"{resource}_needs"] * \
                 self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
 
-    def compute_energies_consumption_generic(self):
+    def compute_energies_consumption(self):
         for energy in self.energies_used_for_production:
             self.consumption_detailed[f'{energy} (TWh)'] = \
                 self.cost_details[f"{energy}_needs"] * \
@@ -1581,8 +1575,8 @@ class TechnoType:
         # -- compute informations
         self.compute_price()
         self.compute_primary_energy_production()
-        self.compute_consumption()
         self.compute_resource_consumption_generic()
+        self.compute_energies_consumption()
         self.compute_production()
         self.compute_primary_installed_power()
         self.compute_consumption_and_installed_power()

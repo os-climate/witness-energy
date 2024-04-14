@@ -42,20 +42,3 @@ class Pelletizing(SolidFuelTechno):
                                                                                             f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value']
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
-
-        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           f'{BiomassDry.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']

@@ -94,20 +94,6 @@ class CoElectrolysis(SyngasTechno):
                                                                           self.production_detailed[
                                                                               f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = \
-            self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-            self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.consumption[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
-        #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-
     def get_h2o_production(self):
         """
         Get water produced when producing 1kg of Syngas

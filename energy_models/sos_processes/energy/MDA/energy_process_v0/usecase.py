@@ -582,7 +582,6 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.TransportDemandValue: np.linspace(33600.0, 30000.0, len(self.years)),
         })
 
-
         if not self.energy_invest_input_in_abs_value:
             # if energy investments are expressed in percentage, the new corresponding inputs must be defined
             invest_percentage_gdp = pd.DataFrame(
@@ -795,5 +794,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

@@ -38,18 +38,6 @@ class HeatPump(highheattechno):
             self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
-                                                                                        self.cost_details['efficiency']
-
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.techno_infos_dict['mean_temperature']
         output_temperature = self.techno_infos_dict['output_temperature']

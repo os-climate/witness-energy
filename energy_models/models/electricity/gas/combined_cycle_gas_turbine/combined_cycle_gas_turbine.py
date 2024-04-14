@@ -41,18 +41,6 @@ class CCGasT(ElectricityTechno):
         self.compute_ch4_emissions()
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                        f'{Methane.name}_needs'] * \
-                                                                                    self.production_detailed[
-                                                                                        f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment

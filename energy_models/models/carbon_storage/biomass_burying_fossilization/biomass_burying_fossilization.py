@@ -20,13 +20,13 @@ from energy_models.core.techno_type.base_techno_models.carbon_storage_techno imp
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class BiomassBF(CSTechno):
+class BiomassBuryingFossilization(CSTechno):
 
     def compute_capital_recovery_factor(self, data_config):
         return 1
 
 
-    def compute_consumption(self):
+    def compute_energies_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 

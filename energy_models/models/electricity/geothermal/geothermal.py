@@ -18,6 +18,7 @@ limitations under the License.
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Geothermal(ElectricityTechno):
@@ -47,15 +48,6 @@ class Geothermal(ElectricityTechno):
 
         return copper_need
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        self.consumption_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] = ((1 -
-                                                                                                    self.techno_infos_dict[
-                                                                                                        'efficiency']) *
-                                                                                                   self.production_detailed[
-                                                                                                       f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
-                                                                                                  self.techno_infos_dict[
-                                                                                                      'efficiency']
+    def compute_other_energies_needs(self):
+        self.cost_details[f'{GlossaryEnergy.mediumtemperatureheat_energyname}_needs'] = ((1 - self.techno_infos_dict['efficiency']) /
+                                                                                         self.techno_infos_dict['efficiency'])

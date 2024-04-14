@@ -80,8 +80,7 @@ class WGSPriceTestCase(unittest.TestCase):
 
         self.syngas_ratio = np.ones(len(years)) * 100.0
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34.,
-                                                    # price to be updated for
-                                                    # CO2
+                                                    
                                                     'CoElectrolysis': np.ones(len(years)) * 60.,
                                                     'BiomassGasification': np.ones(len(years)) * 50.
                                                     })

@@ -74,7 +74,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     lowtemperatureheat = "lowtemperatureheat"
     mediumtemperatureheat = "mediumtemperatureheat"
     hightemperatureheat = "hightemperatureheat"
-
+    mediumtemperatureheat_energyname = f"{heat}.{mediumtemperatureheat}"
     AllEnergies = [biogas,
                    biodiesel,
                    biomass_dry,

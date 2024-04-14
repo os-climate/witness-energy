@@ -35,12 +35,7 @@ class PureCarbonSS(CSTechno):
 
     
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_energies_consumption(self):
         # Consumption
         # Production is gaseous CO2 equivalent
         # COnsumption is real Carbon storage (C)

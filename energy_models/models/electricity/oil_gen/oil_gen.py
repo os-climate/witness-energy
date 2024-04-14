@@ -52,15 +52,6 @@ class OilGen(ElectricityTechno):
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-        # Consumption
-        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           f'{LiquidFuel.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
