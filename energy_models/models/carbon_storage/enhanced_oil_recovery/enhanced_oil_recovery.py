@@ -15,19 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class EnhancedOilRecovery(CSTechno):
-
-    def compute_capital_recovery_factor(self, data_config):
-        return 1
-
-    
-
-    def compute_energies_consumption(self):
-        # Consumption
-
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
-            f'{CSTechno.energy_name} ({self.product_energy_unit})']
+    pass

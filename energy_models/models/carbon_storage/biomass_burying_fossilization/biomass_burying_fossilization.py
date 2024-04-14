@@ -21,11 +21,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassBuryingFossilization(CSTechno):
-
-    def compute_capital_recovery_factor(self, data_config):
-        return 1
-
-
     def compute_energies_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment

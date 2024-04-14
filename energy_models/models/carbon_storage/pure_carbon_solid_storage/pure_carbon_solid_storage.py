@@ -18,7 +18,6 @@ limitations under the License.
 import pandas as pd
 
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -29,11 +28,6 @@ class PureCarbonSS(CSTechno):
     def __init__(self, name):
         super().__init__(name)
         self.carbon_to_be_stored_constraint = None
-
-    def compute_capital_recovery_factor(self, data_config):
-        return 1
-
-    
 
     def compute_energies_consumption(self):
         # Consumption
