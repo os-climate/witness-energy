@@ -460,8 +460,7 @@ class TechnoType:
         self.cost_details[GlossaryEnergy.InvestValue] = compute_func_with_exp_min(
             invest_inputs, self.min_value_invest)
 
-        self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
-            self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
+        self.compute_capex()
 
         self.capital_recovery_factor = self.compute_capital_recovery_factor(self.techno_infos_dict)
 
@@ -605,26 +604,27 @@ class TechnoType:
                     is_invest_before_year = True
         return is_invest_before_year
 
-    def compute_capex(self, invest_list, data_config):
+    def compute_capex(self):
         """
         Compute Capital expenditures (immobilisations)
         depending on the demand on the technology
         """
-        expo_factor = self.compute_expo_factor(data_config)
-        capex_init = self.check_capex_unity(data_config)
+        invests = self.cost_details[GlossaryEnergy.InvestValue].values
+        expo_factor = self.compute_expo_factor(self.techno_infos_dict)
+        capex_init = self.check_capex_unity(self.techno_infos_dict)
         if expo_factor != 0.0:
             capacity_factor_list = None
-            if 'capacity_factor_at_year_end' in data_config \
-                    and 'capacity_factor' in data_config:
-                capacity_factor_list = np.linspace(data_config['capacity_factor'],
-                                                   data_config['capacity_factor_at_year_end'],
-                                                   len(invest_list))
+            if 'capacity_factor_at_year_end' in self.techno_infos_dict \
+                    and 'capacity_factor' in self.techno_infos_dict:
+                capacity_factor_list = np.linspace(self.techno_infos_dict['capacity_factor'],
+                                                   self.techno_infos_dict['capacity_factor_at_year_end'],
+                                                   len(invests))
 
             capex_calc_list = []
             invest_sum = self.initial_production * capex_init
             capex_year = capex_init
 
-            for i, invest in enumerate(invest_list):
+            for i, invest in enumerate(invests):
 
                 # below 1M$ investments has no influence on learning rate for capex
                 # decrease
@@ -636,7 +636,7 @@ class TechnoType:
                     if capacity_factor_list is not None:
                         try:
                             ratio_invest = ((invest_sum + invest) / invest_sum *
-                                            (capacity_factor_list[i] / data_config['capacity_factor'])) \
+                                            (capacity_factor_list[i] / self.techno_infos_dict['capacity_factor'])) \
                                            ** (-expo_factor)
 
                         except:
@@ -671,8 +671,8 @@ class TechnoType:
                 capex_calc_list.append(capex_year)
                 invest_sum += invest
 
-            if 'maximum_learning_capex_ratio' in data_config:
-                maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
+            if 'maximum_learning_capex_ratio' in self.techno_infos_dict:
+                maximum_learning_capex_ratio = self.techno_infos_dict['maximum_learning_capex_ratio']
             else:
                 # if maximum learning_capex_ratio is not specified, the learning
                 # rate on capex ratio cannot decrease the initial capex mor ethan
@@ -682,9 +682,9 @@ class TechnoType:
             capex_calc_list = capex_init * (maximum_learning_capex_ratio + (
                     1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
         else:
-            capex_calc_list = capex_init * np.ones(len(invest_list))
+            capex_calc_list = capex_init * np.ones(len(invests))
 
-        return capex_calc_list.tolist()
+        self.cost_details[f'Capex_{self.name}'] = capex_calc_list.tolist()
 
     def compute_dcapex_dinvest(self, invest_list, data_config):
         """
@@ -1169,8 +1169,6 @@ class TechnoType:
                 f'distrib_prod ({self.product_energy_unit})': f'{self.energy_name} ({self.product_energy_unit})'}).fillna(
             0.0)
 
-        self.compute_land_use()
-
     def compute_primary_installed_power(self):
 
         if GlossaryEnergy.ConstructionDelay in self.techno_infos_dict:
@@ -1575,6 +1573,7 @@ class TechnoType:
         # -- compute informations
         self.compute_price()
         self.compute_primary_energy_production()
+        self.compute_land_use()
         self.compute_resource_consumption_generic()
         self.compute_energies_consumption()
         self.compute_production()

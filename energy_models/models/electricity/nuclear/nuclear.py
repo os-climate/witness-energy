@@ -109,13 +109,14 @@ class Nuclear(ElectricityTechno):
         waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
         return waste_disposal_levy
 
-    def compute_capex(self, invest_list, data_config):
+    def compute_capex(self):
         """
         overloads check_capex_unity that return the capex in $/MW to add the decommissioning cost
         decommissioning_cost unit is $/kW
         """
-        expo_factor = self.compute_expo_factor(data_config)
-        capex_init = self.check_capex_unity(data_config)
+        invest_list = self.cost_details[GlossaryEnergy.InvestValue].values
+        expo_factor = self.compute_expo_factor(self.techno_infos_dict)
+        capex_init = self.check_capex_unity(self.techno_infos_dict)
 
         # add decommissioning_cost
         capex_init += self.techno_infos_dict['decommissioning_cost'] * 1.0e3 \
@@ -124,10 +125,10 @@ class Nuclear(ElectricityTechno):
 
         if expo_factor != 0.0:
             capacity_factor_list = None
-            if 'capacity_factor_at_year_end' in data_config \
-                    and 'capacity_factor' in data_config:
-                capacity_factor_list = np.linspace(data_config['capacity_factor'],
-                                                   data_config['capacity_factor_at_year_end'],
+            if 'capacity_factor_at_year_end' in self.techno_infos_dict \
+                    and 'capacity_factor' in self.techno_infos_dict:
+                capacity_factor_list = np.linspace(self.techno_infos_dict['capacity_factor'],
+                                                   self.techno_infos_dict['capacity_factor_at_year_end'],
                                                    len(invest_list))
 
             capex_calc_list = []
@@ -146,7 +147,7 @@ class Nuclear(ElectricityTechno):
                     if capacity_factor_list is not None:
                         try:
                             ratio_invest = ((invest_sum + invest) / invest_sum *
-                                            (capacity_factor_list[i] / data_config['capacity_factor'])) \
+                                            (capacity_factor_list[i] / self.techno_infos_dict['capacity_factor'])) \
                                            ** (-expo_factor)
 
                         except:
@@ -181,8 +182,8 @@ class Nuclear(ElectricityTechno):
                 capex_calc_list.append(capex_year)
                 invest_sum += invest
 
-            if 'maximum_learning_capex_ratio' in data_config:
-                maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
+            if 'maximum_learning_capex_ratio' in self.techno_infos_dict:
+                maximum_learning_capex_ratio = self.techno_infos_dict['maximum_learning_capex_ratio']
             else:
                 # if maximum learning_capex_ratio is not specified, the learning
                 # rate on capex ratio cannot decrease the initial capex mor ethan
@@ -194,4 +195,4 @@ class Nuclear(ElectricityTechno):
         else:
             capex_calc_list = capex_init * np.ones(len(invest_list))
 
-        return capex_calc_list.tolist()
+        self.cost_details[f'Capex_{self.name}'] = capex_calc_list.to_list()
