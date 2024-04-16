@@ -27,20 +27,21 @@ class CCGasT(ElectricityTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict[f'{Methane.name}_needs']
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
                                                                                         self.production_detailed[
                                                                                             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+            self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
 
         # Consumption
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict[

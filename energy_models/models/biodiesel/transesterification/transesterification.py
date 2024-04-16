@@ -45,27 +45,16 @@ class Transesterification(BioDieselTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_theoretical_electricity_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency}
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
-        # Production
+    def compute_production(self):
         self.production_detailed[f'{Glycerol.name} ({self.mass_unit})'] = 0.12 * self.production_detailed[
             f'{BioDiesel.name} ({self.product_energy_unit})'] / \
                                                                           self.data_energy_dict['calorific_value']
 
-        # Consumption
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{Electricity.name}_needs'] * \
                                                                                         self.production_detailed[
@@ -84,22 +73,6 @@ class Transesterification(BioDieselTechno):
 
         self.consumption_detailed[f'{Methanol.name} ({self.mass_unit})'] = self.cost_details[f'{Methanol.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})']  # in kWH
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[f'{Electricity.name}_needs']
-        self.carbon_intensity[SodiumHydroxide.name] = self.resources_CO2_emissions[SodiumHydroxide.name] * self.cost_details[f'{SodiumHydroxide.name}_needs']
-        self.carbon_intensity[NaturalOil.name] = self.resources_CO2_emissions[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs']
-        self.carbon_intensity[Methanol.name] = self.resources_CO2_emissions[Methanol.name] * self.cost_details[f'{Methanol.name}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * self.cost_details[f'{Water.name}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[SodiumHydroxide.name] + \
-               self.carbon_intensity[NaturalOil.name] + self.carbon_intensity[Methanol.name] + \
-               self.carbon_intensity[Water.name]
-
 
     def get_theoretical_methanol_needs(self):
         """

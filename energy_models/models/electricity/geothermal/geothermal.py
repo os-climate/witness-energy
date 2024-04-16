@@ -47,7 +47,7 @@ class Geothermal(ElectricityTechno):
 
         return copper_need
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """

@@ -25,6 +25,10 @@ import scipy.interpolate as sc
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc import \
+    HefaDecarboxylationDiscipline
+from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc import \
+    HefaDeoxygenationDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -36,8 +40,6 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
     Hydrotreated Vegetable Oil Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_hefa_discipline_analytic_grad,
@@ -48,7 +50,8 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.energy_name = GlossaryEnergy.hydrotreated_oil_fuel
         # crude oil price : 1.3$/gallon
@@ -74,7 +77,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.8e-9
+                           ])[:len(self.years)] * 0.8e-9
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                           GlossaryEnergy.InvestValue: invest
@@ -118,8 +121,10 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(self.years) * 50.0
         })
+        techno_infos_dict = HefaDecarboxylationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -129,9 +134,11 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
+                           self.years),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -181,8 +188,10 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = HefaDeoxygenationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -191,9 +200,11 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
+                           self.years),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

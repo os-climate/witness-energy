@@ -32,7 +32,6 @@ limitations under the License.
 #     """
 #     Energy mix jacobian test class
 #     """
-#     # AbstractJacobianUnittest.DUMP_JACOBIAN = False
 #     parallel = True
 #
 #     def analytic_grad_entry(self):
@@ -365,7 +364,6 @@ limitations under the License.
 #                          f'{name}.{func_manager_name}.total_prod_h2_liquid',
 #                          f'{name}.{func_manager_name}.syngas_prod_objective',
 #                          ]
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_constraints_wrt_state_variables.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -428,7 +426,6 @@ limitations under the License.
 #
 #         outputs_names = [f'{name}.{model_name}.{GlossaryEnergy.EnergyPricesValue}',
 #                          f'{name}.{model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}']
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_output_vs_design_vars.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -487,7 +484,6 @@ limitations under the License.
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -544,7 +540,6 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         outputs_names = [f'{name}.{model_name}.energy_mean_price']
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__),
 #                             filename=f'jacobian_energy_mean_price_energy_prices_production.pkl',
 #                             discipline=disc, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
@@ -608,7 +603,6 @@ limitations under the License.
 #                              f'{name}.{func_manager_name}.primary_energies_production',
 #                              f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
 #                              f'{name}.{model_name}.energy_prices_after_tax']
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs.pkl',
 #                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -651,7 +645,6 @@ limitations under the License.
 #
 #         energy_mix_output = [f'{name}.{model_name}.energy_mean_price',
 #                              f'{name}.{model_name}.energy_prices_after_tax']
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_co2_tax.pkl',
 #                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -959,7 +952,6 @@ limitations under the License.
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list]
 #
 #         energy_mix_output = [f'{name}.{model_name}.resources_demand']
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_demand_df.pkl',
 #                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -1010,7 +1002,6 @@ limitations under the License.
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
@@ -1207,7 +1198,6 @@ limitations under the License.
 #         disc = self.ee.dm.get_disciplines_with_name(
 #             f'{name}.EnergyMix')[0]
 #
-#         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_agriculture_mix.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
@@ -1234,7 +1224,6 @@ limitations under the License.
 #
 #
 # if '__main__' == __name__:
-#     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #     cls = EnergyMixJacobianTestCase()
 #     cls.setUp()
 #     # cls.test_04_energy_mix_discipline_co2_emissions_gt()

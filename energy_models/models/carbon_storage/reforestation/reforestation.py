@@ -27,7 +27,7 @@ class Reforestation(CSTechno):
 
     
 
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 

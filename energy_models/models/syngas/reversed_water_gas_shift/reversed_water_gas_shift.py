@@ -405,32 +405,19 @@ class RWGS(SyngasTechno):
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        # get slope to use it for grad
-        syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
-        efficiency = self.compute_efficiency()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Syngas.name: np.identity(
-                    len(self.years)) * syngas_needs / efficiency[:, np.newaxis]
-                }
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \
                                                                        self.production_detailed[
                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
@@ -489,23 +476,6 @@ class RWGS(SyngasTechno):
                                                                         Syngas.name].values[:, np.newaxis]
 
         return dco2_emissions_dsyngas_ratio
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * self.cost_details['syngas_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2Resource] * \
-                                               self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"]
-
-        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            f'{CO2.name}']
 
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()

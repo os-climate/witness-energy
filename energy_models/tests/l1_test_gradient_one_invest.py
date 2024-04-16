@@ -32,8 +32,6 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
     Methanol Fuel jacobian test class
     """
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_one_invest_analytic_grad,
@@ -151,5 +149,4 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     pass

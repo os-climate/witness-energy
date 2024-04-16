@@ -27,6 +27,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.biodiesel.transesterification.transesterification_disc import TransesterificationDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -38,8 +39,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     """
     Liquid Fuel jacobian test class
     """
-
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -54,7 +53,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.years = years
         self.energy_name = GlossaryEnergy.liquid_fuel
@@ -80,7 +80,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                    0.1619200735346165,
                                                    0.16214129913260598, 0.16236574581786147,
                                                    0.16259350059915213,
-                                                   0.1628246539459331]) * 1000.0,
+                                                   0.1628246539459331])[:len(self.years)] * 1000.0,
              'CO2': 0.0,
              GlossaryEnergy.syngas: 34,
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
@@ -114,7 +114,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                5221700000.0, 5207400000.0, 5193100000.0,
                                                5178800000.0, 5164500000.0, 5150200000.0,
                                                5135900000.0, 5121600000.0, 5107300000.0,
-                                               5093000000.0]) * 1.0e-9})
+                                               5093000000.0])[:len(self.years)] * 1.0e-9})
 
         self.invest_level_negative = pd.DataFrame({GlossaryEnergy.Years: years,
                                                    GlossaryEnergy.InvestValue: -np.array(
@@ -128,7 +128,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                         5221700000.0, 5207400000.0, 5193100000.0,
                                                         5178800000.0, 5164500000.0, 5150200000.0,
                                                         5135900000.0, 5121600000.0, 5107300000.0,
-                                                        5093000000.0]) * 1.0e-9})
+                                                        5093000000.0])[:len(self.years)] * 1.0e-9})
 
         self.invest_level_negative2 = pd.DataFrame({GlossaryEnergy.Years: years,
                                                     GlossaryEnergy.InvestValue: np.array(
@@ -142,7 +142,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                          5221700000.0, 5207400000.0, 5193100000.0,
                                                          5178800000.0, 5164500000.0, 5150200000.0,
                                                          5135900000.0, 5121600000.0, 5107300000.0,
-                                                         5093000000.0]) * 1.0e-9})
+                                                         5093000000.0])[:len(self.years)] * 1.0e-9})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -153,7 +153,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.8e-9
+                           ])[:len(self.years)] * 0.8e-9
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
@@ -209,12 +209,14 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = RefineryDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -226,6 +228,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                            RefineryDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -272,8 +275,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = TransesterificationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -282,11 +287,12 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -334,8 +340,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = TransesterificationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_negative,
@@ -344,81 +352,20 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
-                                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
-
-    def test_04_transesterification_discipline_analytic_grad_negative_invest2(self):
-
-        self.name = 'Test'
-        self.model_name = GlossaryEnergy.Transesterification
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   #    'ns_biogas': f'{self.name}'
-                   'ns_biodiesel': f'{self.name}',
-                   'ns_resource': f'{self.name}'
-                   }
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_negative2,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_{self.energy_name}_{self.model_name}_negative2.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
@@ -511,7 +458,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -520,7 +466,6 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidFuelJacobianCase()
     cls.setUp()
     cls.test_05_liquid_fuel_discipline_jacobian()

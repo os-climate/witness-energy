@@ -27,6 +27,9 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
     get_static_prices
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
+from energy_models.models.methane.methanation.methanation_disc import MethanationDiscipline
+from energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc import UpgradingBiogasDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -35,8 +38,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
     """
     Methane jacobian test class
     """
-
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -52,11 +53,9 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = GlossaryEnergy.methane
         self.year_start = GlossaryEnergy.YearStartDefault
-        self.year_end = GlossaryEnergy.YearEndDefault
-        self.year_end = GlossaryEnergy.YearEndDefault
-        years = np.arange(self.year_start, self.year_end + 1)
-        self.years = years
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                     0.089236536471781, 0.08899046935409588,
                                                                     0.08874840310033885,
@@ -76,7 +75,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                                     0.0919200735346165,
                                                                     0.09214129913260598, 0.09236574581786147,
                                                                     0.09259350059915213,
-                                                                    0.0928246539459331]) * 1000.0,
+                                                                    0.0928246539459331])[:len(self.years)] * 1000.0,
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array(
                                                [0.1266023955250543, 0.12472966837635774, 0.12308937523217356,
                                                 0.12196584543238155,
@@ -92,7 +91,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                 0.12412292194034467,
                                                 0.12433514237290824, 0.12511526161029957, 0.12590456744159823,
                                                 0.1267030200703957,
-                                                0.12691667296790637, 0.12714334679576733, 0.12738215136005188]) * 1000,
+                                                0.12691667296790637, 0.12714334679576733, 0.12738215136005188])[:len(self.years)] * 1000,
                                            GlossaryEnergy.biogas: np.array(
                                                [0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                                 0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
@@ -103,15 +102,15 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                 0.03755852715493717, 0.03693979356326306, 0.03636088278590117,
                                                 0.03581750135963429, 0.03530598876014997, 0.03482320115289285,
                                                 0.03436642036567466, 0.03393328183670935, 0.033521717015978045,
-                                                0.03312990690071806, 0.032756244237772174, 0.03239930253734476]) * 1000
+                                                0.03312990690071806, 0.032756244237772174, 0.03239930253734476])[:len(self.years)] * 1000
 
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
 
-        self.invest_level_methanation = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.invest_level_methanation = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                       GlossaryEnergy.InvestValue: np.array(
                                                           [4435750000.0, 4522000000.0, 4608250000.0,
                                                            4694500000.0, 4780750000.0, 4867000000.0,
@@ -123,9 +122,9 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                            5221700000.0, 5207400000.0, 5193100000.0,
                                                            5178800000.0, 5164500000.0, 5150200000.0,
                                                            5135900000.0, 5121600000.0, 5107300000.0,
-                                                           5093000000.0]) * 1.0e-9})
+                                                           5093000000.0])[:len(self.years)] * 1.0e-9})
 
-        self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                           GlossaryEnergy.InvestValue: np.array(
                                               [4435750000.0, 4522000000.0, 4608250000.0,
                                                4694500000.0, 4780750000.0, 4867000000.0,
@@ -137,7 +136,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                5221700000.0, 5207400000.0, 5193100000.0,
                                                5178800000.0, 5164500000.0, 5150200000.0,
                                                5135900000.0, 5121600000.0, 5107300000.0,
-                                               5093000000.0]) * 1.0e-9})
+                                               5093000000.0])[:len(self.years)] * 1.0e-9})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -145,30 +144,30 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
+            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 200.0})
 
         self.resources_price = pd.DataFrame(
             columns=[GlossaryEnergy.Years, ResourceGlossary.CO2Resource, ResourceGlossary.WaterResource])
-        self.resources_price[GlossaryEnergy.Years] = years
+        self.resources_price[GlossaryEnergy.Years] = self.years
         self.resources_price[ResourceGlossary.CO2Resource] = np.array(
             [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
              0.0542,
              0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
-             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119])[:len(self.years)] * 1000.0
         self.resources_price[ResourceGlossary.WaterResource] = 1.4
         # ---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(0.8, 0.1, len(years))))
-        resource_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(0.8, 0.1, len(self.years))))
+        resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -194,12 +193,14 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = FossilGasDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -209,6 +210,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -217,7 +219,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
@@ -255,10 +256,12 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = MethanationDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_methanation,
@@ -269,6 +272,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -314,12 +318,14 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = UpgradingBiogasDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -329,6 +335,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -425,7 +432,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -435,7 +441,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = MethaneJacobianTestCase()
     cls.setUp()
     cls.test_02_methanation_discipline_jacobian()

@@ -44,12 +44,7 @@ class CropEnergy(BiomassDryTechno):
 
         self.land_surface_for_food = inputs_dict[self.LAND_SURFACE_FOR_FOOD_DF]
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Compute part for energy and details for crop and residues
-        """
-
+    def compute_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_crop = f'{self.energy_name}_crop (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
@@ -93,6 +88,11 @@ class CropEnergy(BiomassDryTechno):
                                                                                                    self.production_mix[
                                                                                                        name_crop]
 
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Compute part for energy and details for crop and residues
+        """
         self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
                                                                       self.data_energy_dict['high_calorific_value'] * \
                                                                       self.production_detailed[
@@ -109,13 +109,6 @@ class CropEnergy(BiomassDryTechno):
             (1 - self.techno_infos_dict['residue_density_percentage']) / \
             self.data_energy_dict['calorific_value'] / \
             density_per_ha
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity/fuel production
-        '''
-
-        return 0.0
 
     def compute_price(self):
         '''

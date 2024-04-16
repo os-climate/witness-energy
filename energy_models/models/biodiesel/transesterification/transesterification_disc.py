@@ -54,7 +54,33 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
 
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 3.0, 2.0]})
-    DESC_IN = {'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+
+    # use biodiesel calorific value to compute co2 from production
+
+    # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
+    # Comparison of transport fuels. FINAL REPORT (EV45A/2/F3C) to the Australian Greenhouse Office on the stage, 2.
+    # Pre-combustion CO2 emissions for soybean = 0.03 kgCO2/MJ * 3.6 MJ/kWh =
+    # 0.11 kgCO2/kWh
+    co2_from_production = (6.7 / 1000) * BioDiesel.data_energy_dict['calorific_value']
+    techno_infos_dict_default = {'Opex_percentage': 0.04,
+                                 'lifetime': lifetime,
+                                 # for now constant in time but should increase with time
+                                 'lifetime_unit': GlossaryEnergy.Years,
+                                 'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
+                                 'Capex_init_unit': '$/kg',
+                                 'efficiency': 0.99,
+                                 'CO2_from_production': co2_from_production,
+                                 'CO2_from_production_unit': 'kg/kg',
+                                 'maturity': 5,
+                                 'learning_rate': 0.1,
+                                 'full_load_hours': 7920.0,
+                                 'WACC': 0.0878,
+                                 'techno_evo_eff': 'no',
+                                 GlossaryEnergy.ConstructionDelay: construction_delay
+                                 }
+    DESC_IN = {'techno_infos_dict': {'type': 'dict',
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
+               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
@@ -92,37 +118,12 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                 biodiesel_density = self.get_sosdisc_inputs('data_fuel_dict')[
                     'density']
 
-                # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
-                # Comparison of transport fuels. FINAL REPORT (EV45A/2/F3C) to the Australian Greenhouse Office on the stage, 2.
-                # Pre-combustion CO2 emissions for soybean = 0.03 kgCO2/MJ * 3.6 MJ/kWh =
-                # 0.11 kgCO2/kWh
-                co2_from_production = (6.7 / 1000) * biodiesel_calorific_value
-                techno_infos_dict_default = {'Opex_percentage': 0.04,
-                                             'lifetime': self.lifetime,
-                                             # for now constant in time but should increase with time
-                                             'lifetime_unit': GlossaryEnergy.Years,
-                                             'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
-                                             'Capex_init_unit': '$/kg',
-                                             'efficiency': 0.99,
-                                             'CO2_from_production': co2_from_production,
-                                             'CO2_from_production_unit': 'kg/kg',
-                                             'maturity': 5,
-                                             'learning_rate': 0.1,
-
-                                             'full_load_hours': 7920.0,
-
-                                             'WACC': 0.0878,
-                                             'techno_evo_eff': 'no',
-
-                                             GlossaryEnergy.ConstructionDelay: self.construction_delay
-                                             }
-
                 # Source for initial production: IEA 2022, Renewables 2021, https://www.iea.org/reports/renewables-2021, License: CC BY 4.0.
                 # 43 billion liters from IEA in 2020
                 initial_production = 37 * biodiesel_density / 1000 * biodiesel_calorific_value
 
                 dynamic_inputs['techno_infos_dict'] = {
-                    'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'}
+                    'type': 'dict', 'default': self.techno_infos_dict_default, 'unit': 'defined in dict'}
                 dynamic_inputs['initial_production'] = {
                     'type': 'float', 'unit': 'TWh', 'default': initial_production}
         self.add_inputs(dynamic_inputs)

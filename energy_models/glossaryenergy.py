@@ -31,7 +31,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
-
+    YearEndDefaultValueGradientTest = 2030
+    LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050
     YearEndDefaultCore = GlossaryWitnessCore.YearEndDefault
     YearEndVar = {
@@ -73,7 +74,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     lowtemperatureheat = "lowtemperatureheat"
     mediumtemperatureheat = "mediumtemperatureheat"
     hightemperatureheat = "hightemperatureheat"
-
+    LifetimeName = "lifetime"
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
 

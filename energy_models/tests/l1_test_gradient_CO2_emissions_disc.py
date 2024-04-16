@@ -32,8 +32,6 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
     Consumption CO2 Emissions Discipline jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_Consumption_CO2_emissions_discipline_CO2_per_use_jacobian,
@@ -52,7 +50,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.year_start = GlossaryEnergy.YearStartDefault
-        self.year_end = GlossaryEnergy.YearEndDefault
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
@@ -158,8 +156,6 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
                            f'{self.name}.CO2_emissions_by_use_sinks']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -244,8 +240,6 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
                            f'{self.name}.CO2_emissions_by_use_sinks']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
@@ -254,7 +248,6 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ConsumptionCO2EmissionsDiscJacobianTestCase()
     cls.setUp()
     # cls.launch_data_pickle_generation()

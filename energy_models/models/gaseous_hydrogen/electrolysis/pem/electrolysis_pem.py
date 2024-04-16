@@ -44,32 +44,6 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        efficiency = self.compute_efficiency()
-
-        return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
-                }
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account positive CO2 from methane and elec prod
-        Carbon capture (Methane is not burned but transformed is not taken into account)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-        self.carbon_intensity[self.PLATINUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.PLATINUM_RESOURCE_NAME] * \
-                                                             self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs']
-
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name] + self.carbon_intensity[
-            self.PLATINUM_RESOURCE_NAME]
-
     def get_water_needs(self):
         ''' 
         Get water needs in kg Water /kWh H2
@@ -116,17 +90,23 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         return platinum_needs
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         o2_needs = self.get_oxygen_produced()
         self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
                                                              self.data_energy_dict['calorific_value'] * \
                                                              self.production_detailed[
                                                                  f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        # Production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
+        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
+
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
@@ -142,8 +122,3 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
                                                                                              f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
                                                                                          self.production_detailed[
                                                                                              f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-
-        # Production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH

@@ -27,14 +27,12 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-
+from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion_disc import AnaerobicDigestionDiscipline
 
 class BiogasJacobianTestCase(AbstractJacobianUnittest):
     """
     Anaerobic Digestion prices test class
     """
-
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -46,12 +44,12 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = GlossaryEnergy.biogas
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefaultValueGradientTest + 1)
 
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefaultValueGradientTest + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -65,7 +63,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                                       0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
                                       0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                      0.0928246539459331]) * 1000.0
+                                      0.0928246539459331])[:len(years)] * 1000.0
         # We take biomass price of methane/5.0
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
@@ -88,7 +86,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                                                    5221700000.0, 5207400000.0, 5193100000.0,
                                                    5178800000.0, 5164500000.0, 5150200000.0,
                                                    5135900000.0, 5121600000.0, 5107300000.0,
-                                                   5093000000.0]) / 5.0 * 1e-9})
+                                                   5093000000.0])[:len(years)] / 5.0 * 1e-9})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -110,6 +108,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
 
     def tearDown(self):
         pass
@@ -132,8 +131,10 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        techno_infos_dict = AnaerobicDigestionDiscipline.techno_infos_dict_default
+        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -142,9 +143,10 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))
+                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

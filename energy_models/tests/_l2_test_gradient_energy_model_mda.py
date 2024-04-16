@@ -36,8 +36,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
     SoSDiscipline test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_check_gradient_of_price_vs_price_open_loop,
@@ -95,7 +93,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_price_test.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
@@ -193,7 +190,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             liquid_fuel_techno]
         output_co2_emissions = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in output_columns[:-2]]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
@@ -323,7 +319,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             for techno in techno_list:
                 energy_price_outputs.append(
                     f'{usecase.study_name}.EnergyMix.{energy}.{techno}.{GlossaryEnergy.TechnoPricesValue}')
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_after_MDA_results.pkl',
                             discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
@@ -485,9 +480,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #         energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
 #                              f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
 #                              f'{self.name}.EnergyMix.land_demand_df',
-#                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
-#         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-#
+#                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']#
 #         # for energy in self.ee.dm.get_value('Test.energy_list'):
 #         #    print(energy)
 #         self.check_jacobian(location=dirname(__file__), filename='jacobian_gradient_energymixoutputs_vs_energy_mixes_test.pkl',
