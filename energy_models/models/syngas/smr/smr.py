@@ -37,40 +37,6 @@ class SMR(SyngasTechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        # CO2_needs = self.get_theoretical_CO2_needs()
-        methane_needs = self.get_theoretical_CH4_needs()
-        elec_needs = self.get_electricity_needs()
-        # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Methane.name: np.diag(methane_needs / efficiency),
-            Electricity.name: np.identity(
-                len(self.years)) * elec_needs
-        }
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-                                                   self.cost_details[f'{Methane.name}_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f'{Water.name}_needs']
-
-        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[Electricity.name] + \
-            self.carbon_intensity[Water.name]
-
     def get_theoretical_CH4_needs(self):
         ''' 
         Get CH4 needs in kWh CH4 /kWh syngas
@@ -103,7 +69,13 @@ class SMR(SyngasTechno):
 
         return water_needs
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
+        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['high_heat_production'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        pass
+
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -124,6 +96,3 @@ class SMR(SyngasTechno):
                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
-        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['high_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

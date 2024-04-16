@@ -26,6 +26,20 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
     get_static_prices
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.electricity.biomass_fired.biomass_fired_disc import BiomassFiredDiscipline
+from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
+from energy_models.models.electricity.gas.biogas_fired.biogas_fired_disc import BiogasFiredDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
+    CombinedCycleGasTurbineDiscipline
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
+from energy_models.models.electricity.geothermal.geothermal_disc import GeothermalDiscipline
+from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
+from energy_models.models.electricity.nuclear.nuclear_disc import NuclearDiscipline
+from energy_models.models.electricity.oil_gen.oil_gen_disc import OilGenDiscipline
+from energy_models.models.electricity.solar_pv.solar_pv_disc import SolarPvDiscipline
+from energy_models.models.electricity.solar_thermal.solar_thermal_disc import SolarThermalDiscipline
+from energy_models.models.electricity.wind_offshore.wind_offshore_disc import WindOffshoreDiscipline
+from energy_models.models.electricity.wind_onshore.wind_onshore_disc import WindOnshoreDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -34,8 +48,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
     """
     Electricity jacobian test class
     """
-
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -60,7 +72,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = GlossaryEnergy.electricity
         self.year_start = GlossaryEnergy.YearStartDefault
-        self.year_end = GlossaryEnergy.YearEndDefault
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
 
         self.years = np.arange(self.year_start, self.year_end + 1)
 
@@ -87,7 +99,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                         0.0919200735346165,
                                                                         0.09214129913260598, 0.09236574581786147,
                                                                         0.09259350059915213,
-                                                                        0.0928246539459331]) * 1000.0,
+                                                                        0.0928246539459331])[:len(self.years)] * 1000.0,
              GlossaryEnergy.solid_fuel: solid_fuel_price,
              f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': np.ones(len(self.years)) * 91,
              GlossaryEnergy.methane: np.ones(len(self.years)) * 27.07,
@@ -142,7 +154,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                           5221700000.0, 5207400000.0, 5193100000.0,
                                                           5178800000.0, 5164500000.0, 5150200000.0,
                                                           5135900000.0, 5121600000.0, 5107300000.0,
-                                                          5093000000.0]) * 1.0e-9})
+                                                          5093000000.0])[:len(self.years)] * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -152,7 +164,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                    31000.00, 31000.00, 31000.00, 31000.00,
                                                    31000.00, 31000.00, 31000.00, 31000.00,
                                                    31000.00, 31000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00]) * 1e-3})
+                                                   31000.00, 31000.00, 31000.00])[:len(self.years)] * 1e-3})
 
         # --- CO2 taxes ---
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
@@ -236,6 +248,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CombinedCycleGasTurbineDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -251,7 +267,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand, }
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict, }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -296,6 +313,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = GeothermalDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -312,6 +332,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -358,6 +379,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = HydropowerDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -374,6 +398,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -422,6 +447,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CoalGenDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -438,6 +466,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -484,6 +513,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = GasTurbineDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -501,6 +533,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio[
                            [GlossaryEnergy.Years, GlossaryEnergy.methane]],
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -545,6 +578,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = WindOnshoreDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -561,6 +597,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -605,6 +642,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = WindOffshoreDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -622,6 +662,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -667,6 +708,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = SolarThermalDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -683,6 +727,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -730,6 +775,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = SolarPvDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -746,6 +794,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -794,6 +843,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = NuclearDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -810,6 +862,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -817,7 +870,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-15,
                             local_data=disc_techno.local_data,
@@ -855,6 +907,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = BiogasFiredDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -871,6 +926,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -916,6 +972,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = BiomassFiredDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -932,6 +991,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -977,6 +1037,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = OilGenDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
@@ -993,6 +1056,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -1090,7 +1154,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1099,7 +1162,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
     # cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()

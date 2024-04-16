@@ -35,16 +35,7 @@ class AnaerobicDigestion(BioGasTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs}
-
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
@@ -59,16 +50,3 @@ class AnaerobicDigestion(BioGasTechno):
                                                                                         self.production_detailed[
                                                                                             f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from electricity production and negative CO2 from biomass
-        '''
-
-        self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[
-                                                          ResourceGlossary.WetBiomassResource] * \
-                                                      self.cost_details[f"{WetBiomass.name}_needs"]
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        return self.carbon_intensity[f'{WetBiomass.name}'] + self.carbon_intensity[Electricity.name]

@@ -56,7 +56,7 @@ class SolarThermal(ElectricityTechno):
             self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
             density_per_ha
 
-    def compute_consumption_and_production(self):
+    def compute_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?

@@ -37,22 +37,8 @@ class CoalGen(ElectricityTechno):
         self.cost_details['solid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
                                                 self.cost_details['efficiency']
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
+    def compute_production(self):
         elec_needs = self.get_electricity_needs()
-
-        # Consumption
-        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                          'solid_fuel_needs'] * \
-                                                                                      self.production_detailed[
-                                                                                          f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[
-                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
-
         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
             self.production_detailed[
                 f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
@@ -65,6 +51,21 @@ class CoalGen(ElectricityTechno):
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
+        # Consumption
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                          'solid_fuel_needs'] * \
+                                                                                      self.production_detailed[
+                                                                                          f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
+                                                                        self.production_detailed[
+                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+
+
 
     def compute_consumption_and_installed_power(self):
         """
@@ -87,27 +88,6 @@ class CoalGen(ElectricityTechno):
         copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from coal extraction and electricity production
-        '''
-
-        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-                                                self.cost_details['solid_fuel_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[SolidFuel.name] + self.carbon_intensity[Water.name]
-
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        solid_fuel_needs = self.techno_infos_dict['fuel_demand']
-        efficiency = self.compute_efficiency()
-        return {SolidFuel.name: np.diag(solid_fuel_needs / efficiency)}
 
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):

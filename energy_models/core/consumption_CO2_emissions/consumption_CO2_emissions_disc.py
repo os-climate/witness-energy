@@ -25,6 +25,7 @@ from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import ConsumptionCO2Emissions
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -171,7 +172,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                      'natural_gas_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.biogas} (TWh)': ('float', None, True),
                                                      'mono_ethanol_amine_resource (Mt)': ('float', None, True),
-                                                     f'{GlossaryEnergy.wet_biomass} (Mt)': ('float', None, True),
+                                                     f'{ResourceGlossary.WetBiomassResource} (Mt)': ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),

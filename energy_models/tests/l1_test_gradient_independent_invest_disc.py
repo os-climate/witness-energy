@@ -32,8 +32,6 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
     Ethanol Fuel jacobian test class
     """
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_analytic_grad,
@@ -44,7 +42,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
+        self.y_e = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.y_step = 1
         self.energy_list = [
             'electricity', 'hydrogen.gaseous_hydrogen', 'methane']

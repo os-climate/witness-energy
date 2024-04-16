@@ -35,22 +35,7 @@ class CO2Hydrogenation(MethanolTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        co2_needs = self.get_theoretical_co2_needs()
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        elec_needs = self.get_theoretical_electricity_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-        return {
-            CarbonCapture.name: np.identity(len(self.years)) * co2_needs / efficiency,
-            GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency,
-            Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-        }
-
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
@@ -76,33 +61,6 @@ class CO2Hydrogenation(MethanolTechno):
             self.cost_details[f'{Water.name}_needs'] * \
             self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account CO2 from electricity/fuel production
-        '''
-
-        self.carbon_intensity[CarbonCapture.name] = \
-            self.energy_CO2_emissions[CarbonCapture.name] * \
-            self.cost_details[f'{CarbonCapture.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[GaseousHydrogen.name] = \
-            self.energy_CO2_emissions[GaseousHydrogen.name] * \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[Electricity.name] = \
-            self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_intensity[Water.name] = \
-            self.resources_CO2_emissions[Water.name] * \
-            self.cost_details[f'{Water.name}_needs']
-
-        return self.carbon_intensity[CarbonCapture.name] + self.carbon_intensity[GaseousHydrogen.name] + \
-               self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
 
     def get_theoretical_co2_needs(self):
         """

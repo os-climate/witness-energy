@@ -34,16 +34,7 @@ class ElectricBoilerLowHeat(lowheattechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        '''
-        elec_needs = self.get_theoretical_electricity_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                }
-
-    def compute_consumption_and_production(self):
+    def compute_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """

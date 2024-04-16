@@ -36,28 +36,19 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        elec_needs = self.get_electricity_needs()
-        methane_needs = self.get_theoretical_methane_needs()
-        efficiency = self.compute_efficiency()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency.values}
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
+    def compute_production(self):
         C_per_h2 = self.get_theoretical_graphene_production()
 
         self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
                                                                         self.production_detailed[
                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
@@ -70,26 +61,6 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                                                                         f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                     self.cost_details[
                                                                                         'efficiency']  # in kWH
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account positive CO2 from methane and elec prod
-        Carbon capture (Methane is not burned but transformed is not taken into account)
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-                                              self.cost_details[f'{GlossaryEnergy.methane}_needs'] / self.cost_details['efficiency']
-
-        # self.energy_CO2_emissions[GlossaryEnergy.carbon_storage]
-        C_per_h2 = self.get_theoretical_graphene_production()
-        self.carbon_intensity['carbon storage'] = -C_per_h2 * \
-                                                  CO2.data_energy_dict['molar_mass'] / \
-                                                  Carbon.data_energy_dict['molar_mass']
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity[
-            'carbon storage']
 
     def get_theoretical_graphene_production(self):
         ''' 

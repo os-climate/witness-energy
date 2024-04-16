@@ -34,8 +34,6 @@ class TestMDARobustness(AbstractJacobianUnittest):
     MDA Robustness test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_multi_scenario_perfos_execute,

@@ -24,6 +24,17 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
+    CalciumLoopingDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc import \
+    ChilledAmmoniaProcessDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc import CO2MembranesDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc import \
+    MonoEthanolAmineDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc import \
+    PiperazineProcessDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import \
+    PressureSwingAdsorptionDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -32,8 +43,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
     """
     Flue gas gradients test class
     """
-
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -49,33 +58,34 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.energy_name = 'flue_gas'
 
         self.flue_gas_mean = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.3})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.3})
 
         self.flue_gas_mean_swing = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.1})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.1})
 
         self.flue_gas_mean_piperazine = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.2})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.2})
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years,
-             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0,
-             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
+            {GlossaryEnergy.Years: self.years,
+             GlossaryEnergy.electricity: np.ones(len(self.years)) * 80.0,
+             GlossaryEnergy.methane: np.ones(len(self.years)) * 80.0})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
                                                                                 22000.00, 22000.00, 22000.00, 22000.00,
                                                                                 22000.00, 22000.00, 31000.00, 31000.00,
                                                                                 31000.00, 31000.00, 31000.00, 31000.00,
                                                                                 31000.00, 31000.00, 31000.00, 31000.00,
                                                                                 31000.00, 31000.00, 31000.00, 31000.00,
                                                                                 31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00]) * 1e-3})
+                                                                                31000.00, 31000.00, 31000.00])[:len(self.years)] * 1e-3})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -83,30 +93,30 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
+            {GlossaryEnergy.Years: self.years,
+             GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
 
         transport_cost = 0,
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
 
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
         # ---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
-        resource_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(self.years))))
+        resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -114,6 +124,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         pass
 
     def test_01_calcium_looping_discipline_analytic_grad(self):
+        self.override_dump_jacobian = True
         self.name = 'Test'
         self.model_name = 'CalciumLooping'
         self.ee = ExecutionEngine(self.name)
@@ -135,10 +146,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -151,6 +164,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -196,10 +210,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = PressureSwingAdsorptionDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -211,6 +227,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -257,10 +274,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = PiperazineProcessDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -272,6 +291,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -316,10 +336,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = MonoEthanolAmineDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -331,6 +353,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -376,10 +399,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = CO2MembranesDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -391,6 +416,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -437,10 +463,12 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        # overload value of lifetime to reduce test duration
+        techno_infos_dict = ChilledAmmoniaProcessDiscipline.techno_infos_dict_default
+        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
+                           self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -452,6 +480,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

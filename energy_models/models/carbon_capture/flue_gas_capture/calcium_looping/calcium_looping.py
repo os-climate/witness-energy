@@ -21,14 +21,4 @@ from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techn
 
 
 class CalciumLooping(GenericFlueGasTechnoModel):
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from Methane and electricity consumption
-        '''
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
-            f'{GlossaryEnergy.electricity}_needs'] * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-
-        return self.carbon_intensity[Electricity.name] - 1.0
+    pass

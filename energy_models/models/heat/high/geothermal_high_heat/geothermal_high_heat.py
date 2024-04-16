@@ -36,29 +36,17 @@ class GeothermalHeat(highheattechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def grad_price_vs_energy_price(self):
-        elec_needs = self.get_theoretical_electricity_needs()
-        heat_generated = elec_needs  # self.get_theoretical_heat_generated()
-        mean_temperature = self.techno_infos_dict['mean_temperature']
-        output_temperature = self.techno_infos_dict['output_temperature']
-        COP = output_temperature / (output_temperature - mean_temperature)
-        efficiency = COP
-        # efficiency = self.techno_infos_dict['COP']
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-                }
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # Production
+    def compute_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
                                                                                self.production_detailed[
                                                                                    f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
                                                                                self.cost_details['efficiency']
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[

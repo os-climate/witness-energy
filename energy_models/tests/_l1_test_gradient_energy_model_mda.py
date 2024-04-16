@@ -30,8 +30,6 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
     Energy process MDA test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def analytic_grad_entry(self):
         return [
             self.test_01_check_gradient_with_newtonraphson,
@@ -63,7 +61,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
-        usecase = Study(execution_engine=self.ee)
+        usecase = Study(execution_engine=self.ee, year_end=GlossaryEnergy.YearEndDefaultValueGradientTest)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -90,7 +88,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         self.ee2.factory.set_builders_to_coupling_builder(builder2)
         self.ee2.configure()
-        usecase = Study(execution_engine=self.ee2)
+        usecase = Study(execution_engine=self.ee2, year_end=GlossaryEnergy.YearEndDefaultValueGradientTest)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 

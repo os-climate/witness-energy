@@ -512,24 +512,6 @@ class WGS(GaseousHydrogenTechno):
 
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        # CO2_needs = self.get_theoretical_CO2_needs()
-        syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
-        elec_needs = self.get_electricity_needs()
-
-        # oxygen_needs = self.get_theoretical_O2_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            Syngas.name: np.identity(
-                len(self.years)) * syngas_needs / efficiency[:, np.newaxis],
-            Electricity.name: np.identity(
-                len(self.years)) * elec_needs
-        }
-
     def compute_dprod_dfluegas(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
 
         # dpprod_dpfluegas = np.zeros(dcapexdfluegas.shape())
@@ -554,17 +536,22 @@ class WGS(GaseousHydrogenTechno):
 
         return dprod_dfluegas
 
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_production(self):
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
                                                                                         self.production_detailed[
                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
+        # production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
                                                                                             f'{GlossaryEnergy.electricity}_needs'] * \
@@ -576,27 +563,6 @@ class WGS(GaseousHydrogenTechno):
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
                                                                         self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']   # in kg
 
-        # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
-
-    def compute_CO2_emissions_from_input_resources(self):
-        ''' 
-        Need to take into account negative CO2 from CO2 and methane
-        Oxygen is not taken into account
-        '''
-
-        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * \
-                                             self.cost_details['syngas_needs']
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                  self.cost_details[f'{GlossaryEnergy.electricity}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details[f"{ResourceGlossary.WaterResource}_needs"]
-
-        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + \
-            self.carbon_intensity[Water.name]
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

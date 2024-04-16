@@ -34,25 +34,7 @@ class Methanation(MethaneTechno):
         # in kWh of H2 for kWh of CH4
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.compute_efficiency()
-        return {
-            GaseousHydrogen.name: np.diag(hydrogen_needs / efficiency)
-        }
-
-    def compute_consumption_and_production(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # compute CH4 production in kWh
-
+    def compute_production(self):
         # kg of H2O produced with 1kWh of CH4
         H2Oprod = self.get_h2o_production()
 
@@ -60,6 +42,12 @@ class Methanation(MethaneTechno):
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
+
+    def compute_consumption(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ? 
+        """
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f'{CO2.name}_needs'] * \
@@ -70,18 +58,6 @@ class Methanation(MethaneTechno):
                                                                                                 f'{GaseousHydrogen.name}_needs'] * \
                                                                                             self.production_detailed[
                                                                                                 f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
-
-    def compute_CO2_emissions_from_input_resources(self):
-        '''
-        Need to take into account  CO2 from hydrogen
-        '''
-
-        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                      self.cost_details[f'{GaseousHydrogen.name}_needs']
-        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                               self.cost_details[f'{CO2.name}_needs']
-
-        return self.carbon_intensity[GaseousHydrogen.name] + self.carbon_intensity[f'{CO2.name}']
 
     def get_h2o_production(self):
         """

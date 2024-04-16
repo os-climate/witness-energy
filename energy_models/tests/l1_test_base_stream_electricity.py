@@ -42,7 +42,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = GlossaryEnergy.electricity
         logging.disable(logging.INFO)
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefaultValueGradientTest + 1)
 
         self.years = years
 
@@ -124,7 +124,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                       len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': ['Hydropower', 'GasTurbine'],
                        f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}': self.hydropower_consumption,
@@ -145,8 +145,6 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
