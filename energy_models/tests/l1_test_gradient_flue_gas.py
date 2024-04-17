@@ -124,6 +124,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         pass
 
     def test_01_calcium_looping_discipline_analytic_grad(self):
+        self.override_dump_jacobian = True
         self.name = 'Test'
         self.model_name = 'CalciumLooping'
         self.ee = ExecutionEngine(self.name)
