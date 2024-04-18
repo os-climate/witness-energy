@@ -41,12 +41,12 @@ class GenericFlueGasTechnoModel(CCTechno):
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-    def compute_capex(self):
-        capex_calc_list = super().compute_capex()
+    def compute_capex(self, invest_list, data_config):
+        capex_calc_list = super().compute_capex(invest_list, data_config)
         capex_calc_list *= self.compute_capex_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-        self.cost_details[f'Capex_{self.name}'] = capex_calc_list
+        return capex_calc_list
 
     def compute_energies_consumption(self):
         # Consumption
