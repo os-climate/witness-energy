@@ -117,78 +117,23 @@ class TechnoType:
         self.land_use_woratio = None
         self.construction_resource_list = ['copper_resource']
 
-    def check_outputs_dict(self, biblio_data):
-        '''
-        Check if outputs are coherent
-        Biblio & references at https://docs.google.com/presentation/d/1r4JVNxEEClfjBGt27wdnzil8jaRt_TwnCMCQ76ew8o4/edit#slide=id.gc29c52ae34_0_96
-        '''
-        # Init price check
-        price = self.cost_details[self.name][0]
-        max_price = float(biblio_data['max_price'])
-        min_price = float(biblio_data['min_price'])
-        price_unit = biblio_data['price_unit'].item()
-        # Unit check
-        if price_unit == '$/MWh':
-            pass
-        elif price_unit == '$/kWh':
-            price /= 1000
-        else:
-            raise Exception(
-                f'Price unit {price_unit} is not valid for {self.name}')
-
-        if not min_price <= price <= max_price:
-            raise Exception(
-                f'Price {price} {price_unit} is outside the biblio price range {min_price} - {max_price} for {self.name}')
-        # Init prod check
-        product = biblio_data['sos_name'].item().split('.')[0]
-        production = self.production_detailed[f'{product} (TWh)'][0]
-        biblio_init_prod = float(biblio_data['init_prod'])
-        tolerance = float(biblio_data['prod_tolerance'])
-        prod_unit = biblio_data['prod_unit'].item()
-        # Unit check
-        if prod_unit == 'TWh':
-            pass
-        elif prod_unit == 'MWh':
-            production /= 1000
-        else:
-            raise Exception(
-                f'Production unit {prod_unit} is not valid for {self.name}')
-        if tolerance > 1:
-            tolerance /= 100
-
-        border_inf = biblio_init_prod - biblio_init_prod * tolerance
-        border_sup = biblio_init_prod + biblio_init_prod * tolerance
-        if not border_inf < production < border_sup:
-            raise Exception(
-                f'Initial production {production} {prod_unit} is outside the biblio production {border_inf} - {border_sup} range for {self.name}')
-
     def init_dataframes(self):
-        '''
-        Init dataframes with years
-        '''
+        """Init dataframes with years"""
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.cost_details = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.consumption_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.aging_distribution = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.carbon_intensity = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.carbon_intensity_generic = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.land_use = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.all_streams_demand_ratio = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.non_use_capital = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.techno_capital = pd.DataFrame({GlossaryEnergy.Years: self.years})
-
         self.installed_power = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
     def configure_parameters(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
+        """Configure with inputs_dict from the discipline"""
 
         self.year_start = inputs_dict[GlossaryEnergy.YearStart]  # year start
         self.year_end = inputs_dict[GlossaryEnergy.YearEnd]  # year end
@@ -287,7 +232,7 @@ class TechnoType:
         '''
         self.data_energy_dict = inputs_dict['data_fuel_dict']
 
-    def compute_resource_consumption_generic(self):
+    def compute_resource_consumption(self):
         for resource in self.resources_used_for_production:
             self.consumption_detailed[f'{resource} ({self.mass_unit})'] =\
                 self.cost_details[f"{resource}_needs"] * \
@@ -502,8 +447,8 @@ class TechnoType:
         self.cost_details[GlossaryEnergy.MarginValue] = price_with_margin - self.cost_details[self.name]
         self.cost_details[self.name] = price_with_margin
 
-        # Compute and add CO2 taxes
-        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
+        self.compute_carbon_emissions()
+        self.compute_co2_tax()
 
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
@@ -546,18 +491,6 @@ class TechnoType:
                                            self.cost_details[f'{self.name}_wotaxes']
 
         return self.cost_details
-
-    def add_percentage_to_total(self, part_of_total):
-        '''
-        Add a percentage to the total price
-        (for plasma cracking case we take only a percentage because the techno also creates graphene)
-        '''
-        techno_prices = self.cost_details[[
-            GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']].merge(part_of_total, how='left').fillna(0)
-        techno_prices[self.name] *= techno_prices[self.energy_name] / 100.
-        techno_prices[f'{self.name}_wotaxes'] *= techno_prices[self.energy_name] / 100.
-
-        return techno_prices[[GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']]
 
     def compute_cost_of_resources_usage(self):
         """
@@ -1059,28 +992,17 @@ class TechnoType:
 
     def compute_carbon_emissions(self):
         '''
-        Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary resources
-
-        Definitions of the various levels of emissions:
-        self.carbon_intensity['production'] = -scope 1- (direct emissions): direct CO2 emissions during the production phase of the techno
-                ex: CO2 emitted or needed as part of the chemical reaction used to produce the techno (ex: Sabatier reaction
-                requires CO2 to produce methane from H2) + company facilities emissions + company vehicles emissions
-                + CO2 emissions of energy used for the production + ...
-        co2_emissions_frominput_energies = -scope 2- (indirect emissions): CO2 emissions during the production of the energies
-                used in scope 1, namely of the energies used during the production of the techno = emissions during
-                production of purchased electricity, steam, heating & cooling for own use
-                NB: in climateeconomics/sos_wrapping/sos_wrapping_witness/post_proc_witness_optim/post_processing_witness_full.py
-                co2_emissions_frominput_energies is referred to as CO2_from_other_consumption
-                In https://ghgprotocol.org/sites/default/files/standards/ghg-protocol-revised.pdf p.31, scope 2 definition only accounts for
-                indirect CO2 emissions of purchased electricity
-
-        self.carbon_intensity[self.name] = CO2_from_production + co2_emissions_frominput_energies =  scope 1 + scope 2 emissions
+        carbon_intensity = CO2_from_production + co2_emissions_frominput_energies =  scope 1 + scope 2 emissions
 
         NB: scope 3 CO2 emissions of the techno are not considered in this method. See for instance
                 CO2_per_use in climateeconomics/sos_wrapping/sos_wrapping_witness/post_proc_witness_optim/post_processing_witness_full.py
         '''
+        self.compute_scope_1_emissions()
+        self.compute_scope_2_emissions()
 
+        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + self.carbon_intensity['Scope 2']
+
+    def compute_scope_1_emissions(self):
         if 'CO2_from_production' not in self.techno_infos_dict:
             self.carbon_intensity['production'] = self.get_theoretical_co2_prod(
                 unit='kg/kWh')
@@ -1093,17 +1015,11 @@ class TechnoType:
             elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
                 self.carbon_intensity['production'] = self.techno_infos_dict['CO2_from_production']
 
-        # Add carbon emission from input energies (resources or other  energies)
-        co2_emissions_from_resources_and_energies = self.compute_CO2_emissions_from_resources_and_energies()
-
-        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + co2_emissions_from_resources_and_energies
-
-    def compute_CO2_emissions_from_resources_and_energies(self):
-        """Computes the CO2 emissions due to resources and energies usage"""
+    def compute_scope_2_emissions(self):
+        """Computes the Scope 2 CO2 emissions : due to resources and energies usage"""
         self.compute_co2_emissions_from_ressources_usage()
         self.compute_co2_emissions_from_energies_usage()
-        return self.carbon_intensity_generic.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
-
+        self.carbon_intensity['Scope 2'] = self.carbon_intensity_generic.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
 
     def compute_resources_needs(self):
         """To be overloaded when techno relies on resources"""
@@ -1126,12 +1042,11 @@ class TechnoType:
         Only CO2 emitted from the technology is here taken into account to compute CO2 taxes
         If carbon emissions are negative then no negative CO2 taxes (use a clip on the column)
         '''
-        self.compute_carbon_emissions()
         CO2_taxes_kwh = self.CO2_taxes[GlossaryEnergy.CO2Tax].loc[self.CO2_taxes[GlossaryEnergy.Years]
                                                                   <= self.carbon_intensity[
                                                                       GlossaryEnergy.Years].max()].values * \
                         self.carbon_intensity[self.name].clip(0)
-        return CO2_taxes_kwh
+        self.cost_details['CO2_taxes_factory'] = CO2_taxes_kwh
 
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -1168,8 +1083,6 @@ class TechnoType:
             columns={
                 f'distrib_prod ({self.product_energy_unit})': f'{self.energy_name} ({self.product_energy_unit})'}).fillna(
             0.0)
-
-        self.compute_land_use()
 
     def compute_primary_installed_power(self):
 
@@ -1575,7 +1488,8 @@ class TechnoType:
         # -- compute informations
         self.compute_price()
         self.compute_primary_energy_production()
-        self.compute_resource_consumption_generic()
+        self.compute_land_use()
+        self.compute_resource_consumption()
         self.compute_energies_consumption()
         self.compute_production()
         self.compute_primary_installed_power()
@@ -1668,6 +1582,7 @@ class TechnoType:
         """Computes the co2 emissions due to resources usage"""
         for resource in self.resources_used_for_production:
             self.carbon_intensity_generic[resource] = self.cost_details[f"{resource}_needs"] * self.resources_CO2_emissions[resource]
+
     def compute_co2_emissions_from_energies_usage(self):
         """Computes the co2 emissions due to energies usage"""
         for energy in self.energies_used_for_production:

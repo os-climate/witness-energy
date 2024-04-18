@@ -34,7 +34,7 @@ class Amine(CCTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
-    def compute_CO2_emissions_from_resources_and_energies(self):
+    def compute_scope_2_emissions(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''
@@ -47,8 +47,7 @@ class Amine(CCTechno):
         self.carbon_intensity[ResourceGlossary.AmineResource] = self.resources_CO2_emissions[
                                                                     ResourceGlossary.AmineResource] * \
                                                                 self.cost_details[f'{ResourceGlossary.AmineResource}_needs']
-        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
-            ResourceGlossary.AmineResource] - 1.0
+        self.carbon_intensity['Scope 2'] = self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.AmineResource] - 1.0
 
     def compute_production(self):
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[

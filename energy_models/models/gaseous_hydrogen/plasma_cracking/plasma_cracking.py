@@ -30,6 +30,17 @@ class PlasmaCracking(GaseousHydrogenTechno):
     """
     Plasmacracking class
     """
+    def add_percentage_to_total(self, part_of_total):
+        '''
+        Add a percentage to the total price
+        (for plasma cracking case we take only a percentage because the techno also creates graphene)
+        '''
+        techno_prices = self.cost_details[[
+            GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']].merge(part_of_total, how='left').fillna(0)
+        techno_prices[self.name] *= techno_prices[self.energy_name] / 100.
+        techno_prices[f'{self.name}_wotaxes'] *= techno_prices[self.energy_name] / 100.
+
+        return techno_prices[[GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']]
 
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
