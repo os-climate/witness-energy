@@ -100,25 +100,3 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
         #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
         #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
-
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[
-                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-
-        self.consumption_detailed[f'{self.PLATINUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[
-                                                                                             f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
-                                                                                         self.production_detailed[
-                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt

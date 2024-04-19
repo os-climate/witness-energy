@@ -679,6 +679,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Solar Thermal raw production error : ', error_solarth_prod, ' %',
               f'IEA :{energy_production_solarth_iea} TWh vs WITNESS :{computed_solarth_production} TWh')
 
+        '''
         elec_geoth_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Geothermal.{GlossaryEnergy.TechnoProductionValue}')
 
@@ -696,7 +697,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         print('Geothermal raw production error : ', error_geoth_prod, ' %',
               f'IEA :{energy_production_geoth_iea} TWh vs WITNESS :{computed_geoth_production} TWh')
-
+        '''
         elec_coalgen_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}')
 

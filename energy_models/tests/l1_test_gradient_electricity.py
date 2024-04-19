@@ -77,48 +77,26 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         # --- energy prices ---
-        solid_fuel_price = np.array(
-            [5.7] * len(self.years))
-        self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                        0.089236536471781, 0.08899046935409588,
-                                                                        0.08874840310033885,
-                                                                        0.08875044941298937, 0.08875249600769718,
-                                                                        0.08875454288453355,
-                                                                        0.08875659004356974, 0.0887586374848771,
-                                                                        0.08893789675406477,
-                                                                        0.08911934200930778, 0.08930302260662477,
-                                                                        0.08948898953954933,
-                                                                        0.08967729551117891, 0.08986799501019029,
-                                                                        0.09006114439108429,
-                                                                        0.09025680195894345, 0.09045502805900876,
-                                                                        0.09065588517140537,
-                                                                        0.0908594380113745, 0.09106575363539733,
-                                                                        0.09127490155362818,
-                                                                        0.09148695384909017, 0.0917019853041231,
-                                                                        0.0919200735346165,
-                                                                        0.09214129913260598, 0.09236574581786147,
-                                                                        0.09259350059915213,
-                                                                        0.0928246539459331])[:len(self.years)] * 1000.0,
-             GlossaryEnergy.solid_fuel: solid_fuel_price,
-             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': np.ones(len(self.years)) * 91,
-             GlossaryEnergy.methane: np.ones(len(self.years)) * 27.07,
-             GlossaryEnergy.biogas: np.ones(len(self.years)) * 5.0,
-             GlossaryEnergy.biomass_dry: np.ones(len(self.years)) * 11.0,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                           GlossaryEnergy.electricity: 90,
+                                           GlossaryEnergy.solid_fuel: 5.7,
+                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 91,
+                                           GlossaryEnergy.methane: 27.07,
+                                           GlossaryEnergy.biogas: 5.0,
+                                           GlossaryEnergy.biomass_dry: 11.0,
+                                           GlossaryEnergy.mediumtemperatureheat_energyname: 4.5
              })
-        #         self.energy_prices = pd.DataFrame(
-        #             {GlossaryEnergy.methane: np.ones(len(years)) * 27.07})
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biogas: 0.123 / 15.4,
              GlossaryEnergy.solid_fuel: 0.64 / 4.86, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
-             GlossaryEnergy.electricity: 0.0})
+             GlossaryEnergy.electricity: 0.0, GlossaryEnergy.mediumtemperatureheat_energyname: 6.2})
 
         # --- invest level ---
         self.invest_level_ccgast = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 21.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 21.0})
 
         self.invest_level_biomass_fired = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 21.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 21.0})
 
         self.invest_level_geothermal = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level_geothermal[GlossaryEnergy.InvestValue] = 5.0 * \
@@ -126,16 +104,16 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                                 GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
         self.invest_level_solar_pv = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 130.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 130.0})
 
         self.invest_level_solar_thermal = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 15.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 15.0})
 
         self.invest_level_coal = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 50.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 50.0})
 
         self.invest_level_oil = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 10.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 10.0})
 
         self.invest_level_nuclear = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level_nuclear[GlossaryEnergy.InvestValue] = 33.0 * \
@@ -143,50 +121,17 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                              GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
         self.invest_level_hydropower = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                     GlossaryEnergy.InvestValue: np.array(
-                                                         [4435750000.0, 4522000000.0, 4608250000.0,
-                                                          4694500000.0, 4780750000.0, 4867000000.0,
-                                                          4969400000.0, 5071800000.0, 5174200000.0,
-                                                          5276600000.0, 5379000000.0, 5364700000.0,
-                                                          5350400000.0, 5336100000.0, 5321800000.0,
-                                                          5307500000.0, 5293200000.0, 5278900000.0,
-                                                          5264600000.0, 5250300000.0, 5236000000.0,
-                                                          5221700000.0, 5207400000.0, 5193100000.0,
-                                                          5178800000.0, 5164500000.0, 5150200000.0,
-                                                          5135900000.0, 5121600000.0, 5107300000.0,
-                                                          5093000000.0])[:len(self.years)] * 1.0e-9})
+                                                     GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
-                                                   22000.00, 22000.00, 22000.00, 22000.00,
-                                                   22000.00, 22000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00, 31000.00,
-                                                   31000.00, 31000.00, 31000.00])[:len(self.years)] * 1e-3})
-
-        # --- CO2 taxes ---
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        # co2_taxes = [0.01486, 0.01722, 0.02027,
-        #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
-
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        co2_taxes_nul = [0, 0, 0,
-                         0, 0, 0, 0, 0]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-        func_nul = sc.interp1d(co2_taxes_year, co2_taxes_nul,
-                               kind='linear', fill_value='extrapolate')
-
+             GlossaryEnergy.InvestValue: np.linspace(22000.00, 31000.00, len(self.years)) * 1e-3})
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14.86, 50.29, len(self.years))})
         self.co2_taxes_nul = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func_nul(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
 
         # --- Transport ---
         transport_cost = 11.0
@@ -196,7 +141,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
 
         self.transport_nul = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, 'transport': np.zeros(len(self.years))})
@@ -329,7 +274,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,

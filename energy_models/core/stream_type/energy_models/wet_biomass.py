@@ -16,6 +16,7 @@ limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class WetBiomass(EnergyType):
@@ -29,7 +30,7 @@ class WetBiomass(EnergyType):
                         # http://repo-desa.inta.gob.ar/xmlui/bitstream/handle/20.500.12123/1303/INTA_CRPatagoniaNorte-EEABariloche_WarrenRaffa_D_How_does_crop_residue_removal_affect_soil.pdf?sequence=3
                         # The paper says 42.5% of carbon in biomass meaning
                         # 0.425g of C in 1 kg of biomass meaning in term of CO2
-                        'CO2_per_use': 2.86,
+                        GlossaryEnergy.CO2PerUse: 2.86,
                         'CO2_per_use_unit': 'kg/kg',
                         # Whittaker, C., Macalpine, W., Yates, N.E. et al.
                         # Dry Matter Losses and Methane Emissions During Wood Chip Storage: the Impact on Full Life Cycle Greenhouse Gas Savings of Short Rotation Coppice Willow for Heat. Bioenerg. Res. 9, 820-835 (2016). https://doi.org/10.1007/s12155-016-9728-0

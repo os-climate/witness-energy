@@ -268,7 +268,7 @@ class EnergyMixTestCase(unittest.TestCase):
 
         CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
         self.CO2_per_use_biomass = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'CO2_per_use': CO2_per_use_biomass})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: CO2_per_use_biomass})
 
         CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
         self.CO2_emissions_biomass = pd.DataFrame(
@@ -352,8 +352,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -362,7 +362,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
                        f'{name}.{model_name}.{agriculture_mix}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices_biomass,
-                       f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+                       f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2PerUse}': self.CO2_per_use_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
@@ -371,8 +371,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -444,8 +444,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -456,8 +456,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -527,8 +527,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -539,8 +539,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,

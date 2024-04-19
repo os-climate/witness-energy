@@ -115,14 +115,14 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             carbon_emissions = techno_disc.get_sosdisc_outputs('CO2_emissions_detailed')
             CO2_per_use = np.zeros(len(year_list))
 
-            if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+            if GlossaryEnergy.CO2PerUse in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(year_list)) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(year_list)) * data_fuel_dict[GlossaryEnergy.CO2PerUse] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(year_list)) * data_fuel_dict['CO2_per_use']
+                        len(year_list)) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             for emission_type in carbon_emissions:
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \

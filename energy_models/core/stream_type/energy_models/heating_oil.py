@@ -33,7 +33,7 @@ class HeatingOil(EnergyType):
                         # CO2 per use = (val_naphta + val_oils)/2.0
                         # CO2 per use = (3.04 [10.26/3.37] + 3.37
                         # [8.5/2.52])/2.0
-                        'CO2_per_use': 2.82,
+                        GlossaryEnergy.CO2PerUse: 2.82,
                         'CO2_per_use_unit': 'kg/kg',
                         # Source: U.S. Energy Information Administration
                         # https://www.eia.gov/outlooks/steo/tables/pdf/2tab.pdf

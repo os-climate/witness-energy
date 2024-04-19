@@ -94,7 +94,7 @@ class ConsumptionCO2Emissions(BaseStream):
         self.sub_consumption_dict = {}
 
         for energy in self.energy_list:
-            self.co2_per_use[energy] = inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use']
+            self.co2_per_use[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse]
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \

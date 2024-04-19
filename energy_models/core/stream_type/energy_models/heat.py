@@ -29,7 +29,7 @@ class lowtemperatureheat(EnergyType):
 
 
 class mediumtemperatureheat(EnergyType):
-    name = GlossaryEnergy.heat + '.' + 'mediumtemperatureheat'
+    name = GlossaryEnergy.mediumtemperatureheat_energyname
     short_name = 'medium heat'
     default_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
                            'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']

@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CHPMediumHeat(mediumheattechno):
@@ -39,7 +40,7 @@ class CHPMediumHeat(mediumheattechno):
     def compute_production(self):
         # CO2 production
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
+                                                                                            GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[
@@ -49,19 +50,6 @@ class CHPMediumHeat(mediumheattechno):
             (self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] /
              (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[
                 f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                        f'{Methane.name}_needs'] * \
-                                                                                    self.production_detailed[
-                                                                                        f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
-
-
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

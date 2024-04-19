@@ -64,7 +64,7 @@ class GeothermalTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.mediumtemperatureheat_energyname: 1.23})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -104,7 +104,7 @@ class GeothermalTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

@@ -41,7 +41,7 @@ class HydrotreatedOilFuel(EnergyType):
                         # Trade-off between NOx, Particulate Emission, and Fuel Consumption of a Heavy Duty Engine.
                         # SAE International Journal of Engines, 1(1), pp.1251-1262.
                         # https://www.etipbioenergy.eu/images/SAE_Study_Hydrotreated_Vegetable_Oil_HVO_as_a_Renewable_Diesel_Fuel.pdf
-                        'CO2_per_use': 3.15,
+                        GlossaryEnergy.CO2PerUse: 3.15,
                         'CO2_per_use_unit': 'kg/kg',
                         'lower_heating_value': 44,
                         'lower_heating_value_unit': 'MJ/kg',
