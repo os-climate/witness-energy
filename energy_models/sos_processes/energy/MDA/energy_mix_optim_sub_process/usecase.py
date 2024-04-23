@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -680,7 +681,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.DesignVariables.design_var_descriptor": design_var_descriptor,
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
-            f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.SectorListValue}": [],
+            f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
             f"{self.study_name}.{self.coupling_name}.sub_mda_class": "GSPureNewtonMDA",
         }

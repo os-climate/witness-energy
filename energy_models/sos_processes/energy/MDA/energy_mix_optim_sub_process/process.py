@@ -113,6 +113,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_resource': f'{ns_study}',
             GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
+            GlossaryEnergy.NS_GHGEMISSIONS: f'{self.ee.study_name}.{GHGemissionsDiscipline.name}',
         }
 
         emissions_mod_dict = {
