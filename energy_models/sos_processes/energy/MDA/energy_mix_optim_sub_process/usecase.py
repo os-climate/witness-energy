@@ -601,9 +601,9 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
             f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
-            f"{self.study_name}.{self.coupling_name}.CO2_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.CH4_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.N2O_land_emissions": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
         }
 
