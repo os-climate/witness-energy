@@ -49,33 +49,6 @@ class Nuclear(ElectricityTechno):
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
         #       self.techno_infos_dict['efficiency']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
-        # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        # Uranium resource consumption, total (electricity production/ efficiency) / (calorific value of Uranium per Mega Ton)
-        # https://www.euronuclear.org/glossary/fuel-comparison/
-
-        '''
-        One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
-        => 1 kg of fuel => 8.33 kg of ore
-        '''
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
-            (self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] /
-             self.techno_infos_dict['efficiency']) / 24000000.00
-
-        water_needs = self.get_theoretical_water_needs()
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = water_needs * \
-                                                                        self.production_detailed[
-                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-
 
     def compute_consumption_and_installed_power(self):
         """

@@ -27,7 +27,7 @@ class LiquidHydrogen(EnergyType):
     unit = 'TWh'
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
-                        'CO2_per_use': 0.0,
+                        GlossaryEnergy.CO2PerUse: 0.0,
                         'CO2_per_use_unit': 'kg/kg',
                         # 'cost_now': 14.24,  #
                         # 'cost_now_unit': '$/kg',

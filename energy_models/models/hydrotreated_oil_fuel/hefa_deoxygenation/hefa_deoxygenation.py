@@ -55,31 +55,6 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = water_prod_factor * self.production_detailed[
             f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / water_calorific_value
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
-
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                                f'{GaseousHydrogen.name}_needs'] * \
-                                                                                            self.production_detailed[
-                                                                                                f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']
-
-        naturaloil_data = NaturalOil.data_energy_dict
-        self.consumption_detailed[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           f'{NaturalOil.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
-                                                                                       self.cost_details['efficiency'] * \
-                                                                                       naturaloil_data[
-                                                                                           'calorific_value']
-
     def get_theoretical_natural_oil_needs(self):
         """
        oil + 15H2 = 3fuel + 6H20 (hydrogenation + deoxygenation)

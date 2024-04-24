@@ -197,27 +197,27 @@ class SyngasDiscipline(EnergyDiscipline):
                 outputs_dict['syngas_ratio'] / 100.0, type_cal='high_calorific_value')
 
             co2_per_use = deepcopy(self.get_sosdisc_inputs(
-                'data_fuel_dict')['CO2_per_use'])
+                'data_fuel_dict')[GlossaryEnergy.CO2PerUse])
             if co2_per_use != 0:
                 grad_carbon_tax_vs_prod = -grad_syngas_prod * fprimesgx * \
-                                          outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                                          outputs_dict[GlossaryEnergy.CO2PerUse][GlossaryEnergy.CO2PerUse].values ** 2 / \
                                           co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_prod = [0] * len(grad_syngas_prod)
 
             self.set_partial_derivative_for_other_types(
-                ('CO2_per_use', 'CO2_per_use'),
+                (GlossaryEnergy.CO2PerUse, GlossaryEnergy.CO2PerUse),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_carbon_tax_vs_prod)
 
             if co2_per_use != 0:
                 grad_carbon_tax_vs_syngas_ratio = -mix_weight_techno * fprimesgx * \
-                                                  outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                                                  outputs_dict[GlossaryEnergy.CO2PerUse][GlossaryEnergy.CO2PerUse].values ** 2 / \
                                                   co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_syngas_ratio = [0] * len(mix_weight_techno)
             self.set_partial_derivative_for_other_types(
-                ('CO2_per_use', 'CO2_per_use'),
+                (GlossaryEnergy.CO2PerUse, GlossaryEnergy.CO2PerUse),
                 (f'{techno}.syngas_ratio',),
                 np.atleast_2d(grad_carbon_tax_vs_syngas_ratio).T)
 

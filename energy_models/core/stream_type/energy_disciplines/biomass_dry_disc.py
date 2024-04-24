@@ -70,7 +70,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
         technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         co2_per_use = self.get_sosdisc_outputs(
-            'CO2_per_use')
+            GlossaryEnergy.CO2PerUse)
 
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
@@ -86,7 +86,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
             # if there is a better way to know which technology is zero
             # emissions
             if technology == 'UnmanagedWood':
-                co2_per_use = co2_per_use['CO2_per_use'].values * \
+                co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse].values * \
                               techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
         serie = InstanciatedSeries(
             year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')

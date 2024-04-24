@@ -28,7 +28,7 @@ class LiquefiedPetroleumGas(EnergyType):
                         'WACC': 0.1,
                         # ADEME, CO2 per kg combustion in Europe = 3.15
                         # https://www.bilans-ges.ademe.fr/documentation/UPLOAD_DOC_EN/index.htm?new_liquides.htm
-                        'CO2_per_use': 2.82,
+                        GlossaryEnergy.CO2PerUse: 2.82,
                         'CO2_per_use_unit': 'kg/kg',
                         'cost_now': 0.35,  # around half of kero_price
                         'cost_now_unit': '$/kg',

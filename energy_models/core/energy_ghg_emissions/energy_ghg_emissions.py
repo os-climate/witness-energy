@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
 from energy_models.core.stream_type.base_stream import BaseStream
@@ -317,8 +318,8 @@ class EnergyGHGEmissions(BaseStream):
     def compute_gwp(self):
 
         for ghg in self.GHG_TYPE_LIST:
-            self.gwp_emissions[f'{ghg}_20'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_20[ghg]
-            self.gwp_emissions[f'{ghg}_100'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_100[ghg]
+            self.gwp_emissions[f'{ghg}_20'] = self.ghg_total_emissions[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_20[ghg]
+            self.gwp_emissions[f'{ghg}_100'] = self.ghg_total_emissions[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_100[ghg]
 
     def compute_grad_total_co2_emissions(self, net_production):
 

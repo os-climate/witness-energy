@@ -71,8 +71,11 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         self.energy_name = GlossaryEnergy.carbon_storage
 
+        self.energy_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry: 2.43})
+
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0})
+            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry : 2.43})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
@@ -145,9 +148,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,

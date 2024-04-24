@@ -284,11 +284,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                         # Biomass energy is computed by the agriculture model
                         dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
-                        dynamic_inputs[f'{ns_energy}.CO2_per_use'] = {
+                        dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2PerUse}'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      GlossaryEnergy.CO2Tax: ('float', None, True),
-                                                     'CO2_per_use': ('float', None, True),
+                                                     GlossaryEnergy.CO2PerUse: ('float', None, True),
                                                      },
                         }
                         dynamic_inputs[f'{ns_energy}.losses_percentage'] = {
@@ -301,7 +301,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         # Valid for biomass which is in agriculture node
                         if ns_energy != energy:
                             for new_var in [f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}',
-                                            f'{ns_energy}.CO2_per_use',
+                                            f'{ns_energy}.{GlossaryEnergy.CO2PerUse}',
                                             f'{ns_energy}.losses_percentage']:
                                 dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY})
@@ -505,8 +505,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                 f'{agri_name}.{GlossaryEnergy.LandUseRequiredValue}')
             inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.CO2EmissionsValue}')
-            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
-                f'{agri_name}.CO2_per_use')
+            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2PerUse}'] = inputs_dict_orig.pop(
+                f'{agri_name}.{GlossaryEnergy.CO2PerUse}')
             inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
                 f'{agri_name}.losses_percentage')
 
@@ -814,11 +814,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                     np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
                     ('energy_prices_after_tax', energy), (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
-                    inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values *
+                    inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values *
                     np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
                     ('energy_prices_after_tax',
-                     energy), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                     energy), (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values *
                     np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
@@ -856,7 +856,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             ns_energy = self.get_ns_energy(energy)
             if energy in energies:
                 mix_weight_energy = mix_weight[energy].values
-                dmean_price_dco2_tax += inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values * \
+                dmean_price_dco2_tax += inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values * \
                                         mix_weight_energy
                 d_emp = mix_weight_energy * np.identity(len(years))
                 self.set_partial_derivative_for_other_types(
@@ -871,12 +871,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                 d_emp = inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values * mix_weight_energy * np.identity(len(years))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
-                    (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                    (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     d_emp)
                 d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
-                    (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                    (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     d_emp_obj)
                 dmean_price_dprod = self.compute_dmean_price_dprod(
                     energy, energies,
@@ -1088,7 +1088,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             elif last_part_key == 'co2_per_use':
                 self.set_partial_derivative_for_other_types(
                     (co2_variable,
-                     co2_emission_column), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                     co2_emission_column), (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     np.identity(len(years)) * value / 1.0e3)
 
             else:

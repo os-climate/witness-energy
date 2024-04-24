@@ -50,27 +50,6 @@ class BiomassFermentation(EthanolTechno):
                                                                                    f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                                self.cost_details['efficiency']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{Ethanol.name} ({self.product_energy_unit})'] / \
-                                                                                        self.cost_details['efficiency']
-
-        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                           f'{BiomassDry.name}_needs'] * \
-                                                                                       self.production_detailed[
-                                                                                           f'{Ethanol.name} ({self.product_energy_unit})'] / \
-                                                                                       self.cost_details['efficiency']
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[
-                                                                            f'{Ethanol.name} ({self.product_energy_unit})']
-
     def get_theoretical_biomass_needs(self):
         """
         56 pounds of corn --> 17 pounds of captured CO2 + 2.9 gallons on Ethanol

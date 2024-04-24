@@ -28,12 +28,12 @@ class LiquidFuel(EnergyType):
                         # https://www.icao.int/environmental-protection/CarbonOffset/Documents/Methodology%20ICAO%20Carbon%20Calculator_v10-2017.pdf
                         # Alternative source:ADEME, CO2 per kg combustion in Europe = 3.15
                         # https://www.bilans-ges.ademe.fr/documentation/UPLOAD_DOC_EN/index.htm?new_liquides.htm
-                        'CO2_per_use': 3.15,
+                        GlossaryEnergy.CO2PerUse: 3.15,
                         'CO2_per_use_unit': 'kg/kg',
                         # https://www.ipcc-nggip.iges.or.jp/public/gp/bgp/2_4_Water-borne_Navigation.pdf
                         # 0.006 kt/PJ and only the burned part is taken
                         # (industry part below is deleted)
-                        'N2O_per_use': 0.006e-3 / 0.277 * (1.0 - 0.14 - 0.08),
+                        GlossaryEnergy.N2OPerUse: 0.006e-3 / 0.277 * (1.0 - 0.14 - 0.08),
                         'N2O_per_use_unit': 'Mt/TWh',
 
                         # ref : U.S. Energy Information Administration EIA
@@ -95,7 +95,7 @@ class LiquidFuel(EnergyType):
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
         if ghg_type == 'CO2':
-            co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
+            co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
                                 self.data_energy_dict_input['construction_use_part'])
 

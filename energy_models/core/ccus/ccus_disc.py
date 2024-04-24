@@ -273,7 +273,7 @@ class CCUS_Discipline(SoSWrapp):
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'),
+                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                         np.identity(len(years)) * value)
 
                 else:
@@ -312,7 +312,7 @@ class CCUS_Discipline(SoSWrapp):
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.CO2_per_use', 'CO2_per_use'),
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                         np.identity(len(years)) * value / 1.0e3)
                 elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
@@ -366,7 +366,7 @@ class CCUS_Discipline(SoSWrapp):
                                 scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.CO2_per_use', 'CO2_per_use'), value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse), value)
                 elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{CO2.name} for food (Mt)'), value)

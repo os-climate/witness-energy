@@ -30,14 +30,3 @@ class WetCropResidues(WetBiomassTechno):
         self.production_detailed[f'{CO2.name} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
                                                        self.data_energy_dict['calorific_value'] * \
                                                        self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        self.consumption_detailed[f'{Electricity.name} (kWh)'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                 self.production_detailed[
-                                                                     f'{WetBiomassTechno.energy_name} (kWh)']  # in kWH
-
-

@@ -22,6 +22,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class GasElec(ElectricityTechno):
@@ -44,18 +45,6 @@ class GasElec(ElectricityTechno):
         self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ?
-        """
-        # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                        'kwh_methane/kwh'] * \
-                                                                                    self.production_detailed[
-                                                                                        f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
@@ -74,7 +63,7 @@ class GasElec(ElectricityTechno):
         '''
         methane_data = Methane.data_energy_dict
         # kg of C02 per kg of methane burnt
-        methane_co2 = methane_data['CO2_per_use']
+        methane_co2 = methane_data[GlossaryEnergy.CO2PerUse]
         # Amount of methane in kwh for 1 kwh of elec
         methane_need = self.techno_infos_dict['kwh_methane/kwh']
         calorific_value = methane_data['calorific_value']  # kWh/kg

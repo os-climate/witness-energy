@@ -60,9 +60,9 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
             # print('energy', energy)
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
-            self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
+            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
+            self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CH4PerUse]['value']
+            self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.N2OPerUse]['value']
             self.energy_production[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
@@ -125,18 +125,18 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
 
         for energy in self.energy_list:
             if energy == GlossaryEnergy.biomass_dry:
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.CH4PerUse}'] = self.CH4_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
 
-                inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
-                inputs_dict[f'{self.name}.{energy}.CH4_per_use'] = self.CH4_per_use[energy]
-                inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CH4PerUse}'] = self.CH4_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[
                     energy]
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[

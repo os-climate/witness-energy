@@ -88,16 +88,6 @@ class CropEnergy(BiomassDryTechno):
                                                                                                    self.production_mix[
                                                                                                        name_crop]
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Compute part for energy and details for crop and residues
-        """
-        self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
-                                                                      self.data_energy_dict['high_calorific_value'] * \
-                                                                      self.production_detailed[
-                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
-
     def compute_land_use(self):
         """
         Compute land use only for the crop energy (production * (1-residue_density))
@@ -195,3 +185,6 @@ class CropEnergy(BiomassDryTechno):
                                        self.techno_infos_dict['density_per_ha']
 
         return dlanduse_dinvest
+
+    def compute_resources_needs(self):
+        self.cost_details[f'{CO2.name}_needs'] = -self.techno_infos_dict['CO2_from_production'] / self.data_energy_dict['high_calorific_value']

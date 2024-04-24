@@ -23,7 +23,7 @@ class Carbon(BaseStream):
     name = ResourceGlossary.CarbonResource
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
-                        'CO2_per_use': ResourceGlossary.Carbon[GlossaryEnergy.CO2EmissionsValue],
+                        GlossaryEnergy.CO2PerUse: ResourceGlossary.Carbon[GlossaryEnergy.CO2EmissionsValue],
                         'CO2_per_use_unit': 'kg/kg',
                         'density': 2267.0,
                         'density_unit': 'kg/m^3',

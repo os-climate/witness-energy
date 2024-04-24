@@ -19,6 +19,7 @@ import unittest
 from os.path import join, dirname
 
 import numpy as np
+import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -50,7 +51,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.CO2_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
             self.energy_production[f'{energy}'] = \
             streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
@@ -97,10 +98,9 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
             f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list
         }
         for energy in self.energy_list:
-            inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = GlossaryEnergy.get_random_dataframe(years=self.years, df_variable=GlossaryEnergy.CO2PerUseDf)
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
-                energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
 
         for energy in self.ccs_list:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]

@@ -31,9 +31,9 @@ class BioGas(EnergyType):
                         # 10.1080/10934529.2018.1459076
                         # https://www.tandfonline.com/doi/pdf/10.1080/10934529.2018.1459076
                         # 83.6 kg/GJ ---> /277.78 kg/kWh
-                        'CO2_per_use': 83.6 / 277.78,
+                        GlossaryEnergy.CO2PerUse: 83.6 / 277.78,
                         'CO2_per_use_unit': 'kg/kWh',
-                        #                         'CO2_per_use': 0.4 * 1.98 + 2.86*0.657*0.6,
+                        #                         GlossaryEnergy.CO2PerUse: 0.4 * 1.98 + 2.86*0.657*0.6,
                         #                         'CO2_per_use_unit': 'kg/kg',
 
                         # Combination of CH4 and CO2 densities

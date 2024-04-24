@@ -283,7 +283,7 @@ limitations under the License.
 #
 #         CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
 #         self.CO2_per_use_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'CO2_per_use': CO2_per_use_biomass})
+#             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: CO2_per_use_biomass})
 #
 #         CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
 #         self.CO2_emissions_biomass = pd.DataFrame(
@@ -1056,7 +1056,7 @@ limitations under the License.
 #         energy_list = full_values_dict['Test.energy_list']
 #
 #         inputs_names = [
-#             f'{name}.{model_name}.{energy}.CO2_per_use' for energy in energy_list if
+#             f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2PerUse}' for energy in energy_list if
 #             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients.pkl',
@@ -1175,7 +1175,7 @@ limitations under the License.
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices_biomass,
-#                        f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+#                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2PerUse}': self.CO2_per_use_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_biomass,
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
@@ -1183,8 +1183,8 @@ limitations under the License.
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
-#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
-#                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
+#                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, GlossaryEnergy.CO2PerUse: 0.0}),
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
 #                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_methane,
@@ -1205,7 +1205,7 @@ limitations under the License.
 #                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
 #                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}',
 #                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}',
-#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}',
 #                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}',
 #                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}',
 #                                     f'{name}.AgricultureMix.{GlossaryEnergy.EnergyConsumptionValue}',

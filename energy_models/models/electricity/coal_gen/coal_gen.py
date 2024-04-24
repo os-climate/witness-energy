@@ -34,7 +34,7 @@ class CoalGen(ElectricityTechno):
 
     def compute_other_energies_needs(self):
         # in kwh of fuel by kwh of electricity
-        self.cost_details['solid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
+        self.cost_details[f'{SolidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / \
                                                 self.cost_details['efficiency']
 
     def compute_production(self):
@@ -51,21 +51,6 @@ class CoalGen(ElectricityTechno):
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-        # Consumption
-        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                          'solid_fuel_needs'] * \
-                                                                                      self.production_detailed[
-                                                                                          f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[
-                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
-
-
 
     def compute_consumption_and_installed_power(self):
         """

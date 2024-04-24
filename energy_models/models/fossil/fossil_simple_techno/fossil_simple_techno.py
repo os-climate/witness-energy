@@ -36,7 +36,7 @@ class FossilSimpleTechno(FossilTechno):
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels
-        co2_per_use = self.data_energy_dict['CO2_per_use'] / \
+        co2_per_use = self.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
                       self.data_energy_dict['calorific_value']
         co2_from_raw_to_net = self.production_detailed[
                                   f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (

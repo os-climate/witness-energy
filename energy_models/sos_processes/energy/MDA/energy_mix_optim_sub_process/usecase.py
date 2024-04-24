@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -463,9 +464,9 @@ class Study(EnergyStudyManager):
     def get_input_value_from_agriculture_mix(self):
         agri_mix_name = "AgricultureMix"
 
-        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "N2O_per_use": 5.34e-5})
-        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CH4_per_use": 0.0})
-        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277})
+        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5})
+        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0})
+        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277})
 
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
         energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
@@ -601,9 +602,9 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
             f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
-            f"{self.study_name}.{self.coupling_name}.CO2_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.CH4_land_emissions": co2_land_emissions,
-            f"{self.study_name}.{self.coupling_name}.N2O_land_emissions": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
         }
 
@@ -680,6 +681,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.DesignVariables.design_var_descriptor": design_var_descriptor,
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
+            f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
             f"{self.study_name}.{self.coupling_name}.sub_mda_class": "GSPureNewtonMDA",
         }

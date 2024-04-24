@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.techno_type.techno_type import TechnoType
 
@@ -25,6 +25,14 @@ class CSTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
         self.product_energy_unit = 'Mt'
+
+    def compute_capital_recovery_factor(self, data_config):
+        return 1
+
+    def compute_energies_consumption(self):
+        # Consumption
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
+            f'{CSTechno.energy_name} ({self.product_energy_unit})']
 
     def check_capex_unity(self, data_tocheck):
         """
@@ -55,5 +63,3 @@ class CSTechno(TechnoType):
                 f'The unity of the energy demand {energy_demand_unit} is not handled with conversions')
 
         return energy_demand
-
-    
