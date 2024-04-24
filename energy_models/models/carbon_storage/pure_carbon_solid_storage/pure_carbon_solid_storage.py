@@ -29,23 +29,13 @@ class PureCarbonSS(CSTechno):
         super().__init__(name)
         self.carbon_to_be_stored_constraint = None
 
-    def compute_capital_recovery_factor(self, data_config):
-        return 1
-
-    
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_energies_consumption(self):
         # Consumption
         # Production is gaseous CO2 equivalent
         # COnsumption is real Carbon storage (C)
         self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[
                                                                              f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                         Carbon.data_energy_dict['CO2_per_use']
+                                                                         Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """

@@ -502,12 +502,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         self.production = self.production_detailed.fillna(0.0)
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
+    def compute_energies_consumption(self):
         # Compute elec demand from WGS
         elec_needs_wgs = self.costs_details_sg_techno[f'{GlossaryEnergy.electricity}_needs'] * \
                          self.cost_details['syngas_needs_for_FT'] / \
@@ -572,7 +567,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         return delec_consumption
 
-    def compute_CO2_emissions_from_resources_and_energies(self):
+    def compute_scope_2_emissions(self):
         ''' 
         Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
         '''
@@ -619,8 +614,8 @@ class FischerTropsch(LiquidFuelTechno):
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[
                                                 ResourceGlossary.WaterResource] * water_needs
 
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Syngas.name] + \
-               self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]
+        self.carbon_intensity['Scope 2'] = self.carbon_intensity[Electricity.name] + self.carbon_intensity[Syngas.name] + \
+                                           self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]
 
     def compute_dco2_emissions_dsyngas_ratio(self):
 

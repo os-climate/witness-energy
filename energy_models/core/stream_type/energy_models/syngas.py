@@ -36,7 +36,7 @@ class Syngas(EnergyType):
         # In Proceedings of the 58th International Convention of Society of Wood Science and Technology
         # June 7-12, 2015 Jackson Lake Lodge, Grand Teton National Park,
         # Wyoming, USA, pp. 376-389. (pp. 376-389).
-        'CO2_per_use': 2.38 * 0.095,
+        GlossaryEnergy.CO2PerUse: 2.38 * 0.095,
         'CO2_per_use_unit': 'kg/kg',
         'NOx_per_energy': 0.0,
         'NOX_per_energy_unit': 'mg/kg',

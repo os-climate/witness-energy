@@ -74,27 +74,3 @@ class CoalExtraction(SolidFuelTechno):
                                                                                       f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
                                                                                   self.techno_infos_dict[
                                                                                       'ch4_from_abandoned_mines']
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        # self.consumption[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
-        #     self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
-        #     self.cost_details['efficiency']  # in kWH
-
-        # Coal Consumption
-        self.consumption_detailed[f'{self.COAL_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[
-                                                                                         f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                     self.cost_details['efficiency'] / \
-                                                                                     SolidFuel.data_energy_dict[
-                                                                                         'calorific_value']  # in Mt

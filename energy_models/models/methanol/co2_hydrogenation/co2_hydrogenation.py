@@ -34,34 +34,6 @@ class CO2Hydrogenation(MethanolTechno):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        """
-
-        # Consumption
-
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = \
-            self.cost_details[f'{CarbonCapture.name}_needs'] * \
-            self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
-
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
-            self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
-
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = \
-            self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
-
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = \
-            self.cost_details[f'{Water.name}_needs'] * \
-            self.production_detailed[f'{Methanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
-
     def get_theoretical_co2_needs(self):
         """
         """

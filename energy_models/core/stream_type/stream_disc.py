@@ -19,6 +19,7 @@ import logging
 import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -94,24 +95,24 @@ class StreamDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                 'amine (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 'calcium (Mt)': ('float', None, True),
-                                                 'potassium (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 'carbon_resource (Mt)': ('float', None, True), }}
+                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True), }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 'amine (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 'calcium (Mt)': ('float', None, True),
-                                                 'potassium (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 'carbon_resource (Mt)': ('float', None, True),
+                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',

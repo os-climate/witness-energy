@@ -33,7 +33,7 @@ class Methanol(EnergyType):
                         # Engineering ToolBox, (2009).Combustion of Fuels - Carbon Dioxide Emission.[online]
                         # Available at: (https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html)
                         # [Accessed 20/06/2022].
-                        'CO2_per_use': 1.37,
+                        GlossaryEnergy.CO2PerUse: 1.37,
                         'CO2_per_use_unit': 'kg/kg',
 
                         'density': 792,

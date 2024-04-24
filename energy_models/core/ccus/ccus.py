@@ -227,14 +227,14 @@ class CCUS(BaseStream):
         self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'] = np.minimum(
             self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values,
             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'].values - self.total_co2_emissions[
-                f'Solid {Carbon.name} storage (Mt)'].values * Carbon.data_energy_dict['CO2_per_use']) + \
+                f'Solid {Carbon.name} storage (Mt)'].values * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]) + \
                                                                                     np.minimum(
                                                                                         self.total_co2_emissions[
                                                                                             f'{Carbon.name} to be stored (Mt)'].values,
                                                                                         self.total_co2_emissions[
                                                                                             f'Solid {Carbon.name} storage (Mt)'].values) * \
                                                                                     Carbon.data_energy_dict[
-                                                                                        'CO2_per_use']
+                                                                                        GlossaryEnergy.CO2PerUse]
 
         self.total_co2_emissions_Gt = pd.DataFrame(
             {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years],
@@ -515,7 +515,7 @@ class CCUS(BaseStream):
         mini1 = np.minimum(
             co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values,
             co2_emissions[f'{CarbonStorage.name} (Mt)'].values - co2_emissions[
-                f'Solid {Carbon.name} storage (Mt)'].values * Carbon.data_energy_dict['CO2_per_use'])
+                f'Solid {Carbon.name} storage (Mt)'].values * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse])
         limit_is_storage = np.maximum(0.0, np.sign(np.abs(
             mini1 - co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values)))
         limit_is_to_be_stored = np.ones(len_years) - limit_is_storage
@@ -524,19 +524,19 @@ class CCUS(BaseStream):
         # and the sign of abs (min(a,b)-a) is one
         mini2 = np.minimum(
             co2_emissions[f'{Carbon.name} to be stored (Mt)'].values,
-            co2_emissions[f'Solid {Carbon.name} storage (Mt)'].values) * Carbon.data_energy_dict['CO2_per_use']
+            co2_emissions[f'Solid {Carbon.name} storage (Mt)'].values) * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
         limit_is_solid_storage = np.maximum(0.0, np.sign(np.abs(
-            mini2 - co2_emissions[f'{Carbon.name} to be stored (Mt)'].values * Carbon.data_energy_dict['CO2_per_use'])))
+            mini2 - co2_emissions[f'{Carbon.name} to be stored (Mt)'].values * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse])))
         limit_is_solid_to_be_stored = np.ones(
             len_years) - limit_is_solid_storage
         new_key = f'{CarbonStorage.name} Limited by capture (Mt)'
         key_dep_tuple_list = [(f'{CarbonCapture.name} to be stored (Mt)', limit_is_to_be_stored),
                               (f'{Carbon.name} to be stored (Mt)',
-                               limit_is_solid_to_be_stored * Carbon.data_energy_dict['CO2_per_use']),
+                               limit_is_solid_to_be_stored * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]),
                               (f'{CarbonStorage.name} (Mt)', limit_is_storage),
                               (f'Solid {Carbon.name} storage (Mt)',
-                               (-limit_is_storage + limit_is_solid_storage) * Carbon.data_energy_dict['CO2_per_use'])]
+                               (-limit_is_storage + limit_is_solid_storage) * Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse])]
         dtot_CO2_emissions = update_new_gradient(
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 

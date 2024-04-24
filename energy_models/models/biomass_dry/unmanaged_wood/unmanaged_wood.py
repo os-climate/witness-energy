@@ -147,16 +147,6 @@ class UnmanagedWood(BiomassDryTechno):
                                                                      self.production_detailed[
                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
     def compute_price(self):
         prices = BiomassDryTechno.compute_price(self)
         unmanaged_price = deepcopy(self.cost_details[self.name])

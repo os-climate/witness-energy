@@ -412,22 +412,13 @@ class RWGS(SyngasTechno):
                                                                        self.production_detailed[
                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_consumption(self):
+    def compute_energies_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
 
-
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-                                                                                   self.production_detailed[
-                                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        super().compute_energies_consumption()
 
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
                                                                                 self.production_detailed[

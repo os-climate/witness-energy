@@ -15,6 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -187,6 +188,8 @@ class ResourceGlossary:
         GlossaryEnergy.SMR: [WaterResource],
         GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource],
         GlossaryEnergy.HefaDeoxygenation: [NaturalOilResource],
+        GlossaryEnergy.BiomassGasification: [WaterResource],
+        GlossaryEnergy.CropEnergy: [CO2Resource]
     }
 
     # dictionnary of energies used by each techno
@@ -251,4 +254,35 @@ class ResourceGlossary:
         GlossaryEnergy.SMR: [GlossaryEnergy.electricity, GlossaryEnergy.methane],
         GlossaryEnergy.AnimalManure: [GlossaryEnergy.electricity],
         GlossaryEnergy.WetCropResidues: [GlossaryEnergy.electricity],
+        GlossaryEnergy.Geothermal: [GlossaryEnergy.mediumtemperatureheat_energyname]
     }
+
+    ResourcesList = [UraniumResource,
+                     WaterResource,
+                     SeaWaterResource,
+                     CO2Resource,
+                     BiomassDryResource,
+                     WetBiomassResource,
+                     NaturalOilResource,
+                     MethanolResource,
+                     SodiumHydroxideResource,
+                     WoodResource,
+                     CarbonResource,
+                     ManagedWoodResource,
+                     OxygenResource,
+                     DioxygenResource,
+                     CrudeOilResource,
+                     SolidFuelResource,
+                     CalciumResource,
+                     CalciumOxydeResource,
+                     PotassiumResource,
+                     PotassiumHydroxideResource,
+                     AmineResource,
+                     EthanolAmineResource,
+                     MonoEthanolAmineResource,
+                     GlycerolResource,
+                     NaturalGasResource,
+                     CoalResource,
+                     OilResource,
+                     CopperResource,
+                     PlatinumResource, ]

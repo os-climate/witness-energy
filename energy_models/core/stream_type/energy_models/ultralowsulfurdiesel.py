@@ -28,7 +28,7 @@ class UltraLowSulfurDiesel(EnergyType):
                         # Engineering ToolBox, (2009). Combustion of Fuels - Carbon Dioxide Emission.
                         # [online] Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
                         # [Accessed 17 12 2021]. Value for diesel
-                        'CO2_per_use': 3.13,
+                        GlossaryEnergy.CO2PerUse: 3.13,
                         'CO2_per_use_unit': 'kg/kg',
                         # Source: U.S. Energy Information Administration (13/12/2021)
                         # 2.6 dollar/gallon * (1/3.35) gallon/kg

@@ -582,7 +582,6 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.TransportDemandValue: np.linspace(33600.0, 30000.0, len(self.years)),
         })
 
-
         if not self.energy_invest_input_in_abs_value:
             # if energy investments are expressed in percentage, the new corresponding inputs must be defined
             invest_percentage_gdp = pd.DataFrame(
@@ -742,13 +741,13 @@ class Study(EnergyStudyManager):
         agri_mix_name = "AgricultureMix"
 
         N2O_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "N2O_per_use": 5.34e-5}
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5}
         )
         CH4_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "CH4_per_use": 0.0}
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0}
         )
         CO2_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277}
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277}
         )
 
         energy_consumption = pd.DataFrame(
@@ -795,5 +794,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

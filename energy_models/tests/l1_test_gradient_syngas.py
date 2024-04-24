@@ -2858,7 +2858,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.syngas_ratio',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.CO2_per_use',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2PerUse}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}'], )

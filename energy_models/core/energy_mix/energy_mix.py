@@ -263,7 +263,7 @@ class EnergyMix(BaseStream):
 
             if energy in self.energy_class_dict:
                 self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.CO2EmissionsValue}'][energy]
-                self.co2_emitted_by_energy[energy] = inputs_dict[f'{energy}.CO2_per_use']
+                self.co2_emitted_by_energy[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}']
 
         self.co2_emissions = self.sub_carbon_emissions.copy(deep=True)
         self.energy_prices = self.sub_prices.copy(deep=True)
@@ -480,7 +480,7 @@ class EnergyMix(BaseStream):
         for energy in self.subelements_list:
             if energy in self.energy_class_dict:
                 self.price_by_energy[energy] = self.sub_prices[energy].values + \
-                                               self.co2_emitted_by_energy[energy]['CO2_per_use'].values * \
+                                               self.co2_emitted_by_energy[energy][GlossaryEnergy.CO2PerUse].values * \
                                                self.carbon_tax[GlossaryEnergy.CO2Tax].values
 
     def compute_CO2_emissions_ratio(self):
@@ -493,7 +493,7 @@ class EnergyMix(BaseStream):
             if energy in self.energy_class_dict:
                 self.total_carbon_emissions[energy] = self.sub_carbon_emissions[energy]
                 self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
-                                                          self.co2_emitted_by_energy[energy]['CO2_per_use']
+                                                          self.co2_emitted_by_energy[energy][GlossaryEnergy.CO2PerUse]
 
     def compute_CO2_emissions(self):
         '''
@@ -531,7 +531,7 @@ class EnergyMix(BaseStream):
                 # If net energy is negative, CO2 by use is equals to zero
 
                 self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_emitted_by_energy[energy][
-                                                                       'CO2_per_use'] * np.maximum(
+                                                                       GlossaryEnergy.CO2PerUse] * np.maximum(
                     0.0, self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values)
                 self.emissions_by_energy[
                     energy] += self.co2_production[f'{energy} CO2 by use (Mt)'].values
@@ -808,11 +808,11 @@ class EnergyMix(BaseStream):
         #                 # however if we decrease the cons it does nothing
         #                 net_prod_sign = net_prod.copy()
         #                 net_prod_sign[net_prod_sign == 0] = 1
-        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy]['CO2_per_use'].values * \
+        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy][GlossaryEnergy.CO2PerUse].values * \
         #                     np.maximum(0, np.sign(net_prod_sign))
-        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy]['CO2_per_use'].values * \
+        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy][GlossaryEnergy.CO2PerUse].values * \
         #                     np.maximum(0, np.sign(net_prod))
-        # #                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
+        # #                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict[GlossaryEnergy.CO2PerUse] / \
         # #                             high_calorific_value * np.maximum(
         # 0.0, self.production[f'production {energy}
         # ({self.energy_class_dict[energy].unit})'].values)

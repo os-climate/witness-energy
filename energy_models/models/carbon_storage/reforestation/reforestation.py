@@ -16,27 +16,10 @@ limitations under the License.
 '''
 import numpy as np
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class Reforestation(CSTechno):
-
-    def compute_capital_recovery_factor(self, data_config):
-        return 1
-
-    
-
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
-            f'{CSTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_land_use(self):
         ''' Set the compute land use dataframe

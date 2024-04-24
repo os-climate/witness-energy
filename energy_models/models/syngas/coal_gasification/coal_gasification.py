@@ -27,7 +27,7 @@ class CoalGasification(SyngasTechno):
 
     def compute_other_energies_needs(self):
         # in kwh of fuel by kwh of syngas
-        self.cost_details['solid_fuel_needs'] = self.get_fuel_needs()
+        self.cost_details[f'{SolidFuel.name}_needs'] = self.get_fuel_needs()
 
 
     def compute_production(self):
@@ -38,17 +38,3 @@ class CoalGasification(SyngasTechno):
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
                                                                                             f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                          'solid_fuel_needs'] * \
-                                                                                      self.production_detailed[
-                                                                                          f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
-        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-

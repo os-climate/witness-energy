@@ -547,23 +547,6 @@ class WGS(GaseousHydrogenTechno):
         #     self.techno_infos_dict['low_heat_production'] * \
         #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
-    def compute_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-        # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
-                                                                                            f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-                                                                                   self.production_detailed[
-                                                                                       f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in kWH
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] * \
-                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']   # in kg
-
-
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)

@@ -43,7 +43,7 @@ class BiomassBFPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0})
+            {GlossaryEnergy.Years: years, 'CO2': 0, 'biomass_dry': 2.1})
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
 
@@ -102,10 +102,11 @@ class BiomassBFPriceTestCase(unittest.TestCase):
         except:
             traceback.print_exc()
         self.ee.display_treeview_nodes()
-
+        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        energy_price = pd.DataFrame({GlossaryEnergy.Years: years,
+                                    GlossaryEnergy.biomass_dry: 15.})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': energy_price,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

@@ -26,13 +26,18 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'BiogasFired',
-                             'Geothermal', 'CoalGen', 'OilGen', 'BiomassFired']
+                             #'Geothermal',todo : removed because was using medium heat temperature
+                             'CoalGen', 'OilGen', 'BiomassFired']
 TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                      'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
-                     'BiogasFired', 'Geothermal', 'CoalGen', 'OilGen', 'BiomassFired']
+                     'BiogasFired',
+                     #'Geothermal',todo : removed because was using medium heat temperature
+                     'CoalGen', 'OilGen', 'BiomassFired']
 TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                          'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
-                         'BiogasFired', 'Geothermal', 'CoalGen', 'OilGen', 'BiomassFired']
+                         'BiogasFired',
+                         #'Geothermal', todo : removed because was using medium heat temperature
+                         'CoalGen', 'OilGen', 'BiomassFired']
 
 
 class Study(EnergyMixStudyManager):

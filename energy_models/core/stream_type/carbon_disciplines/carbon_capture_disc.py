@@ -697,14 +697,14 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
         co2_per_use = self.get_sosdisc_outputs(
-            'CO2_per_use')
+            GlossaryEnergy.CO2PerUse)
 
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
             year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
             emission_list = techno_emissions[technology].values + \
-                            co2_per_use['CO2_per_use']
+                            co2_per_use[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'lines')
             new_chart.series.append(serie)

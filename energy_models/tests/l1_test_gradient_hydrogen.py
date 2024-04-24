@@ -257,8 +257,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.syngas_ratio = np.linspace(33.0, 209.0, len(self.years))
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(self.years)) * 34.,
-                                                    # price to be updated for
-                                                    # CO2
+                                                    
                                                     'CoElectrolysis': np.ones(len(self.years)) * 60.,
                                                     'BiomassGasification': np.ones(len(self.years)) * 50.
                                                     })
