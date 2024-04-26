@@ -22,7 +22,7 @@ import pandas as pd
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestEnergyInvest(AbstractJacobianUnittest):
