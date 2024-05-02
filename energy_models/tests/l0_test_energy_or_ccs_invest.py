@@ -25,12 +25,19 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class TestEnergyorCCSInvest(unittest.TestCase):
+class TestEnergyorCCSInvest(AbstractJacobianUnittest):
     """
     Energy or CCS test class
     """
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_03_energy_invest_disc_check_jacobian,
+            self.test_05_ccs_invest_disc_check_jacobian
+        ]
 
     def setUp(self):
         '''
@@ -138,7 +145,6 @@ class TestEnergyorCCSInvest(unittest.TestCase):
             self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
-
         self.ee.configure()
         self.ee.display_treeview_nodes()
         namespaced_input_dict = {
@@ -146,18 +152,14 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(namespaced_input_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
-                                              f'{self.name}.{self.model_name}.ccs_percentage'],
-                                      outputs=[
-                                          f'{self.name}.{self.model_name}.Energy.energy_investment',
-                                          f'{self.name}.{self.model_name}.ccs_investment'],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_energy_invest_or_ccs_disc.pkl'))
 
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_invest_or_ccs_disc.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                    f'{self.name}.{self.model_name}.ccs_percentage'],
+                            outputs=[f'{self.name}.{self.model_name}.Energy.energy_investment',
+                                     f'{self.name}.{self.model_name}.ccs_investment'], )
 
     def test_04_ccs_invest_disc(self):
         self.name = 'Energy'
@@ -218,14 +220,12 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.ee.execute()
         ccs_list = [CarbonCapture.name, CarbonStorage.name]
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{self.model_name}.ccs_investment',
-                                              f'{self.name}.{self.model_name}.invest_ccs_mix'],
-                                      outputs=[
-                                          f'{self.name}.{self.model_name}.{ccs}.{GlossaryEnergy.InvestLevelValue}' for
-                                          ccs in ccs_list],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_invest_ccs_disc.pkl'))
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_invest_ccs_disc.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.ccs_investment',
+                                    f'{self.name}.{self.model_name}.invest_ccs_mix'],
+                            outputs=[
+                                f'{self.name}.{self.model_name}.{ccs}.{GlossaryEnergy.InvestLevelValue}' for
+                                ccs in ccs_list], )
