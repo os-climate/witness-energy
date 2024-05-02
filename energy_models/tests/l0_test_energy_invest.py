@@ -24,12 +24,19 @@ import pandas as pd
 from energy_models.core.investments.energy_invest import EnergyInvest
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class TestEnergyInvest(unittest.TestCase):
+class TestEnergyInvest(AbstractJacobianUnittest):
     """
     Energy Invest test class
     """
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_06_techno_invest_disc_check_jacobian,
+            self.test_07_energy_invest_disc_check_jacobian,
+        ]
 
     def setUp(self):
         '''
@@ -40,7 +47,8 @@ class TestEnergyInvest(unittest.TestCase):
         self.y_step = 1
         self.energy_invest = EnergyInvest()
         self.energy_list = [
-            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
+            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
+            GlossaryEnergy.methane]
         self.energy_invest.set_energy_list(self.energy_list)
 
         self.years = np.arange(self.y_s, self.y_e + 1)
@@ -239,18 +247,16 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                              f'{self.name}.{self.model_name}.invest_techno_mix'],
-                                      outputs=[
-                                          f'{self.name}.{self.model_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'
-                                          for techno in technology_list],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_techno_invest_disc.pkl'))
 
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_techno_invest_disc.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                              f'{self.name}.{self.model_name}.invest_techno_mix'],
+                            outputs=[
+                                          f'{self.name}.{self.model_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'
+                                          for techno in technology_list], )
+
 
     def test_07_energy_invest_disc_check_jacobian(self):
 
@@ -270,7 +276,8 @@ class TestEnergyInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
+        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
+                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
                        f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
@@ -280,15 +287,13 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
-                                              f'{self.name}.{self.model_name}.invest_energy_mix'],
-                                      outputs=[
-                                          f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.InvestLevelValue}'
-                                          for energy in energy_list],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_energy_invest_disc.pkl'))
 
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_invest_disc.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                    f'{self.name}.{self.model_name}.invest_energy_mix'],
+                            outputs=[
+                                f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.InvestLevelValue}'
+                                for energy in energy_list], )
+

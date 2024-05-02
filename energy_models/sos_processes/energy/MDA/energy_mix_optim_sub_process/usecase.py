@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -585,6 +587,12 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.MaxBudgetValue: np.geomspace(3000, 6000, len(self.years))
         })
 
+        residential_energy_prod = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.TotalProductionValue: 0.
+        })
+
+
         values_dict = {
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
@@ -592,6 +600,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
+            f"{self.study_name}.{self.coupling_name}.{GHGemissionsDiscipline.name}.{GlossaryEnergy.ResidentialEnergyConsumptionDfValue}": residential_energy_prod,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,

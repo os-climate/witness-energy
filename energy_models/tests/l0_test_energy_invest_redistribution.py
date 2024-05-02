@@ -22,12 +22,19 @@ import pandas as pd
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class TestEnergyInvest(unittest.TestCase):
+class TestEnergyInvest(AbstractJacobianUnittest):
     """
     Energy Invest test class
     """
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_02_redistribution_invest_disc_gradient,
+            self.test_02_redistribution_invest_disc_gradient_wih_biomass_dry
+        ]
 
     def setUp(self):
         '''
@@ -123,17 +130,19 @@ class TestEnergyInvest(unittest.TestCase):
 
         # assert that for fossil techno and direct air capture, investment is 10% * 130 * 20% at 2020 and 20% * 190 * 20%
         fossil_invest_level = \
-        self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[
-            GlossaryEnergy.InvestValue].values
+            self.ee.dm.get_value(
+                f'{self.name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[
+                GlossaryEnergy.InvestValue].values
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]
         error_message = 'Error in investment, it is not equal to expected'
         self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 1e3 * 0.2, msg=error_message)
         self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
-        dac_invest_level = self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
-                                                f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
-            GlossaryEnergy.InvestValue].values
+        dac_invest_level = \
+            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
+                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+                GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]
         self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 1e3 * 0.2,
@@ -197,21 +206,16 @@ class TestEnergyInvest(unittest.TestCase):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}'
-                                              ],
-                                      outputs=
-                                      [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
-                                       all_technos_list] + [
-                                          f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_redistribution_invest_disc_wo_biomass.pkl'),
-                                      )
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_wo_biomass.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}'
+                                    ],
+                            outputs=[f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                     all_technos_list] + [
+                                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'], )
 
     def test_02_redistribution_invest_disc_gradient_wih_biomass_dry(self):
         self.name = 'Energy'
@@ -266,20 +270,15 @@ class TestEnergyInvest(unittest.TestCase):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}',
-                                              f'{self.name}.managed_wood_investment',
-                                              f'{self.name}.deforestation_investment',
-                                              f'{self.name}.crop_investment'],
-                                      outputs=
-                                      [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
-                                       all_technos_list] + [
-                                          f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_redistribution_invest_disc_w_biomass.pkl'),
-                                      )
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_w_biomass.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}',
+                                    f'{self.name}.managed_wood_investment',
+                                    f'{self.name}.deforestation_investment',
+                                    f'{self.name}.crop_investment'],
+                            outputs=[f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                     all_technos_list] + [
+                                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'], )
