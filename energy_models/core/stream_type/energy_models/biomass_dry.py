@@ -60,8 +60,9 @@ class BiomassDry(EnergyType):
                         # Food and Agriculture Organization of the United-Nations (FAO):
                         # https://www.fao.org/3/j4504e/j4504e08.htm
                         # H(w)= [15.40MJ.kg-1*0.27778kWh.MJ-1 *
-                        # (100-15)-2.44*15]/100 for wood moisturize
-                        'calorific_value': 3.6,  # mean calorific value residue / wood,
+                        # (100-15)-2.44*15]/100 = 3.6 for wood moisturize
+                        # to match with the IEA NZE scenario, value of 5.61 is considered
+                        'calorific_value': 5.61,  # mean calorific value residue / wood,
                         # lower value for electricity use
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 5.61,
