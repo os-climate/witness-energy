@@ -49,7 +49,6 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 0.0175,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 1,

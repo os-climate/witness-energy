@@ -95,7 +95,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
                                  'learning_rate': 0.083,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # IEA 2022, World Energy Outlook 2014,
                                  # https://www.iea.org/reports/world-energy-outlook-2014
                                  # License: CC BY 4.0.

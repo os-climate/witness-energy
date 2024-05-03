@@ -56,7 +56,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 230.0,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',

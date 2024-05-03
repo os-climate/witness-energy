@@ -60,7 +60,6 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 0.8,  #
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 0.9,
