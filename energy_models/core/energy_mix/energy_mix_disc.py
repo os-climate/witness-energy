@@ -183,14 +183,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                            'namespace': GlossaryEnergy.NS_FUNCTIONS},
-        GlossaryEnergy.AllStreamsDemandRatioValue: {'type': 'dataframe', 'unit': '-',
-                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                    'namespace': 'ns_energy',
-                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                                                             GlossaryEnergy.CO2Tax: (
-                                                                             'float', None, True)}
-                                                    },
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_FUNCTIONS},
         'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -359,6 +351,15 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'CarbonStorageTechno (Gha)': ('float', None, True),
                                                      f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno (Gha)': (
                                                          'float', None, True), }}
+
+        if GlossaryEnergy.energy_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
+            ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
+            if energy_list is not None and ccs_list is not None:
+                all_stream_variable = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.AllStreamsDemandRatio)
+                df_descr = {energy_name: ('float', None, True) for energy_name in energy_list + ccs_list}
+                all_stream_variable["dataframe_descriptor"].update(df_descr)
+                dynamic_outputs[GlossaryEnergy.AllStreamsDemandRatioValue] = all_stream_variable
 
         self.update_default_with_years(inputs_dict)
 
