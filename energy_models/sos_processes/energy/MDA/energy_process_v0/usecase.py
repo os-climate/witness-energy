@@ -668,36 +668,28 @@ class Study(EnergyStudyManager):
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process
         if self.coarse_mode:
-            values_dict.update(
-                {f"{self.study_name}.EnergyMix.heat_losses_percentage": 0.0}
-            )
+            values_dict.update({f"{self.study_name}.EnergyMix.heat_losses_percentage": 0.0})
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
 
             invest_mix_df = self.get_total_mix(instanciated_studies)
-            values_dict.update(
-                {
-                    f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df
-                }
-            )
+            values_dict.update({
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df
+            })
             self.update_dv_arrays_technos(invest_mix_df)
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             invest_mix_df = self.get_absolute_total_mix(instanciated_studies)
-            values_dict.update(
-                {
-                    f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df
-                }
-            )
+            values_dict.update({
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df
+            })
             self.update_dv_arrays_technos(invest_mix_df)
             self.add_utilization_ratio_dv(instanciated_studies)
 
             if not self.energy_invest_input_in_abs_value:
                 # if energy investments are expressed in percentage, the new corresponding inputs must be defined
-                values_dict.update(
-                    {
+                values_dict.update({
                         f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}": invest_percentage_gdp,
                         f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}": invest_percentage_per_techno,
-                    }
-                )
+            })
 
         values_dict_list.append(values_dict)
 
@@ -740,41 +732,21 @@ class Study(EnergyStudyManager):
     def get_input_value_from_agriculture_mix(self):
         agri_mix_name = "AgricultureMix"
 
-        N2O_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5}
-        )
-        CH4_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0}
-        )
-        CO2_per_use = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277}
-        )
+        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5})
+        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0})
+        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277})
 
-        energy_consumption = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5}
-        )
-        energy_production = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5}
-        )
-        energy_prices = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.biomass_dry: 9.8,
-                "biomass_dry_wotaxes": 9.8,
-            }
-        )
+        energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
+        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
+        energy_prices = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.biomass_dry: 9.8,
+            "biomass_dry_wotaxes": 9.8,
+        })
 
-        land_use_required = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15}
-        )
-
-        CO2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277}
-        )
-
-        energy_type_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0}
-        )
+        land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
+        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
+        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
 
         agri_values_dict = {
             f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
@@ -794,4 +766,5 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

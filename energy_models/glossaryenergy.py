@@ -75,36 +75,38 @@ class GlossaryEnergy(GlossaryWitnessCore):
     mediumtemperatureheat = "mediumtemperatureheat"
     hightemperatureheat = "hightemperatureheat"
     mediumtemperatureheat_energyname = f"{heat}.{mediumtemperatureheat}"
-    AllEnergies = [biogas,
-                   biodiesel,
-                   biomass_dry,
-                   ethanol,
-                   electricity,
-                   fossil,
-                   fuel,
-                   gasoline,
-                   heating_oil,
-                   hydrogen,
-                   kerosene,
-                   liquid_fuel,
-                   liquid_hydrogen,
-                   gaseous_hydrogen,
-                   liquefied_petroleum_gas,
-                   hydrotreated_oil_fuel,
-                   methane,
-                   renewable,
-                   solid_fuel,
-                   syngas,
-                   ultra_low_sulfur_diesel,
-                   wet_biomass,
-                   carbon_capture,
-                   carbon_storage,
-                   direct_air_capture,
-                   flue_gas_capture,
-                   heat,
-                   lowtemperatureheat,
-                   mediumtemperatureheat,
-                   hightemperatureheat, ]
+    AllEnergies = [
+        biogas,
+        biodiesel,
+        biomass_dry,
+        ethanol,
+        electricity,
+        fossil,
+        fuel,
+        gasoline,
+        heating_oil,
+        hydrogen,
+        kerosene,
+        liquid_fuel,
+        liquid_hydrogen,
+        gaseous_hydrogen,
+        liquefied_petroleum_gas,
+        hydrotreated_oil_fuel,
+        methane,
+        renewable,
+        solid_fuel,
+        syngas,
+        ultra_low_sulfur_diesel,
+        wet_biomass,
+        carbon_capture,
+        carbon_storage,
+        direct_air_capture,
+        flue_gas_capture,
+        heat,
+        lowtemperatureheat,
+        mediumtemperatureheat,
+        hightemperatureheat,
+    ]
 
     LifetimeName = "lifetime"
     Transesterification = "Transesterification"
@@ -136,6 +138,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
+
+    AllStreamsDemandRatio = {
+        "type": "dataframe",
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": "ns_energy",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, YearEndDefaultCore], False),
+        }
+    }
 
     ResourcesUsedForProductionValue = "Resources used for production"
     ResourcesUsedForProduction = {
