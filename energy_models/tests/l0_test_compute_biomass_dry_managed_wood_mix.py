@@ -103,7 +103,7 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
 
     def test_02_managed_wood_discipline(self):
         self.name = 'Test'
-        self.model_name = 'ManagedWood'
+        self.model_name = GlossaryEnergy.ManagedWood
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

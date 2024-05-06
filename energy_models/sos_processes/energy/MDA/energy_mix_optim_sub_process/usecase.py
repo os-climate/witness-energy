@@ -691,8 +691,9 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
-            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 500,
+            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-12,
+            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
         }
 
         dvar_values = self.get_dvar_values(dspace)

@@ -156,7 +156,7 @@ class ResourceGlossary:
     GlossaryDict = {
         'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, 'CO2': CO2, 'BiomassDry': BiomassDry,
         'WetBiomass': WetBiomass, 'NaturalOil': NaturalOil, 'Methanol': Methanol,
-        'SodiumHydroxide': SodiumHydroxide, 'Wood': Wood, 'Carbon': Carbon, 'ManagedWood': ManagedWood,
+        'SodiumHydroxide': SodiumHydroxide, 'Wood': Wood, 'Carbon': Carbon, GlossaryEnergy.ManagedWood: ManagedWood,
         'Oxygen': Oxygen, 'Dioxygen': Dioxygen, 'CrudeOil': CrudeOil, 'SolidFuel': SolidFuel,
         'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium,
         'PotassiumHydroxide': PotassiumHydroxide, 'Amine': Amine, 'EthanolAmine': EthanolAmine,
@@ -190,7 +190,8 @@ class ResourceGlossary:
         GlossaryEnergy.HefaDecarboxylation: [NaturalOilResource],
         GlossaryEnergy.HefaDeoxygenation: [NaturalOilResource],
         GlossaryEnergy.BiomassGasification: [WaterResource],
-        GlossaryEnergy.CropEnergy: [CO2Resource]
+        GlossaryEnergy.CropEnergy: [CO2Resource],
+        #GlossaryEnergy.OrganicWaste: [GlossaryEnergy.OrganicWasteValue]
     }
 
     # dictionnary of energies used by each techno

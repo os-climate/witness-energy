@@ -85,7 +85,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
             new_chart.series.append(serie)
             # if there is a better way to know which technology is zero
             # emissions
-            if technology == 'UnmanagedWood':
+            if technology == GlossaryEnergy.UnmanagedWood:
                 co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse].values * \
                               techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
         serie = InstanciatedSeries(

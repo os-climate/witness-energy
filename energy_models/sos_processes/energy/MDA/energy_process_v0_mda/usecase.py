@@ -101,6 +101,8 @@ class Study(StudyManager):
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.propagate_cache_to_children': True,
+            #f'{self.study_name}.debug_mode': 'min_max_couplings'
         }
         values_dict_list.append(numerical_values_dict)
 

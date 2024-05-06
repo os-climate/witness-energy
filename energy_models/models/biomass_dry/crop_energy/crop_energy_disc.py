@@ -69,12 +69,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     density_per_ha = 2903 * 1.25
 
     techno_infos_dict_default = {'maturity': 5,
-                                 # computed 87.7euro/ha, counting harvest,
-                                 # fertilizing, drying...from gov.mb.ca
-                                 # plus removing residue price:
-                                 # FACT_Sheet_Harvesting_Crop_Residues_-_revised_2016-2
-                                 # 22$/t for harvest residue + 23$/t for
-                                 # fertilizing => 37.5euro/ha for residues
                                  'Opex_percentage': 0.52,
                                  'Opex_percentage_for_residue_only': 0.15,
                                  # CO2 from production from tractor is taken

@@ -44,7 +44,7 @@ class Study(StudyManager):
         data = data_usecase.setup_usecase()
 
         values_mdo = {
-            f'{self.study_name}.{self.optim_name}.algo': 'L-BFGS-B',
+            f'{self.study_name}.{self.optim_name}.algo': 'SLSQP',
             f'{self.study_name}.{self.optim_name}.formulation': 'DisciplinaryOpt',
             f'{self.study_name}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
             f'{self.study_name}.{self.optim_name}.max_iter': 200,
@@ -57,5 +57,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
 # uc_cls.run()

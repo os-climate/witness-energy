@@ -20,7 +20,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class BiomassDry(EnergyType):
     name = GlossaryEnergy.biomass_dry
-    default_techno_list = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
+    default_techno_list = [GlossaryEnergy.ManagedWood, GlossaryEnergy.UnmanagedWood, GlossaryEnergy.CropEnergy, GlossaryEnergy.OrganicWaste]
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Raffa, D.W., Bogdanski, A. and Tittonell, P., 2015.

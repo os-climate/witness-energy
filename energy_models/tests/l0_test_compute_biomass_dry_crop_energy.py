@@ -91,7 +91,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
 
     def test_02_crop_residues_discipline(self):
         self.name = 'Test'
-        self.model_name = 'CropEnergy'
+        self.model_name = GlossaryEnergy.CropEnergy
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

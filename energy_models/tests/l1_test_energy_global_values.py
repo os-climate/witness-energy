@@ -773,19 +773,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #         biomass_dry_net_prod_iea = (36537355) / 3600  # TWh + 150882 + 519300
         #
         #         managed_wood_prod = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.ManagedWood.{GlossaryEnergy.TechnoProductionValue}')
+        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.ManagedWood}.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_managed_wood_prod = managed_wood_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
         #             managed_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
         #
         #         unmanaged_wood_prod = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.UnmanagedWood.{GlossaryEnergy.TechnoProductionValue}')
+        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.UnmanagedWood}.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_unmanaged_wood_prod = unmanaged_wood_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
         #             unmanaged_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
         #
         #         crop_energy_prod = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.CropEnergy.{GlossaryEnergy.TechnoProductionValue}')
+        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.CropEnergy}.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_crop_energy_prod = crop_energy_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
         #             crop_energy_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0

@@ -379,7 +379,6 @@ class TechnoType:
             self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
         self.capital_recovery_factor = self.compute_capital_recovery_factor(self.techno_infos_dict)
-        print(self.name, "WACC", self.techno_infos_dict['WACC'])
         self.compute_efficiency()
 
         self.energy_prices = self.energy_prices.loc[self.energy_prices[GlossaryEnergy.Years]

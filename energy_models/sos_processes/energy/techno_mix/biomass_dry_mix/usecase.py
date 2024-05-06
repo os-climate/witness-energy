@@ -25,8 +25,8 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-DEFAULT_TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
-TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.ManagedWood, GlossaryEnergy.UnmanagedWood, GlossaryEnergy.CropEnergy, GlossaryEnergy.OrganicWaste]
+TECHNOLOGIES_LIST = [GlossaryEnergy.ManagedWood, GlossaryEnergy.UnmanagedWood, GlossaryEnergy.CropEnergy, GlossaryEnergy.OrganicWaste]
 TECHNOLOGIES_LIST_DEV = []
 
 
@@ -46,16 +46,19 @@ class Study(EnergyMixStudyManager):
         invest_biomass_dry_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'ManagedWood' in self.technologies_list:
-            invest_biomass_dry_mix_dict['ManagedWood'] = [
+        if GlossaryEnergy.ManagedWood in self.technologies_list:
+            invest_biomass_dry_mix_dict[GlossaryEnergy.ManagedWood] = [
                 (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'UnmanagedWood' in self.technologies_list:
-            invest_biomass_dry_mix_dict['UnmanagedWood'] = [
+        if GlossaryEnergy.UnmanagedWood in self.technologies_list:
+            invest_biomass_dry_mix_dict[GlossaryEnergy.UnmanagedWood] = [
                 (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'CropEnergy' in self.technologies_list:
-            invest_biomass_dry_mix_dict['CropEnergy'] = np.linspace(1.0, .4, GlossaryEnergy.NB_POLES_FULL)
+        if GlossaryEnergy.CropEnergy in self.technologies_list:
+            invest_biomass_dry_mix_dict[GlossaryEnergy.CropEnergy] = np.linspace(1.0, .4, GlossaryEnergy.NB_POLES_FULL)
+
+        if GlossaryEnergy.OrganicWaste in self.technologies_list:
+            invest_biomass_dry_mix_dict[GlossaryEnergy.OrganicWaste] = np.linspace(1.0, .4, GlossaryEnergy.NB_POLES_FULL)
 
         if self.bspline:
             invest_biomass_dry_mix_dict[GlossaryEnergy.Years] = self.years
@@ -114,9 +117,10 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.ManagedWood.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.UnmanagedWood.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.CropEnergy.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.ManagedWood}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.UnmanagedWood}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.CropEnergy}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.CropEnergy}.{GlossaryEnergy.OrganicWasteValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
@@ -150,14 +154,4 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls.test()
