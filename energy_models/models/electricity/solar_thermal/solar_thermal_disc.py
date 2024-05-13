@@ -56,7 +56,6 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.062,
                                  'learning_rate': 0.07,  # JRC
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex : mean of JRC / IRENA /ATB NREL / ...
                                  'Capex_init': 5000,
                                  'Capex_init_unit': '$/kW',

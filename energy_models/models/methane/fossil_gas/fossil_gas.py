@@ -27,6 +27,19 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class FossilGas(MethaneTechno):
     NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
 
+    def get_fuel_needs(self):
+        """
+        Get the fuel needs for 1 kwh of the energy producted by the technology
+        """
+        if self.techno_infos_dict['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
+                                                      self.techno_infos_dict['fuel_demand'])
+
+        else:
+            fuel_need = 0.0
+
+        return fuel_need
+
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 

@@ -58,7 +58,6 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 500.0 / 1012.5,  # 500 euro/kw minimum capex
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 1012.5,  # for a power input of 2MW, decreases for 10 MW

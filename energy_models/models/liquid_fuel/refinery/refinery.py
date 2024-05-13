@@ -38,6 +38,19 @@ class Refinery(LiquidFuelTechno):
         self.dprod_dinvest = None
         self.dprod_list_dcapex_list = None
 
+    def get_fuel_needs(self):
+        """
+        Get the fuel needs for 1 kwh of the energy producted by the technology
+        """
+        if self.techno_infos_dict['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
+                                                      self.techno_infos_dict['fuel_demand'])
+
+        else:
+            fuel_need = 0.0
+
+        return fuel_need
+
     def configure_energy_data(self, inputs_dict):
         '''
         Configure energy data by reading the data_energy_dict in the right Energy class

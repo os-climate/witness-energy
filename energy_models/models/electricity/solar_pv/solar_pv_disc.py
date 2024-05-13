@@ -64,7 +64,6 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.075,  # Weighted averaged cost of capital. Source IRENA
                                  'learning_rate': 0.18,  # IEA 2011
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 1077,  # IEA 2019 Mean of regional value
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 1.0,  # No need of efficiency here
