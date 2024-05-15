@@ -64,7 +64,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # 0.1025 kt/PJ (mean) at gas power plants in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
                                  'CH4_emission_factor': 0.1025e-3 / 0.277,

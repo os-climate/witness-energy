@@ -132,10 +132,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
 
     # energy techno discipline names
-    FossilSimpleTechno = "FossilSimpleTechno"
-    RenewableSimpleTechno = "RenewableSimpleTechno"
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
-    CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
@@ -454,10 +451,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     # techno names
-    GeothermalLowHeat = "GeothermalLowHeat"
     CropEnergy = "CropEnergy"
     ManagedWood = "ManagedWood"
     UnmanagedWood = "UnmanagedWood"
+    OrganicWaste = "OrganicWaste"
     BiomassBuryingFossilization = "BiomassBuryingFossilization"
     CarbonStorageTechno = "CarbonStorageTechno"
     DeepOceanInjection = "DeepOceanInjection"

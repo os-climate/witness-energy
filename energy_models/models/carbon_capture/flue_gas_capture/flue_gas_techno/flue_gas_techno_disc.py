@@ -53,7 +53,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     carbon_capture_efficiency = 0.90
 
     techno_infos_dict_default = {'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'capacity_factor': 0.85,
                                  'maturity': 0,
                                  'Opex_percentage': 0,

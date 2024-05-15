@@ -47,13 +47,11 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.renewable]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         self.economics_df = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.GrossOutput,
-                                                  GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption,
-                                                  GlossaryEnergy.EnergyWasted])
+                                                  GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption])
         self.economics_df[GlossaryEnergy.Years] = self.years
         self.economics_df[GlossaryEnergy.GrossOutput] = np.linspace(140., 200., len(self.years))
         self.economics_df[GlossaryEnergy.OutputNetOfDamage] = np.linspace(130., 190., len(self.years))
         self.economics_df[GlossaryEnergy.PerCapitaConsumption] = 0.
-        self.economics_df[GlossaryEnergy.EnergyWasted] = 0.
         self.techno_list_fossil = ['FossilSimpleTechno']
         self.techno_list_renewable = ['RenewableSimpleTechno']
         self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',

@@ -71,7 +71,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
                                  # 'medium_heat_production_unit': 'TWh/kg',

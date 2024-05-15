@@ -58,7 +58,6 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
                                  GlossaryEnergy.electricity: 'hydropower',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 1704,  # IRENA
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,
