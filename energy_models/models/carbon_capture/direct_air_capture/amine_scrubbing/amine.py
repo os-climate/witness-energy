@@ -26,6 +26,19 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Amine(CCTechno):
+    def get_heat_needs(self):
+        """
+        Get the heat needs for 1 kwh of the energy producted by the technology
+        """
+
+        if 'heat_demand' in self.techno_infos_dict:
+            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
+                                                      self.techno_infos_dict['heat_demand'])
+
+        else:
+            heat_need = 0.0
+
+        return heat_need
 
     def compute_other_energies_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()

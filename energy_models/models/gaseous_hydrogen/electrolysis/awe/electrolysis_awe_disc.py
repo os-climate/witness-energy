@@ -58,7 +58,6 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.05,
                                  'maximum_learning_capex_ratio': 200 / 581.25,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 581.25,  # for a power input of 2MW, decreases for 10 MW

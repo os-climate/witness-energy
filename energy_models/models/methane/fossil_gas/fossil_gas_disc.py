@@ -58,7 +58,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'elec_demand': 0.00735,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 3641780,  # Capex initial
                                  # Sarhosis, V., Jaya, A.A., Hosking, L., Koj, A. and Thomas, H.R., 2015.
                                  # Techno-economics for coalbed methane production in the South Wales coalfield.

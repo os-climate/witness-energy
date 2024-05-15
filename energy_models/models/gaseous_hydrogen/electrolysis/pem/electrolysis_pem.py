@@ -28,21 +28,15 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class ElectrolysisPEM(GaseousHydrogenTechno):
     """
     electrolysis class
-
-
     """
-
-    PLATINUM_RESOURCE_NAME = ResourceGlossary.PlatinumResource
-
     def compute_resources_needs(self):
         self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
+        self.cost_details[f'{ResourceGlossary.PlatinumResource}_needs'] = self.get_theoretical_platinum_needs()
 
-        self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
-
 
     def get_water_needs(self):
         ''' 

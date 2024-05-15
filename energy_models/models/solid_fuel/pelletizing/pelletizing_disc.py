@@ -63,7 +63,6 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'WACC': 0.01,
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex in $
                                  'Capex_init': 29287037.04,
                                  'Capex_init_unit': 'euro',

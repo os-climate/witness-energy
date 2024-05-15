@@ -50,7 +50,6 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.
                                  # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
                                  # A techno-economic and environmental study.

@@ -56,7 +56,6 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.0878,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex at table 3 and 8
                                  'Capex_init_vs_CO_H2_ratio': [37.47e6, 113.45e6],
                                  'Capex_init_vs_CO_H2_ratio_unit': '$',
