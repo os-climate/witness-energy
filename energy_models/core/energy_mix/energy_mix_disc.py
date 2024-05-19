@@ -1127,7 +1127,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         tot_energy_production_sum = prod[GlossaryEnergy.TotalProductionValue].sum()
         dtot_energy_production_sum = dtotal_production_denergy_production.sum(
             axis=0)
-        tot_energy_production_0 = prod[GlossaryEnergy.TotalProductionValue][0]
+        tot_energy_production_0 = prod[GlossaryEnergy.TotalProductionValue].values[0]
         dtot_energy_production_0 = dtotal_production_denergy_production[0]
 
         delta_years = (years[-1] - years[0] + 1)
