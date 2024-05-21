@@ -234,6 +234,7 @@ class Study(EnergyStudyManager):
         instanced_sub_studies = []
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
+            instance_sub_study = None # initialize variable
             if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
                 prefix_name = f"{self.coupling_name}.{GlossaryEnergy.CCUS}"
                 instance_sub_study = sub_study(
@@ -262,7 +263,7 @@ class Study(EnergyStudyManager):
                 raise Exception(
                     f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]"
                 )
-            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE:
+            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE and instance_sub_study is not None:
                 instance_sub_study.configure_ds_boundaries(
                     lower_bound_techno=self.lower_bound_techno,
                     upper_bound_techno=self.upper_bound_techno,

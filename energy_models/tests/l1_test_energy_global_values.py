@@ -66,10 +66,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = cls.ee.factory.get_builder_from_process(
             repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
-
+        i_disc_to_pop = None
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':
                 i_disc_to_pop = i
+        if i_disc_to_pop is None :
+            raise Exception("variable i_disc_to_pop was not defined during the loop")
         builder.pop(i_disc_to_pop)
         chain_builders.extend(builder)
 
