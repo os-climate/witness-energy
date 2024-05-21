@@ -87,7 +87,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     techno_price_filter_data = {}
     co2_intensity = {}
     co2_all_years = []
-
+    total_carbon_emissions = None
     # looping energies
     for energyname in EnergyDict.keys():
         energy_name_list.append(energyname)
@@ -127,6 +127,8 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
+            if total_carbon_emissions is None:
+                raise Exception("Error occured for the definition of the variable total_carbon_emissions")
             CO2_per_kWh_techno = total_carbon_emissions
             # Getting data for particular year
             co2_intensity[energyname + '.' + techno] = CO2_per_kWh_techno.tolist()

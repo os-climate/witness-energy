@@ -611,7 +611,7 @@ class TechnoType:
         """
         Put all capex in $/MWh
         """
-
+        capex_init = None # intialize capex init variable
         if data_tocheck['Capex_init_unit'] == 'euro':
             # it is a total capital requirement TCR , need to be divided by
             # full_load_hours available power and capacity factor
@@ -719,7 +719,8 @@ class TechnoType:
             capex_unit = data_tocheck['Capex_init_unit']
             raise Exception(
                 f'The CAPEX unity {capex_unit} is not handled yet in techno_type')
-
+        if capex_init is None:
+            raise Exception("Capex could not be computed, check used unity")
         # return capex in $/MWh
         return capex_init * 1.0e3
 
