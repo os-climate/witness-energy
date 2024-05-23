@@ -325,6 +325,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         columns=['production', GlossaryEnergy.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
                        0].mdo_discipline_wrapp.wrapper.energy_name]
+    total_carbon_emissions = None
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}')[0]
@@ -357,6 +358,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
+            if total_carbon_emissions is None:
+                raise Exception("Error occured for the definition of the variable total_carbon_emissions")
             CO2_per_kWh_techno = total_carbon_emissions
             # Data for scatter plot
             price_per_kWh_techno = techno_disc.get_sosdisc_outputs(GlossaryEnergy.TechnoPricesValue)[
@@ -671,6 +674,8 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     multilevel_df = pd.DataFrame(
         index=idx,
         columns=columns)
+    total_carbon_emissions = None
+    CO2_from_production = None
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}')[0]
@@ -710,6 +715,8 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
                 else:
                     CO2_from_other_consumption[f'CO2_from_{emission_type}_consumption'] = carbon_emissions[
                         emission_type].values
+            if total_carbon_emissions is None or CO2_from_production is None:
+                raise Exception("Error occured for the definition of the variable total_carbon_emissions or CO2_from_production")
             CO2_after_use = total_carbon_emissions
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
