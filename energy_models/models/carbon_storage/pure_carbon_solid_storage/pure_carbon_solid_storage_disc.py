@@ -299,11 +299,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             type = 'bar'
             if var == GlossaryEnergy.carbon_storage:
                 title = 'Plasmacracking_carbon_to_be_stored'
-            if var == 'carbon (Mt)':
+            elif var == 'carbon (Mt)':
                 title = 'Consumption'
-            if var == 'carbon_to_be_stored_constraint':
+            elif var == 'carbon_to_be_stored_constraint':
                 title = 'Constraint: Consumption - Plasmacracking_carbon_to_be_stored'
                 type = 'lines'
+            else:
+                title = 'Plasmacracking_carbon_to_be_stored'
 
             serie = InstanciatedSeries(
                 all_var[GlossaryEnergy.Years].values.tolist(),

@@ -98,5 +98,6 @@ class Methanation(MethaneTechno):
             co2_prod = -co2_needs
         elif unit == 'kg/kg':
             co2_prod = -co2_needs * self.data_energy_dict['calorific_value']
-
+        else:
+            raise Exception("unit not handled")
         return co2_prod
