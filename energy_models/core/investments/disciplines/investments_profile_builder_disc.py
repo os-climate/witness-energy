@@ -16,6 +16,9 @@ limitations under the License.
 '''
 from energy_models.core.investments.convex_combination_model import ConvexCombinationModel
 
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -102,5 +105,30 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         return []
     def get_post_processing_list(self, filters=None):
         # un graphe qui montre pour chaque colomne, par ex : renewable, les invests dans le renouvelable des n_coefficients chacun des profils selon les années.
-        
+        invest_profile = self.get_sosdisc_outputs('invest_profile')
+        years = invest_profile['years'].values
+        column_names = self.get_sosdisc_inputs(['column_names'])
+        charts = []
+
+        for column in column_names:
+            chart_data = {
+                'years': years,
+                'values': list(invest_profile[column].values),
+                'label': column
+            }
+            charts.append(chart_data)
+
+            # Créer un graphique pour chq column
+            new_chart = TwoAxesInstanciatedChart(chart_data['years'], chart_data['values'],
+                                                     x_label=years, y_label='Invest [G$]',
+                                                     chart_name=f"Investments in {chart_data['label']}",
+                                                     stacked_bar=True)
+
+            charts.append(new_chart)
+
+
+        for new_chart in charts:
+            new_chart.to_plotly().show()
+
+            return charts
         return []
