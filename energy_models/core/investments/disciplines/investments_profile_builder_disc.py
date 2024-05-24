@@ -14,24 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import logging
+from energy_models.core.investments.convex_combination_model import ConvexCombinationModel
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
-import numpy as np
-import pandas as pd
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.investments.independent_invest import IndependentInvest
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
@@ -48,29 +37,70 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         'icon': 'fas fa-coins fa-fw',
         'version': '',
     }
-    energy_mix_name = EnergyMix.name
 
-    DESC_IN = {'n_coefficients': {'type': 'int', 'default': 2, 'unit': '-', 'user_level': 3},
+    DESC_IN = {'n_profiles': {'type': 'int', 'unit': '-', 'user_level': 3},
                'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}}
                }
 
-
-    DESC_OUT = {
-
-    }
+    DESC_OUT = {}
 
     def setup_sos_disciplines(self):
         '''
         Construct the desc_out to couple energy invest levels to techno_invest_disc
         '''
         dynamic_inputs = {}
+        dynamic_outputs = {}
 
-        if 'n_coefficients' in self.get_data_in():
-            n_coefficients = self.get_sosdisc_inputs(['n_coefficients'])
-            if n_coefficients is not None:
-                for i in range(n_coefficients):
-                    n1 = 
-                    pass
+        n_profiles = None
+        df_descriptor = None
+        if 'n_profiles' in self.get_data_in():
+            n_profiles = self.get_sosdisc_inputs(['n_profiles'])
+            if n_profiles is not None:
+                for i in range(n_profiles):
+                    dynamic_inputs[f'coeff_{i}'] = {'type': 'float', 'unit': '-'}
 
+        if 'column_names' in self.get_data_in():
+            column_names = self.get_sosdisc_inputs(['column_names'])
+            if column_names is not None and n_profiles is not None:
+                df_descriptor = {col: ("float", [0.0, 1e30], False) for col in column_names}
+                for i in range(n_profiles):
+                    dynamic_inputs[f'df_{i}'] = {
+                        "type": "dataframe", "unit": "G$",
+                        "dataframe_descriptor": df_descriptor,
+                    }
+
+        if df_descriptor is not None:
+            dynamic_outputs['invest_profile'] = {
+                "type": "dataframe", "unit": "G$",
+                "dataframe_descriptor": df_descriptor,
+            }
 
         self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
+
+    def run(self):  # type: (...) -> None
+        model = ConvexCombinationModel()
+
+        inputs = self.get_sosdisc_inputs()
+        n_profiles = inputs['n_profiles']
+        model.store_inputs(
+            positive_coefficients={f'coeff_{i}': inputs[f'coeff_{i}'] for i in range(n_profiles)},
+            dataframes=[inputs[f'df_{i}'] for i in range(n_profiles)]
+        )
+
+        model.compute()
+
+        outputs = {
+            'invest_profile': model.convex_combination_df
+        }
+
+        self.store_sos_outputs_values(outputs)
+
+    def compute_sos_jacobian(self):
+        pass
+    def get_chart_filter_list(self):
+        return []
+    def get_post_processing_list(self, filters=None):
+        # un graphe qui montre pour chaque colomne, par ex : renewable, les invests dans le renouvelable des n_coefficients chacun des profils selon les années.
+        
+        return []
