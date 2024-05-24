@@ -105,11 +105,14 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         return []
     def get_post_processing_list(self, filters=None):
         # un graphe qui montre pour chaque colomne, par ex : renewable, les invests dans le renouvelable des n_coefficients chacun des profils selon les années.
-        invest_profile = self.get_sosdisc_outputs('invest_profile')
-        years = invest_profile['years'].values
+
+        invest_profile = self.get_sosdisc_outputs('invest_profile') # plotter toutes les colomnes en fonction des années sur un seul et même chart
+        years = list(invest_profile['years'].values)
         column_names = self.get_sosdisc_inputs(['column_names'])
         charts = []
 
+        #CHART INVEST PROFILE OUTPUT :
+        # instancier chart vide
         for column in column_names:
             chart_data = {
                 'years': years,
@@ -118,17 +121,33 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             }
             charts.append(chart_data)
 
-            # Créer un graphique pour chq column
+            # Créer un graphique pour chq column :
+            # CORRIGER : ajouter la série dans le chart
             new_chart = TwoAxesInstanciatedChart(chart_data['years'], chart_data['values'],
-                                                     x_label=years, y_label='Invest [G$]',
+                                                     x_label='years', y_label='Invest [G$]',
                                                      chart_name=f"Investments in {chart_data['label']}",
                                                      stacked_bar=True)
 
-            charts.append(new_chart)
+        charts.append(new_chart)
+
+        # FIN :  CHART INVEST PROFILE OUTPUT
 
 
+        # POUR CHAQUE COLOMNE, créer un chart
+
+        # récupérer la valeur de n
+        # récupérer les n profils d'invests
+        for column in column_names:
+            # créer le chart
+
+            # ajouter les n series / courbes en fonction des années des invests profil inputs
+
+            # ajoute le chart fini dans la liste de charts de la fonction
+
+            pass
+
+        # pour débugger et afficher les graphes
         for new_chart in charts:
             new_chart.to_plotly().show()
 
-            return charts
         return []
