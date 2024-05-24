@@ -34,10 +34,10 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 
 
-class IndependentInvestDiscipline(SoSWrapp):
+class InvestmentsProfileBuilderDisc(SoSWrapp):
     # ontology information
     _ontology_data = {
-        'label': 'InvestmentsDistribution',
+        'label': 'InvestmentsProfileBuilderDisc',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -50,11 +50,9 @@ class IndependentInvestDiscipline(SoSWrapp):
     }
     energy_mix_name = EnergyMix.name
 
-    DESC_IN = {'n_coefficients': {'type': 'int', 'default': 2, 'unit': '-',
-                        'user_level': 3},
-                'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}}
-
-    }
+    DESC_IN = {'n_coefficients': {'type': 'int', 'default': 2, 'unit': '-', 'user_level': 3},
+               'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}}
+               }
 
 
     DESC_OUT = {
@@ -67,50 +65,12 @@ class IndependentInvestDiscipline(SoSWrapp):
         '''
         dynamic_inputs = {}
 
-        if n_coefficients in self.get_data_in():
-            column_names = self.get_sosdisc_inputs(
-                [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_max_budget = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      GlossaryEnergy.MaxBudgetValue: np.zeros_like(years)})
-            self.set_dynamic_default_values({GlossaryEnergy.MaxBudgetValue: default_max_budget})
-
-        if GlossaryEnergy.energy_list in self.get_data_in():
-            energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
-            if energy_list is not None:
-                for energy in energy_list:
-                    if energy == BiomassDry.name:
-                        dynamic_inputs['managed_wood_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_forest', 'dataframe_edition_locked': False, }
-                        dynamic_inputs['deforestation_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_forest', 'dataframe_edition_locked': False}
-                        dynamic_inputs['crop_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_crop', 'dataframe_edition_locked': False}
-                    else:
-                        # Add technologies_list to inputs
-                        dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
-                            'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                            'visibility': 'Shared', 'namespace': 'ns_energy',
-                            'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                            'default': EnergyMix.stream_class_dict[energy].default_techno_list}
-                        # Add all invest_level outputs
-                        if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
-                            technology_list = self.get_sosdisc_inputs(
-                                f'{energy}.{GlossaryEnergy.techno_list}')
-                            if technology_list is not None:
-                                for techno in technology_list:
-                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                        'type': 'dataframe', 'unit': 'G$',
-                                        'visibility': 'Shared', 'namespace': 'ns_energy'}
+        if 'n_coefficients' in self.get_data_in():
+            n_coefficients = self.get_sosdisc_inputs(['n_coefficients'])
+            if n_coefficients is not None:
+                for i in range(n_coefficients):
+                    n1 = 
+                    pass
 
 
         self.add_inputs(dynamic_inputs)
