@@ -117,30 +117,41 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
 
         invest_profile = self.get_sosdisc_outputs('invest_profile')
         years = list(invest_profile['years'].values)
+
         column_names = self.get_sosdisc_inputs('column_names')
-        graph_name = "All Investments"
+
+        # Définition du nom de graphique principal
+        graph_name = "output profile invest"
+
+        # Création du graphique principal
         graph = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                          chart_name=graph_name)
 
         # CHART INVEST PROFILE OUTPUT :
         for column in column_names:
-
             chart_name = f"Investments in {column}"
 
             chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                        chart_name=chart_name)
+                                             chart_name=chart_name)
 
             # Ajouter les séries pour chaque profil d'investissement
             n_profiles = self.get_sosdisc_inputs('n_profiles')
             series_values = list(invest_profile[column].values)
-            serie_obj=InstanciatedSeries(years, series_values, column, "lines")
+            serie_obj = InstanciatedSeries(years, series_values, column, "lines")
             chart.add_series(serie_obj)
+
+            # Ajouter les données d'entrée pour chaque colonne et chaque investissement
+            if column in ['renewable', 'fossil', 'carbon_capture']:
+                for i in range(n_profiles):
+                    input_series_values = list(self.get_sosdisc_inputs(f'df_{i}')[column].values)
+                    input_serie_obj = InstanciatedSeries(years, input_series_values, f'df_{i}', "lines")
+                    chart.add_series(input_serie_obj)
 
             # Ajouter le graphique fini dans la liste de graphiques
             instanciated_charts.append(chart)
             graph.add_series(serie_obj)
 
         instanciated_charts.append(graph)
-        # Pour déboguer et afficher les graphes
 
         return instanciated_charts
+

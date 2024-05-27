@@ -59,7 +59,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
-        n_profiles = 10 ** 3
+        n_profiles = 4
         inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': columns_names,
             f'{self.name}.{self.model_name}.n_profiles': n_profiles,
