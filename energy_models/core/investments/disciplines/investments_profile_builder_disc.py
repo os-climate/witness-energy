@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.investments.convex_combination_model import ConvexCombinationModel
-
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
-
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-
+import numpy as np
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
     # ontology information
@@ -41,9 +36,10 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         'version': '',
     }
 
-    DESC_IN = {'n_profiles': {'type': 'int', 'unit': '-', 'user_level': 3},
-               'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}}
-               }
+    DESC_IN = {
+        'n_profiles': {'type': 'int', 'unit': '-', 'user_level': 3},
+        'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}}
+    }
 
     DESC_OUT = {}
 
@@ -53,19 +49,19 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         '''
         dynamic_inputs = {}
         dynamic_outputs = {}
-
-        n_profiles = None
         df_descriptor = None
+
         if 'n_profiles' in self.get_data_in():
-            n_profiles = self.get_sosdisc_inputs(['n_profiles'])
+            n_profiles = self.get_sosdisc_inputs('n_profiles')
             if n_profiles is not None:
                 for i in range(n_profiles):
                     dynamic_inputs[f'coeff_{i}'] = {'type': 'float', 'unit': '-'}
 
         if 'column_names' in self.get_data_in():
-            column_names = self.get_sosdisc_inputs(['column_names'])
+            column_names = self.get_sosdisc_inputs('column_names')
             if column_names is not None and n_profiles is not None:
-                df_descriptor = {col: ("float", [0.0, 1e30], False) for col in column_names}
+                df_descriptor = {GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault],False)}
+                df_descriptor.update({col: ("float", [0.0, 1e30], False) for col in column_names})
                 for i in range(n_profiles):
                     dynamic_inputs[f'df_{i}'] = {
                         "type": "dataframe", "unit": "G$",
@@ -101,53 +97,50 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
 
     def compute_sos_jacobian(self):
         pass
-    def get_chart_filter_list(self):
-        return []
-    def get_post_processing_list(self, filters=None):
-        # un graphe qui montre pour chaque colomne, par ex : renewable, les invests dans le renouvelable des n_coefficients chacun des profils selon les années.
 
-        invest_profile = self.get_sosdisc_outputs('invest_profile') # plotter toutes les colomnes en fonction des années sur un seul et même chart
-        years = list(invest_profile['years'].values)
-        column_names = self.get_sosdisc_inputs(['column_names'])
+    def get_chart_filter_list(self):
+        chart_filters = []
+        chart_list = ['Invest Distribution']
+        chart_filters.append(ChartFilter(
+            'Charts Investments', chart_list, chart_list, 'charts_invest'))
+        return chart_filters
+
+    def get_post_processing_list(self, filters=None):
+        instanciated_charts = []
         charts = []
 
-        #CHART INVEST PROFILE OUTPUT :
-        # instancier chart vide
+        # Overload default value with chart filter
+        if filters is not None:
+            for chart_filter in filters:
+                if chart_filter.filter_key == 'charts_invest':
+                    charts = chart_filter.selected_values
+
+        invest_profile = self.get_sosdisc_outputs('invest_profile')
+        years = list(invest_profile['years'].values)
+        column_names = self.get_sosdisc_inputs('column_names')
+        graph_name = "All Investments"
+        graph = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                         chart_name=graph_name)
+
+        # CHART INVEST PROFILE OUTPUT :
         for column in column_names:
-            chart_data = {
-                'years': years,
-                'values': list(invest_profile[column].values),
-                'label': column
-            }
-            charts.append(chart_data)
 
-            # Créer un graphique pour chq column :
-            # CORRIGER : ajouter la série dans le chart
-            new_chart = TwoAxesInstanciatedChart(chart_data['years'], chart_data['values'],
-                                                     x_label='years', y_label='Invest [G$]',
-                                                     chart_name=f"Investments in {chart_data['label']}",
-                                                     stacked_bar=True)
+            chart_name = f"Investments in {column}"
 
-        charts.append(new_chart)
+            chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                                        chart_name=chart_name)
 
-        # FIN :  CHART INVEST PROFILE OUTPUT
+            # Ajouter les séries pour chaque profil d'investissement
+            n_profiles = self.get_sosdisc_inputs('n_profiles')
+            series_values = list(invest_profile[column].values)
+            serie_obj=InstanciatedSeries(years, series_values, column, "lines")
+            chart.add_series(serie_obj)
 
+            # Ajouter le graphique fini dans la liste de graphiques
+            instanciated_charts.append(chart)
+            graph.add_series(serie_obj)
 
-        # POUR CHAQUE COLOMNE, créer un chart
+        instanciated_charts.append(graph)
+        # Pour déboguer et afficher les graphes
 
-        # récupérer la valeur de n
-        # récupérer les n profils d'invests
-        for column in column_names:
-            # créer le chart
-
-            # ajouter les n series / courbes en fonction des années des invests profil inputs
-
-            # ajoute le chart fini dans la liste de charts de la fonction
-
-            pass
-
-        # pour débugger et afficher les graphes
-        for new_chart in charts:
-            new_chart.to_plotly().show()
-
-        return []
+        return instanciated_charts

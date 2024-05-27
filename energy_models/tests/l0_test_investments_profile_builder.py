@@ -58,7 +58,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        columns_names = [GlossaryEnergy.Years, GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
+        columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         n_profiles = 10 ** 3
         inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': columns_names,
@@ -71,7 +71,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
             years = np.arange(year_min, year_max + 1)
             df = pd.DataFrame({
                 **{GlossaryEnergy.Years: years},
-                **dict(zip(columns_names[1:], np.random.rand(len(columns_names[1:]))))
+                **dict(zip(columns_names, np.random.rand(len(columns_names))))
             })
             return df
 
@@ -86,3 +86,13 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+        for graph in graph_list:
+            graph.to_plotly().show()
+
+
+
+
