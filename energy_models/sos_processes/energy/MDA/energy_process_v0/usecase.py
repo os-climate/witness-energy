@@ -710,7 +710,7 @@ class Study(EnergyStudyManager):
         Update design space with utilization ratio for each technology
         """
         dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
-        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO - 1
         start_value_utilization_ratio = np.ones(len_utilization_ratio) * 100.
         lower_bound = np.ones(len_utilization_ratio) * 0.5
         upper_bound = np.ones(len_utilization_ratio) * 100.
