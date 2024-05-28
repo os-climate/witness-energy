@@ -99,7 +99,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         coeff_jacobian = [f'{self.name}.{self.model_name}.coeff_{i}' for i in range(n_profiles)]
 
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #self.override_dump_jacobian = True
+        self.override_dump_jacobian = True
         self.check_jacobian(derr_approx='complex_step',
                             inputs=coeff_jacobian,
                             outputs=[f'{self.name}.{self.model_name}.invest_profile'],

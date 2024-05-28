@@ -43,7 +43,7 @@ class ConvexCombinationModel:
 
     def _d_convex_coeff_d_linear_coeff(self, coeff_in: str, coeff_out: str):
         if coeff_in != coeff_out:
-            derivative = - 1 / self.coeffs_sum ** 2
+            derivative = -self.postive_coefficients[coeff_out] / self.coeffs_sum ** 2
         else:
             derivative = (self.coeffs_sum - self.postive_coefficients[coeff_in]) / self.coeffs_sum ** 2
 
