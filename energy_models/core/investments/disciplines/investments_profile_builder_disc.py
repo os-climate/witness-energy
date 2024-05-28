@@ -78,25 +78,34 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         self.add_outputs(dynamic_outputs)
 
     def run(self):  # type: (...) -> None
-        model = ConvexCombinationModel()
+        self.model = ConvexCombinationModel()
 
         inputs = self.get_sosdisc_inputs()
         n_profiles = inputs['n_profiles']
-        model.store_inputs(
+        self.model.store_inputs(
             positive_coefficients={f'coeff_{i}': inputs[f'coeff_{i}'] for i in range(n_profiles)},
             dataframes=[inputs[f'df_{i}'] for i in range(n_profiles)]
         )
 
-        model.compute()
+        self.model.compute()
 
         outputs = {
-            'invest_profile': model.convex_combination_df
+            'invest_profile': self.model.convex_combination_df
         }
 
         self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
-        pass
+        dict_in = self.get_sosdisc_inputs()
+        column_names_list = dict_in['column_names']
+        n_profiles = dict_in['n_profiles']
+        for col_name in column_names_list:
+            for i in range(n_profiles):
+                derivative = self.model.d_convex_combination_d_coeff_in(col_name, f'coeff_{i}')
+                self.set_partial_derivative_for_other_types(
+                    ('invest_profile', col_name),
+                    (f'coeff_{i}',), derivative.reshape((6,1))
+                    )
 
     def get_chart_filter_list(self):
         chart_filters = []

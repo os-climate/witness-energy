@@ -17,11 +17,14 @@ limitations under the License.
 import unittest
 import numpy as np
 import pandas as pd
+from os.path import dirname
+
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class TestInvestmentProfileBuilderDisc(unittest.TestCase):
+class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
     """
     Resources prices test class
     """
@@ -36,7 +39,13 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_run(self):
+    def analytic_grad_entry(self):
+        return [
+            self.test_01_run,
+            ]
+
+
+    def test_01_run(self, energy_list=None):
         '''
         The objective is to test output energy price and energy co2 emissions when
         one techno has low prod compare to the other
@@ -75,7 +84,6 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
             })
             return df
 
-
         inputs_dict.update({
             f"{self.name}.{self.model_name}.coeff_{i}": np.random.uniform(0, 15) for i in range(n_profiles)
         })
@@ -87,13 +95,15 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
 
+        coeff_jacobian = [f'{self.name}.{self.model_name}.coeff_{i}' for i in range(n_profiles)]
 
-
-
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        #self.override_dump_jacobian = True
+        self.check_jacobian(derr_approx='complex_step',
+                            inputs=coeff_jacobian,
+                            outputs=[f'{self.name}.{self.model_name}.invest_profile'],
+                            local_data=disc.local_data,
+                            location=dirname(__file__),
+                            discipline=disc,
+                            filename=f'jacobian_investments_profile_builder_disc.pkl', threshold=1e-5, )
