@@ -118,7 +118,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         invest_profile = self.get_sosdisc_outputs('invest_profile')
         years = list(invest_profile['years'].values)
         column_names = self.get_sosdisc_inputs('column_names')
-        graph_name = "output profile invest"
+        graph_name = "Output profile invest"
 
         graph = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                          chart_name=graph_name)
