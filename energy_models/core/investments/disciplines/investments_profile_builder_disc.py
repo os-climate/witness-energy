@@ -20,6 +20,7 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.glossarycore import GlossaryCore
 import numpy as np
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
@@ -61,7 +62,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         if 'column_names' in self.get_data_in():
             column_names = self.get_sosdisc_inputs('column_names')
             if column_names is not None and n_profiles is not None:
-                df_descriptor = {GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault],False)}
+                df_descriptor = {GlossaryEnergy.Years: ("int", [1900, GlossaryCore.YearEndDefault],False)}
                 df_descriptor.update({col: ("float", [0.0, 1e30], False) for col in column_names})
                 for i in range(n_profiles):
                     dynamic_inputs[f'df_{i}'] = {
@@ -73,7 +74,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             dynamic_outputs[GlossaryEnergy.invest_mix] = {
                 "type": "dataframe", "unit": "G$",
                 "dataframe_descriptor": df_descriptor,
-                "namespace": "ns_invest", #smae namespace as for inest_mix in discipline InvestmentDistribution
+                "namespace": "ns_invest", #same namespace as for invest_mix in discipline InvestmentDistribution
                 "visibility": "Shared",
             }
 
@@ -135,12 +136,13 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         graph = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                          chart_name=graph_name)
 
-        columns_to_include_in_output_graph = ['fossil', 'renewable', 'carbon_capture']
+        columns_to_include_in_output_graph = [column for column in column_names if column != GlossaryEnergy.Years]
 
         for idx, column in enumerate(column_names):
             chart_name = f"Investments in {column}"
 
-            if idx < 3:
+            # we want to plot the generic invest profiles of each column on 1 graph, not 1 graph for each of the n_profile
+            if idx < len(columns_to_include_in_output_graph):
                 chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                  chart_name=chart_name)
 
