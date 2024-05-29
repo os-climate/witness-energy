@@ -19,6 +19,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from energy_models.glossaryenergy import GlossaryEnergy
 import numpy as np
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
@@ -69,9 +70,11 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                     }
 
         if df_descriptor is not None:
-            dynamic_outputs['invest_profile'] = {
+            dynamic_outputs[GlossaryEnergy.invest_mix] = {
                 "type": "dataframe", "unit": "G$",
                 "dataframe_descriptor": df_descriptor,
+                "namespace": "ns_invest", #smae namespace as for inest_mix in discipline InvestmentDistribution
+                "visibility": "Shared",
             }
 
         self.add_inputs(dynamic_inputs)
@@ -90,7 +93,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         self.model.compute()
 
         outputs = {
-            'invest_profile': self.model.convex_combination_df
+            GlossaryEnergy.invest_mix: self.model.convex_combination_df
         }
 
         self.store_sos_outputs_values(outputs)
@@ -103,7 +106,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             for i in range(n_profiles):
                 derivative = self.model.d_convex_combination_d_coeff_in(col_name, f'coeff_{i}')
                 self.set_partial_derivative_for_other_types(
-                    ('invest_profile', col_name),
+                    (GlossaryEnergy.invest_mix, col_name),
                     (f'coeff_{i}',), derivative.reshape((6,1))
                     )
 
@@ -124,7 +127,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 if chart_filter.filter_key == 'charts_invest':
                     charts = chart_filter.selected_values
 
-        invest_profile = self.get_sosdisc_outputs('invest_profile')
+        invest_profile = self.get_sosdisc_outputs(GlossaryEnergy.invest_mix)
         years = list(invest_profile['years'].values)
         column_names = self.get_sosdisc_inputs('column_names')
         graph_name = "Output profile invest"
