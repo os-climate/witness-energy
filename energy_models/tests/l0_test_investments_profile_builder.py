@@ -45,7 +45,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.name = 'Test'
         self.model_name = 'investments profile'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {}
+        ns_dict = {'ns_invest': f'{self.name}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.investments_profile_builder_disc.InvestmentsProfileBuilderDisc'
