@@ -53,7 +53,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.name = 'Test'
         self.model_name = 'investments profile'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {}
+        ns_dict = {'ns_invest': f'{self.name}.{self.model_name}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.investments_profile_builder_disc.InvestmentsProfileBuilderDisc'
@@ -101,7 +101,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.override_dump_jacobian = True
         self.check_jacobian(derr_approx='complex_step',
                             inputs=coeff_jacobian,
-                            outputs=[f'{self.name}.{self.model_name}.invest_profile'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
                             local_data=disc.local_data,
                             location=dirname(__file__),
                             discipline=disc,
