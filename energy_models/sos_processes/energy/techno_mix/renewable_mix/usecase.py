@@ -45,7 +45,7 @@ class Study(EnergyMixStudyManager):
         invest_renewable_mix_dict = {}
 
         if 'RenewableSimpleTechno' in self.technologies_list:
-            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1.
             # set value for first year
             invest_renewable_mix_dict['RenewableSimpleTechno'][0] = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
 

@@ -61,7 +61,6 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.2,  # augmentation of forests ha per year?
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # capex from gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
                                  # 25% of 237.95 euro/ha (717 $/acre)
                                  # 1USD = 0,82 euro in 2021

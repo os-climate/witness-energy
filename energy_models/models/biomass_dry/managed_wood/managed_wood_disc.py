@@ -108,7 +108,6 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                                  # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                                  # 1USD = 0,87360 euro in 2019

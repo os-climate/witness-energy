@@ -56,7 +56,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 2800,
                                  'Capex_init_unit': '$/kW',
                                  'euro_dollar': 1.114,

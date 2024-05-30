@@ -51,7 +51,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -300,11 +299,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             type = 'bar'
             if var == GlossaryEnergy.carbon_storage:
                 title = 'Plasmacracking_carbon_to_be_stored'
-            if var == 'carbon (Mt)':
+            elif var == 'carbon (Mt)':
                 title = 'Consumption'
-            if var == 'carbon_to_be_stored_constraint':
+            elif var == 'carbon_to_be_stored_constraint':
                 title = 'Constraint: Consumption - Plasmacracking_carbon_to_be_stored'
                 type = 'lines'
+            else:
+                title = 'Plasmacracking_carbon_to_be_stored'
 
             serie = InstanciatedSeries(
                 all_var[GlossaryEnergy.Years].values.tolist(),

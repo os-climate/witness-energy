@@ -626,5 +626,7 @@ class WGS(GaseousHydrogenTechno):
         elif unit == 'kg/kg':
             co2_prod = mol_CO2 * co2_data['molar_mass'] / \
                        (mol_H2 * needed_syngas_molar_mass)
+        else:
+            raise Exception("unit not handled")
 
         return co2_prod

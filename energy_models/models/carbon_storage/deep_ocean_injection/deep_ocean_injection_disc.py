@@ -48,7 +48,6 @@ class DeepOceanInjectionDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.

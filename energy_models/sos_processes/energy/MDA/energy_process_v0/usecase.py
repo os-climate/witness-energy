@@ -443,6 +443,7 @@ class Study(EnergyStudyManager):
         instanced_sub_studies = []
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
+            instance_sub_study = None  # initialize variable
             if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
                 prefix_name = GlossaryEnergy.CCUS
                 instance_sub_study = sub_study(
@@ -471,7 +472,7 @@ class Study(EnergyStudyManager):
                 raise Exception(
                     f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]"
                 )
-            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE:
+            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE and instance_sub_study is not None:
                 instance_sub_study.configure_ds_boundaries(
                     lower_bound_techno=self.lower_bound_techno,
                     upper_bound_techno=self.upper_bound_techno,
@@ -709,7 +710,7 @@ class Study(EnergyStudyManager):
         Update design space with utilization ratio for each technology
         """
         dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
-        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO - 1
         start_value_utilization_ratio = np.ones(len_utilization_ratio) * 100.
         lower_bound = np.ones(len_utilization_ratio) * 0.5
         upper_bound = np.ones(len_utilization_ratio) * 100.

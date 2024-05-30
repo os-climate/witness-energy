@@ -25,10 +25,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CO2Taxes = GlossaryWitnessCore.CO2Taxes
     CO2Taxes["namespace"] = "ns_energy_study"
 
-    NB_POLES_UTILIZATION_RATIO = (
-        10  # number of poles for bspline design variables utilization ratio
-    )
-    NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
     YearEndDefaultValueGradientTest = 2030
@@ -132,10 +128,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
 
     # energy techno discipline names
-    FossilSimpleTechno = "FossilSimpleTechno"
-    RenewableSimpleTechno = "RenewableSimpleTechno"
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
-    CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
@@ -454,10 +447,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     # techno names
-    GeothermalLowHeat = "GeothermalLowHeat"
     CropEnergy = "CropEnergy"
     ManagedWood = "ManagedWood"
     UnmanagedWood = "UnmanagedWood"
+    OrganicWaste = "OrganicWaste"
     BiomassBuryingFossilization = "BiomassBuryingFossilization"
     CarbonStorageTechno = "CarbonStorageTechno"
     DeepOceanInjection = "DeepOceanInjection"

@@ -15,7 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -26,8 +25,10 @@ class ResourceGlossary:
     Prices [$/t]
     '''
 
-    UNITS = {'production': 'Mt', 'consumption': 'Mt', 'price': '$/t', GlossaryEnergy.CO2EmissionsValue: 'kgCO2/kg'}
-
+    UNITS = {'production': 'Mt',
+             'consumption': 'Mt',
+             'price': '$/t',
+             GlossaryEnergy.CO2EmissionsValue: 'kgCO2/kg'}
 
     UraniumResource = 'uranium_resource'
     Uranium = {'name': UraniumResource,
@@ -181,7 +182,7 @@ class ResourceGlossary:
         GlossaryEnergy.CO2Hydrogenation: [WaterResource],
         GlossaryEnergy.CoalExtraction: [CoalResource],
         GlossaryEnergy.AutothermalReforming: [CO2Resource, OxygenResource],
-        GlossaryEnergy.CoElectrolysis : [CO2Resource, WaterResource],
+        GlossaryEnergy.CoElectrolysis: [CO2Resource, WaterResource],
         GlossaryEnergy.Pyrolysis: [WoodResource],
         GlossaryEnergy.WaterGasShift: [WaterResource],
         GlossaryEnergy.ReversedWaterGasShift: [CO2Resource],

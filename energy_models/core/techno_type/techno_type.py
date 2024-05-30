@@ -363,36 +363,6 @@ class TechnoType:
         self.non_use_capital[self.name] = self.techno_capital[GlossaryEnergy.Capital].values * (
                 1.0 - self.applied_ratio['applied_ratio'].values * self.utilisation_ratio / 100.)
 
-    def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
-        '''
-        Compute the gradient of non_use capital by invest_level
-
-        dnon_usecapital_dinvest = dcapex_dinvest*prod(1-ratio) + dprod_dinvest*capex(1-ratio) - dratiodinvest*prod*capex
-        dratiodinvest = 0.0
-        '''
-
-        dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[
-            f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
-                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape(
-                    (len(self.years), 1)))
-
-        dnon_usecapital_dinvest = dtechnocapital_dinvest * (
-                1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
-
-        # we do not divide by / self.scaling_factor_invest_level because invest
-        # and non_use_capital are in G$
-        return dnon_usecapital_dinvest, dtechnocapital_dinvest
-
-    def compute_dnon_usecapital_dratio(self, dapplied_ratio_dratio):
-        '''
-        Compute the non_use_capital gradient vs all_stream_demand_ratio 
-        In input we already have the gradient of applied_ratio on stream_demand_ratio
-        '''
-        mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
-                    self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
-        dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return np.diag(dnon_use_capital_dratio / 100.)
-
     def compute_price(self):
         """
         Compute the detail price of the technology
@@ -409,7 +379,6 @@ class TechnoType:
             self.cost_details[GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
         self.capital_recovery_factor = self.compute_capital_recovery_factor(self.techno_infos_dict)
-
         self.compute_efficiency()
 
         self.energy_prices = self.energy_prices.loc[self.energy_prices[GlossaryEnergy.Years]
@@ -619,112 +588,6 @@ class TechnoType:
 
         return capex_calc_list.tolist()
 
-    def compute_dcapex_dinvest(self, invest_list, data_config):
-        """
-        Compute Capital expenditures (immobilisations)
-        depending on the demand on the technology
-        """
-        progress_ratio = 1.0 - data_config['learning_rate']
-
-        capacity_factor_list = None
-        if 'capacity_factor_at_year_end' in data_config \
-                and 'capacity_factor' in data_config:
-            capacity_factor_list = np.linspace(data_config['capacity_factor'],
-                                               data_config['capacity_factor_at_year_end'],
-                                               len(invest_list))
-
-        expo_factor = -np.log(progress_ratio) / np.log(2.0)
-
-        capex_init = self.check_capex_unity(data_config)
-
-        invest_sum = self.initial_production * capex_init
-        dcapex_year_dinvest_list = []
-        capex_year = capex_init
-
-        if 'complex128' in [invest_list.dtype]:
-            arr_type = 'complex128'
-        else:
-            arr_type = 'float64'
-        dcapex_calc_list_dinvest_list = np.zeros(
-            (len(invest_list), len(invest_list)), dtype=arr_type)
-
-        invest_list_2 = compute_func_with_exp_min(
-            invest_list, self.min_value_invest)
-        dinvest_func = compute_dfunc_with_exp_min(
-            invest_list, self.min_value_invest)
-
-        for i, invest in enumerate(invest_list_2):
-
-            # first capex calculation
-            if invest_sum.real < 10.0 or i == 0.0:
-                capex_year = capex_init
-                dcapex_year_dinvest_list = np.zeros(i + 1)
-            else:
-                if capacity_factor_list is not None:
-                    ratio_capa = (
-                            capacity_factor_list[i] / data_config['capacity_factor'])
-                    ratio_invest = ((invest_sum + invest) / invest_sum *
-                                    ratio_capa) \
-                                   ** (-expo_factor)
-                else:
-
-                    ratio_invest = ((invest_sum + invest) /
-                                    invest_sum) ** (-expo_factor)
-
-                #                     # capexi = capex_i-1 * ratio
-                # dcapexi = dcapex_i-1*ratio + dratio*capex
-
-                dratio_invest_i_dinvest_i = -expo_factor * \
-                                            ratio_invest / (invest_sum + invest)
-                # dratioinvesti wrt invest i minus one
-                dratio_invest_i_dinvest_i_m1 = expo_factor * invest * \
-                                               ratio_invest / \
-                                               (invest_sum * (invest_sum + invest))
-
-                if ratio_invest.real < 0.95:
-                    dratio_invest_i_dinvest_i = 0.05 * \
-                                                np.exp(ratio_invest - 0.9) * dratio_invest_i_dinvest_i
-
-                    dratio_invest_i_dinvest_i_m1 = 0.05 * \
-                                                   np.exp(ratio_invest - 0.9) * \
-                                                   dratio_invest_i_dinvest_i_m1
-
-                    ratio_invest = 0.9 + 0.05 * np.exp(ratio_invest - 0.9)
-
-                capex_i_m1 = capex_year
-                dcapex_i_dinvest_i = capex_i_m1 * dratio_invest_i_dinvest_i
-
-                dcapex_i_dinvest_i_m1 = [dcapex_i_dinvest_i_old * ratio_invest +
-                                         capex_i_m1 * dratio_invest_i_dinvest_i_m1 for dcapex_i_dinvest_i_old
-                                         in dcapex_year_dinvest_list]
-
-                dcapex_year_dinvest_list = np.append(
-                    dcapex_i_dinvest_i_m1, [dcapex_i_dinvest_i])
-
-                dcapex_calc_list_dinvest_list[i,
-                :i + 1] = dcapex_year_dinvest_list
-
-                capex_year = capex_year * ratio_invest
-            #
-            invest_sum += invest
-
-        if 'maximum_learning_capex_ratio' in data_config:
-            maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
-        else:
-            maximum_learning_capex_ratio = 0.9
-        # Reshape the gradient to get a multiplication line by column and not
-        # line by line
-        return (1.0 - maximum_learning_capex_ratio) * dcapex_calc_list_dinvest_list * dinvest_func.reshape(
-            len(invest_list))
-
-    def grad_price_vs_energy_price(self):
-
-        return {energy: np.diag(self.cost_details[f'{energy}_needs'].values) for energy in self.energies_used_for_production}
-
-    def grad_price_vs_resources_price(self):
-
-        return {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
-
     def compute_expo_factor(self, data_config):
 
         progress_ratio = 1.0 - data_config['learning_rate']
@@ -748,14 +611,8 @@ class TechnoType:
         """
         Put all capex in $/MWh
         """
-
-        if data_tocheck['Capex_init_unit'] == '$/kWelectrical':
-
-            if data_tocheck['stack_lifetime_unit'] == 'hours':
-                capex_init = data_tocheck['Capex_init'] / \
-                             data_tocheck['stack_lifetime']
-
-        elif data_tocheck['Capex_init_unit'] == 'euro':
+        capex_init = None # intialize capex init variable
+        if data_tocheck['Capex_init_unit'] == 'euro':
             # it is a total capital requirement TCR , need to be divided by
             # full_load_hours available power and capacity factor
             if data_tocheck['available_power_unit'] == 'kW':
@@ -816,11 +673,6 @@ class TechnoType:
                                  data_tocheck['full_load_hours'] / \
                                  data_tocheck['available_power'] / \
                                  self.data_energy_dict['calorific_value']
-        elif data_tocheck['Capex_init_unit'] == 'euro/W':
-            capex_init = data_tocheck['Capex_init'] * \
-                         data_tocheck['euro_dollar'] / 1.0e3 / \
-                         (data_tocheck['full_load_hours'] * data_tocheck['lifetime'])
-
         elif data_tocheck['Capex_init_unit'] == '$/kW':
             if 'capacity_factor' in data_tocheck:
                 capex_init = data_tocheck['Capex_init'] / \
@@ -867,7 +719,8 @@ class TechnoType:
             capex_unit = data_tocheck['Capex_init_unit']
             raise Exception(
                 f'The CAPEX unity {capex_unit} is not handled yet in techno_type')
-
+        if capex_init is None:
+            raise Exception("Capex could not be computed, check used unity")
         # return capex in $/MWh
         return capex_init * 1.0e3
 
@@ -884,19 +737,6 @@ class TechnoType:
 
         return elec_need
 
-    def get_heat_needs(self):
-        """
-        Get the heat needs for 1 kwh of the energy producted by the technology
-        """
-
-        if 'heat_demand' in self.techno_infos_dict:
-            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
-                                                      self.techno_infos_dict['heat_demand'])
-
-        else:
-            heat_need = 0.0
-
-        return heat_need
 
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """
@@ -919,19 +759,6 @@ class TechnoType:
                 f'The unity of the energy demand {energy_demand_unit} is not handled with conversions')
 
         return energy_demand
-
-    def get_fuel_needs(self):
-        """
-        Get the fuel needs for 1 kwh of the energy producted by the technology
-        """
-        if self.techno_infos_dict['fuel_demand'] != 0.0:
-            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
-                                                      self.techno_infos_dict['fuel_demand'])
-
-        else:
-            fuel_need = 0.0
-
-        return fuel_need
 
     def compute_efficiency(self):
         # Compute efficiency evolving in time or not
@@ -1120,194 +947,6 @@ class TechnoType:
                 + power_production_dict['new_power_production'][year - power_production_dict[GlossaryEnergy.Years][0]]
         self.installed_power = pd.DataFrame.from_dict(power_production_dict)
 
-    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
-                              dcapex_list_dinvest_list):
-        '''
-        Compute the partial derivative of prod vs invest  and the partial derivative of prod vs capex
-        To compute after the total derivative of prod vs invest = dpprod_dpinvest + dpprod_dpcapex*dcapexdinvest
-        with dcapexdinvest already computed for detailed prices
-        '''
-        nb_years = len(capex_list)
-
-        if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype,
-                            dcapex_list_dinvest_list.dtype]:
-            arr_type = 'complex128'
-        else:
-            arr_type = 'float64'
-        dprod_list_dinvest_list = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-        # We fill this jacobian column by column because it is the same element
-        # in the entire column
-        for i in range(nb_years):
-            dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
-                              capex_list[i]
-            len_non_zeros = min(max(0, nb_years -
-                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
-                                techno_dict['lifetime'])
-            first_len_zeros = min(
-                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
-            last_len_zeros = max(0, nb_years -
-                                 len_non_zeros - first_len_zeros)
-            # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
-            # This value is delayed in time (means delayed in lines for
-            # jacobian by construction _delay)
-            # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
-            # 0,0,0]
-            is_invest_negative = max(
-                np.sign(invest_list[i] + np.finfo(float).eps), 0.0)
-            dprod_list_dinvest_list[:, i] = np.hstack((np.zeros(first_len_zeros),
-                                                       np.ones(
-                                                           len_non_zeros) * dpprod_dpinvest * is_invest_negative,
-                                                       np.zeros(last_len_zeros)))
-
-        dprod_list_dcapex_list = self.compute_dprod_dcapex(
-            capex_list, invest_list, techno_dict, invest_before_year_start)
-
-        dinvest_exp_min = compute_dfunc_with_exp_min(
-            invest_list, self.min_value_invest)
-
-        dcapex_list_dinvest_list_withexp = dcapex_list_dinvest_list * dinvest_exp_min
-        dprod_dinvest = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-        # dprod_dinvest= dpprod_dpinvest + dprod_dcapex*dcapex_dinvest
-        for line in range(nb_years):
-            for column in range(nb_years):
-                dprod_dinvest[line, column] = dprod_list_dinvest_list[line, column] + \
-                                              np.matmul(
-                                                  dprod_list_dcapex_list[line, :],
-                                                  dcapex_list_dinvest_list_withexp[:, column])
-
-        self.dprod_dinvest = dprod_dinvest
-
-        return dprod_dinvest
-
-    def compute_dprod_dcapex(self, capex_list, invest_list, techno_dict, invest_before_year_start):
-        '''
-        Compute the derivative of production over capex 
-        '''
-        nb_years = len(capex_list)
-        dprod_list_dcapex_list = np.zeros(
-            (nb_years, nb_years))
-        if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype]:
-            dprod_list_dcapex_list = np.zeros(
-                (nb_years, nb_years), dtype='complex128')
-        for i in range(nb_years):
-            len_non_zeros = min(max(0, nb_years -
-                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
-                                techno_dict['lifetime'])
-            first_len_zeros = min(
-                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
-            last_len_zeros = max(0, nb_years -
-                                 len_non_zeros - first_len_zeros)
-            # Same for capex
-            dpprod_dpcapex = - invest_list[i] / capex_list[i] ** 2
-
-            dprod_list_dcapex_list[:, i] = np.hstack((np.zeros(first_len_zeros),
-                                                      np.ones(
-                                                          len_non_zeros) * dpprod_dpcapex,
-                                                      np.zeros(last_len_zeros)))
-        # but the capex[0] is used for invest before
-        # year_start then we need to add it to the first column
-        dpprod_dpcapex0_list = [- invest / capex_list[0]
-                                ** 2 for invest in invest_before_year_start]
-
-        for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
-            len_non_zeros = min(
-                techno_dict['lifetime'], nb_years - index)
-            dprod_list_dcapex_list[:, 0] += np.hstack((np.zeros(index),
-                                                       np.ones(
-                                                           len_non_zeros) * dpprod_dpcapex0,
-                                                       np.zeros(nb_years - index - len_non_zeros)))
-
-        self.dprod_list_dcapex_list = dprod_list_dcapex_list
-
-        return dprod_list_dcapex_list
-
-    def compute_dpower_dinvest(self, capex_list, invest_list, techno_dict, dcapex_dinvest,
-                               scaling_factor_techno_consumption):
-        nb_years = len(capex_list)
-        dpower_list_dinvest_list = np.zeros(
-            (nb_years, nb_years))
-
-        delay = techno_dict[GlossaryEnergy.ConstructionDelay]
-        # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
-        for i in range(delay, nb_years):
-            if capex_list[i - delay] != 0:
-                if 'full_load_hours' not in self.techno_infos_dict:
-                    full_load_hours = 8760
-                else:
-                    full_load_hours = self.techno_infos_dict['full_load_hours']
-                # cste * Id / capex
-                dpower_list_dinvest_list[i, i - delay] += 1000 / full_load_hours / capex_list[
-                    i - delay] * scaling_factor_techno_consumption
-                # cste * invest * dcapex_dinvest / capex ** 2
-                dpower_list_dinvest_list[i, :] -= 1000 / full_load_hours * invest_list[i - delay] * \
-                                                  dcapex_dinvest[i - delay, :] / capex_list[
-                                                      i - delay] ** 2 * scaling_factor_techno_consumption
-        self.dpower_list_dinvest_list = np.multiply(dpower_list_dinvest_list,
-                                                    compute_dfunc_with_exp_min(np.array(invest_list),
-                                                                               self.min_value_invest).T)
-
-        return self.dpower_list_dinvest_list
-
-    def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
-        '''! Select the most constraining ratio and apply it to production and consumption.
-        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
-        but the smoothed minimum value between all the ratio (see func_manager documentation for more).
-        @param prod: pandas Series, values of the production/consumption for which the gradient is calculated
-        @param ratio_name: string, name of the ratio for which the gradient is calculated
-        @param is_apply_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
-
-        @return dprod_dratio: numpy array, size=(len(years), len(years))
-        :param dapplied_ratio_dratio:
-        :type dapplied_ratio_dratio:
-        '''
-        dprod_dratio = np.zeros(
-            (len(self.years), len(self.years)))
-
-        if ratio_name:
-            # Check that the ratio corresponds to something consumed
-            for col in self.consumption_detailed.columns:
-                if ratio_name in col and ratio_name != GlossaryEnergy.Years:
-                    dprod_dratio = (np.identity(len(self.years)) * prod.values) * \
-                                   dapplied_ratio_dratio[ratio_name]
-        return dprod_dratio / 100.
-
-    def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
-        '''
-        Compute the gradient of applied ratio vs all_stream_demand_ratios
-        only if is_apply_ratio is True
-        '''
-        dsmooth_dvariable = {}
-        elements = []
-        for i, element in enumerate(self.ratio_df.columns):
-            # Initialize each dict element with array of zeros
-            dsmooth_dvariable[element] = np.zeros(
-                (len(self.years), len(self.years)))
-            # Same as for the main function, search for matches between
-            # ratio_df and consumptions
-            if is_apply_ratio:
-                for col in self.consumption_detailed.columns:
-                    if element in col and element != GlossaryEnergy.Years:
-                        elements += [element, ]
-        if is_apply_ratio:
-            if len(elements) > 0:
-                if self.smooth_type == 'smooth_max':
-                    dsmooth_matrix = get_dsmooth_dvariable_vect(
-                        -self.ratio_df[elements].values)
-                elif self.smooth_type == 'soft_max':
-                    dsmooth_matrix = get_dsoft_maximum_vect(
-                        -self.ratio_df[elements].values)
-                elif self.smooth_type == 'cons_smooth_max':
-                    dsmooth_matrix = get_dcons_smooth_dvariable_vect(
-                        -self.ratio_df[elements].values)
-                else:
-                    raise Exception('Unknown smooth_type')
-                for i, element in enumerate(self.ratio_df[elements].columns):
-                    dsmooth_dvariable[element] = dsmooth_matrix.T[i]
-
-        return dsmooth_dvariable
-
     def compute_aging_distribution_production(self):
         '''
         Compute the aging distribution production of primary energy for years of study
@@ -1377,61 +1016,31 @@ class TechnoType:
         # Fill Nan with zeros
         self.age_distrib_prod_df.fillna(0.0, inplace=True)
 
-    def compute_dlanduse_dinvest(self):
-        """
-        compute grad d_land_use / d_invest
-        """
-
-        dlanduse_dinvest = np.identity(len(self.years)) * 0
-        for key in self.land_use:
-            if key.startswith(self.name):
-                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
-                    density_per_ha = self.techno_infos_dict['density_per_ha']
-                    if self.techno_infos_dict['density_per_ha_unit'] == 'm^3/ha':
-                        density_per_ha = density_per_ha * \
-                                         self.techno_infos_dict['density'] * \
-                                         self.data_energy_dict['calorific_value']
-                    elif self.techno_infos_dict['density_per_ha_unit'] == 'kg/ha':
-                        density_per_ha = density_per_ha * \
-                                         self.data_energy_dict['calorific_value']
-
-                    dlanduse_dinvest = self.dprod_dinvest / density_per_ha
-                    if 'percentage_for_production' in self.techno_infos_dict:
-                        dlanduse_dinvest /= self.techno_infos_dict['percentage_for_production']
-                    if 'years_between_harvest' in self.techno_infos_dict:
-                        dlanduse_dinvest *= self.techno_infos_dict['years_between_harvest']
-                    if 'recyle_part' in self.techno_infos_dict:
-                        dlanduse_dinvest *= (1 -
-                                             self.techno_infos_dict['recyle_part'])
-
-        return dlanduse_dinvest
-
     def compute_prod_from_invest(self, construction_delay):
         '''
         Compute the energy production of a techno from investment in TWh
         Add a delay for factory construction
         '''
 
-        prod_before_ystart = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(self.year_start - construction_delay, self.year_start),
-             GlossaryEnergy.InvestValue: self.invest_before_ystart[GlossaryEnergy.InvestValue].values[::1],
-             f'Capex_{self.name}': self.cost_details.loc[
-                 self.cost_details[GlossaryEnergy.Years] == self.year_start, f'Capex_{self.name}'].values[0]})
-
-        production_from_invest = pd.concat(
-            [self.cost_details[[GlossaryEnergy.Years, GlossaryEnergy.InvestValue, f'Capex_{self.name}']],
-             prod_before_ystart], ignore_index=True)
-        production_from_invest.sort_values(by=[GlossaryEnergy.Years], inplace=True)
+        years_before_year_start = np.arange(self.year_start - construction_delay, self.year_start)
+        invest_before_year_start = self.invest_before_ystart[GlossaryEnergy.InvestValue].values
+        capex_year_start = self.cost_details.loc[self.cost_details[GlossaryEnergy.Years] == self.year_start, f'Capex_{self.name}'].values[0]
+        invest_before_year_start_df = pd.DataFrame({
+            GlossaryEnergy.Years: years_before_year_start,
+            GlossaryEnergy.InvestValue: invest_before_year_start,
+            f'Capex_{self.name}': capex_year_start
+         })
+        invests_after_year_start_df = self.cost_details[[GlossaryEnergy.Years, GlossaryEnergy.InvestValue, f'Capex_{self.name}']]
+        prod_from_invests_df = pd.concat([invest_before_year_start_df, invests_after_year_start_df], ignore_index=True)
         # Need prod_from invest in TWh we have M$ and $/MWh  M$/($/MWh)= TWh
-        # invest_minimized = production_from_invest[GlossaryEnergy.InvestValue].values
 
-        production_from_invest['prod_from_invest'] = production_from_invest[GlossaryEnergy.InvestValue].values / \
-                                                     production_from_invest[f'Capex_{self.name}'].values
-        production_from_invest[GlossaryEnergy.Years] += construction_delay
-        production_from_invest = production_from_invest[production_from_invest[GlossaryEnergy.Years]
-                                                        <= self.year_end]
+        production_from_invests = prod_from_invests_df[GlossaryEnergy.InvestValue].values / \
+                                                     prod_from_invests_df[f'Capex_{self.name}'].values
+        prod_from_invests_df['prod_from_invest'] = production_from_invests
+        prod_from_invests_df[GlossaryEnergy.Years] += construction_delay
+        prod_from_invests_df = prod_from_invests_df[prod_from_invests_df[GlossaryEnergy.Years] <= self.year_end]
 
-        return production_from_invest
+        return prod_from_invests_df
 
     def get_mean_age_over_years(self):
 
@@ -1482,29 +1091,6 @@ class TechnoType:
             self.production_detailed[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
                                                                          self.consumption_detailed[
                                                                              f'{related_to} ({self.product_energy_unit})'].values
-
-    def compute(self, inputs_dict):
-        self.configure_parameters_update(inputs_dict)
-        # -- compute informations
-        self.compute_price()
-        self.compute_primary_energy_production()
-        self.compute_land_use()
-        self.compute_resource_consumption()
-        self.compute_energies_consumption()
-        self.compute_production()
-        self.compute_primary_installed_power()
-        self.compute_consumption_and_installed_power()
-
-        # ratios : utilisation & resources
-        self.store_consumption_and_production_and_landuse_wo_ratios()
-        self.apply_utilisation_ratio()
-        self.select_resources_ratios()
-        self.apply_resources_ratios(inputs_dict['is_apply_ratio'])
-
-        self.compute_capital()
-        self.get_mean_age_over_years()
-
-        self.rescale_outputs()
 
     def rescale_outputs(self):
         self.production = copy(self.production_detailed)
@@ -1557,21 +1143,6 @@ class TechnoType:
         self.consumption_woratio = copy(self.consumption_detailed)
         self.land_use_woratio = copy(self.land_use)
 
-    def d_non_use_capital_d_utilisation_ratio(self):
-        techno_capital = self.techno_capital[GlossaryEnergy.Capital].values
-        d_non_use_capital_d_utilisation_ratio = np.diag(
-            - techno_capital * self.applied_ratio['applied_ratio'] / 100.
-        )
-        return d_non_use_capital_d_utilisation_ratio
-
-    def grad_co2_emissions_vs_resources_co2_emissions(self):
-        '''
-        Compute the gradient of global CO2 emissions vs resources CO2 emissions
-        '''
-        return {
-            resource: np.diag(self.cost_details[f"{resource}_needs"].values) for resource in self.resources_used_for_production
-        }
-
     def compute_sum_all_costs(self):
         all_costs = self.cost_of_resources_usage[self.resources_used_for_production].values.sum(axis=1) +\
                     self.cost_of_energies_usage[self.energies_used_for_production].values.sum(axis=1) +\
@@ -1587,3 +1158,397 @@ class TechnoType:
         """Computes the co2 emissions due to energies usage"""
         for energy in self.energies_used_for_production:
             self.carbon_intensity_generic[energy] = self.cost_details[f"{energy}_needs"] * self.energy_CO2_emissions[energy]
+
+    def compute(self, inputs_dict):
+        self.configure_parameters_update(inputs_dict)
+        # -- compute informations
+        self.compute_price()
+        self.compute_primary_energy_production()
+        self.compute_land_use()
+        self.compute_resource_consumption()
+        self.compute_energies_consumption()
+        self.compute_production()
+        self.compute_primary_installed_power()
+        self.compute_consumption_and_installed_power()
+
+        # ratios : utilisation & resources
+        self.store_consumption_and_production_and_landuse_wo_ratios()
+        self.apply_utilisation_ratio()
+        self.select_resources_ratios()
+        self.apply_resources_ratios(inputs_dict['is_apply_ratio'])
+
+        self.compute_capital()
+        self.get_mean_age_over_years()
+
+        self.rescale_outputs()
+
+    "---------START OF GRADIENTS---------"
+    def grad_price_vs_energy_price(self):
+        return {energy: np.diag(self.cost_details[f'{energy}_needs'].values) for energy in self.energies_used_for_production}
+
+    def grad_price_vs_resources_price(self):
+        return {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        return {
+            resource: np.diag(self.cost_details[f"{resource}_needs"].values) for resource in self.resources_used_for_production
+        }
+
+    def d_non_use_capital_d_utilisation_ratio(self):
+        techno_capital = self.techno_capital[GlossaryEnergy.Capital].values
+        d_non_use_capital_d_utilisation_ratio = np.diag(
+            - techno_capital * self.applied_ratio['applied_ratio'] / 100.
+        )
+        return d_non_use_capital_d_utilisation_ratio
+
+    def compute_dlanduse_dinvest(self):
+        """
+        compute grad d_land_use / d_invest
+        """
+
+        dlanduse_dinvest = np.identity(len(self.years)) * 0
+        for key in self.land_use:
+            if key.startswith(self.name):
+                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
+                    density_per_ha = self.techno_infos_dict['density_per_ha']
+                    if self.techno_infos_dict['density_per_ha_unit'] == 'm^3/ha':
+                        density_per_ha = density_per_ha * \
+                                         self.techno_infos_dict['density'] * \
+                                         self.data_energy_dict['calorific_value']
+                    elif self.techno_infos_dict['density_per_ha_unit'] == 'kg/ha':
+                        density_per_ha = density_per_ha * \
+                                         self.data_energy_dict['calorific_value']
+
+                    dlanduse_dinvest = self.dprod_dinvest / density_per_ha
+                    if 'percentage_for_production' in self.techno_infos_dict:
+                        dlanduse_dinvest /= self.techno_infos_dict['percentage_for_production']
+                    if 'years_between_harvest' in self.techno_infos_dict:
+                        dlanduse_dinvest *= self.techno_infos_dict['years_between_harvest']
+                    if 'recyle_part' in self.techno_infos_dict:
+                        dlanduse_dinvest *= (1 -
+                                             self.techno_infos_dict['recyle_part'])
+
+        return dlanduse_dinvest
+
+    def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
+        '''
+        Compute the gradient of applied ratio vs all_stream_demand_ratios
+        only if is_apply_ratio is True
+        '''
+        dsmooth_dvariable = {}
+        elements = []
+        for i, element in enumerate(self.ratio_df.columns):
+            # Initialize each dict element with array of zeros
+            dsmooth_dvariable[element] = np.zeros(
+                (len(self.years), len(self.years)))
+            # Same as for the main function, search for matches between
+            # ratio_df and consumptions
+            if is_apply_ratio:
+                for col in self.consumption_detailed.columns:
+                    if element in col and element != GlossaryEnergy.Years:
+                        elements += [element, ]
+        if is_apply_ratio:
+            if len(elements) > 0:
+                if self.smooth_type == 'smooth_max':
+                    dsmooth_matrix = get_dsmooth_dvariable_vect(
+                        -self.ratio_df[elements].values)
+                elif self.smooth_type == 'soft_max':
+                    dsmooth_matrix = get_dsoft_maximum_vect(
+                        -self.ratio_df[elements].values)
+                elif self.smooth_type == 'cons_smooth_max':
+                    dsmooth_matrix = get_dcons_smooth_dvariable_vect(
+                        -self.ratio_df[elements].values)
+                else:
+                    raise Exception('Unknown smooth_type')
+                for i, element in enumerate(self.ratio_df[elements].columns):
+                    dsmooth_dvariable[element] = dsmooth_matrix.T[i]
+
+        return dsmooth_dvariable
+
+    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
+                              dcapex_list_dinvest_list):
+        '''
+        Compute the partial derivative of prod vs invest  and the partial derivative of prod vs capex
+        To compute after the total derivative of prod vs invest = dpprod_dpinvest + dpprod_dpcapex*dcapexdinvest
+        with dcapexdinvest already computed for detailed prices
+        '''
+        nb_years = len(capex_list)
+
+        if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype,
+                            dcapex_list_dinvest_list.dtype]:
+            arr_type = 'complex128'
+        else:
+            arr_type = 'float64'
+        dprod_list_dinvest_list = np.zeros(
+            (nb_years, nb_years), dtype=arr_type)
+        # We fill this jacobian column by column because it is the same element
+        # in the entire column
+        for i in range(nb_years):
+            dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
+                              capex_list[i]
+            len_non_zeros = min(max(0, nb_years -
+                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
+                                techno_dict['lifetime'])
+            first_len_zeros = min(
+                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
+            last_len_zeros = max(0, nb_years -
+                                 len_non_zeros - first_len_zeros)
+            # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
+            # This value is delayed in time (means delayed in lines for
+            # jacobian by construction _delay)
+            # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
+            # 0,0,0]
+            is_invest_negative = max(
+                np.sign(invest_list[i] + np.finfo(float).eps), 0.0)
+            dprod_list_dinvest_list[:, i] = np.hstack((np.zeros(first_len_zeros),
+                                                       np.ones(
+                                                           len_non_zeros) * dpprod_dpinvest * is_invest_negative,
+                                                       np.zeros(last_len_zeros)))
+
+        dprod_list_dcapex_list = self.compute_dprod_dcapex(
+            capex_list, invest_list, techno_dict, invest_before_year_start)
+
+        dinvest_exp_min = compute_dfunc_with_exp_min(
+            invest_list, self.min_value_invest)
+
+        dcapex_list_dinvest_list_withexp = dcapex_list_dinvest_list * dinvest_exp_min
+        dprod_dinvest = np.zeros(
+            (nb_years, nb_years), dtype=arr_type)
+        # dprod_dinvest= dpprod_dpinvest + dprod_dcapex*dcapex_dinvest
+        for line in range(nb_years):
+            for column in range(nb_years):
+                dprod_dinvest[line, column] = dprod_list_dinvest_list[line, column] + \
+                                              np.matmul(
+                                                  dprod_list_dcapex_list[line, :],
+                                                  dcapex_list_dinvest_list_withexp[:, column])
+
+        self.dprod_dinvest = dprod_dinvest
+
+        return dprod_dinvest
+
+    def compute_dprod_dcapex(self, capex_list, invest_list, techno_dict, invest_before_year_start):
+        '''
+        Compute the derivative of production over capex
+        '''
+        nb_years = len(capex_list)
+        dprod_list_dcapex_list = np.zeros(
+            (nb_years, nb_years))
+        if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype]:
+            dprod_list_dcapex_list = np.zeros(
+                (nb_years, nb_years), dtype='complex128')
+        for i in range(nb_years):
+            len_non_zeros = min(max(0, nb_years -
+                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
+                                techno_dict['lifetime'])
+            first_len_zeros = min(
+                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
+            last_len_zeros = max(0, nb_years -
+                                 len_non_zeros - first_len_zeros)
+            # Same for capex
+            dpprod_dpcapex = - invest_list[i] / capex_list[i] ** 2
+
+            dprod_list_dcapex_list[:, i] = np.hstack((np.zeros(first_len_zeros),
+                                                      np.ones(
+                                                          len_non_zeros) * dpprod_dpcapex,
+                                                      np.zeros(last_len_zeros)))
+        # but the capex[0] is used for invest before
+        # year_start then we need to add it to the first column
+        dpprod_dpcapex0_list = [- invest / capex_list[0]
+                                ** 2 for invest in invest_before_year_start]
+
+        for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
+            len_non_zeros = min(
+                techno_dict['lifetime'], nb_years - index)
+            dprod_list_dcapex_list[:, 0] += np.hstack((np.zeros(index),
+                                                       np.ones(
+                                                           len_non_zeros) * dpprod_dpcapex0,
+                                                       np.zeros(nb_years - index - len_non_zeros)))
+
+        self.dprod_list_dcapex_list = dprod_list_dcapex_list
+
+        return dprod_list_dcapex_list
+
+    def compute_dpower_dinvest(self, capex_list, invest_list, techno_dict, dcapex_dinvest,
+                               scaling_factor_techno_consumption):
+        nb_years = len(capex_list)
+        dpower_list_dinvest_list = np.zeros(
+            (nb_years, nb_years))
+
+        delay = techno_dict[GlossaryEnergy.ConstructionDelay]
+        # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
+        for i in range(delay, nb_years):
+            if capex_list[i - delay] != 0:
+                if 'full_load_hours' not in self.techno_infos_dict:
+                    full_load_hours = 8760
+                else:
+                    full_load_hours = self.techno_infos_dict['full_load_hours']
+                # cste * Id / capex
+                dpower_list_dinvest_list[i, i - delay] += 1000 / full_load_hours / capex_list[
+                    i - delay] * scaling_factor_techno_consumption
+                # cste * invest * dcapex_dinvest / capex ** 2
+                dpower_list_dinvest_list[i, :] -= 1000 / full_load_hours * invest_list[i - delay] * \
+                                                  dcapex_dinvest[i - delay, :] / capex_list[
+                                                      i - delay] ** 2 * scaling_factor_techno_consumption
+        self.dpower_list_dinvest_list = np.multiply(dpower_list_dinvest_list,
+                                                    compute_dfunc_with_exp_min(np.array(invest_list),
+                                                                               self.min_value_invest).T)
+
+        return self.dpower_list_dinvest_list
+
+    def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
+        '''! Select the most constraining ratio and apply it to production and consumption.
+        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios,
+        but the smoothed minimum value between all the ratio (see func_manager documentation for more).
+        @param prod: pandas Series, values of the production/consumption for which the gradient is calculated
+        @param ratio_name: string, name of the ratio for which the gradient is calculated
+        @param is_apply_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
+
+        @return dprod_dratio: numpy array, size=(len(years), len(years))
+        :param dapplied_ratio_dratio:
+        :type dapplied_ratio_dratio:
+        '''
+        dprod_dratio = np.zeros(
+            (len(self.years), len(self.years)))
+
+        if ratio_name:
+            # Check that the ratio corresponds to something consumed
+            for col in self.consumption_detailed.columns:
+                if ratio_name in col and ratio_name != GlossaryEnergy.Years:
+                    dprod_dratio = (np.identity(len(self.years)) * prod.values) * \
+                                   dapplied_ratio_dratio[ratio_name]
+        return dprod_dratio / 100.
+
+
+    def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
+        '''
+        Compute the gradient of non_use capital by invest_level
+
+        dnon_usecapital_dinvest = dcapex_dinvest*prod(1-ratio) + dprod_dinvest*capex(1-ratio) - dratiodinvest*prod*capex
+        dratiodinvest = 0.0
+        '''
+
+        dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[
+            f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape(
+                    (len(self.years), 1)))
+
+        dnon_usecapital_dinvest = dtechnocapital_dinvest * (
+                1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+
+        # we do not divide by / self.scaling_factor_invest_level because invest
+        # and non_use_capital are in G$
+        return dnon_usecapital_dinvest, dtechnocapital_dinvest
+
+    def compute_dnon_usecapital_dratio(self, dapplied_ratio_dratio):
+        '''
+        Compute the non_use_capital gradient vs all_stream_demand_ratio
+        In input we already have the gradient of applied_ratio on stream_demand_ratio
+        '''
+        mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
+                    self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
+        dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
+        return np.diag(dnon_use_capital_dratio / 100.)
+
+    def compute_dcapex_dinvest(self, invest_list, data_config):
+        """
+        Compute Capital expenditures (immobilisations)
+        depending on the demand on the technology
+        """
+        progress_ratio = 1.0 - data_config['learning_rate']
+
+        capacity_factor_list = None
+        if 'capacity_factor_at_year_end' in data_config \
+                and 'capacity_factor' in data_config:
+            capacity_factor_list = np.linspace(data_config['capacity_factor'],
+                                               data_config['capacity_factor_at_year_end'],
+                                               len(invest_list))
+
+        expo_factor = -np.log(progress_ratio) / np.log(2.0)
+
+        capex_init = self.check_capex_unity(data_config)
+
+        invest_sum = self.initial_production * capex_init
+        dcapex_year_dinvest_list = []
+        capex_year = capex_init
+
+        if 'complex128' in [invest_list.dtype]:
+            arr_type = 'complex128'
+        else:
+            arr_type = 'float64'
+        dcapex_calc_list_dinvest_list = np.zeros(
+            (len(invest_list), len(invest_list)), dtype=arr_type)
+
+        invest_list_2 = compute_func_with_exp_min(
+            invest_list, self.min_value_invest)
+        dinvest_func = compute_dfunc_with_exp_min(
+            invest_list, self.min_value_invest)
+
+        for i, invest in enumerate(invest_list_2):
+
+            # first capex calculation
+            if invest_sum.real < 10.0 or i == 0.0:
+                capex_year = capex_init
+                dcapex_year_dinvest_list = np.zeros(i + 1)
+            else:
+                if capacity_factor_list is not None:
+                    ratio_capa = (
+                            capacity_factor_list[i] / data_config['capacity_factor'])
+                    ratio_invest = ((invest_sum + invest) / invest_sum *
+                                    ratio_capa) \
+                                   ** (-expo_factor)
+                else:
+
+                    ratio_invest = ((invest_sum + invest) /
+                                    invest_sum) ** (-expo_factor)
+
+                #                     # capexi = capex_i-1 * ratio
+                # dcapexi = dcapex_i-1*ratio + dratio*capex
+
+                dratio_invest_i_dinvest_i = -expo_factor * \
+                                            ratio_invest / (invest_sum + invest)
+                # dratioinvesti wrt invest i minus one
+                dratio_invest_i_dinvest_i_m1 = expo_factor * invest * \
+                                               ratio_invest / \
+                                               (invest_sum * (invest_sum + invest))
+
+                if ratio_invest.real < 0.95:
+                    dratio_invest_i_dinvest_i = 0.05 * \
+                                                np.exp(ratio_invest - 0.9) * dratio_invest_i_dinvest_i
+
+                    dratio_invest_i_dinvest_i_m1 = 0.05 * \
+                                                   np.exp(ratio_invest - 0.9) * \
+                                                   dratio_invest_i_dinvest_i_m1
+
+                    ratio_invest = 0.9 + 0.05 * np.exp(ratio_invest - 0.9)
+
+                capex_i_m1 = capex_year
+                dcapex_i_dinvest_i = capex_i_m1 * dratio_invest_i_dinvest_i
+
+                dcapex_i_dinvest_i_m1 = [dcapex_i_dinvest_i_old * ratio_invest +
+                                         capex_i_m1 * dratio_invest_i_dinvest_i_m1 for dcapex_i_dinvest_i_old
+                                         in dcapex_year_dinvest_list]
+
+                dcapex_year_dinvest_list = np.append(
+                    dcapex_i_dinvest_i_m1, [dcapex_i_dinvest_i])
+
+                dcapex_calc_list_dinvest_list[i,
+                :i + 1] = dcapex_year_dinvest_list
+
+                capex_year = capex_year * ratio_invest
+            #
+            invest_sum += invest
+
+        if 'maximum_learning_capex_ratio' in data_config:
+            maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
+        else:
+            maximum_learning_capex_ratio = 0.9
+        # Reshape the gradient to get a multiplication line by column and not
+        # line by line
+        return (1.0 - maximum_learning_capex_ratio) * dcapex_calc_list_dinvest_list * dinvest_func.reshape(
+            len(invest_list))
+
+
+    "---------END OF GRADIENTS---------"

@@ -65,7 +65,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     techno_infos_dict_default = {'Opex_percentage': 0.04,
                                  'lifetime': lifetime,
                                  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
                                  'Capex_init_unit': '$/kg',
                                  'efficiency': 0.99,
