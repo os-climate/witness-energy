@@ -7,11 +7,11 @@ The dataset mapping file has the following structure:
 {
    "process_module_path": "module.path.to.the.process",
     "namespace_datasets_mapping": {
-        "v0|<study_ph>|*": ["repos:sostrades_core|dataset_root_data|*"],
-        "v0|<study_ph>.Disc1VirtualNode|*" : ["repos:sostrades_core|dataset_disc1|*"],
-        "v0|<study_ph>.Disc2VirtualNode|*": ["repos:sostrades_core|dataset_disc2|*"],
-        "v0|<study_ph>.Disc1|*": ["repos:sostrades_core|dataset_all_disc|*", "repos:sostrades_core|dataset_disc1|*"],
-        "v0|<study_ph>.Disc2|*": ["repos:sostrades_core|dataset_all_disc|*", "repos:sostrades_core|dataset_disc2|*"]
+        "v0|<study_ph>|*": ["repos:energy_models|dataset_root_data|*"],
+        "v0|<study_ph>.Disc1VirtualNode|*" : ["repos:energy_models|dataset_disc1|*"],
+        "v0|<study_ph>.Disc2VirtualNode|*": ["repos:energy_models|dataset_disc2|*"],
+        "v0|<study_ph>.Disc1|*": ["repos:energy_models|dataset_all_disc|*", "repos:energy_models|dataset_disc1|*"],
+        "v0|<study_ph>.Disc2|*": ["repos:energy_models|dataset_all_disc|*", "repos:energy_models|dataset_disc2|*"]
     }
 }
 
