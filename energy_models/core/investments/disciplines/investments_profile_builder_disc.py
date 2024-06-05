@@ -107,7 +107,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 derivative = self.model.d_convex_combination_d_coeff_in(col_name, f'coeff_{i}')
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.invest_mix, col_name),
-                    (f'coeff_{i}',), derivative.reshape((6,1))
+                    (f'coeff_{i}',), derivative.reshape((len(derivative), 1))
                     )
 
     def get_chart_filter_list(self):
