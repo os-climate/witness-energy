@@ -14,7 +14,9 @@ limitations under the License.
 
 '''
 
-from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.process import ProcessBuilder as ProccesEnergyMixOptimFull
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.process import (
+    ProcessBuilder as ProccesEnergyMixOptimFull,
+)
 
 
 class ProcessBuilder(ProccesEnergyMixOptimFull):

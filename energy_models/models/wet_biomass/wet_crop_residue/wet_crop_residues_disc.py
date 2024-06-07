@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
+from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import (
+    WetBiomassTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import WetCropResidues
+from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import (
+    WetCropResidues,
+)
 
 
 class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):

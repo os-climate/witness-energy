@@ -19,9 +19,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
-from energy_models.core.techno_type.disciplines.ethanol_techno_disc import EthanolTechnoDiscipline
+from energy_models.core.techno_type.disciplines.ethanol_techno_disc import (
+    EthanolTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import BiomassFermentation
+from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import (
+    BiomassFermentation,
+)
 
 
 class BiomassFermentationDiscipline(EthanolTechnoDiscipline):

@@ -17,20 +17,26 @@ limitations under the License.
 import logging
 
 import numpy as np
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
-    AgricultureMixDiscipline
-from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import ConsumptionCO2Emissions
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
+    AgricultureMixDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import (
+    ConsumptionCO2Emissions,
+)
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
@@ -376,7 +382,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         CO2_emissions_by_use_sources = self.get_sosdisc_outputs(
             'CO2_emissions_by_use_sources')
 
-        chart_name = f'CO2 emissions by consumption - Sources'
+        chart_name = 'CO2 emissions by consumption - Sources'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions (Gt)', chart_name=chart_name)
 
@@ -394,7 +400,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         CO2_emissions_by_use_sinks = self.get_sosdisc_outputs(
             'CO2_emissions_by_use_sinks')
 
-        chart_name = f'CO2 emissions by consumption - Sinks'
+        chart_name = 'CO2 emissions by consumption - Sinks'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions (Gt)', chart_name=chart_name)
 

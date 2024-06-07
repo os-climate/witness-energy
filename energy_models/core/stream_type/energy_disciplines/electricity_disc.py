@@ -16,14 +16,15 @@ limitations under the License.
 '''
 import numpy as np
 from plotly import graph_objects as go
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 
 class ElectricityDiscipline(EnergyDiscipline):
@@ -177,7 +178,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                                      y=list(constraints_dict[key]), name=key,
                                      mode='lines', ))
         fig.update_layout(title={'text': chart_name, 'x': 0.5, 'y': 0.95, 'xanchor': 'center', 'yanchor': 'top'},
-                          xaxis_title=GlossaryEnergy.Years, yaxis_title=f'value of constraint')
+                          xaxis_title=GlossaryEnergy.Years, yaxis_title='value of constraint')
         fig.update_layout(
             updatemenus=[
                 dict(

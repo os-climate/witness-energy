@@ -14,16 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
+    GaseousHydrogenTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
+from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import (
+    ElectrolysisAWE,
+)
 
 
 class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):

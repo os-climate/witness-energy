@@ -17,13 +17,21 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
+    GaseousHydrogenTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import (
+    ElectrolysisPEM,
+)
 
 
 class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -124,7 +132,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         new_chart_platinum = None
         for product in techno_consumption.columns:
 
-            if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
                 if ResourceGlossary.PlatinumResource in product:
                     chart_name = f'Mass consumption of platinum for the {self.techno_name} technology with input investments'
                     new_chart_platinum = TwoAxesInstanciatedChart(

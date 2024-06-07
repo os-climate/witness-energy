@@ -14,9 +14,14 @@ limitations under the License.
 
 '''
 
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_ENERGY_LIST, DEFAULT_COARSE_TECHNO_DICT, \
-    DEFAULT_COARSE_CCS_LIST
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import ProcessBuilder as EnergyMixFullProcessBuilder
+from energy_models.core.energy_study_manager import (
+    DEFAULT_COARSE_CCS_LIST,
+    DEFAULT_COARSE_ENERGY_LIST,
+    DEFAULT_COARSE_TECHNO_DICT,
+)
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import (
+    ProcessBuilder as EnergyMixFullProcessBuilder,
+)
 
 
 class ProcessBuilder(EnergyMixFullProcessBuilder):

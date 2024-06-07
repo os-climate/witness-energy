@@ -15,20 +15,25 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
 )
 from energy_models.core.energy_study_manager import (
     AGRI_TYPE,
-    EnergyStudyManager,
-    DEFAULT_TECHNO_DICT,
     CCUS_TYPE,
+    DEFAULT_TECHNO_DICT,
     ENERGY_TYPE,
+    EnergyStudyManager,
 )
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
@@ -42,9 +47,11 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import (
+    hightemperatureheat,
+    lowtemperatureheat,
+    mediumtemperatureheat,
+)
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
     HydrotreatedOilFuel,
 )
@@ -62,8 +69,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 

@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import (
+    CSTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.deep_ocean_injection.deep_ocean_injection import DeepOceanInjection
+from energy_models.models.carbon_storage.deep_ocean_injection.deep_ocean_injection import (
+    DeepOceanInjection,
+)
 
 
 class DeepOceanInjectionDiscipline(CSTechnoDiscipline):

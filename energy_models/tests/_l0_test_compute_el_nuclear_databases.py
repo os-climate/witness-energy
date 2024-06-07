@@ -13,17 +13,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+import json
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.core_resources.resource_mix.resource_mix import (
+    ResourceMixModel,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class NuclearTestCase(unittest.TestCase):
@@ -164,9 +171,6 @@ class NuclearTestCase(unittest.TestCase):
                             disc_us.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
                                 GlossaryEnergy.MarginValue].max())
 
-
-import json
-import pandas as pd
 
 
 def convert_to_editable_json(data):

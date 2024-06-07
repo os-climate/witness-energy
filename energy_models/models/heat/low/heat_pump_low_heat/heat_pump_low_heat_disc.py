@@ -16,13 +16,17 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.core.techno_type.disciplines.heat_techno_disc import (
+    LowHeatTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.low.heat_pump_low_heat.heat_pump_low_heat import HeatPump
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
@@ -195,7 +199,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
             x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
-            title = f'Detailed heat_flux over the years'
+            title = 'Detailed heat_flux over the years'
             new_chart = self.get_charts(title, x_data, y_data, x_label, y_label, series_name, True)
             instanciated_charts.append(new_chart)
 

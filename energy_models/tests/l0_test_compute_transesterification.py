@@ -19,14 +19,18 @@ import unittest
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.methanol import Methanol
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
-from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from energy_models.core.stream_type.resources_models.potassium_hydroxide import (
+    PotassiumHydroxide,
+)
+from energy_models.core.stream_type.resources_models.sodium_hydroxide import (
+    SodiumHydroxide,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TransesterificationPriceTestCase(unittest.TestCase):

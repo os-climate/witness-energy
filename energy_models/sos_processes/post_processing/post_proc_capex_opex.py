@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from plotly import graph_objects as go
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2

@@ -25,8 +25,7 @@
     ],
     "files_to_ignore": [
         ".readthedocs",
-        "docs/Makefile",
-        "default_process_rights.yaml"
+        "docs/Makefile"
     ],
     "airbus_rev_commit": "37fb4ae"
 }

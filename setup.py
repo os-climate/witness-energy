@@ -16,9 +16,10 @@ limitations under the License.
 
 # coding: utf-8
 
-from setuptools import setup, find_packages
-from datetime import date
 import os
+from datetime import date
+
+from setuptools import find_packages, setup
 
 
 def __path(filename):
