@@ -65,12 +65,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                            f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
                                            f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
                                            f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
-                                           f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
+                                           f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': (
                                                'float', None, True),
                                            }},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',

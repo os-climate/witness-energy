@@ -467,7 +467,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on CalciumLooping techno since CarbonCapture technos have special gradients
         '''
-        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -711,7 +711,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
         inputs_dict[
-            f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}.{GlossaryEnergy.TechnoProductionValue}'][
             f'{GlossaryEnergy.carbon_capture} (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 

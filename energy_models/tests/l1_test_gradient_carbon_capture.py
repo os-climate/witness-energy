@@ -472,7 +472,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     def test_05_direct_air_capture_techno_discipline_gradient(self):
 
         self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

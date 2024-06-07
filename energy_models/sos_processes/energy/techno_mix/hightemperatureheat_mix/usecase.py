@@ -22,18 +22,10 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
-TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
-TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.hightemperatureheat_energyname]["value"], bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -163,8 +155,7 @@ if '__main__' == __name__:
     for handler in logging.getLogger().handlers:
         print(handler)
     logging.info('TEST')
-    uc_cls = Study(main_study=True,
-                   technologies_list=TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
 
     uc_cls.run()

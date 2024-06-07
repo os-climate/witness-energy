@@ -119,7 +119,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': [
                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift', f'{GlossaryEnergy.electricity}.CoalGen',
-                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'],
+                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'],
                        f'{self.name}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
 

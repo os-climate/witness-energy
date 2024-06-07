@@ -54,8 +54,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.economics_df[GlossaryEnergy.PerCapitaConsumption] = 0.
         self.techno_list_fossil = ['FossilSimpleTechno']
         self.techno_list_renewable = ['RenewableSimpleTechno']
-        self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
-                                           f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno']
+        self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
         self.techno_list_carbon_storage = ['CarbonStorageTechno']
 
         data_invest = {
@@ -129,7 +129,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         # assert that for fossil techno and direct air capture, investment is 10% * 130 * 20% at 2020 and 20% * 190 * 20%
         fossil_invest_level = \
             self.ee.dm.get_value(
-                f'{self.name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[
+                f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]

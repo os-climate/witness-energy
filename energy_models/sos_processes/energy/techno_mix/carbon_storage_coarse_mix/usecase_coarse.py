@@ -24,13 +24,10 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['CarbonStorageTechno']
-TECHNOLOGIES_LIST = ['CarbonStorageTechno']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.carbon_storage]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -132,6 +129,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.test()

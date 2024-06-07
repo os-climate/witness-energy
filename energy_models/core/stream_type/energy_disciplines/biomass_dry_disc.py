@@ -39,7 +39,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': BiomassDry.default_techno_list,
-                                            'default': BiomassDry.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_biomass_dry',
                                             'structuring': True, 'unit': '-'},

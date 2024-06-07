@@ -20,7 +20,6 @@ from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_coarse_mix.usecase_coarse import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -34,7 +33,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST
+        self.techno_list = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.carbon_capture]['value']
         self.prefix_name = 'EnergyMix'
 
     def get_builders(self):

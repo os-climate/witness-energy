@@ -40,7 +40,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
     construction_delay = 1
 

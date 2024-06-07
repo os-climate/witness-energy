@@ -241,7 +241,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                 {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
-            self.update_default_energy_list()
+            #self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     # Biomass energy is computed by the agriculture model

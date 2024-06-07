@@ -26,9 +26,8 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.energy_study_manager import (
     AGRI_TYPE,
     EnergyStudyManager,
-    DEFAULT_TECHNO_DICT,
     CCUS_TYPE,
-    ENERGY_TYPE,
+    ENERGY_TYPE
 )
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
@@ -78,7 +77,7 @@ class Study(EnergyStudyManager):
             bspline=True,
             execution_engine=None,
             use_utilisation_ratio: bool = False,
-            techno_dict=DEFAULT_TECHNO_DICT
+            techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV
     ):
         super().__init__(
             file_path=file_path,
@@ -94,7 +93,7 @@ class Study(EnergyStudyManager):
         self.dict_technos = {}
         self.coupling_name = "MDA"
 
-        self.lower_bound_techno = 1.0e-6
+        self.lower_bound_techno = 1.0
         self.upper_bound_techno = 3000
 
         self.sub_study_dict = None
@@ -236,7 +235,7 @@ class Study(EnergyStudyManager):
         for sub_study_name, sub_study in self.sub_study_dict.items():
             instance_sub_study = None # initialize variable
             if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
-                prefix_name = f"{self.coupling_name}.{GlossaryEnergy.CCUS}"
+                prefix_name = f"{GlossaryEnergy.CCUS}"
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
@@ -268,7 +267,7 @@ class Study(EnergyStudyManager):
                     lower_bound_techno=self.lower_bound_techno,
                     upper_bound_techno=self.upper_bound_techno,
                 )
-                instance_sub_study.study_name = self.study_name
+                instance_sub_study.study_name = f"{self.study_name}.{self.coupling_name}"
                 data_dict = instance_sub_study.setup_usecase()
                 values_dict_list.extend(data_dict)
                 instanced_sub_studies.append(instance_sub_study)
@@ -631,7 +630,7 @@ class Study(EnergyStudyManager):
         ]
         flue_gas_list = [techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos]
 
-        if CarbonCapture.name in DEFAULT_TECHNO_DICT:
+        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
@@ -665,7 +664,7 @@ class Study(EnergyStudyManager):
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
         ]
 
-        if CarbonCapture.name in DEFAULT_TECHNO_DICT:
+        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
                 f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
@@ -693,7 +692,8 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-8,
+            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
         }
 
         dvar_values = self.get_dvar_values(dspace)

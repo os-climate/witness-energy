@@ -17,7 +17,7 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -31,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST
+        self.techno_list = self.techno_list = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.solid_fuel]['value']
 
     def get_builders(self):
         ns_study = self.ee.study_name

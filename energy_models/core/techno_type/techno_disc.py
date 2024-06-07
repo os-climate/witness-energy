@@ -151,12 +151,16 @@ class TechnoDiscipline(SoSWrapp):
                     cost_of_resource_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in resources_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfResourceUsageValue] = cost_of_resource_usage_var
 
+            energies_used_for_production = None
             if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
                 energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
                 if energies_used_for_production is not None:
                     cost_of_energies_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfEnergiesUsageDf)
                     cost_of_energies_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in energies_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfEnergiesUsageValue] = cost_of_energies_usage_var
+
+            if GlossaryEnergy.EnergyPricesValue in self.get_data_in():
+                energy_price = self.get_sosdisc_inputs(GlossaryEnergy.EnergyPricesValue)
 
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])

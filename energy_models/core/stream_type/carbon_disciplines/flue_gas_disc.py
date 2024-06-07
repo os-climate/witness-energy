@@ -71,10 +71,10 @@ class FlueGasDiscipline(SoSWrapp):
                                  f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fossil}.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+                                 f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,

@@ -23,17 +23,10 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR',
-                             'CoalGasification', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis']
-TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR', 'CoalGasification', 'Pyrolysis', 'AutothermalReforming',
-                     'CoElectrolysis']
-TECHNOLOGIES_LIST_DEV = ['BiomassGasification', 'SMR', 'CoalGasification', 'Pyrolysis', 'AutothermalReforming',
-                         'CoElectrolysis']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.syngas]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -47,29 +40,23 @@ class Study(EnergyMixStudyManager):
         invest_syngas_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'BiomassGasification' in self.technologies_list:
-            invest_syngas_mix_dict['BiomassGasification'] = [
-                0.5 * (1 + 0.06) ** i for i in l_ctrl]
+        if GlossaryEnergy.BiomassGasification in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.BiomassGasification] = [0.5 * (1 + 0.06) ** i for i in l_ctrl]
 
-        if 'SMR' in self.technologies_list:
-            invest_syngas_mix_dict['SMR'] = [
-                10 * (1 - 0.04) ** i for i in l_ctrl]
+        if GlossaryEnergy.SMR in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.SMR] = [10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'Pyrolysis' in self.technologies_list:
-            invest_syngas_mix_dict['Pyrolysis'] = [
-                0.1 * (1 - 0.03) ** i for i in l_ctrl]
+        if GlossaryEnergy.Pyrolysis in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.Pyrolysis] = [0.1 * (1 - 0.03) ** i for i in l_ctrl]
 
-        if 'AutothermalReforming' in self.technologies_list:
-            invest_syngas_mix_dict['AutothermalReforming'] = [
-                0.001 * (1 - 0.04) ** i for i in l_ctrl]
+        if GlossaryEnergy.AutothermalReforming in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.AutothermalReforming] = [0.001 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'CoElectrolysis' in self.technologies_list:
-            invest_syngas_mix_dict['CoElectrolysis'] = [
-                0.01 * (1 - 0.04) ** i for i in l_ctrl]
+        if GlossaryEnergy.CoElectrolysis in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.CoElectrolysis] = [0.01 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'CoalGasification' in self.technologies_list:
-            invest_syngas_mix_dict['CoalGasification'] = [
-                0.5 * (1 - 0.03) ** i for i in l_ctrl]
+        if GlossaryEnergy.CoalGasification in self.technologies_list:
+            invest_syngas_mix_dict[GlossaryEnergy.CoalGasification] = [0.5 * (1 - 0.03) ** i for i in l_ctrl]
 
         if self.bspline:
 
@@ -127,12 +114,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': technologies_list,
-                       f'{self.study_name}.{energy_name}.BiomassGasification.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.SMR.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.Pyrolysis.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.CoalGasification.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.AutothermalReforming.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.CoElectrolysis.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.BiomassGasification}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.SMR}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.Pyrolysis}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.CoalGasification}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.AutothermalReforming}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.CoElectrolysis}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
@@ -165,6 +152,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.test()

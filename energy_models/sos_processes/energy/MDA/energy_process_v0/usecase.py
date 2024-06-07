@@ -29,7 +29,6 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.energy_study_manager import (
     AGRI_TYPE,
     EnergyStudyManager,
-    DEFAULT_TECHNO_DICT,
     CCUS_TYPE,
     ENERGY_TYPE,
 )
@@ -82,7 +81,7 @@ class Study(EnergyStudyManager):
             time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
-            techno_dict=DEFAULT_TECHNO_DICT,
+            techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
             main_study=True,
             bspline=True,
             execution_engine=None,
@@ -661,7 +660,7 @@ class Study(EnergyStudyManager):
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
         ]
 
-        if CarbonCapture.name in DEFAULT_TECHNO_DICT:
+        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
@@ -767,5 +766,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

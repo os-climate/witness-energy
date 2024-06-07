@@ -28,14 +28,11 @@ DEFAULT_TECHNOLOGIES_LIST = [
     'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
 TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
                      'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
-TECHNOLOGIES_LIST_DEV = ['WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',
-                         'PlasmaCracking'
-                         ]
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}"]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
