@@ -19,9 +19,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
-from energy_models.core.techno_type.disciplines.biogas_techno_disc import BiogasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biogas_techno_disc import (
+    BiogasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import AnaerobicDigestion
+from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import (
+    AnaerobicDigestion,
+)
 
 
 class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):

@@ -16,7 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
+    CSTechno,
+)
 
 
 class Reforestation(CSTechno):

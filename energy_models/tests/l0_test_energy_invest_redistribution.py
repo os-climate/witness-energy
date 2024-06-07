@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestEnergyInvest(AbstractJacobianUnittest):
@@ -204,7 +205,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_wo_biomass.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_redistribution_invest_disc_wo_biomass.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
@@ -268,7 +269,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_w_biomass.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_redistribution_invest_disc_w_biomass.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',

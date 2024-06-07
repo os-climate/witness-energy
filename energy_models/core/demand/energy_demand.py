@@ -17,16 +17,18 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.base_functions.s_curve import s_curve
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.s_curve import s_curve
 
 
 class EnergyDemand(object):

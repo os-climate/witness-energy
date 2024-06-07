@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import GenericFlueGasTechnoModel
+from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import (
+    GenericFlueGasTechnoModel,
+)
 
 
 class CalciumLooping(GenericFlueGasTechnoModel):

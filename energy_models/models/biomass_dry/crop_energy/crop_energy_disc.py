@@ -17,13 +17,17 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import (
+    BiomassDryTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.crop_energy.crop_energy import CropEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
@@ -280,8 +284,8 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         min4 = min(production_mix_df[name_residue_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3, min4) * 0.8
 
-        chart_name = f'Production of Crop over the years'
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production of Crop (TWh)',
+        chart_name = 'Production of Crop over the years'
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Crop (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
                                              chart_name=chart_name, cumulative_surface=True)
@@ -289,25 +293,25 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         wood_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_crop].values.tolist(),
-            f'biomass for energy from crop energy', 'lines')
+            'biomass for energy from crop energy', 'lines')
         new_chart.series.append(wood_serie)
 
         residue_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_residue].values.tolist(),
-            f'biomass for energy from crop residue', 'lines')
+            'biomass for energy from crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         residue_non_energy_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_residue_non_energy].values.tolist(),
-            f'biomass from residue for non energy production', 'lines')
+            'biomass from residue for non energy production', 'lines')
         new_chart.series.append(residue_non_energy_serie)
 
         non_energy_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_non_energy].values.tolist(),
-            f'biomass from crop for non energy production', 'lines')
+            'biomass from crop for non energy production', 'lines')
         new_chart.series.append(non_energy_serie)
 
         return new_chart
@@ -320,7 +324,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = f'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology over the years'
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -329,21 +333,21 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         max2 = max(price_mix_df[name_crop].values.tolist())
         maximum = max(max1, max2) * 1.2 * \
                   self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Price of Crop energy ($/t)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Price of Crop energy ($/t)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_residue].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
-            f'price of crop residue', 'lines')
+            'price of crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_crop].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
-            f'price of crop energy', 'lines')
+            'price of crop energy', 'lines')
         new_chart.series.append(wood_serie)
 
         return new_chart
@@ -356,26 +360,26 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = f'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology over the years'
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 
         max1 = max(price_mix_df[name_residue].values.tolist())
         max2 = max(price_mix_df[name_crop].values.tolist())
         maximum = max(max1, max2) * 1.2
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Price of Crop energy ($/MWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Price of Crop energy ($/MWh)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_residue].values.tolist(),
-            f'price of crop residue', 'lines')
+            'price of crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_crop].values.tolist(),
-            f'price of crop energy', 'lines')
+            'price of crop energy', 'lines')
         new_chart.series.append(wood_serie)
 
         return new_chart
@@ -420,7 +424,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            (initial_prod[f'cum energy (TWh)'].values +
+            (initial_prod['cum energy (TWh)'].values +
              residue_food_production_init).tolist(),
             'Initial production for energy by 2020 factories', 'lines')
 
@@ -430,7 +434,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(
-            0, initial_prod[f'cum energy (TWh)'].values.tolist()[-1] + residue_food_production_init)
+            0, initial_prod['cum energy (TWh)'].values.tolist()[-1] + residue_food_production_init)
         serie = InstanciatedSeries(
             years_study,
             study_prod_l, 'Predicted production', 'lines')

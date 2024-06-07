@@ -16,6 +16,10 @@ limitations under the License.
 '''
 from importlib import import_module
 
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.base_functions.specific_check import specific_check_years
+from sostrades_core.tools.bspline.bspline_methods import bspline_method
+
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
@@ -26,9 +30,11 @@ from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import (
+    hightemperatureheat,
+    lowtemperatureheat,
+    mediumtemperatureheat,
+)
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
     HydrotreatedOilFuel,
 )
@@ -89,9 +95,6 @@ from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import
 from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import (
     TECHNOLOGIES_LIST_DEV as Syngas_technos_dev,
 )
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
-from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 ENERGY_TYPE = "energy"
 CCUS_TYPE = GlossaryEnergy.CCUS

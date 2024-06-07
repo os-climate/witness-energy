@@ -13,14 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-import numpy as np
-import pandas as pd
 from os.path import dirname
 
-from energy_models.glossaryenergy import GlossaryEnergy
+import numpy as np
+import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
@@ -105,4 +107,4 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
                             local_data=disc.local_data,
                             location=dirname(__file__),
                             discipline=disc,
-                            filename=f'jacobian_investments_profile_builder_disc.pkl', threshold=1e-5, )
+                            filename='jacobian_investments_profile_builder_disc.pkl', threshold=1e-5, )

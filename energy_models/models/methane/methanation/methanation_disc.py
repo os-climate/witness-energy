@@ -18,7 +18,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
+from energy_models.core.techno_type.disciplines.methane_techno_disc import (
+    MethaneTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.methane.methanation.methanation import Methanation
 
