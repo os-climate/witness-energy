@@ -20,7 +20,8 @@
         "ini",
         "coveragerc",
         "yaml",
-        "bat"
+        "bat",
+        "toml"
     ],
     "files_to_ignore": [
         ".readthedocs",
