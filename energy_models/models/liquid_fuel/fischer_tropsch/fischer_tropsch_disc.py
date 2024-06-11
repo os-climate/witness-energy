@@ -19,20 +19,36 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
+from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import (
+    LiquidFuelTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import AutothermalReformingDiscipline
-from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import BiomassGasificationDiscipline
-from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import CoElectrolysisDiscipline
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import (
+    FischerTropsch,
+)
+from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import (
+    AutothermalReformingDiscipline,
+)
+from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import (
+    BiomassGasificationDiscipline,
+)
+from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import (
+    CoElectrolysisDiscipline,
+)
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import (
+    CoalGasificationDiscipline,
+)
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):

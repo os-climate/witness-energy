@@ -17,24 +17,31 @@ limitations under the License.
 import logging
 
 import numpy as np
-
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
-    AgricultureMixDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
-from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import EnergyGHGEmissions
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
+    AgricultureMixDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
+    EnergyGHGEmissions,
+)
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyGHGEmissionsDiscipline(SoSWrapp):
@@ -402,7 +409,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
-                            ('GHG_total_energy_emissions', f'Total CO2 emissions'),
+                            ('GHG_total_energy_emissions', 'Total CO2 emissions'),
                             (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
@@ -411,7 +418,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
-                            ('GHG_total_energy_emissions', f'Total CO2 emissions'),
+                            ('GHG_total_energy_emissions', 'Total CO2 emissions'),
                             (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         self.set_partial_derivative_for_other_types(
@@ -480,7 +487,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         GHG_total_energy_emissions = self.get_sosdisc_outputs(
             'GHG_total_energy_emissions')
 
-        chart_name = f'Total CO2 emissions for energy sector'
+        chart_name = 'Total CO2 emissions for energy sector'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [Gt]', chart_name=chart_name)
 
@@ -534,7 +541,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         CO2_emissions_sources = self.get_sosdisc_outputs(
             'CO2_emissions_sources')
 
-        chart_name = f'CO2 emissions by consumption - Sources'
+        chart_name = 'CO2 emissions by consumption - Sources'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [Gt]', chart_name=chart_name)
 
@@ -552,7 +559,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         CO2_emissions_sinks = self.get_sosdisc_outputs(
             'CO2_emissions_sinks')
 
-        chart_name = f'CO2 emissions by consumption - Sinks'
+        chart_name = 'CO2 emissions by consumption - Sinks'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [Gt]', chart_name=chart_name)
 

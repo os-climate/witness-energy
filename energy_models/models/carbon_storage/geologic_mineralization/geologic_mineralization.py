@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
+    CSTechno,
+)
 
 
 class GeologicMineralization(CSTechno):

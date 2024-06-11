@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.core.techno_type.disciplines.heat_techno_disc import (
+    LowHeatTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.low.chplowheat.chplowheat import CHPLowHeat
 

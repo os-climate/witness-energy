@@ -20,15 +20,24 @@ from copy import copy
 
 import numpy as np
 import pandas as pd
+from climateeconomics.core.core_resources.resource_mix.resource_mix import (
+    ResourceMixModel,
+)
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
+from sostrades_core.tools.cst_manager.func_manager_common import (
+    cons_smooth_maximum_vect,
+    get_dcons_smooth_dvariable_vect,
+    get_dsmooth_dvariable_vect,
+    get_dsoft_maximum_vect,
+    smooth_maximum_vect,
+    soft_maximum_vect,
+)
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, \
-    get_dcons_smooth_dvariable_vect
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
-from sostrades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
 
 
 class TechnoType:

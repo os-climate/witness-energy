@@ -18,7 +18,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
+from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import (
+    SolidFuelTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 

@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 

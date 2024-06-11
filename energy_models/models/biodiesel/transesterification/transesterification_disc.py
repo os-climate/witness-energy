@@ -20,9 +20,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import BioDieselTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import (
+    BioDieselTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biodiesel.transesterification.transesterification import Transesterification
+from energy_models.models.biodiesel.transesterification.transesterification import (
+    Transesterification,
+)
 
 
 class TransesterificationDiscipline(BioDieselTechnoDiscipline):

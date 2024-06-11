@@ -14,20 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import time
 import unittest
 
 import numpy as np
 import pandas as pd
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    Study as agri_study_open,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as Study_open,
+)
 
 
 class TestGlobalEnergyValues(unittest.TestCase):

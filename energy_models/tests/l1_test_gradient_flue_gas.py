@@ -20,23 +20,32 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
-    CalciumLoopingDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc import \
-    ChilledAmmoniaProcessDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc import CO2MembranesDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc import \
-    MonoEthanolAmineDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc import \
-    PiperazineProcessDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import \
-    PressureSwingAdsorptionDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
+    CalciumLoopingDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc import (
+    ChilledAmmoniaProcessDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc import (
+    CO2MembranesDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc import (
+    MonoEthanolAmineDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc import (
+    PiperazineProcessDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import (
+    PressureSwingAdsorptionDiscipline,
+)
 
 
 class GradientFlueGasTestCase(AbstractJacobianUnittest):

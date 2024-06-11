@@ -18,18 +18,22 @@ import logging
 
 import numpy as np
 import pandas as pd
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class CCUS_Discipline(SoSWrapp):
@@ -507,7 +511,7 @@ class CCUS_Discipline(SoSWrapp):
         serie = InstanciatedSeries(
             x_serie_1,
             carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values.tolist(),
-            f'CO2 captured from energy mix', 'bar')
+            'CO2 captured from energy mix', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -523,7 +527,7 @@ class CCUS_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         return new_chart
@@ -541,18 +545,18 @@ class CCUS_Discipline(SoSWrapp):
         x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 storage capacity')
+            (carbon_storage_by_invest / 1.0e3).tolist(), 'CO2 storage capacity')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
-            f'CO2 captured and stored')
+            'CO2 captured and stored')
         new_chart.add_series(serie)
 
         return new_chart

@@ -19,9 +19,9 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
+from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import (
+    BiomassDryTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 

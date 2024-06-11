@@ -18,10 +18,16 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
+    GaseousHydrogenTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
+from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import (
+    PlasmaCracking,
+)
 
 
 class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):

@@ -16,16 +16,17 @@ limitations under the License.
 '''
 import pickle
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
+    AgricultureMixDiscipline,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
-    AgricultureMixDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):

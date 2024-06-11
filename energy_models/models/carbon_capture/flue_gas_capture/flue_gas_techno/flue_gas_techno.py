@@ -14,13 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
 from energy_models.core.stream_type.energy_models.renewable import Renewable
-from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
-from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
+    CCTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import GenericFlueGasTechnoModel
+from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import (
+    GenericFlueGasTechnoModel,
+)
 
 
 class FlueGasTechno(GenericFlueGasTechnoModel):

@@ -17,18 +17,30 @@ import logging
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_disciplines.high_heat_disc import HighHeatDiscipline
-from energy_models.core.stream_type.energy_disciplines.low_heat_disc import LowHeatDiscipline
-from energy_models.core.stream_type.energy_disciplines.medium_heat_disc import MediumHeatDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_disciplines.high_heat_disc import (
+    HighHeatDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.low_heat_disc import (
+    LowHeatDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.medium_heat_disc import (
+    MediumHeatDiscipline,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HeatDiscipline(SoSWrapp):
@@ -450,7 +462,7 @@ class HeatDiscipline(SoSWrapp):
 
         chart_name = f'Technology production for {self.energy_name}'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production (TWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)
 
         techno_list = [
