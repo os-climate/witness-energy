@@ -17,16 +17,16 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import (
     BiomassDryTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood import UnmanagedWood
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):

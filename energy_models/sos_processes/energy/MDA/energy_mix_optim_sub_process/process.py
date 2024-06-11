@@ -47,6 +47,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV
 
     def get_builders(self):
         coupling_name = "MDA"

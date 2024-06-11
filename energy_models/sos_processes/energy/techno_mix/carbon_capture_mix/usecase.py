@@ -29,17 +29,6 @@ from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
-                             f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping', f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess',
-                             f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes', f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine',
-                             f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess', f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption']
-TECHNOLOGIES_LIST = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
-                     f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping', f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess',
-                     f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes', f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine',
-                     f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess', f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption']
-TECHNOLOGIES_LIST_COARSE = [f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing', f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping']
-
-TECHNOLOGIES_FLUE_GAS_LIST_COARSE = [f'{GlossaryEnergy.electricity}.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.CoalGen',
                          f'{GlossaryEnergy.electricity}.GasTurbine',
                          f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine',
@@ -49,19 +38,15 @@ DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.CoalGen',
                          f'{GlossaryEnergy.methane}.FossilGas',
                          f'{GlossaryEnergy.solid_fuel}.Pelletizing',
                          f'{GlossaryEnergy.syngas}.CoalGasification',
-                         f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno']
-TECHNOLOGIES_LIST_DEV = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
-                         f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping', f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess',
-                         f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes', f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine',
-                         f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess', f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption']
+                         f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.carbon_capture]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -81,51 +66,51 @@ class Study(EnergyMixStudyManager):
         invest_carbon_capture_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing' in self.technologies_list:
-            #             invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'] = [
+        if f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}' in self.technologies_list:
+            #             invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = [
             #                 0.5 * (1 + 0.03) ** i for i in l_ctrl]
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'] = np.array(
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.array(
                 [0.5] + [1.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing'] = [
+        if f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}'] = [
                 0.1 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}'] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}'] = [
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}'] = [
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}'] = [
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption'] = [
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}'] = [
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'] = np.ones(
+        if f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'] = np.ones(
                 GlossaryEnergy.NB_POLES_COARSE) * 1e-6
             invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'][0] = invest_2020_ccus / 3
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'][0] = invest_2020_ccus / 3
 
-        if f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'] = np.ones(
+        if f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}' in self.technologies_list:
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'] = np.ones(
                 GlossaryEnergy.NB_POLES_COARSE) * 1e-6
             invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
-            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'][0] = invest_2020_ccus / 3
+            invest_carbon_capture_mix_dict[f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'][0] = invest_2020_ccus / 3
 
         if self.bspline:
             invest_carbon_capture_mix_dict[GlossaryEnergy.Years] = self.years
@@ -242,7 +227,7 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.FossilGas.flue_gas_co2_ratio': np.array([0.085]),
                     f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.flue_gas_co2_ratio': np.array([0.12]),
                     f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.flue_gas_co2_ratio': np.array([0.13]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.flue_gas_co2_ratio': np.array(
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.flue_gas_co2_ratio': np.array(
                         [0.12]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}': coal_gen_prod,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.GasTurbine.{GlossaryEnergy.TechnoProductionValue}': gas_turbine_prod,
@@ -253,9 +238,9 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.FossilGas.{GlossaryEnergy.TechnoProductionValue}': fossil_gas_prod,
                     f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.{GlossaryEnergy.TechnoProductionValue}': pelletizing_prod,
                     f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.{GlossaryEnergy.TechnoProductionValue}': coal_gas_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.{GlossaryEnergy.TechnoProductionValue}': refinery_prod,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing.{GlossaryEnergy.TechnoProductionValue}': CAKOH_production,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing.{GlossaryEnergy.TechnoProductionValue}': aminescrubbing_production,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.TechnoProductionValue}': refinery_prod,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.TechnoProductionValue}': CAKOH_production,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.TechnoProductionValue}': aminescrubbing_production,
                     f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_prod,
                 })
 

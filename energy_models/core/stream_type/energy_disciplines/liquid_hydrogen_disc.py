@@ -36,7 +36,7 @@ class LiquidHydrogenDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': LiquidHydrogen.default_techno_list,
-                                            'default': LiquidHydrogen.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_liquid_hydrogen',
                                             'structuring': True, 'unit': '-'},

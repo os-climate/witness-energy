@@ -17,6 +17,7 @@ limitations under the License.
 import logging
 
 import numpy as np
+
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
@@ -28,13 +29,6 @@ from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agricult
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
     EnergyGHGEmissions,
@@ -42,6 +36,12 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class EnergyGHGEmissionsDiscipline(SoSWrapp):

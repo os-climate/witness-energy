@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import pandas as pd
-from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.glossaryenergy import GlossaryEnergy
 

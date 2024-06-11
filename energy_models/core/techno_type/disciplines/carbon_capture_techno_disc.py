@@ -15,14 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class CCTechnoDiscipline(TechnoDiscipline):

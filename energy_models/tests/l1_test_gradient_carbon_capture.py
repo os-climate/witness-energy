@@ -21,10 +21,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
@@ -43,6 +39,10 @@ from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_t
 )
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
     CalciumLoopingDiscipline,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 
@@ -480,7 +480,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     def test_05_direct_air_capture_techno_discipline_gradient(self):
 
         self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

@@ -18,21 +18,21 @@ import logging
 
 import numpy as np
 import pandas as pd
+
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.investments.independent_invest import IndependentInvest
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.investments.independent_invest import IndependentInvest
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class IndependentInvestDiscipline(SoSWrapp):
@@ -63,8 +63,8 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.methane}.UpgradingBiogas': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.GeologicMineralization': ('float', None, True),
                                                              f'{GlossaryEnergy.methane}.Methanation': ('float', None, True),
@@ -112,21 +112,21 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
                                                              f'{GlossaryEnergy.fuel}.ethanol.BiomassFermentation': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.BiomassBuryingFossilization': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DeepOceanInjection': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DepletedOilGas': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.EnhancedOilRecovery': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.PureCarbonSolidStorage': ('float', None, True),
                                                              f'{GlossaryEnergy.renewable}.RenewableSimpleTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno': ('float', None, True),
                                                              }},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},

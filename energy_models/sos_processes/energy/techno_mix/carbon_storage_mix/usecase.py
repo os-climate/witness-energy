@@ -28,20 +28,10 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                             'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                     'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                     'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                         'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                         'PureCarbonSolidStorage']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.carbon_storage]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,

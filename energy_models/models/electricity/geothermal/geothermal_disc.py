@@ -17,10 +17,6 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
@@ -30,6 +26,10 @@ from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.geothermal.geothermal import Geothermal
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class GeothermalDiscipline(ElectricityTechnoDiscipline):

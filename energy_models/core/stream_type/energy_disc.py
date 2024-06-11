@@ -16,14 +16,14 @@ limitations under the License.
 '''
 
 import numpy as np
+
+from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyDiscipline(StreamDiscipline):
