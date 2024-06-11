@@ -17,14 +17,14 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
-
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.core.investments.disciplines.investments_profile_builder_disc import InvestmentsProfileBuilderDisc
-
 
 class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
     """

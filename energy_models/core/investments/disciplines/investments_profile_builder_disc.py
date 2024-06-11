@@ -15,6 +15,10 @@ limitations under the License.
 '''
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.investments.convex_combination_model import (
+    ConvexCombinationModel,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -22,13 +26,11 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 from sostrades_core.execution_engine.design_var.design_var import DesignVar
-
 from energy_models.core.investments.convex_combination_model import (
     ConvexCombinationModel,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 import numpy as np
-
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
     # ontology information

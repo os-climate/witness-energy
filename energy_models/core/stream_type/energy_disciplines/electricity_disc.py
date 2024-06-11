@@ -16,15 +16,15 @@ limitations under the License.
 '''
 import numpy as np
 from plotly import graph_objects as go
+
+from energy_models.core.stream_type.energy_disc import EnergyDiscipline
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
-
-from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityDiscipline(EnergyDiscipline):
@@ -44,7 +44,7 @@ class ElectricityDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': Electricity.default_techno_list,
-                                            'default': Electricity.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_electricity',
                                             'structuring': True, 'unit': '-'},

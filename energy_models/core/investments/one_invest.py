@@ -17,7 +17,6 @@ limitations under the License.
 import pandas as pd
 
 from energy_models.glossaryenergy import GlossaryEnergy
-
 from .base_invest import BaseInvest
 
 

@@ -18,23 +18,14 @@ import logging
 
 import numpy as np
 import pandas as pd
+from plotly import graph_objects as go
+
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
 )
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from plotly import graph_objects as go
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
-)
-
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
     get_static_CO2_emissions,
@@ -44,6 +35,15 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 
 class TechnoDiscipline(SoSWrapp):
@@ -163,12 +163,16 @@ class TechnoDiscipline(SoSWrapp):
                     cost_of_resource_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in resources_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfResourceUsageValue] = cost_of_resource_usage_var
 
+            energies_used_for_production = None
             if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
                 energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
                 if energies_used_for_production is not None:
                     cost_of_energies_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfEnergiesUsageDf)
                     cost_of_energies_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in energies_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfEnergiesUsageValue] = cost_of_energies_usage_var
+
+            if GlossaryEnergy.EnergyPricesValue in self.get_data_in():
+                energy_price = self.get_sosdisc_inputs(GlossaryEnergy.EnergyPricesValue)
 
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])

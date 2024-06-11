@@ -16,10 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
@@ -31,6 +27,10 @@ from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.biomass_fired.biomass_fired import BiomassFired
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class BiomassFiredDiscipline(ElectricityTechnoDiscipline):

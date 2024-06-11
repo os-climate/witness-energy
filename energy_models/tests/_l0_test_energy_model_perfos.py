@@ -22,9 +22,8 @@ from pathlib import Path
 from shutil import rmtree
 from time import sleep
 
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestModelPerfo(unittest.TestCase):

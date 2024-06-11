@@ -18,22 +18,22 @@ import logging
 
 import numpy as np
 import pandas as pd
+
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.one_invest import OneInvest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class OneInvestDiscipline(SoSWrapp):
@@ -74,9 +74,9 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.methane}.UpgradingBiogas': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE': ('float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': (
                                             'float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': ('float', None, True),
                                         f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation': ('float', None, True),
                                         f'{GlossaryEnergy.carbon_storage}.GeologicMineralization': ('float', None, True),
                                         f'{GlossaryEnergy.methane}.Methanation': ('float', None, True),
@@ -124,16 +124,16 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
                                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.BiomassFermentation': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': (
                                             'float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}': (
                                             'float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}': (
                                             'float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}': (
                                             'float', None, True),
-                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': (
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}': (
                                             'float', None, True),
                                         f'{GlossaryEnergy.carbon_storage}.BiomassBuryingFossilization': ('float', None, True),
                                         f'{GlossaryEnergy.carbon_storage}.DeepOceanInjection': ('float', None, True),
@@ -141,7 +141,7 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.carbon_storage}.EnhancedOilRecovery': ('float', None, True),
                                         f'{GlossaryEnergy.carbon_storage}.PureCarbonSolidStorage': ('float', None, True),
                                         f'{GlossaryEnergy.renewable}.RenewableSimpleTechno': ('float', None, True),
-                                        f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
+                                        f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
                                         },
                                     'dataframe_edition_locked': False},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},

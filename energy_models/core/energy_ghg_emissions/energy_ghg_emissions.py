@@ -17,12 +17,12 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
-
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
