@@ -16,7 +16,7 @@ limitations under the License.
 '''
 import os
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
@@ -24,18 +24,26 @@ import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
-    AmineScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import \
-    CalciumPotassiumScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
-    DirectAirCaptureTechnoDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
-    CalciumLoopingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
+    AmineScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
+    CalciumPotassiumScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
+    DirectAirCaptureTechnoDiscipline,
+)
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
+    CalciumLoopingDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):

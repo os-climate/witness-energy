@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
+    SyngasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import AutothermalReforming
+from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import (
+    AutothermalReforming,
+)
 
 
 class AutothermalReformingDiscipline(SyngasTechnoDiscipline):

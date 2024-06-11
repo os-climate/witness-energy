@@ -16,8 +16,9 @@ limitations under the License.
 '''
 
 import energy_models.tests as jacobian_target
-
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 if __name__ == '__main__':
     AbstractJacobianUnittest.launch_all_pickle_generation(

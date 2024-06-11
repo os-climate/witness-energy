@@ -14,9 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import time
 import unittest
 
@@ -25,7 +22,9 @@ import pandas as pd
 
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as Study_open,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -64,7 +63,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = cls.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda', techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV)
+            repo, 'energy_process_v0_mda', techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT)
         i_disc_to_pop = None
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':

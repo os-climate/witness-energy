@@ -21,7 +21,9 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane

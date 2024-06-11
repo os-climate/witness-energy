@@ -18,33 +18,55 @@ import logging
 
 import numpy as np
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
-    AmineScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import \
-    CalciumPotassiumScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
-    DirectAirCaptureTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
+    AmineScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
+    CalciumPotassiumScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
+    DirectAirCaptureTechnoDiscipline,
+)
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
-from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
-    CombinedCycleGasTurbineDiscipline
-from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import (
+    CombinedCycleGasTurbineDiscipline,
+)
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
+    GasTurbineDiscipline,
+)
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
+    FossilSimpleTechnoDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
+    WaterGasShiftDiscipline,
+)
+from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import (
+    FischerTropschDiscipline,
+)
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import PelletizingDiscipline
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import (
+    PelletizingDiscipline,
+)
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import (
+    CoalGasificationDiscipline,
+)
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
-from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
 
 
 class FlueGasDiscipline(SoSWrapp):
@@ -281,7 +303,7 @@ class FlueGasDiscipline(SoSWrapp):
         flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
         technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         years = flue_gas_prod_ratio[GlossaryEnergy.Years].values
-        chart_name = f'Flue gas emissions by technology'
+        chart_name = 'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Flue gas emissions [Mt]', chart_name=chart_name, stacked_bar=True)
 
@@ -302,13 +324,13 @@ class FlueGasDiscipline(SoSWrapp):
     def get_chart_average_co2_concentration(self):
         flue_gas_co2_concentration = self.get_sosdisc_outputs(GlossaryEnergy.FlueGasMean)
 
-        chart_name = f'Average CO2 concentration in Flue gases'
+        chart_name = 'Average CO2 concentration in Flue gases'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 concentration [%]', chart_name=chart_name)
 
         serie = InstanciatedSeries(
             flue_gas_co2_concentration[GlossaryEnergy.Years].values.tolist(),
-            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), f'CO2 concentration',
+            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), 'CO2 concentration',
             'lines')
 
         new_chart.series.append(serie)

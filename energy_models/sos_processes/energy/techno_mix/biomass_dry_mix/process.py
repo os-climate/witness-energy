@@ -19,7 +19,6 @@ from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
-
 class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {

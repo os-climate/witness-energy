@@ -14,7 +14,9 @@ limitations under the License.
 
 '''
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import Study as StudyEnergyMixFull
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
+    Study as StudyEnergyMixFull,
+)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 

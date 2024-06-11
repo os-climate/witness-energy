@@ -14,7 +14,9 @@ limitations under the License.
 
 '''
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import ProcessBuilder as EnergyMixFullProcessBuilder
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import (
+    ProcessBuilder as EnergyMixFullProcessBuilder,
+)
 
 
 class ProcessBuilder(EnergyMixFullProcessBuilder):

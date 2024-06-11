@@ -18,14 +18,22 @@ import logging
 
 import numpy as np
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
 
 
 class StreamDiscipline(SoSWrapp):

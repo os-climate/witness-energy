@@ -16,22 +16,32 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from energy_models.models.methane.methanation.methanation_disc import MethanationDiscipline
-from energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc import UpgradingBiogasDiscipline
+from energy_models.models.methane.methanation.methanation_disc import (
+    MethanationDiscipline,
+)
+from energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc import (
+    UpgradingBiogasDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class MethaneJacobianTestCase(AbstractJacobianUnittest):

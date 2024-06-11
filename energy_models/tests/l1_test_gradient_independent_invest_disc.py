@@ -22,7 +22,9 @@ import pandas as pd
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 warnings.filterwarnings("ignore")
 
@@ -171,4 +173,4 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                             local_data=disc.local_data,
                             location=dirname(__file__),
                             discipline=disc,
-                            filename=f'jacobian_independent_invest_disc.pkl', threshold=1e-5, )
+                            filename='jacobian_independent_invest_disc.pkl', threshold=1e-5, )

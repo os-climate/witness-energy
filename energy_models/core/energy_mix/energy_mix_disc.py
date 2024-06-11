@@ -21,38 +21,56 @@ import numpy as np
 import pandas as pd
 from plotly import graph_objects as go
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
-    AgricultureMixDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
+    AgricultureMixDiscipline,
+)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
+from energy_models.core.stream_type.energy_models.heat import (
+    hightemperatureheat,
+    lowtemperatureheat,
+    mediumtemperatureheat,
+)
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
-    compute_func_with_exp_min
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
 from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
-from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
 
 
 class Energy_Mix_Discipline(SoSWrapp):
@@ -299,7 +317,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY})
 
                 if GlossaryEnergy.syngas in energy_list:
-                    dynamic_inputs[f'syngas_ratio'] = {
+                    dynamic_inputs['syngas_ratio'] = {
                         'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
                         'unit': '%'}
 
@@ -1464,7 +1482,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.EnergyProductionDetailedValue)
         solid_fuel_elec_percentage = self.get_sosdisc_inputs(
             'solid_fuel_elec_percentage')
-        chart_name = f'Solid energy and electricity production constraint'
+        chart_name = 'Solid energy and electricity production constraint'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
@@ -1487,7 +1505,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.EnergyProductionDetailedValue)
         liquid_hydrogen_percentage = self.get_sosdisc_inputs(
             'liquid_hydrogen_percentage')
-        chart_name = f'Liquid hydrogen production constraint'
+        chart_name = 'Liquid hydrogen production constraint'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
@@ -1504,14 +1522,14 @@ class Energy_Mix_Discipline(SoSWrapp):
                      (energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'].values +
                       energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values)
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(constraint),
-                                       f'percentage of total hydrogen production', 'lines')
+                                       'percentage of total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         return new_chart
 
     def get_chart_comparison_carbon_intensity(self):
         new_charts = []
         energy_co2_emissions = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCO2EmissionsValue)
-        chart_name = f'Comparison of carbon intensity for production of all energies'
+        chart_name = 'Comparison of carbon intensity for production of all energies'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
@@ -1527,7 +1545,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         new_charts.append(new_chart)
 
-        chart_name = f'Comparison of carbon intensity of all energies (production + use)'
+        chart_name = 'Comparison of carbon intensity of all energies (production + use)'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
@@ -1846,7 +1864,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1863,18 +1881,18 @@ class Energy_Mix_Discipline(SoSWrapp):
         x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 captured to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), f'CO2 storage capacity')
+            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), 'CO2 storage capacity')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
-            f'CO2 captured and stored')
+            'CO2 captured and stored')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1943,7 +1961,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         '''
         Plot stream ratio chart
         '''
-        chart_name = f'Stream Ratio Map'
+        chart_name = 'Stream Ratio Map'
 
         all_streams_demand_ratio = self.get_sosdisc_outputs(
             GlossaryEnergy.AllStreamsDemandRatioValue)
@@ -1973,7 +1991,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         Plot chart on energy mix heat losses 
         '''
 
-        chart_name = f'Energy mix losses'
+        chart_name = 'Energy mix losses'
 
         raw_prod = self.get_sosdisc_outputs(
             'energy_production_brut')
@@ -2001,7 +2019,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
-            years, heat_losses.tolist(), f'Global energy losses from heat production')
+            years, heat_losses.tolist(), 'Global energy losses from heat production')
         new_chart.add_series(serie)
         return new_chart
 
@@ -2010,7 +2028,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         Plot a table connecting all the streams in the ratio dataframe (left column)
         with the technologies consuming them (right column).
         '''
-        chart_name = f'Stream consumption by technologies table'
+        chart_name = 'Stream consumption by technologies table'
 
         all_streams_demand_ratio = self.get_sosdisc_outputs(
             GlossaryEnergy.AllStreamsDemandRatioValue)

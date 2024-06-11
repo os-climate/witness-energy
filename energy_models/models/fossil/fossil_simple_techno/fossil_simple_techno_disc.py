@@ -18,12 +18,18 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.fossil_techno_disc import FossilTechnoDiscipline
+from energy_models.core.techno_type.disciplines.fossil_techno_disc import (
+    FossilTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import FossilSimpleTechno
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import (
+    FossilSimpleTechno,
+)
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
+from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import (
+    CoalExtractionDiscipline,
+)
 
 
 class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):

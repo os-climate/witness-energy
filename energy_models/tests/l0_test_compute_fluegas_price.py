@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
@@ -148,7 +148,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
                                                  f'{self.name}.{self.model_name}.flue_gas_prod_ratio'],
                                              input_data=disc_techno.local_data,
                                              dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                                f'jacobian_fluegas_discipline.pkl'))
+                                                                'jacobian_fluegas_discipline.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+            succeed, msg="Wrong gradient")

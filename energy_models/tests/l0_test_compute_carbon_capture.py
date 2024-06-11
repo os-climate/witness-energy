@@ -18,7 +18,9 @@ import unittest
 from copy import deepcopy
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
+from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
+    Study,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 

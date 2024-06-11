@@ -15,9 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
-from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import (
+    TECHNOLOGIES_LIST,
+)
 
 
 class ProcessBuilder(EnergyProcessBuilder):

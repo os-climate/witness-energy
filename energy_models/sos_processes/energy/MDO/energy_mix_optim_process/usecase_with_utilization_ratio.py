@@ -13,7 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import (
+    Study as subStudy,
+)
 
 
 class Study(subStudy):

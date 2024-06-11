@@ -15,8 +15,10 @@ limitations under the License.
 '''
 
 import unittest
+
 import numpy as np
 import pandas as pd
+
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -92,7 +94,8 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
+            pass
 
 
 

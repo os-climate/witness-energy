@@ -19,9 +19,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.methanol import Methanol
-from energy_models.core.techno_type.disciplines.methanol_techno_disc import MethanolTechnoDiscipline
+from energy_models.core.techno_type.disciplines.methanol_techno_disc import (
+    MethanolTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation import CO2Hydrogenation
+from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation import (
+    CO2Hydrogenation,
+)
 
 
 class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):

@@ -19,13 +19,19 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 def get_static_CO2_emissions(years):
@@ -168,7 +174,7 @@ class ResourcesDisc(SoSWrapp):
 
         resources_price = self.get_sosdisc_outputs(
             GlossaryEnergy.ResourcesPriceValue)
-        chart_name = f'Resources prices'
+        chart_name = 'Resources prices'
 
         new_chart = TwoAxesInstanciatedChart('Years', 'Prices [$/t]',
                                              chart_name=chart_name)
@@ -188,7 +194,7 @@ class ResourcesDisc(SoSWrapp):
 
         resources_co2_emissions = self.get_sosdisc_outputs(
             GlossaryEnergy.RessourcesCO2EmissionsValue)
-        chart_name = f'Resources CO2 emissions in kgCO2/kg'
+        chart_name = 'Resources CO2 emissions in kgCO2/kg'
 
         new_chart = TwoAxesInstanciatedChart('Years', 'CO2 emissions [kgCO2/kg]',
                                              chart_name=chart_name)

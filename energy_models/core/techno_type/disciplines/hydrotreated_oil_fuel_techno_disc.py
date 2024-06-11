@@ -14,7 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 

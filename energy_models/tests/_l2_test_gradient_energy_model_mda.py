@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from collections import defaultdict
-from os.path import join, dirname
+from os.path import dirname, join
 from pathlib import Path
 from shutil import rmtree
 from time import sleep
@@ -23,11 +23,17 @@ from time import sleep
 import numpy as np
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    Study as Study_open,
+)
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as Study_MDA,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 

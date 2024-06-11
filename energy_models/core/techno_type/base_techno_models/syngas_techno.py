@@ -16,8 +16,12 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-from energy_models.core.stream_type.energy_models.syngas import Syngas, compute_molar_mass, \
-    compute_calorific_value, compute_density
+from energy_models.core.stream_type.energy_models.syngas import (
+    Syngas,
+    compute_calorific_value,
+    compute_density,
+    compute_molar_mass,
+)
 from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 

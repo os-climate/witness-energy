@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy

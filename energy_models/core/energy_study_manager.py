@@ -16,7 +16,6 @@ limitations under the License.
 '''
 from importlib import import_module
 
-
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.base_functions.specific_check import specific_check_years

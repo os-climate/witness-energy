@@ -16,25 +16,40 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_disciplines.gaseous_hydrogen_disc import GaseousHydrogenDiscipline
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import ElectrolysisAWEDiscipline
-from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc import ElectrolysisPEMDiscipline
-from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc import ElectrolysisSOECDiscipline
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc import PlasmaCrackingDiscipline
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
+from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import (
+    ElectrolysisAWEDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc import (
+    ElectrolysisPEMDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc import (
+    ElectrolysisSOECDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc import (
+    PlasmaCrackingDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
+    WaterGasShiftDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class HydrogenJacobianTestCase(AbstractJacobianUnittest):

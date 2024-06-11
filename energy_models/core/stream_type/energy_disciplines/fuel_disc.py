@@ -19,18 +19,32 @@ import logging
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import BioDieselDiscipline
-from energy_models.core.stream_type.energy_disciplines.ethanol_disc import EthanolDiscipline
-from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import HydrotreatedOilFuelDiscipline
-from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import LiquidFuelDiscipline
+from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import (
+    BioDieselDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.ethanol_disc import (
+    EthanolDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import (
+    HydrotreatedOilFuelDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import (
+    LiquidFuelDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
 
 
 class FuelDiscipline(SoSWrapp):
@@ -442,7 +456,7 @@ class FuelDiscipline(SoSWrapp):
 
         chart_name = f'Technology production for {self.energy_name}'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production (TWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)
 
         techno_list = [

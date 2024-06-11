@@ -14,15 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import HydrotreatedOilFuelTechno
+from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
+    HydrotreatedOilFuelTechno,
+)
 
 
 class HefaDecarboxylation(HydrotreatedOilFuelTechno):
