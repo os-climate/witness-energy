@@ -17,9 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes import CO2Membranes
+from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes import (
+    CO2Membranes,
+)
 
 
 class CO2MembranesDiscipline(CCTechnoDiscipline):

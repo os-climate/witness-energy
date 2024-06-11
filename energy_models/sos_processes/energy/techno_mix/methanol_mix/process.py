@@ -20,7 +20,9 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.methanol import Methanol
-from energy_models.sos_processes.energy.techno_mix.methanol_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.techno_mix.methanol_mix.usecase import (
+    TECHNOLOGIES_LIST,
+)
 
 
 class ProcessBuilder(EnergyProcessBuilder):

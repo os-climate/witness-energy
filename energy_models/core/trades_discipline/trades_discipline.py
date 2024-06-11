@@ -15,12 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries
-from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
-    InstantiatedParetoFrontOptimalChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+)
+from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import (
+    InstantiatedParetoFrontOptimalChart,
+)
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TradesDiscipline(SoSWrapp):

@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.renewable_techno_disc import RenewableTechnoDiscipline
+from energy_models.core.techno_type.disciplines.renewable_techno_disc import (
+    RenewableTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import RenewableSimpleTechno
+from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import (
+    RenewableSimpleTechno,
+)
 
 
 class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):

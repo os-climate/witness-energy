@@ -20,9 +20,13 @@ import pandas as pd
 
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
+    SyngasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.biomass_gasification.biomass_gasification import BiomassGasification
+from energy_models.models.syngas.biomass_gasification.biomass_gasification import (
+    BiomassGasification,
+)
 
 
 class BiomassGasificationDiscipline(SyngasTechnoDiscipline):

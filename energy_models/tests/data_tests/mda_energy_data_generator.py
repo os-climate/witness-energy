@@ -18,9 +18,12 @@ limitations under the License.
 
 import pickle
 
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    Study as MDA_Energy,
+)
 
 
 def launch_data_pickle_generation(directory=''):

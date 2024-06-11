@@ -19,12 +19,13 @@ import unittest
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
-    DirectAirCaptureTechnoDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
+    DirectAirCaptureTechnoDiscipline,
+)
 
 
 class DirectAirCaptureTechnoTestCase(unittest.TestCase):

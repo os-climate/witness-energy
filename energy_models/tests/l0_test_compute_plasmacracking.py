@@ -19,11 +19,13 @@ import unittest
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class PlasmaCrackingPriceTestCase(unittest.TestCase):
@@ -231,7 +233,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         self.ee.execute()
 
         capex = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoDetailedPricesValue}')[f'Capex_PlasmaCracking']
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoDetailedPricesValue}')['Capex_PlasmaCracking']
         ratio_capex = [capex[i + 1] / capex[i] for i in range(len(capex) - 1)]
         # check that the ratio capex is never below 0.92
         self.assertEqual(min(min(ratio_capex), 0.92), 0.92)

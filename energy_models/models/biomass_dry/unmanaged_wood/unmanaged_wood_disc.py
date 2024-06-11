@@ -17,12 +17,16 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import (
+    BiomassDryTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood import UnmanagedWood
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
@@ -307,8 +311,8 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         min3 = min(production_mix_df[name_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3) * 0.8
 
-        chart_name = f'Production of Unmanaged wood over the years'
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production of Unmanaged wood (TWh)',
+        chart_name = 'Production of Unmanaged wood over the years'
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Unmanaged wood (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
                                              chart_name=chart_name, cumulative_surface=True)
@@ -316,19 +320,19 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         wood_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_wood].values.tolist(),
-            f'biomass for energy from wood energy', 'lines')
+            'biomass for energy from wood energy', 'lines')
         new_chart.series.append(wood_serie)
 
         residue_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_residue].values.tolist(),
-            f'biomass for energy from wood residue', 'lines')
+            'biomass for energy from wood residue', 'lines')
         new_chart.series.append(residue_serie)
 
         non_energy_serie = InstanciatedSeries(
             production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_non_energy].values.tolist(),
-            f'biomass for non energy production', 'lines')
+            'biomass for non energy production', 'lines')
         new_chart.series.append(non_energy_serie)
         return new_chart
 
@@ -337,7 +341,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = f'Detailed Price of Unmanaged wood technology over the years'
+        chart_name = 'Detailed Price of Unmanaged wood technology over the years'
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -346,21 +350,21 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         max2 = max(price_mix_df[name_wood].values.tolist())
         maximum = max(max1, max2) * 1.2 * \
                   self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production of Unmanaged wood ($/t)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Unmanaged wood ($/t)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_residue].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
-            f'price of wood residue', 'lines')
+            'price of wood residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_wood].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
-            f'price of wood energy', 'lines')
+            'price of wood energy', 'lines')
         new_chart.series.append(wood_serie)
 
         return new_chart
@@ -370,26 +374,26 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = f'Detailed Price of Unmanaged wood technology over the years'
+        chart_name = 'Detailed Price of Unmanaged wood technology over the years'
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 
         max1 = max(price_mix_df[name_residue].values.tolist())
         max2 = max(price_mix_df[name_wood].values.tolist())
         maximum = max(max1, max2) * 1.2
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production of Unmanaged wood ($/MWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Unmanaged wood ($/MWh)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_residue].values.tolist(),
-            f'price of wood residue', 'lines')
+            'price of wood residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
             price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_wood].values.tolist(),
-            f'price of wood energy', 'lines')
+            'price of wood energy', 'lines')
         new_chart.series.append(wood_serie)
 
         return new_chart
@@ -433,7 +437,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod[f'cum energy (TWh)'].values.tolist(), 'Initial production for energy by 2020 factories',
+            initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production for energy by 2020 factories',
             'lines')
 
         study_prod = study_production[f'{self.energy_name} (TWh)'].values
@@ -442,7 +446,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(
-            0, initial_prod[f'cum energy (TWh)'].values.tolist()[-1])
+            0, initial_prod['cum energy (TWh)'].values.tolist()[-1])
         serie = InstanciatedSeries(
             years_study,
             study_prod_l, 'Predicted production', 'lines')

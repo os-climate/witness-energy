@@ -21,12 +21,19 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.energy_models.syngas import \
-    compute_calorific_value as compute_syngas_calorific_value
-from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.syngas import (
+    compute_calorific_value as compute_syngas_calorific_value,
+)
+from energy_models.core.stream_type.energy_models.syngas import (
+    compute_molar_mass as compute_syngas_molar_mass,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy

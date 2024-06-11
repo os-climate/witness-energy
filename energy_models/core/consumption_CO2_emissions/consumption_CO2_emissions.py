@@ -186,8 +186,8 @@ class ConsumptionCO2Emissions(BaseStream):
         '''Total CO2 by use 
         which is the sum of all CO2 emissions emitted by use of net energy production
         '''
-        self.CO2_sources[f'Total CO2 by use (Mt)'] = self.CO2_production[[
-            col for col in self.CO2_production if col.endswith(f'CO2 by use (Mt)')]].sum(axis=1)
+        self.CO2_sources['Total CO2 by use (Mt)'] = self.CO2_production[[
+            col for col in self.CO2_production if col.endswith('CO2 by use (Mt)')]].sum(axis=1)
 
         ''' Total C02 from Flue gas 
             sum of all production of flue gas

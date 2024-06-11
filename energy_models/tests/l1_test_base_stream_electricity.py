@@ -20,10 +20,12 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class BaseStreamTestCase(AbstractJacobianUnittest):
@@ -153,7 +155,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}']
         outputs_name = ['Test.prod_hydropower_constraint']
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_electricity_stream.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_energy_mix_electricity_stream.pkl',
                             local_data=disc.local_data,
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_name, outputs=outputs_name)
