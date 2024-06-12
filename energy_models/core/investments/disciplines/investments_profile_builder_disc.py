@@ -57,7 +57,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
     DESC_IN = {
         'n_profiles': {'type': 'int', 'unit': '-', 'user_level': 3},
         'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}},
-        DESIGN_VAR_DESCRIPTOR: {'type': 'dict', 'editable': True, 'structuring': True, 'user_level': 3},
+        DESIGN_VAR_DESCRIPTOR: {'type': 'dict', 'editable': True, 'structuring': True, 'user_level': 3, 'namespace': 'ns_invest'},
     }
 
     DESC_OUT = {}
@@ -110,7 +110,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             df_descriptor_years = df_descriptor.copy()
             list(map(df_descriptor_years.pop, self.columns_to_export_at_poles))
             # should not add the invest mix if all the outputs are given at the poles
-            if len(df_descriptor_years.keys()) > 0:
+            if len(self.columns_to_export_at_years) > 0:
                 dynamic_outputs[GlossaryEnergy.invest_mix] = {
                     "type": "dataframe", "unit": "G$",
                     "dataframe_descriptor": df_descriptor_years,
@@ -122,10 +122,11 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                                        var: ("float", [0.0, 1e30], False)
                                        }
                 dynamic_outputs[f'{var}_array_mix'] = {
-                    "type": "dataframe", "unit": "G$",
-                    "dataframe_descriptor": df_descriptor_poles,
+                    "type": "array",
+                    "unit": "G$",
+                    #"dataframe_descriptor": df_descriptor_poles,
                     "namespace": "ns_invest",
-                    # same namespace as for invest_mix in discipline InvestmentDistribution
+                    # same namespace as for design_var discipline inputs
                     "visibility": "Shared",
                 }
 
@@ -160,7 +161,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             self.poles_index = list(df[df[GlossaryEnergy.Years].isin(self.years_poles)].index)
             for col in self.columns_to_export_at_poles: # extract data at the poles
                 df = self.model.convex_combination_df[[GlossaryEnergy.Years] + [col]]
-                outputs = {col + '_array_mix' : df[df.index.isin(self.poles_index)]}
+                outputs = {col + '_array_mix' : df[df.index.isin(self.poles_index)][col].values}
                 self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
@@ -178,10 +179,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                         )
                 else: #col_name in self.columns_to_export_at_poles:
                     derivative_at_poles = derivative[self.poles_index].reshape((len(self.poles_index), 1)) #extract gradient at the poles only
-                    self.set_partial_derivative_for_other_types(
-                        (col_name + '_array_mix', col_name),
-                        (f'coeff_{i}',), derivative_at_poles
-                    )
+                    self.set_partial_derivative(col_name + '_array_mix', f'coeff_{i}', derivative_at_poles)
 
     def get_chart_filter_list(self):
         chart_filters = []
@@ -231,7 +229,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 graph_years.add_series(serie_obj)
             elif column in self.columns_to_export_at_poles:
                 invest_profile_poles = self.get_sosdisc_outputs(column + '_array_mix')
-                series_values = list(invest_profile_poles[column].values)
+                series_values = list(invest_profile_poles)
                 serie_obj = InstanciatedSeries(list(self.years_poles), series_values, column + '_array_mix', display_type="scatter",
                                                marker_symbol='circle',
                                                #marker=dict(color='LightSkyBlue', size=20, line=dict(color='MediumPurple', width=2))
