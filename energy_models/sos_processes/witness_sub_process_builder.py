@@ -14,23 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
-
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
-from energy_models.core.energy_study_manager import (
-    DEFAULT_CCS_LIST,
-    DEFAULT_ENERGY_LIST,
-    DEFAULT_TECHNO_DICT,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class WITNESSSubProcessBuilder(BaseProcessBuilder):
     def __init__(self, ee):
         super(WITNESSSubProcessBuilder, self).__init__(ee)
-        self.energy_list = DEFAULT_ENERGY_LIST
-        self.ccs_list = DEFAULT_CCS_LIST
-        self.techno_dict = DEFAULT_TECHNO_DICT
+        self._techno_dict = {}
+        self.energy_list = []
+        self.ccs_list = []
+        self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
         self.process_level = 'val'
         # If true, inputs for energy invesments are in Gdollars. If False, they are in percentage
@@ -38,6 +33,19 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.energy_invest_input_in_abs_value = True
         self.use_resources_bool = True
         self.associate_namespace = None
+    @property
+    def techno_dict(self):
+        return self._techno_dict
+
+    @techno_dict.setter
+    def techno_dict(self, value: dict):
+        self._techno_dict = value
+        self.energy_list, self.ccs_list = self.build_energy_and_ccs_list()
+
+    def build_energy_and_ccs_list(self):
+        energy_list = [key for key, value in self._techno_dict.items() if value['type'] == 'energy']
+        ccs_list = [key for key, value in self._techno_dict.items() if value['type'] == GlossaryEnergy.CCUS]
+        return energy_list, ccs_list
 
     def setup_process(
             self,
@@ -53,8 +61,6 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         This allows to define instance variables inside the class as energy_list or one invest discipline
         '''
 
-        self.energy_list = [key for key, value in techno_dict.items() if value['type'] == 'energy']
-        self.ccs_list = [key for key, value in techno_dict.items() if value['type'] == GlossaryEnergy.CCUS]
         self.techno_dict = techno_dict
         self.invest_discipline = invest_discipline
         self.process_level = process_level

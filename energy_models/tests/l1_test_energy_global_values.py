@@ -19,16 +19,13 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
-    Study as agri_study_open,
-)
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as Study_open,
 )
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
@@ -66,7 +63,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = cls.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
+            repo, 'energy_process_v0_mda', techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT)
         i_disc_to_pop = None
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':
@@ -86,7 +83,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         cls.ee.factory.set_builders_to_coupling_builder(chain_builders)
         cls.ee.configure()
         usecase = Study_open(execution_engine=cls.ee,
-                             techno_dict=DEFAULT_TECHNO_DICT)
+                             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT)
         usecase.study_name = cls.name
         values_dict = usecase.setup_usecase()
 

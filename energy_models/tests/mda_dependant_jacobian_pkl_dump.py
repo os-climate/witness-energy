@@ -17,13 +17,12 @@ limitations under the License.
 
 import os
 
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
-
 import energy_models.tests as jacobian_target
 from energy_models.tests.data_tests.mda_energy_data_generator import (
     launch_data_pickle_generation,
+)
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 if __name__ == '__main__':

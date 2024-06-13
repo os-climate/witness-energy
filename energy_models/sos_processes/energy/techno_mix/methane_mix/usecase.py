@@ -26,15 +26,10 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas', 'Methanation']
-TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas']
-TECHNOLOGIES_LIST_COARSE = ['FossilGas']
-TECHNOLOGIES_LIST_DEV = ['FossilGas', 'UpgradingBiogas', 'Methanation']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.methane]["value"], bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -79,6 +74,7 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 16.0,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
                                       GlossaryEnergy.syngas: 80.0,
                                       GlossaryEnergy.biogas: 70.0})
 
@@ -145,17 +141,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-
-    uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()
+    uc_cls = Study(main_study=True)
+    uc_cls.test()

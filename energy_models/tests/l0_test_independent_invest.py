@@ -18,9 +18,9 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -55,9 +55,9 @@ class TestIndependentInvest(unittest.TestCase):
             len(self.years)) * 60.0
         energy_mix_invest_dic[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 70.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
             len(self.years)) * 80.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
             len(self.years)) * 90.0
         energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation'] = np.ones(
             len(self.years)) * 100.0
@@ -119,8 +119,8 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift',
                                                                                     'Electrolysis.AWE'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                                              f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                                                                              f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
@@ -197,8 +197,8 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift',
                                                                                     'Electrolysis.AWE'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                                              f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                                                                              f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,

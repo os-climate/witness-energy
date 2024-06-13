@@ -43,7 +43,7 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing'
+    techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}'
     lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,

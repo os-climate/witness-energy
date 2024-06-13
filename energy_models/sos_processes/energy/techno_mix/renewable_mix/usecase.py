@@ -28,13 +28,10 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['RenewableSimpleTechno']
-TECHNOLOGIES_LIST = ['RenewableSimpleTechno']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.renewable]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -132,8 +129,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
 #     ppf = PostProcessingFactory()

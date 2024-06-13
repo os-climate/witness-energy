@@ -18,10 +18,6 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -31,6 +27,10 @@ from energy_models.core.stream_type.resources_data_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 

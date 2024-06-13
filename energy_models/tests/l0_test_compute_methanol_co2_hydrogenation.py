@@ -20,7 +20,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -30,6 +29,7 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CO2HydrogenationPriceTestCase(unittest.TestCase):

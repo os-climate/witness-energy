@@ -18,10 +18,6 @@ limitations under the License.
 from copy import deepcopy
 
 import numpy as np
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import (
@@ -33,6 +29,10 @@ from energy_models.core.stream_type.energy_models.syngas import (
 )
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class SyngasDiscipline(EnergyDiscipline):
@@ -52,7 +52,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': Syngas.default_techno_list,
-                                            'default': Syngas.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_syngas', 'structuring': True,
                                             'unit': '-'},

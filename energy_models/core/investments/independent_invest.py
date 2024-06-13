@@ -19,7 +19,6 @@ import pandas as pd
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
-
 from .base_invest import BaseInvest
 
 

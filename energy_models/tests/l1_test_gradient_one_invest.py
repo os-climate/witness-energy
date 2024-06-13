@@ -19,12 +19,12 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
-
-from energy_models.glossaryenergy import GlossaryEnergy
 
 warnings.filterwarnings("ignore")
 
@@ -64,9 +64,9 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
             len(self.years)) * 0.6
         dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 0.7
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing'] = np.ones(
+        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
             len(self.years)) * 0.8
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping'] = np.ones(
+        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
             len(self.years)) * 0.9
         dict2[f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation'] = np.ones(
             len(self.years)) * 1.0
@@ -122,8 +122,8 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
                            'WaterGasShift',
                            'Electrolysis.AWE'],
                        f'{self.name}.{GlossaryEnergy.carbon_capture}.technologies_list': [
-                           f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                           f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                           f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
                                                                                           'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
