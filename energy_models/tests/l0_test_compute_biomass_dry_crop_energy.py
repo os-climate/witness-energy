@@ -22,7 +22,9 @@ import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import CropEnergyDiscipline
+from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import (
+    CropEnergyDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 

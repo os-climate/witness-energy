@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -37,7 +39,7 @@ class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': HydrotreatedOilFuel.default_techno_list,
-                                            'default': HydrotreatedOilFuel.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_hydrotreated_oil_fuel',
                                             'structuring': True, 'unit': '-'},

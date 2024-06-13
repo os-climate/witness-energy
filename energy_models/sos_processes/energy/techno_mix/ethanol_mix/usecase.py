@@ -20,19 +20,17 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, \
-    INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.glossaryenergy import GlossaryEnergy
-
-DEFAULT_TECHNOLOGIES_LIST = ['BiomassFermentation']
-TECHNOLOGIES_LIST = []
-TECHNOLOGIES_LIST_DEV = ['BiomassFermentation']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}']["value"], bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT, run_usecase=False):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline,
@@ -64,9 +62,9 @@ class Study(EnergyMixStudyManager):
         return ethanol_mix_invest_df
 
     def setup_usecase(self, study_folder_path=None):
-        energy_mix = 'EnergyMix'
+        energy_mix_name = 'EnergyMix'
         self.energy_name = Ethanol.name
-        energy_name = f'{energy_mix}.{self.energy_name}'
+        energy_name = f'{energy_mix_name}.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # the value for invest_level is just set as an order of magnitude
@@ -81,6 +79,17 @@ class Study(EnergyMixStudyManager):
 
         co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+
+        energy_carbon_emissions = pd.DataFrame({
+            GlossaryEnergy.Years: years,
+             GlossaryEnergy.biomass_dry: 0.123 / 15.4,
+            GlossaryEnergy.electricity: 0.123 / 15.4,
+        })
+
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                      GlossaryEnergy.biomass_dry: 16.0,
+                                      GlossaryEnergy.electricity: 16.0,
+                                      })
 
         resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
         resources_price[GlossaryEnergy.Years] = years
@@ -97,6 +106,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update({
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
              })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
@@ -118,8 +129,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study()
     uc_cls.test()
     # ppf = PostProcessingFactory()
     # for disc in uc_cls.execution_engine.root_process.sos_disciplines:

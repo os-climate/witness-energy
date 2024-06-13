@@ -20,7 +20,10 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -33,12 +36,6 @@ TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                      'BiogasFired',
                      #'Geothermal',todo : removed because was using medium heat temperature
                      'CoalGen', 'OilGen', 'BiomassFired']
-TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
-                         'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
-                         'BiogasFired',
-                         #'Geothermal', todo : removed because was using medium heat temperature
-                         'CoalGen', 'OilGen', 'BiomassFired']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,

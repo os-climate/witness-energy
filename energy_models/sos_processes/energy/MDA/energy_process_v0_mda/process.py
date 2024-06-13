@@ -17,8 +17,12 @@ limitations under the License.
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
+from energy_models.sos_processes.witness_sub_process_builder import (
+    WITNESSSubProcessBuilder,
+)
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):

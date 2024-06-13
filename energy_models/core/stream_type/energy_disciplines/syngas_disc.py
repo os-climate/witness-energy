@@ -20,12 +20,19 @@ from copy import deepcopy
 import numpy as np
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.syngas import Syngas, \
-    compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
+from energy_models.core.stream_type.energy_models.syngas import (
+    Syngas,
+    compute_calorific_value,
+    compute_dcal_val_dsyngas_ratio,
+    compute_high_calorific_value,
+    compute_molar_mass,
+)
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class SyngasDiscipline(EnergyDiscipline):
@@ -45,7 +52,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': Syngas.default_techno_list,
-                                            'default': Syngas.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_syngas', 'structuring': True,
                                             'unit': '-'},
@@ -234,7 +241,7 @@ class SyngasDiscipline(EnergyDiscipline):
             'syngas_ratio')
         syngas_ratio_technos = self.get_sosdisc_outputs(
             'syngas_ratio_technos')
-        chart_name = f'Molar syngas CO over H2 ratio for the global mix'
+        chart_name = 'Molar syngas CO over H2 ratio for the global mix'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO over H2 molar ratio', [], [],
                                              chart_name=chart_name)

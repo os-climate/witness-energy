@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import (
+    Amine,
+)
 
 
 class AmineScrubbingDiscipline(CCTechnoDiscipline):
@@ -40,7 +44,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'
+    techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'
     lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,

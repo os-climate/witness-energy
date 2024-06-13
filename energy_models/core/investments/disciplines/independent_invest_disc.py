@@ -16,13 +16,12 @@ limitations under the License.
 '''
 import logging
 
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.independent_invest import IndependentInvest
@@ -30,8 +29,10 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class IndependentInvestDiscipline(SoSWrapp):
@@ -62,8 +63,8 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.methane}.UpgradingBiogas': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.GeologicMineralization': ('float', None, True),
                                                              f'{GlossaryEnergy.methane}.Methanation': ('float', None, True),
@@ -111,21 +112,21 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                              f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
                                                              f'{GlossaryEnergy.fuel}.ethanol.BiomassFermentation': ('float', None, True),
                                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.BiomassBuryingFossilization': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DeepOceanInjection': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.DepletedOilGas': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.EnhancedOilRecovery': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.PureCarbonSolidStorage': ('float', None, True),
                                                              f'{GlossaryEnergy.renewable}.RenewableSimpleTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': ('float', None, True),
-                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}': ('float', None, True),
                                                              f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno': ('float', None, True),
                                                              }},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
@@ -361,7 +362,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             techno_invests = self.get_sosdisc_inputs(
                 GlossaryEnergy.invest_mix)
 
-            chart_name = f'Distribution of investments on each energy'
+            chart_name = 'Distribution of investments on each energy'
 
             new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
@@ -393,7 +394,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 new_chart_energy.series.append(serie)
 
             forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
-            chart_name = f'Distribution of reforestation investments'
+            chart_name = 'Distribution of reforestation investments'
             agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                          chart_name=chart_name, stacked_bar=True)
             serie_agriculture = InstanciatedSeries(
@@ -408,7 +409,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             new_chart_energy.series.append(serie)
 
             if BiomassDry.name in energy_list:
-                chart_name = f'Distribution of agriculture sector investments'
+                chart_name = 'Distribution of agriculture sector investments'
                 agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
 
@@ -430,7 +431,7 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             series = [np.array(serie.ordinate) for serie in new_chart_energy.series]
             total_invest = np.sum(series, axis=0)
-            chart_name = f'Distribution of investments [%]'
+            chart_name = 'Distribution of investments [%]'
 
             new_chart_energy_ratio = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Share of total invest [%]',
                                                               chart_name=chart_name, stacked_bar=True)

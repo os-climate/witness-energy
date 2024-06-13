@@ -20,18 +20,30 @@ import numpy as np
 import pandas as pd
 from plotly import graph_objects as go
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_resources.resource_mix.resource_mix import (
+    ResourceMixModel,
+)
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 
 class TechnoDiscipline(SoSWrapp):
@@ -151,12 +163,16 @@ class TechnoDiscipline(SoSWrapp):
                     cost_of_resource_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in resources_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfResourceUsageValue] = cost_of_resource_usage_var
 
+            energies_used_for_production = None
             if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
                 energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
                 if energies_used_for_production is not None:
                     cost_of_energies_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfEnergiesUsageDf)
                     cost_of_energies_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in energies_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfEnergiesUsageValue] = cost_of_energies_usage_var
+
+            if GlossaryEnergy.EnergyPricesValue in self.get_data_in():
+                energy_price = self.get_sosdisc_inputs(GlossaryEnergy.EnergyPricesValue)
 
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -1081,7 +1097,7 @@ class TechnoDiscipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod[f'cum energy (TWh)'].values.tolist(), 'Initial production by 2020 factories', 'lines')
+            initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production by 2020 factories', 'lines')
 
         study_prod = study_production[f'{self.energy_name} (TWh)'].values
         new_chart.series.append(serie)
@@ -1089,7 +1105,7 @@ class TechnoDiscipline(SoSWrapp):
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(
-            0, initial_prod[f'cum energy (TWh)'].values.tolist()[-1])
+            0, initial_prod['cum energy (TWh)'].values.tolist()[-1])
         serie = InstanciatedSeries(
             years_study,
             study_prod_l, 'Predicted production', 'lines')
@@ -1289,7 +1305,7 @@ class TechnoDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Power [MW]',
                                              chart_name=chart_name)
 
-        if not 'full_load_hours' in technos_info_dict:
+        if 'full_load_hours' not in technos_info_dict:
             note = {
                 f'The full_load_hours data is not set for {self.techno_name}': 'default = 8760.0 hours, full year hours  '}
             new_chart.annotation_upper_left = note
@@ -1302,13 +1318,13 @@ class TechnoDiscipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             power_production[GlossaryEnergy.Years].values.tolist(),
-            power_production['new_power_production'].values.tolist(), f'Newly implemented', 'lines')
+            power_production['new_power_production'].values.tolist(), 'Newly implemented', 'lines')
 
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
             power_production[GlossaryEnergy.Years].values.tolist(),
-            power_production['removed_power_production'].values.tolist(), f'Newly dismantled', 'lines')
+            power_production['removed_power_production'].values.tolist(), 'Newly dismantled', 'lines')
 
         new_chart.series.append(serie)
 

@@ -20,25 +20,18 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                             'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                     'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                     'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                         'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                         'PureCarbonSolidStorage']
-
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.carbon_storage]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -173,8 +166,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
 #     ppf = PostProcessingFactory()

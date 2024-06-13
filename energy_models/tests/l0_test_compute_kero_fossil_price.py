@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
@@ -27,7 +27,9 @@ from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import (
+    UltraLowSulfurDiesel,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine

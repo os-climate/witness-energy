@@ -36,7 +36,7 @@ class HighHeatDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': hightemperatureheat.default_techno_list,
-                                            'default': hightemperatureheat.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_heat_high',
                                             'structuring': True, 'unit': '-'

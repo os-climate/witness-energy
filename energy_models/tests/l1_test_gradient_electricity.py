@@ -15,33 +15,53 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.electricity.biomass_fired.biomass_fired_disc import BiomassFiredDiscipline
+from energy_models.models.electricity.biomass_fired.biomass_fired_disc import (
+    BiomassFiredDiscipline,
+)
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
-from energy_models.models.electricity.gas.biogas_fired.biogas_fired_disc import BiogasFiredDiscipline
-from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
-    CombinedCycleGasTurbineDiscipline
-from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
-from energy_models.models.electricity.geothermal.geothermal_disc import GeothermalDiscipline
-from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
+from energy_models.models.electricity.gas.biogas_fired.biogas_fired_disc import (
+    BiogasFiredDiscipline,
+)
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import (
+    CombinedCycleGasTurbineDiscipline,
+)
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
+    GasTurbineDiscipline,
+)
+from energy_models.models.electricity.geothermal.geothermal_disc import (
+    GeothermalDiscipline,
+)
+from energy_models.models.electricity.hydropower.hydropower_disc import (
+    HydropowerDiscipline,
+)
 from energy_models.models.electricity.nuclear.nuclear_disc import NuclearDiscipline
 from energy_models.models.electricity.oil_gen.oil_gen_disc import OilGenDiscipline
 from energy_models.models.electricity.solar_pv.solar_pv_disc import SolarPvDiscipline
-from energy_models.models.electricity.solar_thermal.solar_thermal_disc import SolarThermalDiscipline
-from energy_models.models.electricity.wind_offshore.wind_offshore_disc import WindOffshoreDiscipline
-from energy_models.models.electricity.wind_onshore.wind_onshore_disc import WindOnshoreDiscipline
+from energy_models.models.electricity.solar_thermal.solar_thermal_disc import (
+    SolarThermalDiscipline,
+)
+from energy_models.models.electricity.wind_offshore.wind_offshore_disc import (
+    WindOffshoreDiscipline,
+)
+from energy_models.models.electricity.wind_onshore.wind_onshore_disc import (
+    WindOnshoreDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class ElectricityJacobianTestCase(AbstractJacobianUnittest):

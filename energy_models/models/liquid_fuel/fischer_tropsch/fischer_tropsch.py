@@ -20,22 +20,37 @@ from operator import mul
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import (
+    ResourceMixModel,
+)
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.energy_models.syngas import \
-    compute_calorific_value as compute_syngas_calorific_value
-from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.syngas import (
+    compute_calorific_value as compute_syngas_calorific_value,
+)
+from energy_models.core.stream_type.energy_models.syngas import (
+    compute_molar_mass as compute_syngas_molar_mass,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import (
+    LiquidFuelTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
+    WaterGasShiftDiscipline,
+)
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import (
+    RWGS,
+)
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import (
+    RWGSDiscipline,
+)
 
 
 class FischerTropsch(LiquidFuelTechno):
@@ -197,7 +212,7 @@ class FischerTropsch(LiquidFuelTechno):
                                                               'sg_ratio'] < self.needed_syngas_ratio]])
             self.costs_details_sg_techno.sort_index(inplace=True)
             self.cost_details[self.sg_transformation_name] = self.costs_details_sg_techno[
-                f'WGS_wotaxes']
+                'WGS_wotaxes']
 
             if 'complex128' in [dprice_FT_dsyngas_ratio_RWGS.dtype, dprice_FT_wotaxes_dsyngas_ratio_RWGS.dtype]:
                 arr_type = 'complex128'
@@ -229,7 +244,7 @@ class FischerTropsch(LiquidFuelTechno):
                         self.dprice_FT_wotaxes_dsyngas_ratio[i, 0] = 0.0
 
                     self.cost_details.loc[i, self.sg_transformation_name] = self.costs_details_sg_techno[
-                        f'RWGS_wotaxes'].values[i]
+                        'RWGS_wotaxes'].values[i]
 
                 else:
 

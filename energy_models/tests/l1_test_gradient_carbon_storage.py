@@ -16,7 +16,7 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
@@ -25,22 +25,34 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization_disc import \
-    BiomassBuryingFossilizationDiscipline
-from energy_models.models.carbon_storage.deep_ocean_injection.deep_ocean_injection_disc import \
-    DeepOceanInjectionDiscipline
-from energy_models.models.carbon_storage.deep_saline_formation.deep_saline_formation_disc import \
-    DeepSalineFormationDiscipline
-from energy_models.models.carbon_storage.depleted_oil_gas.depleted_oil_gas_disc import DepletedOilGasDiscipline
-from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery_disc import \
-    EnhancedOilRecoveryDiscipline
-from energy_models.models.carbon_storage.geologic_mineralization.geologic_mineralization_disc import \
-    GeologicMineralizationDiscipline
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage_disc import \
-    PureCarbonSolidStorageDiscipline
-from energy_models.models.carbon_storage.reforestation.reforestation_disc import ReforestationDiscipline
+from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization_disc import (
+    BiomassBuryingFossilizationDiscipline,
+)
+from energy_models.models.carbon_storage.deep_ocean_injection.deep_ocean_injection_disc import (
+    DeepOceanInjectionDiscipline,
+)
+from energy_models.models.carbon_storage.deep_saline_formation.deep_saline_formation_disc import (
+    DeepSalineFormationDiscipline,
+)
+from energy_models.models.carbon_storage.depleted_oil_gas.depleted_oil_gas_disc import (
+    DepletedOilGasDiscipline,
+)
+from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery_disc import (
+    EnhancedOilRecoveryDiscipline,
+)
+from energy_models.models.carbon_storage.geologic_mineralization.geologic_mineralization_disc import (
+    GeologicMineralizationDiscipline,
+)
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage_disc import (
+    PureCarbonSolidStorageDiscipline,
+)
+from energy_models.models.carbon_storage.reforestation.reforestation_disc import (
+    ReforestationDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):

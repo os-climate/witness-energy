@@ -18,7 +18,6 @@ limitations under the License.
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -32,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST
+        self.techno_list = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.renewable]['value']
 
     def get_builders(self):
         ns_study = self.ee.study_name

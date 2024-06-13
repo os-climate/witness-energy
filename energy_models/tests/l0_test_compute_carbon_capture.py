@@ -18,7 +18,9 @@ import unittest
 from copy import deepcopy
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
+from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
+    Study,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -121,7 +123,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         inputs_dict = deepcopy(self.dm_dict)
 
         inputs_dict[
-            f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'Test.EnergyMix.carbon_capture.flue_gas_capture.{GlossaryEnergy.CalciumLooping}.{GlossaryEnergy.TechnoProductionValue}'][
             f'{GlossaryEnergy.carbon_capture} (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 

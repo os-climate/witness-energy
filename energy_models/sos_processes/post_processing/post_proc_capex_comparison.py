@@ -17,8 +17,10 @@ limitations under the License.
 import numpy as np
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 def post_processings(execution_engine, namespace, filters):
@@ -97,7 +99,7 @@ def create_chart_factory_comparison_energy(execution_engine, namespace, energy_l
             factory_mean += factory_techno
 
         mean_factory[energy] = factory_mean / len(energy_detailed_prices)
-    chart_name = f'Mean Factory for all energy over the years'
+    chart_name = 'Mean Factory for all energy over the years'
 
     new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Factory [$/MWh]',
                                          chart_name=chart_name)

@@ -16,7 +16,9 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
+    CSTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 

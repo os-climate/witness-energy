@@ -18,11 +18,16 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import (
+    LiquidFuelTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 

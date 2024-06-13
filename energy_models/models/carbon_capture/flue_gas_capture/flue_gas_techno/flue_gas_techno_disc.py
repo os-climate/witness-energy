@@ -17,9 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import FlueGasTechno
+from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import (
+    FlueGasTechno,
+)
 
 
 class FlueGasTechnoDiscipline(CCTechnoDiscipline):
@@ -41,7 +45,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
     lifetime = 25
     construction_delay = 1
 

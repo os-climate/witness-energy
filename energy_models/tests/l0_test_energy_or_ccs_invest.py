@@ -14,8 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
@@ -25,7 +24,9 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class TestEnergyorCCSInvest(AbstractJacobianUnittest):
@@ -153,7 +154,7 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_invest_or_ccs_disc.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_energy_invest_or_ccs_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
@@ -221,7 +222,7 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
         ccs_list = [CarbonCapture.name, CarbonStorage.name]
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_invest_ccs_disc.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_invest_ccs_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.ccs_investment',

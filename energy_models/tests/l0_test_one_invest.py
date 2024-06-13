@@ -53,9 +53,9 @@ class TestOneInvest(unittest.TestCase):
             len(self.years)) * 0.6
         dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 0.7
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing'] = np.ones(
+        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
             len(self.years)) * 0.8
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping'] = np.ones(
+        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
             len(self.years)) * 0.9
         dict2[f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation'] = np.ones(
             len(self.years)) * 1.0
@@ -84,8 +84,8 @@ class TestOneInvest(unittest.TestCase):
                        f'{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       f'{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                            f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                       f'{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                                                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        GlossaryEnergy.invest_mix: self.energy_mix,
                        GlossaryEnergy.EnergyInvestmentsValue: self.energy_investment,
@@ -137,8 +137,8 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift',
                                                                                     'Electrolysis.AWE'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                                              f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                                                                              f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,

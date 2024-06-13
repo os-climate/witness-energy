@@ -19,20 +19,17 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS, \
-    INVEST_DISCIPLINE_DEFAULT
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
-DEFAULT_TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
-TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
-TECHNOLOGIES_LIST_DEV = []
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.biomass_dry]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -148,16 +145,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls = Study(main_study=True)
+    uc_cls.test()

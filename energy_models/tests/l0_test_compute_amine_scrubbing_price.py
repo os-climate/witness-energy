@@ -21,10 +21,13 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
-    AmineScrubbingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
+    AmineScrubbingDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -130,7 +133,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
 
     def test_03_amine_discipline(self):
         self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

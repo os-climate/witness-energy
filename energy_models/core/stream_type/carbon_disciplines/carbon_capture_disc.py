@@ -20,8 +20,10 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class CarbonCaptureDiscipline(StreamDiscipline):
@@ -65,12 +67,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                            f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
                                            f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
                                            f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
-                                           f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
+                                           f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': (
                                                'float', None, True),
                                            }},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
@@ -382,13 +384,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('carbon_captured_type',
-                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name),
+                 'flue gas limited'), ('flue_gas_production', CarbonCapture.flue_gas_name),
                 np.identity(len_matrix) * dfluegas)
 
             # added
             self.set_partial_derivative_for_other_types(
                 ('carbon_captured_type_woratio',
-                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name),
+                 'flue gas limited'), ('flue_gas_production', CarbonCapture.flue_gas_name),
                 np.identity(len_matrix) * dfluegas_woratio)
 
             for column_name in list_columns_consumption:
@@ -569,7 +571,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        chart_name = f'CO2 captured<br>with input investments'
+        chart_name = 'CO2 captured<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -598,7 +600,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        chart_name = f'resources used for CO2 capture <br>with input investments'
+        chart_name = 'resources used for CO2 capture <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -719,7 +721,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         carbon_captured_type = self.get_sosdisc_outputs('carbon_captured_type')
         flue_gas_production = self.get_sosdisc_inputs('flue_gas_production')
 
-        chart_name = f'Type of carbon capture production and flue gas production limit'
+        chart_name = 'Type of carbon capture production and flue gas production limit'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Production [Mt]', chart_name=chart_name)
 

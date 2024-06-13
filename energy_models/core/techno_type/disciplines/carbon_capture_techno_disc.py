@@ -19,8 +19,10 @@ import numpy as np
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart \
-    import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class CCTechnoDiscipline(TechnoDiscipline):
@@ -280,7 +282,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         # Chart for input investments
         input_investments = self.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)
 
-        chart_name = f'Input investments over the years'
+        chart_name = 'Input investments over the years'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Investments [G$]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -391,14 +393,14 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod[f'cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
+            initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
         study_prod = study_production[f'{self.energy_name} (Mt)'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(
-            0, initial_prod[f'cum CO2 (Mt)'].values.tolist()[-1])
+            0, initial_prod['cum CO2 (Mt)'].values.tolist()[-1])
         serie = InstanciatedSeries(
             years_study,
             study_prod_l, 'Predicted carbon capture', 'lines')

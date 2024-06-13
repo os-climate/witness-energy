@@ -19,18 +19,19 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-DEFAULT_TECHNOLOGIES_LIST = ['CO2Hydrogenation']
 TECHNOLOGIES_LIST = ['CO2Hydrogenation']
-TECHNOLOGIES_LIST_COARSE = ['CO2Hydrogenation']
-TECHNOLOGIES_LIST_DEV = ['CO2Hydrogenation']
 
 
 class Study(EnergyMixStudyManager):
@@ -129,15 +130,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #     for graph in graph_list:
-    #         graph.to_plotly()#.show()
+    uc_cls = Study(main_study=True)
+    uc_cls.test()

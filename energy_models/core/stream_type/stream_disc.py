@@ -18,14 +18,22 @@ import logging
 
 import numpy as np
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
 
 
 class StreamDiscipline(SoSWrapp):
@@ -124,21 +132,21 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
+                                                 f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': ('float', None, True),
                                                  f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
+                                                 f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': ('float', None, True),
                                                  f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
+                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption_wotaxes': ('float', None, True),
                                                  'BiomassBuryingFossilization': ('float', None, True),
                                                  'BiomassBuryingFossilization_wotaxes': ('float', None, True),

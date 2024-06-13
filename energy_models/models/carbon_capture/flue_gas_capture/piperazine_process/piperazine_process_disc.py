@@ -17,9 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process import PiperazineProcess
+from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process import (
+    PiperazineProcess,
+)
 
 
 class PiperazineProcessDiscipline(CCTechnoDiscipline):
@@ -39,7 +43,7 @@ class PiperazineProcessDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
     construction_delay = 1
 

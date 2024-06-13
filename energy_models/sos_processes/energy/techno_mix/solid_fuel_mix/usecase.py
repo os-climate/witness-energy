@@ -19,18 +19,17 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
-
-DEFAULT_TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
-TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
-TECHNOLOGIES_LIST_DEV = ['CoalExtraction', 'Pelletizing']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.solid_fuel]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -141,8 +140,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
 #     ppf = PostProcessingFactory()

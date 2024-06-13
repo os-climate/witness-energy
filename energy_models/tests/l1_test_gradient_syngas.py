@@ -16,7 +16,7 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
@@ -24,17 +24,31 @@ import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import AutothermalReformingDiscipline
-from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import BiomassGasificationDiscipline
-from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import CoElectrolysisDiscipline
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import (
+    AutothermalReformingDiscipline,
+)
+from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import (
+    BiomassGasificationDiscipline,
+)
+from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import (
+    CoElectrolysisDiscipline,
+)
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import (
+    CoalGasificationDiscipline,
+)
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import (
+    RWGSDiscipline,
+)
 from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class SyngasJacobianTestCase(AbstractJacobianUnittest):

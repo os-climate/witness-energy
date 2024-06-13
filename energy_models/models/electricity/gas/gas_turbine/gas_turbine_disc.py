@@ -14,19 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.glossaryenergy import GlossaryEnergy
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
+    ElectricityTechnoDiscipline,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.gas.gas_elec import GasElec
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class GasTurbineDiscipline(ElectricityTechnoDiscipline):
@@ -136,7 +138,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
                 if ResourceGlossary.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
