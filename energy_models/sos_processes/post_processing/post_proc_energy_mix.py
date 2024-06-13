@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from plotly import figure_factory as ff
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
@@ -21,8 +23,6 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 from sostrades_core.tools.post_processing.tables.instanciated_table import (
     InstanciatedTable,
 )
-
-from energy_models.glossaryenergy import GlossaryEnergy
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2

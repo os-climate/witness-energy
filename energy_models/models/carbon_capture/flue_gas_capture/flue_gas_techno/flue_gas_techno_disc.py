@@ -45,7 +45,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
     lifetime = 25
     construction_delay = 1
 

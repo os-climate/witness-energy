@@ -17,19 +17,10 @@ limitations under the License.
 import logging
 
 import numpy as np
+
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.tables.instanciated_table import (
-    InstanciatedTable,
-)
-
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -67,6 +58,15 @@ from energy_models.models.syngas.coal_gasification.coal_gasification_disc import
     CoalGasificationDiscipline,
 )
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
 
 
 class FlueGasDiscipline(SoSWrapp):
@@ -93,10 +93,10 @@ class FlueGasDiscipline(SoSWrapp):
                                  f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fossil}.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+                                 f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,

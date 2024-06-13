@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 
 class EnergyMixStudyManager(StudyManager):

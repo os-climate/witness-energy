@@ -21,10 +21,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
@@ -49,6 +45,10 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
     RWGSDiscipline,
 )
 from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class SyngasJacobianTestCase(AbstractJacobianUnittest):

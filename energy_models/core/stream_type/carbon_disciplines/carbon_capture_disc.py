@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CarbonCaptureDiscipline(StreamDiscipline):
@@ -67,12 +67,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                            f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
                                            f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
                                            f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
-                                           f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
+                                           f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': (
                                                'float', None, True),
                                            }},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',

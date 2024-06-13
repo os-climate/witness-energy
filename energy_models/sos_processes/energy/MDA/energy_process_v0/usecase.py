@@ -16,14 +16,10 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
@@ -33,7 +29,6 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.energy_study_manager import (
     AGRI_TYPE,
     CCUS_TYPE,
-    DEFAULT_TECHNO_DICT,
     ENERGY_TYPE,
     EnergyStudyManager,
 )
@@ -74,6 +69,10 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -86,7 +85,7 @@ class Study(EnergyStudyManager):
             time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
-            techno_dict=DEFAULT_TECHNO_DICT,
+            techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
             main_study=True,
             bspline=True,
             execution_engine=None,
@@ -665,7 +664,7 @@ class Study(EnergyStudyManager):
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
         ]
 
-        if CarbonCapture.name in DEFAULT_TECHNO_DICT:
+        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
@@ -771,5 +770,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

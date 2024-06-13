@@ -15,18 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    Study as Study_v0,
+)
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.base_functions.specific_check import specific_check_years
-
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
-    Study as Study_v0,
-)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -43,7 +41,7 @@ class Study(StudyManager):
             time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
-            techno_dict=DEFAULT_TECHNO_DICT,
+            techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
             bspline=True,
             invest_discipline=INVEST_DISCIPLINE_DEFAULT,
             energy_invest_input_in_abs_value=True,
@@ -120,5 +118,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

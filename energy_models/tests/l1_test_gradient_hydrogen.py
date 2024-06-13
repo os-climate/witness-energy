@@ -21,10 +21,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -49,6 +45,10 @@ from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc 
 )
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
     WaterGasShiftDiscipline,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 

@@ -20,7 +20,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
@@ -33,6 +32,7 @@ from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class RefineryPriceTestCase(unittest.TestCase):

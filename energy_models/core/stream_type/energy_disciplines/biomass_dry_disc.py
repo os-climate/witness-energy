@@ -15,14 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.energy_disc import EnergyDiscipline
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassDryDiscipline(EnergyDiscipline):
@@ -42,7 +41,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': BiomassDry.default_techno_list,
-                                            'default': BiomassDry.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_biomass_dry',
                                             'structuring': True, 'unit': '-'},
