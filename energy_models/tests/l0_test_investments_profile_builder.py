@@ -38,8 +38,8 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
 
         self.columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         self.n_profiles = 4
-        self.design_var_descriptor = {}
         self.year_min = 2020
+        self.export_profiles_at_poles = False
         self.year_max = 2025
         self.years = np.arange(self.year_min, self.year_max + 1)
 
@@ -47,7 +47,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': self.columns_names,
             f'{self.name}.{self.model_name}.n_profiles': self.n_profiles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': self.design_var_descriptor,
+            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': self.export_profiles_at_poles,
 
         }
 
@@ -117,66 +117,10 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = self.inputs_dict.copy()
-        design_var_descriptor = {}
-        for var in self.columns_names:
-            design_var_descriptor[f'{var}_array_mix'] = {
-                'out_name': GlossaryEnergy.invest_mix,
-                'out_type': 'dataframe',
-                'key': f'{var}',
-                'index': self.years,
-                'index_name': GlossaryEnergy.Years,
-                'namespace_in': 'ns_invest',
-                'namespace_out': 'ns_invest'
-            }
         nb_poles = 3
         inputs_dict.update({
             f'{self.name}.{self.model_name}.nb_poles': nb_poles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': design_var_descriptor,
-
-        })
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
-        #    graph.to_plotly().show()
-
-    def test_03_mixed_output(self):
-        '''
-        Test the invest profile exported into mix_array at the poles and invest_mix. Output to be used by design variable discipline
-        '''
-        ns_dict = {'ns_invest': f'{self.name}', }
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.investments.disciplines.investments_profile_builder_disc.InvestmentsProfileBuilderDisc'
-
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = self.inputs_dict.copy()
-        design_var_descriptor = {}
-        for var in [GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]:
-            design_var_descriptor[f'{var}_array_mix'] = {
-                'out_name': GlossaryEnergy.invest_mix,
-                'out_type': 'dataframe',
-                'key': f'{var}',
-                'index': self.years,
-                'index_name': GlossaryEnergy.Years,
-                'namespace_in': 'ns_invest',
-                'namespace_out': 'ns_invest'
-            }
-        nb_poles = 3
-        inputs_dict.update({
-            f'{self.name}.{self.model_name}.nb_poles': nb_poles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': design_var_descriptor,
+            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': True,
 
         })
         self.ee.load_study_from_input_dict(inputs_dict)

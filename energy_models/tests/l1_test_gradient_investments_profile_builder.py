@@ -40,7 +40,6 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         self.n_profiles = 4
         self.coeff_jacobian = [f'{self.name}.{self.model_name}.coeff_{i}' for i in range(self.n_profiles)]
-        self.design_var_descriptor = {}
         self.year_min = 2020
         self.year_max = 2025
         self.years = np.arange(self.year_min, self.year_max + 1)
@@ -48,7 +47,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': self.columns_names,
             f'{self.name}.{self.model_name}.n_profiles': self.n_profiles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': self.design_var_descriptor,
+            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': False,
 
         }
 
@@ -117,21 +116,10 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         Test the gradient of the invest profile exported into mix_array at the poles
         '''
         inputs_dict = self.inputs_dict.copy()
-        design_var_descriptor = {}
-        for var in self.columns_names:
-            design_var_descriptor[f'{var}_array_mix'] = {
-                'out_name': GlossaryEnergy.invest_mix,
-                'out_type': 'dataframe',
-                'key': f'{var}',
-                'index': self.years,
-                'index_name': GlossaryEnergy.Years,
-                'namespace_in': 'ns_invest',
-                'namespace_out': 'ns_invest'
-            }
         nb_poles = 3
         inputs_dict.update({
             f'{self.name}.{self.model_name}.nb_poles': nb_poles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': design_var_descriptor,
+            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': True,
 
         })
 
@@ -164,59 +152,3 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
                             location=dirname(__file__),
                             discipline=disc,
                             filename='jacobian_investments_profile_builder_disc_poles.pkl', threshold=1e-5, )
-
-    def test_03_mixed_output(self, energy_list=None):
-        '''
-        Test the gradient of the invest profile exported into mix_array at the poles and invest_mix. Output to be used by design variable discipline
-        '''
-        inputs_dict = self.inputs_dict.copy()
-        column_names_poles = [GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
-        design_var_descriptor = {}
-        for var in column_names_poles:
-            design_var_descriptor[f'{var}_array_mix'] = {
-                'out_name': GlossaryEnergy.invest_mix,
-                'out_type': 'dataframe',
-                'key': f'{var}',
-                'index': self.years,
-                'index_name': GlossaryEnergy.Years,
-                'namespace_in': 'ns_invest',
-                'namespace_out': 'ns_invest'
-            }
-        nb_poles = 3
-        inputs_dict.update({
-            f'{self.name}.{self.model_name}.nb_poles': nb_poles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.DESIGN_VAR_DESCRIPTOR}': design_var_descriptor,
-
-        })
-
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_invest': f'{self.name}.{self.model_name}', }
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.investments.disciplines.investments_profile_builder_disc.InvestmentsProfileBuilderDisc'
-
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-
-        outputs = [f'{self.name}.{self.model_name}.{col}_array_mix' for col in column_names_poles] + \
-                  [f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}']
-
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.override_dump_jacobian = True
-        self.check_jacobian(derr_approx='complex_step',
-                            inputs=self.coeff_jacobian,
-                            outputs=outputs,
-                            local_data=disc.local_data,
-                            location=dirname(__file__),
-                            discipline=disc,
-                            filename='jacobian_investments_profile_builder_disc_mix.pkl', threshold=1e-5, )
