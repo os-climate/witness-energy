@@ -454,9 +454,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     TechnoProductionDf = {
         "var_name": TechnoProductionValue,
-        'type': 'dataframe', 'unit': 'TWh or Mt',
+        "type": "dataframe", "unit": "TWh or Mt",
         "dynamic_dataframe_columns": True
     }
+
+    EnergyPricesDf = {
+        "var_name": GlossaryWitnessCore.EnergyPricesValue,
+        "type": "dataframe", "unit": "$/MWh",
+        "dynamic_dataframe_columns": True}
 
     # techno names
     CropEnergy = "CropEnergy"
