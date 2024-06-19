@@ -27,6 +27,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
+    EXPORT_PROFILES_AT_POLES = 'export_invest_profiles_at_poles'
     YearEndDefaultValueGradientTest = 2030
     LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050

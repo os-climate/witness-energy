@@ -45,18 +45,18 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         'icon': 'fas fa-coins fa-fw',
         'version': '',
     }
-    EXPORT_PROFILES_AT_POLES = 'export_invest_profiles_at_poles'
     '''
-    The DESIGN_VAR_DESCRIPTOR is used by the design variables discipline.
-    If it is not an empty dictionnary and if it contains columns that are already in column_names, then
-    the corresponding invest profile for this column_name is exported at the years of the poles only. 
-    The exported data is then to be used by the design variables discipline instead of the investment Distribution discipline 
+    Discipline that generates an output invest profile based on generic input invest profiles and input weights for 
+    each of those profiles.
+    Based on the input boolean EXPORT_PROFILES_AT_POLES, it can either export the output profile at the poles or for all years
+    then, the output variable is not named the same, as in the first case it becomes an input of the design_var discipline and 
+    in the second case it is an input of the investment distribution
     '''
 
     DESC_IN = {
         'n_profiles': {'type': 'int', 'unit': '-', 'user_level': 3},
         'column_names': {'type': 'list', 'subtype_descriptor': {'list': 'string'}},
-        EXPORT_PROFILES_AT_POLES: {'type': 'bool', 'editable': True, 'structuring': True, 'user_level': 3, 'namespace': 'ns_invest'},
+        GlossaryEnergy.EXPORT_PROFILES_AT_POLES: {'type': 'bool', 'editable': True, 'structuring': True, 'user_level': 3, 'namespace': 'ns_invest'},
     }
 
     DESC_OUT = {}
@@ -90,8 +90,8 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                         "dataframe_descriptor": df_descriptor,
                     }
 
-        if self.EXPORT_PROFILES_AT_POLES in self.get_data_in():
-            export_profiles_at_poles = self.get_sosdisc_inputs(self.EXPORT_PROFILES_AT_POLES)
+        if GlossaryEnergy.EXPORT_PROFILES_AT_POLES in self.get_data_in():
+            export_profiles_at_poles = self.get_sosdisc_inputs(GlossaryEnergy.EXPORT_PROFILES_AT_POLES)
             if column_names is not None:
                 if export_profiles_at_poles is not None and export_profiles_at_poles:
                     dynamic_inputs['nb_poles'] = {'type': 'int', 'unit': '-', 'user_level': 3}
@@ -139,7 +139,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         inputs = self.get_sosdisc_inputs()
         n_profiles = inputs['n_profiles']
         column_names = inputs['column_names']
-        export_profiles_at_poles = inputs[self.EXPORT_PROFILES_AT_POLES]
+        export_profiles_at_poles = inputs[GlossaryEnergy.EXPORT_PROFILES_AT_POLES]
 
         self.model.store_inputs(
             positive_coefficients={f'coeff_{i}': inputs[f'coeff_{i}'] for i in range(n_profiles)},
@@ -169,7 +169,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         column_names_list = dict_in['column_names']
         n_profiles = dict_in['n_profiles']
         df = dict_in['df_0']
-        export_profiles_at_poles = dict_in[self.EXPORT_PROFILES_AT_POLES]
+        export_profiles_at_poles = dict_in[GlossaryEnergy.EXPORT_PROFILES_AT_POLES]
         if export_profiles_at_poles:
             nb_poles = dict_in['nb_poles']
             years_poles, poles_index = self.compute_poles(df, nb_poles)
@@ -207,7 +207,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         column_names = self.get_sosdisc_inputs('column_names')
         df = self.get_sosdisc_inputs('df_0')
         years = list(df[GlossaryEnergy.Years].values)  # all profiles should have the same years
-        export_profiles_at_poles = self.get_sosdisc_inputs(self.EXPORT_PROFILES_AT_POLES)
+        export_profiles_at_poles = self.get_sosdisc_inputs(GlossaryEnergy.EXPORT_PROFILES_AT_POLES)
         if export_profiles_at_poles:
             nb_poles = self.get_sosdisc_inputs('nb_poles')
             years_poles, poles_index = self.compute_poles(df, nb_poles)

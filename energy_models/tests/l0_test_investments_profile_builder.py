@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from energy_models.core.investments.disciplines.investments_profile_builder_disc import InvestmentsProfileBuilderDisc
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -47,7 +46,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': self.columns_names,
             f'{self.name}.{self.model_name}.n_profiles': self.n_profiles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': self.export_profiles_at_poles,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.EXPORT_PROFILES_AT_POLES}': self.export_profiles_at_poles,
 
         }
 
@@ -120,7 +119,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         nb_poles = 3
         inputs_dict.update({
             f'{self.name}.{self.model_name}.nb_poles': nb_poles,
-            f'{self.name}.{self.model_name}.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': True,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.EXPORT_PROFILES_AT_POLES}': True,
 
         })
         self.ee.load_study_from_input_dict(inputs_dict)
