@@ -452,6 +452,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_edition_locked": False,
     }
 
+    TechnoProductionDf = {
+        "var_name": TechnoProductionValue,
+        'type': 'dataframe', 'unit': 'TWh or Mt',
+        "dynamic_dataframe_columns": True
+    }
+
     # techno names
     CropEnergy = "CropEnergy"
     ManagedWood = "ManagedWood"
@@ -478,8 +484,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
     RenewableElectricitySimpleTechno = "RenewableElectricitySimpleTechno"
     SolarPv = "SolarPv"
     SolarThermal = "SolarThermal"
+    Solar = "Solar"
     WindOffshore = "WindOffshore"
     WindOnshore = "WindOnshore"
+    WindOnshoreAndOffshore = 'WindOnShoreandOffShore'
     BiomassFermentation = "BiomassFermentation"
     FossilSimpleTechno = "FossilSimpleTechno"
     ElectrolysisAWE = "Electrolysis.AWE"
@@ -523,6 +531,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     SMR = "SMR"
     AnimalManure = "AnimalManure"
     WetCropResidues = "WetCropResidues"
+    ForestProduction = "ForestProduction"
 
     AmineScrubbing = "AmineScrubbing"
     CalciumPotassiumScrubbing = "CalciumPotassiumScrubbing"
