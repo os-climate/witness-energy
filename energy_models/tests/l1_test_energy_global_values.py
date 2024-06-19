@@ -392,8 +392,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         # sources = self.ee.dm.get_value(
         #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
-        # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
-        #     'CO2_resource removed by energy mix (Gt)'].values[0]
         # sources_sum = sources.loc[sources[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault][[
         #     col for col in sources.columns if col != GlossaryEnergy.Years]].sum(axis=1)[0]
         # computed_total_co2_emissions = (sources_sum - sinks) * 1000

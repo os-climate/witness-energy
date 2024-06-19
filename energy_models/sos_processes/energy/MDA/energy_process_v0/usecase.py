@@ -314,11 +314,13 @@ class Study(EnergyStudyManager):
             activated_elem = None
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace(".", "_")
+            indexes = np.linspace(0, len(invest_mix_df_wo_years) - 1, GlossaryEnergy.NB_POLES_COARSE).astype(int)
+            values = invest_mix_df_wo_years[column].values[indexes]
             self.update_dspace_dict_with(
                 f"{column}.{techno_wo_dot}_array_mix",
                 np.minimum(
                     np.maximum(
-                        self.lower_bound_techno, invest_mix_df_wo_years[column].values
+                        self.lower_bound_techno, values
                     ),
                     self.upper_bound_techno,
                 ),
