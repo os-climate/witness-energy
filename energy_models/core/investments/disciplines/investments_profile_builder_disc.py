@@ -170,6 +170,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         n_profiles = dict_in['n_profiles']
         df = dict_in['df_0']
         export_profiles_at_poles = dict_in[GlossaryEnergy.EXPORT_PROFILES_AT_POLES]
+        poles_index = None # initialize to avoid pylint error
         if export_profiles_at_poles:
             nb_poles = dict_in['nb_poles']
             years_poles, poles_index = self.compute_poles(df, nb_poles)
@@ -208,6 +209,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         df = self.get_sosdisc_inputs('df_0')
         years = list(df[GlossaryEnergy.Years].values)  # all profiles should have the same years
         export_profiles_at_poles = self.get_sosdisc_inputs(GlossaryEnergy.EXPORT_PROFILES_AT_POLES)
+        years_poles = None # initialize to avoid pylint error
         if export_profiles_at_poles:
             nb_poles = self.get_sosdisc_inputs('nb_poles')
             years_poles, poles_index = self.compute_poles(df, nb_poles)
