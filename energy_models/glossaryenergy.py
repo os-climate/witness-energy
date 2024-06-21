@@ -176,6 +176,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ),
         },
     }
+    GhGPerUse = "{}_per_use"
     N2OPerUse = "N2O_per_use"
     CH4PerUse = "CH4_per_use"
     CO2PerUse = "CO2_per_use"

@@ -54,27 +54,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                'flue_gas_prod_ratio': {'type': 'dataframe',
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': '-',
-                                       'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                           f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
-                                           f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
-                                           f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': (
-                                               'float', None, True),
-                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': (
-                                               'float', None, True),
-                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
-                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
-                                           f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
-                                           f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
-                                           f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
-                                           f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': ('float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': (
-                                               'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': (
-                                               'float', None, True),
-                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': (
-                                               'float', None, True),
-                                           }},
+                                       'dynamic_dataframe_columns': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict,
                                   'unit': 'defined in dict'},

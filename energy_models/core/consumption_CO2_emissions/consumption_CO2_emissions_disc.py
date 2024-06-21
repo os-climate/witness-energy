@@ -182,12 +182,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'PWh',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': GlossaryEnergy.NS_CCS,
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                 GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
-
-                                                 }
+                        'dynamic_dataframe_columns': True
                     }
 
         self.add_inputs(dynamic_inputs)

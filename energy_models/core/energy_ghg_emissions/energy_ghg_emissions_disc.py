@@ -173,22 +173,17 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                         GlossaryEnergy.N2OPerUse: ('float', None, True),
-                                                         GlossaryEnergy.CO2PerUse: ('float', None, True),
-                                                         GlossaryEnergy.CH4PerUse: ('float', None, True), }}
+                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True)}}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True}
 
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.biomass_dry: ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True), }}
+                                                     GlossaryEnergy.biomass_dry: ('float', None, True)}}
                     else:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{energy}.{ghg}_per_use'] = {
@@ -196,9 +191,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'namespace': 'ns_energy',
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                         GlossaryEnergy.N2OPerUse: ('float', None, True),
-                                                         GlossaryEnergy.CO2PerUse: ('float', None, True),
-                                                         GlossaryEnergy.CH4PerUse: ('float', None, True), }
+                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True),}
                             }
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
@@ -220,11 +213,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     }
+                            'dynamic_dataframe_columns': True
                         }
 
         self.add_inputs(dynamic_inputs)

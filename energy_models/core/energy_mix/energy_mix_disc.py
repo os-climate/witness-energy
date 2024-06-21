@@ -297,7 +297,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                         dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2PerUse}'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.CO2Tax: ('float', None, True),
                                                      GlossaryEnergy.CO2PerUse: ('float', None, True),
                                                      },
                         }
@@ -333,42 +332,24 @@ class Energy_Mix_Discipline(SoSWrapp):
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
 
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     'carbon_capture_wotaxes': ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                     'carbon_storage_wotaxes': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'direct_air_capture': ('float', None, True),
-                                                     f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno (Gha)': ('float', None, True),
-                                                     'CarbonStorageTechno (Gha)': ('float', None, True),
-                                                     f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno (Gha)': (
-                                                         'float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
 
         if GlossaryEnergy.energy_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)

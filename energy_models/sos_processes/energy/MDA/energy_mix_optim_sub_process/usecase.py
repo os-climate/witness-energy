@@ -573,7 +573,9 @@ class Study(EnergyStudyManager):
         forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
 
         co2_land_emissions = pd.DataFrame({
-            GlossaryEnergy.Years: self.years
+            GlossaryEnergy.Years: self.years,
+            "Crop": 0.,
+            "Forest": 0.,
         })
 
         CO2_indus_emissions_df = pd.DataFrame({
@@ -713,3 +715,4 @@ if "__main__" == __name__:
     #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     uc_cls.load_data()
     uc_cls.run()
+    uc_cls.test()
