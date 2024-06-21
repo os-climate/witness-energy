@@ -69,8 +69,8 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

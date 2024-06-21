@@ -56,7 +56,7 @@ from sostrades_core.tools.base_functions.exp_min import (
     compute_dfunc_with_exp_min,
     compute_func_with_exp_min,
 )
-from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
+from sostrades_optimization_plugin.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
