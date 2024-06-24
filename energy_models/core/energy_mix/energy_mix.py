@@ -56,7 +56,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_optimization_plugin.tools.cst_manager.func_manager_common import smooth_maximum
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class EnergyMix(BaseStream):

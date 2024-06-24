@@ -17,7 +17,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
     Study as subStudy,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import FunctionManagerDisc
 from sostrades_core.study_manager.study_manager import StudyManager
 
 INVEST_DISC_NAME = 'InvestmentDistribution'

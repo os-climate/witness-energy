@@ -30,7 +30,7 @@ from sostrades_core.tools.base_functions.exp_min import (
     compute_dfunc_with_exp_min,
     compute_func_with_exp_min,
 )
-from sostrades_optimization_plugin.tools.cst_manager.func_manager_common import (
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     cons_smooth_maximum_vect,
     get_dcons_smooth_dvariable_vect,
     get_dsmooth_dvariable_vect,
