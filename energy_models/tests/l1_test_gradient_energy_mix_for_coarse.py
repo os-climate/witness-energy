@@ -18,17 +18,17 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
     DEFAULT_COARSE_TECHNO_DICT,
 )
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 
 
 class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
