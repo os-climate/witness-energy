@@ -15,11 +15,15 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -63,10 +67,6 @@ from energy_models.core.stream_type.resources_data_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
-)
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 INVEST_DISC_NAME = "InvestmentDistribution"

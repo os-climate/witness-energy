@@ -16,6 +16,10 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
@@ -24,10 +28,6 @@ from energy_models.core.techno_type.disciplines.heat_techno_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.low.natural_gas_boiler_low_heat.natural_gas_boiler_low_heat import (
     NaturalGasLowHeat,
-)
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
 )
 
 

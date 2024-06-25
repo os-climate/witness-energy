@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2024/01/31 Copyright 2024 Capgemini
+Modifications on 2024/01/31-2024/06/24 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -23,7 +23,6 @@ from tempfile import gettempdir
 
 import numpy as np
 import pandas as pd
-
 from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 

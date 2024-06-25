@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ limitations under the License.
 '''
 
 import numpy as np
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -39,7 +40,6 @@ from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno i
     GaseousHydrogenTechno,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 
 
 class WGS(GaseousHydrogenTechno):

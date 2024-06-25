@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 23/11/2023 Copyright 2023 Capgemini
+Modifications on 23/11/2023-2024/06/24 Copyright 2023 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -17,12 +17,13 @@ limitations under the License.
 
 import os
 
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
 import energy_models.tests as jacobian_target
 from energy_models.tests.data_tests.mda_energy_data_generator import (
     launch_data_pickle_generation,
-)
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
 )
 
 if __name__ == '__main__':

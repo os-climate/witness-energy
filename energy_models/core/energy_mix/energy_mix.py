@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/05/31-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/05/31-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
+
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -55,8 +57,6 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class EnergyMix(BaseStream):
