@@ -212,14 +212,14 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[not quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
         quantity.loc[quantity['is_prod_inf_demand'],
                      'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[not quantity['is_prod_inf_demand'], 'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
+        quantity.loc[~quantity['is_prod_inf_demand'], 'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
         a = hydrogen_price.values * quantity['A_value'].values
@@ -250,13 +250,13 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[not quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
         quantity.loc[quantity['is_prod_inf_demand'], 'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[not quantity['is_prod_inf_demand'],
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
@@ -286,7 +286,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[not quantity['is_prod_inf_demand'],
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
