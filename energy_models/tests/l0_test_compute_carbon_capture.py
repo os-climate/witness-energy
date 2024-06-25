@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/02-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/02-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@ limitations under the License.
 import unittest
 from copy import deepcopy
 
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     Study,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonCaptureTestCase(unittest.TestCase):

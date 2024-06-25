@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/02-2023/11/17 Copyright 2023 Capgemini
+Modifications on 2023/06/02-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,12 +20,9 @@ from copy import copy
 
 import numpy as np
 import pandas as pd
-
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
 )
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import (
     compute_dfunc_with_exp_min,
     compute_func_with_exp_min,
@@ -38,6 +35,9 @@ from sostrades_core.tools.cst_manager.func_manager_common import (
     smooth_maximum_vect,
     soft_maximum_vect,
 )
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TechnoType:
@@ -791,9 +791,9 @@ class TechnoType:
 
         self.cost_details['efficiency'] = efficiency
         return efficiency
-
-    def sigmoid_function(self, x, eff_max, eff_ini, l, slope):
-        x = x - l
+    
+    def sigmoid_function(self, x, eff_max, eff_ini, x_shift, slope):
+        x = x - x_shift
         # Logistic function
         return m.exp(slope * x) / (m.exp(slope * x) + 1) * (eff_max - eff_ini) + eff_ini
 

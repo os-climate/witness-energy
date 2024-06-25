@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@ limitations under the License.
 '''
 import numpy as np
 from plotly import graph_objects as go
-
-from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from energy_models.core.stream_type.energy_disc import EnergyDiscipline
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityDiscipline(EnergyDiscipline):

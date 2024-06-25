@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/08/23-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/08/23-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
@@ -41,10 +45,6 @@ from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.pip
 )
 from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import (
     PressureSwingAdsorptionDiscipline,
-)
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
 )
 
 

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,15 +20,15 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.tests.data_tests.mda_energy_data_generator import (
     launch_data_pickle_generation,
-)
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
 )
 
 

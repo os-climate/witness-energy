@@ -130,8 +130,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import (
     LiquidFuelTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class RefineryDiscipline(LiquidFuelTechnoDiscipline):
