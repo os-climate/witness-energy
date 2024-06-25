@@ -14,22 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.investments.convex_combination_model import (
-    ConvexCombinationModel,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
 from energy_models.core.investments.convex_combination_model import (
     ConvexCombinationModel,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-import numpy as np
+
 
 class InvestmentsProfileBuilderDisc(SoSWrapp):
     # ontology information
@@ -216,7 +214,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
 
         graph_years = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Invest {GlossaryEnergy.invest_mix} [G$]',
                                          chart_name="Output profile invest")
-        graph_poles = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Invest array_mix [G$]',
+        graph_poles = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest array_mix [G$]',
                                          chart_name="Output profile invest at the poles")
 
 
