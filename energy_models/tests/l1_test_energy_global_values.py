@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    Study as agri_study_open,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as Study_open,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
@@ -392,8 +394,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         # sources = self.ee.dm.get_value(
         #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
-        # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
-        #     'CO2_resource removed by energy mix (Gt)'].values[0]
         # sources_sum = sources.loc[sources[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault][[
         #     col for col in sources.columns if col != GlossaryEnergy.Years]].sum(axis=1)[0]
         # computed_total_co2_emissions = (sources_sum - sinks) * 1000

@@ -50,7 +50,7 @@ class ConvexCombinationModel:
 
         self.convex_combination_df = pd.DataFrame({
             'years': self.dataframes[0]['years'],
-            **dict(zip(self.dataframes[0].columns, convex_combination.T)) # demander à Antoine
+            **dict(zip(self.dataframes[0].columns, convex_combination.T))
         })
 
     def compute(self):

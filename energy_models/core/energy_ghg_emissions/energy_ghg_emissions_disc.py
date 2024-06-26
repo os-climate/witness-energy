@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ limitations under the License.
 import logging
 
 import numpy as np
-
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
@@ -29,6 +28,13 @@ from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agricult
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
     EnergyGHGEmissions,
@@ -36,12 +42,6 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class EnergyGHGEmissionsDiscipline(SoSWrapp):
@@ -173,22 +173,17 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                         GlossaryEnergy.N2OPerUse: ('float', None, True),
-                                                         GlossaryEnergy.CO2PerUse: ('float', None, True),
-                                                         GlossaryEnergy.CH4PerUse: ('float', None, True), }}
+                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True)}}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True}
 
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.biomass_dry: ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True), }}
+                                                     GlossaryEnergy.biomass_dry: ('float', None, True)}}
                     else:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{energy}.{ghg}_per_use'] = {
@@ -196,9 +191,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'namespace': 'ns_energy',
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                         GlossaryEnergy.N2OPerUse: ('float', None, True),
-                                                         GlossaryEnergy.CO2PerUse: ('float', None, True),
-                                                         GlossaryEnergy.CH4PerUse: ('float', None, True), }
+                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True),}
                             }
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
@@ -220,11 +213,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     }
+                            'dynamic_dataframe_columns': True
                         }
 
         self.add_inputs(dynamic_inputs)

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/03/27-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,23 +18,13 @@ import logging
 
 import numpy as np
 import pandas as pd
-from plotly import graph_objects as go
-
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
 )
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
-)
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
+from plotly import graph_objects as go
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -44,6 +34,16 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_data_disc import (
+    get_static_CO2_emissions,
+    get_static_prices,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TechnoDiscipline(SoSWrapp):
