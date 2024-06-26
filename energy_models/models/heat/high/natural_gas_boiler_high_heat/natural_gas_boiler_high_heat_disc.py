@@ -16,6 +16,10 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
@@ -24,10 +28,6 @@ from energy_models.core.techno_type.disciplines.heat_techno_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.high.natural_gas_boiler_high_heat.natural_gas_boiler_high_heat import (
     NaturalGasBoilerHighHeat,
-)
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
 )
 
 
@@ -128,7 +128,6 @@ class NaturalGasBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }

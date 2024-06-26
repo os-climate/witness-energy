@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ import pandas as pd
 from matplotlib.pyplot import cm
 from plotly import figure_factory as ff
 from plotly import graph_objects as go
-
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
@@ -28,6 +26,8 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 from sostrades_core.tools.post_processing.tables.instanciated_table import (
     InstanciatedTable,
 )
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
@@ -385,7 +385,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
-    if columns is not None and type(columns) == list:
+    if columns is not None and isinstance(columns, list):
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
     return multilevel_df, years

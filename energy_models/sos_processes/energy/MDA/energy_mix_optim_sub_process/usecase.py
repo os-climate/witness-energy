@@ -15,11 +15,15 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -63,10 +67,6 @@ from energy_models.core.stream_type.resources_data_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
-)
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 INVEST_DISC_NAME = "InvestmentDistribution"
@@ -573,7 +573,9 @@ class Study(EnergyStudyManager):
         forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
 
         co2_land_emissions = pd.DataFrame({
-            GlossaryEnergy.Years: self.years
+            GlossaryEnergy.Years: self.years,
+            "Crop": 0.,
+            "Forest": 0.,
         })
 
         CO2_indus_emissions_df = pd.DataFrame({
@@ -713,3 +715,4 @@ if "__main__" == __name__:
     #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     uc_cls.load_data()
     uc_cls.run()
+    uc_cls.test()

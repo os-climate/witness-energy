@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,14 +19,34 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from plotly import graph_objects as go
-
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
+from plotly import graph_objects as go
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
+from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
+
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -51,26 +71,6 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.base_functions.exp_min import (
-    compute_dfunc_with_exp_min,
-    compute_func_with_exp_min,
-)
-from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
-    InstanciatedPieChart,
-)
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
-)
-from sostrades_core.tools.post_processing.tables.instanciated_table import (
-    InstanciatedTable,
-)
 
 
 class Energy_Mix_Discipline(SoSWrapp):
@@ -297,7 +297,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                         dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2PerUse}'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.CO2Tax: ('float', None, True),
                                                      GlossaryEnergy.CO2PerUse: ('float', None, True),
                                                      },
                         }
@@ -333,42 +332,24 @@ class Energy_Mix_Discipline(SoSWrapp):
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
 
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
-                                                     'carbon_capture_wotaxes': ('float', None, True),
-                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
-                                                     'carbon_storage_wotaxes': ('float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'direct_air_capture': ('float', None, True),
-                                                     f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno (Gha)': ('float', None, True),
-                                                     'CarbonStorageTechno (Gha)': ('float', None, True),
-                                                     f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno (Gha)': (
-                                                         'float', None, True), }}
+                            'dynamic_dataframe_columns': True,}
 
         if GlossaryEnergy.energy_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)

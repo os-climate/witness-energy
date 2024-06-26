@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
@@ -26,10 +30,6 @@ from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.wind_onshore.wind_onshore import WindOnshore
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class WindOnshoreDiscipline(ElectricityTechnoDiscipline):

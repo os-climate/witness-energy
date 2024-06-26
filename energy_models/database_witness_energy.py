@@ -18,7 +18,6 @@ from os.path import join
 from pathlib import Path
 
 import pandas as pd
-
 from climateeconomics.database.collected_data import ColectedData
 
 
