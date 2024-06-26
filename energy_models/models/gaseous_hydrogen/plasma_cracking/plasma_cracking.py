@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2024/06/2024 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -185,8 +185,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
             energy)
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
         quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
