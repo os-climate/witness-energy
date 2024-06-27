@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/03/27-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,9 +30,6 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
     InstanciatedPieChart,
 )
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
