@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/03/27-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,14 +17,9 @@ limitations under the License.
 import logging
 
 import numpy as np
-
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -34,6 +29,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
 )
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class StreamDiscipline(SoSWrapp):
@@ -101,87 +98,19 @@ class StreamDiscipline(SoSWrapp):
                         GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True), }}
+                        'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True),
-                                                 }}
+                        'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
-                                                 }}
+                        'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption_wotaxes': ('float', None, True),
-                                                 'BiomassBuryingFossilization': ('float', None, True),
-                                                 'BiomassBuryingFossilization_wotaxes': ('float', None, True),
-                                                 'DeepOceanInjection': ('float', None, True),
-                                                 'DeepOceanInjection_wotaxes': ('float', None, True),
-                                                 'DeepSalineFormation': ('float', None, True),
-                                                 'DeepSalineFormation_wotaxes': ('float', None, True),
-                                                 'DepletedOilGas': ('float', None, True),
-                                                 'DepletedOilGas_wotaxes': ('float', None, True),
-                                                 'EnhancedOilRecovery': ('float', None, True),
-                                                 'EnhancedOilRecovery_wotaxes': ('float', None, True),
-                                                 'GeologicMineralization': ('float', None, True),
-                                                 'GeologicMineralization_wotaxes': ('float', None, True),
-                                                 'PureCarbonSolidStorage': ('float', None, True),
-                                                 'PureCarbonSolidStorage_wotaxes': ('float', None, True),
-                                                 }}
+                        'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption (Gha)': ('float', None, True),
-                                                 'BiomassBuryingFossilization (Gha)': ('float', None, True),
-                                                 'DeepOceanInjection (Gha)': ('float', None, True),
-                                                 'DeepSalineFormation (Gha)': ('float', None, True),
-                                                 'DepletedOilGas (Gha)': ('float', None, True),
-                                                 'EnhancedOilRecovery (Gha)': ('float', None, True),
-                                                 'GeologicMineralization (Gha)': ('float', None, True),
-                                                 'PureCarbonSolidStorage (Gha)': ('float', None, True),
-                                                 }}
+                        'dynamic_dataframe_columns': True}
 
         self.add_inputs(dynamic_inputs)
 

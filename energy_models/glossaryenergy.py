@@ -27,6 +27,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
+    EXPORT_PROFILES_AT_POLES = 'export_invest_profiles_at_poles'
     YearEndDefaultValueGradientTest = 2030
     LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050
@@ -175,6 +176,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ),
         },
     }
+    GhGPerUse = "{}_per_use"
     N2OPerUse = "N2O_per_use"
     CH4PerUse = "CH4_per_use"
     CO2PerUse = "CO2_per_use"
@@ -451,6 +453,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_edition_locked": False,
     }
 
+    TechnoProductionDf = {
+        "var_name": TechnoProductionValue,
+        "type": "dataframe", "unit": "TWh or Mt",
+        "dynamic_dataframe_columns": True
+    }
+
+    EnergyPricesDf = {
+        "var_name": GlossaryWitnessCore.EnergyPricesValue,
+        "type": "dataframe", "unit": "$/MWh",
+        "dynamic_dataframe_columns": True}
+
     # techno names
     CropEnergy = "CropEnergy"
     ManagedWood = "ManagedWood"
@@ -477,8 +490,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
     RenewableElectricitySimpleTechno = "RenewableElectricitySimpleTechno"
     SolarPv = "SolarPv"
     SolarThermal = "SolarThermal"
+    Solar = "Solar"
     WindOffshore = "WindOffshore"
     WindOnshore = "WindOnshore"
+    WindOnshoreAndOffshore = 'WindOnShoreandOffShore'
     BiomassFermentation = "BiomassFermentation"
     FossilSimpleTechno = "FossilSimpleTechno"
     ElectrolysisAWE = "Electrolysis.AWE"
@@ -522,6 +537,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     SMR = "SMR"
     AnimalManure = "AnimalManure"
     WetCropResidues = "WetCropResidues"
+    ForestProduction = "ForestProduction"
 
     AmineScrubbing = "AmineScrubbing"
     CalciumPotassiumScrubbing = "CalciumPotassiumScrubbing"

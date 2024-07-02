@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -185,12 +185,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
             energy)
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         a = hydrogen_production * quantity['A_value'].values
         x = np.array([a, ] * len(self.years)).transpose()
@@ -210,21 +208,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
+        quantity.loc[quantity['is_prod_inf_demand'],
                      'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
+        quantity.loc[~quantity['is_prod_inf_demand'], 'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
         a = hydrogen_price.values * quantity['A_value'].values
@@ -251,20 +246,17 @@ class PlasmaCracking(GaseousHydrogenTechno):
         hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'B_value'] = quantity['carbon_price']
+        quantity.loc[quantity['is_prod_inf_demand'], 'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
@@ -291,21 +283,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         # hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'B'] = quantity['carbon_sales']
+        quantity.loc[quantity['is_prod_inf_demand'], 'B'] = quantity['carbon_sales']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B'] = quantity['carbon_demand']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'B'] = quantity['carbon_demand']
 
         a = quantity['hydrogen_sales_revenues'].values * \
             quantity['B'].values

@@ -85,15 +85,13 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                                                'unit': 'G$',
                                                                'default': invest_before_year_start,
                                                                'dataframe_descriptor': {
-                                                                   GlossaryEnergy.Years: ('float', None, True),
                                                                    'past years': ('float', None, True),
                                                                    GlossaryEnergy.InvestValue: ('float', None, True)}
                                                                }}
