@@ -34,7 +34,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-def get_static_CO2_emissions(years):
+def get_default_resources_CO2_emissions(years):
     resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
 
     resources_CO2_emissions_dict.update({ResourceGlossary.GlossaryDict[resource]['name']:
@@ -43,7 +43,7 @@ def get_static_CO2_emissions(years):
     return pd.DataFrame(resources_CO2_emissions_dict)
 
 
-def get_static_prices(years):
+def get_default_resources_prices(years):
     year_co2 = [2020, 2025, 2030, 2035, 2040, 2045, 2050]
 
     # $/t
@@ -90,11 +90,11 @@ class ResourcesDisc(SoSWrapp):
                GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
                                                     'dataframe_descriptor': df_desc_resource,
                                                     'dataframe_edition_locked': False,
-                                                    'default': get_static_prices(years)},
+                                                    'default': get_default_resources_prices(years)},
                GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
                                                             'dataframe_descriptor': df_desc_resource,
                                                             'dataframe_edition_locked': False,
-                                                            'default': get_static_CO2_emissions(years)}}
+                                                            'default': get_default_resources_CO2_emissions(years)}}
 
     DESC_OUT = {
         GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
@@ -112,8 +112,8 @@ class ResourcesDisc(SoSWrapp):
                 years = np.arange(year_start, year_end + 1)
                 resources_price = self.get_sosdisc_inputs(
                     GlossaryEnergy.ResourcesPriceValue)
-                new_default_prices = get_static_prices(years)
-                new_default_emissions = get_static_CO2_emissions(years)
+                new_default_prices = get_default_resources_prices(years)
+                new_default_emissions = get_default_resources_CO2_emissions(years)
 
                 # If the value of the df is the default we specified, we need to modify also the value
                 # (if the value is different it is a user value do not modify the value)

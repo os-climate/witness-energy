@@ -61,8 +61,8 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
@@ -563,8 +563,8 @@ class Study(EnergyStudyManager):
             }
         )
 
-        resources_CO2_emissions = get_static_CO2_emissions(self.years)
-        resources_prices = get_static_prices(self.years)
+        resources_CO2_emissions = get_default_resources_CO2_emissions(self.years)
+        resources_prices = get_default_resources_prices(self.years)
 
         all_streams_demand_ratio = {GlossaryEnergy.Years: self.years}
         all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})

@@ -28,8 +28,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
@@ -207,9 +207,9 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -270,7 +270,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -332,9 +332,9 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,

@@ -26,7 +26,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
     CalciumLoopingDiscipline,
@@ -159,7 +159,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
@@ -223,7 +223,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = PressureSwingAdsorptionDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
@@ -287,7 +287,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = PiperazineProcessDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
@@ -349,7 +349,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = MonoEthanolAmineDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
@@ -412,7 +412,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = CO2MembranesDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
@@ -476,7 +476,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = ChilledAmmoniaProcessDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,

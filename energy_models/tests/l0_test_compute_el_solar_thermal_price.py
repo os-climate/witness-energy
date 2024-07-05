@@ -27,7 +27,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.solar_thermal.solar_thermal_disc import (
     SolarThermalDiscipline,
@@ -110,7 +110,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.EnergyPricesValue: self.energy_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
                             'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
-                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_default_resources_CO2_emissions(
                                 np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                             GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
                             'scaling_factor_invest_level': 1e3,

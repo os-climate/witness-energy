@@ -29,8 +29,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc import (
@@ -197,9 +197,9 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,

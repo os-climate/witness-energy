@@ -26,8 +26,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -219,9 +219,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -283,9 +283,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_geothermal,
@@ -349,9 +349,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_hydropower,
@@ -417,9 +417,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_coal,
@@ -483,9 +483,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -548,9 +548,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_windonshore,
@@ -612,9 +612,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        # same invest on and off shore
@@ -678,9 +678,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_solar_thermal,
@@ -745,9 +745,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_solar_pv,
@@ -813,9 +813,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_nuclear,
@@ -877,9 +877,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -942,9 +942,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_biomass_fired,
@@ -1007,9 +1007,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_oil,

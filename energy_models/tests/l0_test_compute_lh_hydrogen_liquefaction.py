@@ -24,7 +24,7 @@ from gemseo.utils.compare_data_manager_tooling import compare_dict
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -139,7 +139,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -177,7 +177,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)

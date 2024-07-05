@@ -27,7 +27,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization_disc import (
     BiomassBuryingFossilizationDiscipline,
@@ -158,7 +158,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = BiomassBuryingFossilizationDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -216,7 +216,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = DeepOceanInjectionDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -273,7 +273,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = DeepSalineFormationDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -330,7 +330,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = DepletedOilGasDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -390,7 +390,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = PureCarbonSolidStorageDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -451,7 +451,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = GeologicMineralizationDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -508,7 +508,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = EnhancedOilRecoveryDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
@@ -566,7 +566,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict = ReforestationDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,

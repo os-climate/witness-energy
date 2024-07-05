@@ -27,8 +27,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc import (
@@ -133,9 +133,9 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.techno_infos_dict': techno_infos_dict,}
 

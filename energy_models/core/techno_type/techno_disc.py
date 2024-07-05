@@ -37,8 +37,8 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
@@ -76,7 +76,6 @@ class TechnoDiscipline(SoSWrapp):
                                      },
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
-        GlossaryEnergy.ResourcesPriceValue: GlossaryEnergy.ResourcesPrice,
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
@@ -160,9 +159,18 @@ class TechnoDiscipline(SoSWrapp):
                     resources_co2_emissions_var["dataframe_descriptor"].update({energy: ("float", [0., 1e30], False) for energy in resources_used_for_production})
 
                     years = np.arange(year_start, year_end + 1)
-                    default_resources = get_static_CO2_emissions(years)
+                    default_resources = get_default_resources_CO2_emissions(years)
                     resources_co2_emissions_var["default"] = default_resources
                     dynamic_inputs.update({GlossaryEnergy.RessourcesCO2EmissionsValue: resources_co2_emissions_var})
+
+                    resources_prices = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ResourcesPrice)
+                    resources_prices["dataframe_descriptor"] = {GlossaryEnergy.Years: ("int", [1900, 2100], False)}
+                    resources_prices["dataframe_descriptor"].update({energy: ("float", [0., 1e30], False) for energy in resources_used_for_production})
+
+                    years = np.arange(year_start, year_end + 1)
+                    default_resources_prices = get_default_resources_prices(years)
+                    resources_prices["default"] = default_resources_prices
+                    dynamic_inputs.update({GlossaryEnergy.ResourcesPriceValue: resources_prices})
 
             if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
                 energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
@@ -249,8 +257,7 @@ class TechnoDiscipline(SoSWrapp):
                                                           GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
                                                               years)})
 
-                self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
-                                                 GlossaryEnergy.MarginValue: default_margin,
+                self.set_dynamic_default_values({GlossaryEnergy.MarginValue: default_margin,
                                                  GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
                                                  GlossaryEnergy.TransportCostValue: pd.DataFrame(
                                                      {GlossaryEnergy.Years: years,
