@@ -70,10 +70,6 @@ class TechnoDiscipline(SoSWrapp):
                                               GlossaryEnergy.InvestValue: ('float', None, True)},
                                           'dataframe_edition_locked': False
                                           },
-        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh',
-                                                 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                                 "dynamic_dataframe_columns": True
-                                                 },
         GlossaryEnergy.MarginValue: {'type': 'dataframe', 'unit': '%',
                                      'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                               GlossaryEnergy.MarginValue: ('float', None, True)}
@@ -181,16 +177,14 @@ class TechnoDiscipline(SoSWrapp):
                     dynamic_inputs.update({
                         GlossaryEnergy.EnergyPricesValue: energy_prices_var
                     })
-
-                    """
                     energies_co2_emissions = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyCO2Emissions)
+                    energies_co2_emissions["namespace"] = GlossaryEnergy.NS_ENERGY
                     energies_co2_emissions["dataframe_descriptor"] = {GlossaryEnergy.Years: ("int", [1900, 2100], False)}
                     energies_co2_emissions["dataframe_descriptor"].update(
                         {energy: ("float", [0., 1e30], False) for energy in energies_used_for_production})
                     dynamic_inputs.update({
-                        GlossaryEnergy.EnergyPricesValue: energies_co2_emissions
+                        GlossaryEnergy.EnergyCO2EmissionsValue: energies_co2_emissions
                     })
-                    """
 
             if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])

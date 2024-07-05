@@ -22,6 +22,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     CCSListName = "ccs_list"
     EnergyListName = "energy_list"
+    NS_ENERGY = "ns_energy"
 
     CO2Taxes = GlossaryWitnessCore.CO2Taxes
     CO2Taxes["namespace"] = "ns_energy_study"

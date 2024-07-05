@@ -34,7 +34,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
@@ -45,11 +45,11 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
 
         self.resources_price = pd.DataFrame(
             columns=[GlossaryEnergy.Years, 'water'])
-        self.resources_price[GlossaryEnergy.Years] = years
+        self.resources_price[GlossaryEnergy.Years] = self.years
         self.resources_price['water'] = 2.0
         self.resources_price['uranium fuel'] = 1390.0e3
 
-        self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level[GlossaryEnergy.InvestValue] = 33.0 * \
                                                         1.10 ** (self.invest_level[GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
@@ -59,22 +59,22 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 110})
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
+            {GlossaryEnergy.Years: self.years, 'transport': np.zeros(len(self.years))})
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -104,7 +104,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
