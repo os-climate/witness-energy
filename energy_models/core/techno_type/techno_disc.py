@@ -81,10 +81,6 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
         GlossaryEnergy.ResourcesPriceValue: GlossaryEnergy.ResourcesPrice,
-        GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kgCO2/kg',
-                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                     'namespace': 'ns_resource',
-                                                     'dataframe_descriptor': {}, "dynamic_dataframe_columns": True},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
@@ -152,12 +148,25 @@ class TechnoDiscipline(SoSWrapp):
         dynamic_outputs = {}
         self.update_default_values()
         if self.get_data_in() is not None:
-            if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
+            if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in() and \
+                GlossaryEnergy.YearStart in self.get_data_in() and \
+                    GlossaryEnergy.YearEnd in self.get_data_in():
                 resources_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
-                if resources_used_for_production is not None:
+                year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+                year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
+                if resources_used_for_production is not None and year_start is not None and year_end is not None:
                     cost_of_resource_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfResourceUsageDf)
                     cost_of_resource_usage_var["dataframe_descriptor"].update({resource: ("float", [0., 1e30], False) for resource in resources_used_for_production})
                     dynamic_outputs[GlossaryEnergy.CostOfResourceUsageValue] = cost_of_resource_usage_var
+
+                    resources_co2_emissions_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ResourcesCO2Emissions)
+                    resources_co2_emissions_var["dataframe_descriptor"] = {GlossaryEnergy.Years: ("int", [1900, 2100], False)}
+                    resources_co2_emissions_var["dataframe_descriptor"].update({energy: ("float", [0., 1e30], False) for energy in resources_used_for_production})
+
+                    years = np.arange(year_start, year_end + 1)
+                    default_resources = get_static_CO2_emissions(years)
+                    resources_co2_emissions_var["default"] = default_resources
+                    dynamic_inputs.update({GlossaryEnergy.RessourcesCO2EmissionsValue: resources_co2_emissions_var})
 
             if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
                 energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
@@ -247,8 +256,6 @@ class TechnoDiscipline(SoSWrapp):
                                                               years)})
 
                 self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
-                                                 GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                                                     years),
                                                  GlossaryEnergy.MarginValue: default_margin,
                                                  GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
                                                  GlossaryEnergy.TransportCostValue: pd.DataFrame(
