@@ -24,15 +24,15 @@ class CSTechno(TechnoType):
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.product_energy_unit = 'Mt'
+        self.product_unit = 'Mt'
 
     def compute_capital_recovery_factor(self, data_config):
         return 1
 
     def compute_energies_consumption(self):
         # Consumption
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
-            f'{CSTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_unit})'] = self.production_detailed[
+            f'{CSTechno.energy_name} ({self.product_unit})']
 
     def check_capex_unity(self, data_tocheck):
         """

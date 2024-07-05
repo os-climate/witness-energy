@@ -51,9 +51,9 @@ class PlasmaCracking(GaseousHydrogenTechno):
     def compute_production(self):
         C_per_h2 = self.get_theoretical_graphene_production()
 
-        self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
+        self.production_detailed[f'{Carbon.name} ({GlossaryEnergy.mass_unit})'] = C_per_h2 * \
                                                                         self.production_detailed[
-                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
     def get_theoretical_graphene_production(self):
         ''' 
@@ -115,7 +115,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''
         quantity = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                  'carbon_production': self.production_detailed[
-                                                          f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
+                                                          f'{Carbon.name} ({GlossaryEnergy.mass_unit})'].values * self.scaling_factor_techno_production,
                                  'hydrogen_production': self.production_detailed[
                                                             f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,

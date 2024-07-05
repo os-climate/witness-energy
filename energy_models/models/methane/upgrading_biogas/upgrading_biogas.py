@@ -40,14 +40,14 @@ class UpgradingBiogas(MethaneTechno):
     def compute_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
+        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                self.production_detailed[
-                                                                                   f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+                                                                                   f'{MethaneTechno.energy_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
         #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        #     self.production[f'{MethaneTechno.energy_name} ({self.product_unit})']  # in TWH
 
     def compute_energies_consumption(self):
         """
@@ -55,9 +55,9 @@ class UpgradingBiogas(MethaneTechno):
         Maybe add efficiency in consumption computation ? 
         """
         super().compute_energies_consumption()
-        self.consumption_detailed[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
+        self.consumption_detailed[f'{Monotethanolamine.name} ({GlossaryEnergy.mass_unit})'] = self.get_MEA_loss() * \
                                                                                     self.production_detailed[
-                                                                                        f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+                                                                                        f'{MethaneTechno.energy_name} ({self.product_unit})']
 
 
     def get_biogas_needs(self):

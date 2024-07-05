@@ -175,10 +175,10 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         dprod_name_dinvest = (
                                          self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
         consumption_gradient = self.techno_consumption_derivative[
-            f'{Methane.name} ({self.techno_model.product_energy_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+            f'{Methane.name} ({self.techno_model.product_unit})']
+        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'),
+             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             (consumption_gradient - dprod_name_dinvest))

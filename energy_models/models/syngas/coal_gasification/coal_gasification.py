@@ -19,6 +19,7 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalGasification(SyngasTechno):
@@ -44,9 +45,9 @@ class CoalGasification(SyngasTechno):
 
     def compute_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']

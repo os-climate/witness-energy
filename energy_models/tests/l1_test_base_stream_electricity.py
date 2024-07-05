@@ -61,7 +61,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                     })
 
         self.gasturbine_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    f'{GlossaryEnergy.methane} (TWh)': [4.192699] * len(years)
+                                                    f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': [4.192699] * len(years)
                                                     })
 
         self.techno_capital = pd.DataFrame(
@@ -118,11 +118,11 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-2
         years_low_prod = 10
         hydropower_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              f'{GlossaryEnergy.electricity} (TWh)': np.linspace(100, 100, len(self.years)),
+                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(100, 100, len(self.years)),
                                               'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              f'{GlossaryEnergy.electricity} (TWh)': [low_prod] * years_low_prod + [100] * (
+                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [100] * (
                                                       len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,

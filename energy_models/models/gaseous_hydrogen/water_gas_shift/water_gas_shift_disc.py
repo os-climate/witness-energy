@@ -269,13 +269,13 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             (
                 GlossaryEnergy.TechnoProductionValue,
-                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'),
+                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})'),
             ('syngas_ratio',),
             dprodenergy_dsyngas_ratio * self.techno_model.applied_ratio['applied_ratio'].values[:,
                                         np.newaxis] / 100.0 / scaling_factor_techno_production)
 
         production_energy = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoProductionValue)[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)']
+            GlossaryEnergy.TechnoProductionValue)[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})']
 
         co2_prod = self.techno_model.get_theoretical_co2_prod()
 
@@ -300,13 +300,13 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             dprodenergy_dsyngas_ratio * self.techno_model.applied_ratio['applied_ratio'].values[:,
                                         np.newaxis] / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.electricity} (TWh)'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'), ('syngas_ratio',),
             delec_consumption_dsyngas_ratio / 100.0)
 
         delec_consumption_woratio_dsyngas_ratio = self.techno_model.compute_delec_needs_dsyngas_ratio(
             dprodenergy_dsyngas_ratio / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{GlossaryEnergy.electricity} (TWh)'),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'),
             ('syngas_ratio',),
             delec_consumption_woratio_dsyngas_ratio / 100.0)
 
@@ -316,16 +316,16 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                         np.newaxis] / scaling_factor_techno_consumption,
             production_energy * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.syngas} (TWh)'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})'), ('syngas_ratio',),
             dsyngas_consumption_dsyngas_ratio / 100.0)
 
         production_energy_woratio = self.techno_model.production_woratio[
-            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)']
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})']
         dsyngas_consumption_woratio_dsyngas_ratio = self.techno_model.compute_dsyngas_consumption_dsyngas_ratio(
             dsyngas_needs_dsyngas_ratio, dprodenergy_dsyngas_ratio / scaling_factor_techno_consumption,
                                          production_energy_woratio * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{GlossaryEnergy.syngas} (TWh)'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})'), ('syngas_ratio',),
             dsyngas_consumption_woratio_dsyngas_ratio / 100.0)
 
         dwater_consumption_dsyngas_ratio = self.techno_model.compute_dwater_consumption_dsyngas_ratio(

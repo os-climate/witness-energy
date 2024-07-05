@@ -41,17 +41,17 @@ class CHPLowHeat(lowheattechno):
 
     def compute_production(self):
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[
-                                                                                            f'{Methane.name} ({self.product_energy_unit})']
+                                                                                            f'{Methane.name} ({self.product_unit})']
 
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
-            (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] /
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})'] = \
+            (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_unit})'] /
              (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[
-                f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+                f'{lowtemperatureheat.name} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

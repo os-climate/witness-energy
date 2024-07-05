@@ -23,6 +23,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.ethanol_techno import (
     EthanolTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassFermentation(EthanolTechno):
@@ -46,9 +47,9 @@ class BiomassFermentation(EthanolTechno):
 
     def compute_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
+        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                self.production_detailed[
-                                                                                   f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                                   f'{Ethanol.name} ({self.product_unit})'] / \
                                                                                self.cost_details['efficiency']
 
     def get_theoretical_biomass_needs(self):

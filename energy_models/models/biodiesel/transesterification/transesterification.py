@@ -28,6 +28,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.biodiesel_techno import (
     BioDieselTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Transesterification(BioDieselTechno):
@@ -49,8 +50,8 @@ class Transesterification(BioDieselTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
     def compute_production(self):
-        self.production_detailed[f'{Glycerol.name} ({self.mass_unit})'] = 0.12 * self.production_detailed[
-            f'{BioDiesel.name} ({self.product_energy_unit})'] / \
+        self.production_detailed[f'{Glycerol.name} ({GlossaryEnergy.mass_unit})'] = 0.12 * self.production_detailed[
+            f'{BioDiesel.name} ({self.product_unit})'] / \
                                                                           self.data_energy_dict['calorific_value']
 
     def get_theoretical_methanol_needs(self):

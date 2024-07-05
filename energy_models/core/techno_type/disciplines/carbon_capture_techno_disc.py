@@ -113,7 +113,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             inputs_dict['techno_infos_dict'], dcapex_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (
+            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
                 GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
             dprod_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
                              np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
@@ -124,7 +124,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             dprod_column_dfluegas = dprod_dfluegas.copy()
             if column != GlossaryEnergy.Years:
                 var_cons = (consumption[column] /
-                            production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
+                            production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(
                     0)
                 for line in range(len(consumption[column].values)):
                     dprod_column_dfluegas[line, :] = dprod_dfluegas[line,

@@ -546,14 +546,14 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.production_detailed[
-                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
         #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']  # in TWH
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

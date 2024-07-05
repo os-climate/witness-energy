@@ -36,7 +36,7 @@ class Geothermal(ElectricityTechno):
 
         # FOR ALL_RESOURCES DISCIPLINE
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
                                                                                        self.installed_power[
                                                                                            'new_power_production']  # in Mt
 

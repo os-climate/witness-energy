@@ -23,6 +23,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class AutothermalReforming(SyngasTechno):
@@ -93,8 +94,8 @@ class AutothermalReforming(SyngasTechno):
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
-                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
                                                                        H2Oprod
 
     def get_h2o_production(self):

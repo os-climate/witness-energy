@@ -136,7 +136,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                           })
 
         self.smr_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             f'{GlossaryEnergy.electricity} (TWh)': [2896311508.0963955, 2982753151.7982965,
+                                             f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [2896311508.0963955, 2982753151.7982965,
                                                                    3066756571.3836217, 3148856944.5695057,
                                                                    3229439770.4969134, 3308790913.4863434,
                                                                    3407857732.7514524, 3504165477.2542033,
@@ -152,7 +152,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                    3783783266.135714, 3777530659.2496386,
                                                                    3770911299.619129, 3763953154.457168,
                                                                    3756681168.944179],
-                                             f'{GlossaryEnergy.methane} (TWh)': [13033401786.43378, 13422389183.092335,
+                                             f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': [13033401786.43378, 13422389183.092335,
                                                                13800404571.226297, 14169856250.562777,
                                                                14532478967.236109, 14889559110.688545,
                                                                15335359797.381535, 15768744647.643913,
@@ -185,7 +185,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                             5358261123.715561, 5348373975.556368, 5338040877.222709]})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [14481557540.481977, 14913765758.991482,
+                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [14481557540.481977, 14913765758.991482,
                                                                                 15333782856.918108, 15744284722.847528,
                                                                                 16147198852.484566, 16543954567.431717,
                                                                                 17039288663.757261, 17520827386.271015,
@@ -218,7 +218,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                          1891117678.7879717, 1887628158.5415828, 1883981246.8879216]})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [1097111725247.1581,
+                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [1097111725247.1581,
                                                                                            1074283458370.2065,
                                                                                            1059357209295.9789,
                                                                                            1012387616382.4406,
@@ -267,7 +267,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                   72059750552.6871]})
 
         self.plasmacracking_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                        f'{GlossaryEnergy.electricity} (TWh)': [231813581540.16727,
+                                                        f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [231813581540.16727,
                                                                               226990096216.54742, 223836263131.7011,
                                                                               213911850415.83292, 197308240622.72845,
                                                                               187309144027.72778, 179639376983.5443,
@@ -283,7 +283,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                               187774639032.51038, 190266923896.57892,
                                                                               192584178125.13058, 194723589124.71442,
                                                                               196634421145.1847, 198313197802.02316],
-                                                        f'{GlossaryEnergy.methane} (TWh)': [1715281276020.9375, 1679590381614.333,
+                                                        f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': [1715281276020.9375, 1679590381614.333,
                                                                           1656253910980.5151, 1582819217491.3284,
                                                                           1459962477160.3691, 1385975167820.7847,
                                                                           1329223498160.5203, 1260544939664.6624,
@@ -301,7 +301,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                           1467398556709.2646]})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      f'{GlossaryEnergy.electricity} (TWh)': [2896311508.0963955, 2982753151.7982965,
+                                                      f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [2896311508.0963955, 2982753151.7982965,
                                                                             3066756571.3836217, 3148856944.5695057,
                                                                             3229439770.4969134, 3308790913.4863434,
                                                                             3407857732.7514524, 3504165477.2542033,
@@ -335,7 +335,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                      5338040877.222709]})
 
         self.electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [14481557540.481977,
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [14481557540.481977,
                                                                                          14913765758.991482,
                                                                                          15333782856.918108,
                                                                                          15744284722.847528,

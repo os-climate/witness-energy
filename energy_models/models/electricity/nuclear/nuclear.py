@@ -44,12 +44,12 @@ class Nuclear(ElectricityTechno):
         })
 
     def compute_production(self):
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
                                                                                                self.consumption_detailed[
-                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
 
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
-        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+        # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
+        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_unit})']) / \
         #       self.techno_infos_dict['efficiency']
 
 
@@ -61,7 +61,7 @@ class Nuclear(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
                                                                                        self.installed_power[
                                                                                            'new_power_production']  # in Mt
 

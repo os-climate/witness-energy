@@ -74,7 +74,7 @@ class Syngas(EnergyType):
         """
         self.syngas_ratio_mean = np.zeros(len(self.years))
         for techno in self.subelements_list:
-            #             self.mix_weights[techno] = self.production_by_techno[f'{self.name} {techno} (TWh)'] / \
+            #             self.mix_weights[techno] = self.production_by_techno[f'{self.name} {techno} ({GlossaryEnergy.energy_unit})'] / \
             #                 self.production[f'{self.name}']
             self.syngas_ratio_mean = np.add(self.syngas_ratio_mean, self.syngas_ratio[techno] *
                                             self.mix_weights[techno].values / 100.0)

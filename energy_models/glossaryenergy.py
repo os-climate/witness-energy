@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
 
 
@@ -27,7 +28,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
-    EXPORT_PROFILES_AT_POLES = 'export_invest_profiles_at_poles'
+    EXPORT_PROFILES_AT_POLES = "export_invest_profiles_at_poles"
     YearEndDefaultValueGradientTest = 2030
     LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050
@@ -455,14 +456,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     TechnoProductionDf = {
         "var_name": TechnoProductionValue,
-        "type": "dataframe", "unit": "TWh or Mt",
-        "dynamic_dataframe_columns": True
+        "type": "dataframe",
+        "unit": "TWh or Mt",
+        "dynamic_dataframe_columns": True,
     }
 
     EnergyPricesDf = {
         "var_name": GlossaryWitnessCore.EnergyPricesValue,
-        "type": "dataframe", "unit": "$/MWh",
-        "dynamic_dataframe_columns": True}
+        "type": "dataframe",
+        "unit": "$/MWh",
+        "dynamic_dataframe_columns": True,
+    }
 
     # techno names
     CropEnergy = "CropEnergy"
@@ -493,7 +497,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     Solar = "Solar"
     WindOffshore = "WindOffshore"
     WindOnshore = "WindOnshore"
-    WindOnshoreAndOffshore = 'WindOnShoreandOffShore'
+    WindOnshoreAndOffshore = "WindOnShoreandOffShore"
     BiomassFermentation = "BiomassFermentation"
     FossilSimpleTechno = "FossilSimpleTechno"
     ElectrolysisAWE = "Electrolysis.AWE"
@@ -572,7 +576,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
         biogas: {"type": energy_type, "value": [AnaerobicDigestion]},
         syngas: {"type": energy_type, "value": [BiomassGasification]},
-        f"{fuel}.{liquid_fuel}": {"type": energy_type, "value": [Refinery, FischerTropsch]},
+        f"{fuel}.{liquid_fuel}": {
+            "type": energy_type,
+            "value": [Refinery, FischerTropsch],
+        },
         hightemperatureheat_energyname: {
             "type": energy_type,
             "value": [
@@ -603,16 +610,22 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 CHPLowHeat,
             ],
         },
-        f'{fuel}.{hydrotreated_oil_fuel}': {
+        f"{fuel}.{hydrotreated_oil_fuel}": {
             "type": energy_type,
             "value": [HefaDecarboxylation, HefaDeoxygenation],
         },
-        f'{fuel}.{biodiesel}': {"type": energy_type, "value": [Transesterification]},
-        f'{fuel}.{ethanol}': {"type": energy_type, "value": [BiomassFermentation]},
+        f"{fuel}.{biodiesel}": {"type": energy_type, "value": [Transesterification]},
+        f"{fuel}.{ethanol}": {"type": energy_type, "value": [BiomassFermentation]},
         solid_fuel: {"type": energy_type, "value": [CoalExtraction, Pelletizing]},
-        biomass_dry: {"type": agriculture_type, "value": [ManagedWood, UnmanagedWood, CropEnergy]},
+        biomass_dry: {
+            "type": agriculture_type,
+            "value": [ManagedWood, UnmanagedWood, CropEnergy],
+        },
         electricity: {"type": energy_type, "value": [WindOffshore]},
-        f"{hydrogen}.{liquid_hydrogen}": {"type": energy_type, "value": [HydrogenLiquefaction]},
+        f"{hydrogen}.{liquid_hydrogen}": {
+            "type": energy_type,
+            "value": [HydrogenLiquefaction],
+        },
         carbon_capture: {
             "type": CCUS,
             "value": [
@@ -672,7 +685,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "type": energy_type,
             "value": [HydrogenLiquefaction],
         },
-        #methanol: {"type": energy_type, 'value': [CO2Hydrogenation]},
+        # methanol: {"type": energy_type, 'value': [CO2Hydrogenation]},
         biogas: {"type": energy_type, "value": [AnaerobicDigestion]},
         syngas: {
             "type": energy_type,
@@ -685,13 +698,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 CoElectrolysis,
             ],
         },
-        f"{fuel}.{liquid_fuel}": {"type": energy_type, "value": [Refinery, FischerTropsch]},
-        f'{fuel}.{hydrotreated_oil_fuel}': {
+        f"{fuel}.{liquid_fuel}": {
+            "type": energy_type,
+            "value": [Refinery, FischerTropsch],
+        },
+        f"{fuel}.{hydrotreated_oil_fuel}": {
             "type": energy_type,
             "value": [HefaDecarboxylation, HefaDeoxygenation],
         },
-        f'{fuel}.{biodiesel}': {"type": energy_type, "value": [Transesterification]},
-        f'{fuel}.{ethanol}': {"type": energy_type, "value": [BiomassFermentation]},
+        f"{fuel}.{biodiesel}": {"type": energy_type, "value": [Transesterification]},
+        f"{fuel}.{ethanol}": {"type": energy_type, "value": [BiomassFermentation]},
         solid_fuel: {"type": energy_type, "value": [CoalExtraction, Pelletizing]},
         biomass_dry: {"type": agriculture_type, "value": []},
         electricity: {
@@ -737,3 +753,5 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
     }
+    mass_unit = "Mt"
+    energy_unit = "TWh"

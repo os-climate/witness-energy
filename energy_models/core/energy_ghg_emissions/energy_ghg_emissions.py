@@ -277,7 +277,7 @@ class EnergyGHGEmissions(BaseStream):
             if energy in self.ghg_per_use_dict[ghg]:
                 self.ghg_production_dict[ghg][f'{energy} {ghg} by use {self.ghg_input_unit}'] = \
                 self.ghg_per_use_dict[ghg][energy] * np.maximum(
-                    0.0, self.energy_production_detailed[f'production {energy} (TWh)'].values)
+                    0.0, self.energy_production_detailed[f'production {energy} ({GlossaryEnergy.energy_unit})'].values)
 
     def compute_total_ghg_emissions(self):
         """
@@ -327,7 +327,7 @@ class EnergyGHGEmissions(BaseStream):
         dtot_CO2_emissions = {}
         for energy in self.energy_list:
             net_prod = net_production[
-                f'production {energy} (TWh)'].values
+                f'production {energy} ({GlossaryEnergy.energy_unit})'].values
 
             # Specific case when net prod is equal to zero
             # if we increase the prod of an energy the net prod will react
@@ -367,7 +367,7 @@ class EnergyGHGEmissions(BaseStream):
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
             net_prod = net_production[
-                f'production {energy} (TWh)'].values
+                f'production {energy} ({GlossaryEnergy.energy_unit})'].values
 
             dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#co2_per_use'] = np.maximum(
                 0, net_prod)

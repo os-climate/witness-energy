@@ -78,20 +78,20 @@ class Refinery(LiquidFuelTechno):
     def compute_production(self):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
-            self.production_detailed[f'{energy} ({self.product_energy_unit})'] = self.production_detailed[
-                                                                                     f'{self.energy_name} ({self.product_energy_unit})'] * \
+            self.production_detailed[f'{energy} ({self.product_unit})'] = self.production_detailed[
+                                                                                     f'{self.energy_name} ({self.product_unit})'] * \
                                                                                  self.techno_infos_dict[
                                                                                      'product_break_down'][
                                                                                      energy] / 11.66 * \
                                                                                  self.other_energy_dict[energy][
                                                                                      'calorific_value']
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
         '''
         Method to compute CH4 emissions from gas production
         The proposed V0 only depends on production.
@@ -104,9 +104,9 @@ class Refinery(LiquidFuelTechno):
                           self.techno_infos_dict['CH4_venting_emission_factor'] + \
                           self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
-        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+        self.production_detailed[f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
                                                                                   self.production_detailed[
-                                                                                      f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
+                                                                                      f'{LiquidFuelTechno.energy_name} ({self.product_unit})'].values
 
     def compute_prod_from_invest(self, construction_delay):
         '''

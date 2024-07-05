@@ -31,7 +31,7 @@ class BiomassBuryingFossilization(CSTechno):
 
         # Consumption
 
-        self.consumption_detailed[f'{BiomassDry.name} (TWh)'] = self.production_detailed[
-                                                                    f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{BiomassDry.name} ({GlossaryEnergy.energy_unit})'] = self.production_detailed[
+                                                                    f'{CSTechno.energy_name} ({self.product_unit})'] / \
                                                                 BiomassDry.data_energy_dict[GlossaryEnergy.CO2PerUse] * \
                                                                 BiomassDry.data_energy_dict['calorific_value']

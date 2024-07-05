@@ -187,7 +187,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('syngas_ratio',),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_syngas_prod)
             self.set_partial_derivative(
                 'syngas_ratio',
@@ -214,7 +214,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2PerUse, GlossaryEnergy.CO2PerUse),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_carbon_tax_vs_prod)
 
             if co2_per_use != 0:

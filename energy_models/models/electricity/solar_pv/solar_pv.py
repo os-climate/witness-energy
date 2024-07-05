@@ -21,6 +21,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SolarPv(ElectricityTechno):
@@ -33,7 +34,7 @@ class SolarPv(ElectricityTechno):
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
         self.land_use[f'{self.name} (Gha)'] = \
-            self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
+            self.production_detailed[f'{self.energy_name} ({self.product_unit})'] / \
             density_per_ha
 
     def compute_consumption_and_installed_power(self):
@@ -44,7 +45,7 @@ class SolarPv(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
                                                                                        self.installed_power[
                                                                                            'new_power_production']  # in Mt
 

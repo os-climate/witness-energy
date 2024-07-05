@@ -53,13 +53,13 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                                                })
 
         self.wgs_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(years),
-                                             f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years),
-                                             f'{GlossaryEnergy.syngas} (TWh)': [3579.828092] * len(years),
+                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [230.779470] * len(years),
+                                             f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [82.649011] * len(years),
+                                             f'{GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})': [3579.828092] * len(years),
                                              'water (Mt)': [381.294427] * len(years)})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      f'{GlossaryEnergy.electricity} (TWh)': [4.192699] * len(years),
+                                                      f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [4.192699] * len(years),
                                                       'water (Mt)': [0.021638] * len(years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
@@ -113,11 +113,11 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-2
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(100, 100, len(self.years)),
+                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(100, 100, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
+                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [
                                                     100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
@@ -190,11 +190,11 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-5
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(1e-6, 1e-6, len(self.years)),
+                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(1e-6, 1e-6, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
+                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [
                                                     100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,

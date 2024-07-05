@@ -415,9 +415,9 @@ class RWGS(SyngasTechno):
     def compute_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = th_water_prod * \
                                                                        self.production_detailed[
-                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})']
 
     def compute_energies_consumption(self):
         """
@@ -427,9 +427,9 @@ class RWGS(SyngasTechno):
 
         super().compute_energies_consumption()
 
-        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
+        self.consumption_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] * \
                                                                                 self.production_detailed[
-                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
+                                                                                    f'{SyngasTechno.energy_name} ({self.product_unit})']  # in kg
 
     def compute_dprod_water_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         dwater_prod_dsyngas_ratio = self.compute_dwater_prod_dsynags_ratio()

@@ -206,7 +206,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         consumption_wo_ratio = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionWithoutRatioValue)
         applied_ratio = self.get_sosdisc_outputs('applied_ratio')['applied_ratio'].values
         d_constraint_d_utillisation_ratio = np.diag(
-            consumption_wo_ratio[f'{Carbon.name} ({self.techno_model.mass_unit})'].values *
+            consumption_wo_ratio[f'{Carbon.name} ({GlossaryEnergy.mass_unit})'].values *
             applied_ratio / 100.
         )
 

@@ -36,9 +36,9 @@ class Pelletizing(SolidFuelTechno):
         # Cost of electricity for 1 kWh of pellet
 
     def compute_production(self):
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_unit})'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value']

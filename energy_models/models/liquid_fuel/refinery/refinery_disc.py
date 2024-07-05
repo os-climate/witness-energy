@@ -360,7 +360,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         for products in techno_production.columns:
             if products != GlossaryEnergy.Years and products.endswith(
-                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} (TWh)':
+                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} ({GlossaryEnergy.energy_unit})':
                 energy_twh = techno_production[products].values
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")

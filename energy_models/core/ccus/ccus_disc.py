@@ -253,10 +253,10 @@ class CCUS_Discipline(SoSWrapp):
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                        if f'{energy} (TWh)' in list_columnsenergycons:
+                        if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('co2_emissions_ccus', co2_emission_column),
-                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -292,10 +292,10 @@ class CCUS_Discipline(SoSWrapp):
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                        if f'{energy} (TWh)' in list_columnsenergycons:
+                        if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('co2_emissions_ccus_Gt', co2_emission_column_upd),
-                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -346,10 +346,10 @@ class CCUS_Discipline(SoSWrapp):
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                        if f'{energy} (TWh)' in list_columnsenergycons:
+                        if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.CARBON_STORAGE_CONSTRAINT,),
-                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(

@@ -37,8 +37,8 @@ class HeatPump(lowheattechno):
 
     def compute_production(self):
         # Production
-        self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
+        self.production_detailed[f'{lowtemperatureheat.name} ({self.product_unit})'] = \
+            self.production_detailed[f'{lowtemperatureheat.name} ({self.product_unit})'] / \
             self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):

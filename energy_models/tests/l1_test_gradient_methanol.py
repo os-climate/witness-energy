@@ -65,8 +65,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.energy_name = 'methanol'
-        self.product_energy_unit = 'TWh'
-        self.mass_unit = 'Mt'
+        self.product_unit = 'TWh'
         self.land_use_unit = 'Gha'
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GaseousHydrogen.name: 300.0,
@@ -186,13 +185,13 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
     def test_02_methanol_discipline_jacobian(self):
         self.co2_hydrogenation_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                           f'{CarbonCapture.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{GaseousHydrogen.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{Electricity.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{Water.name} ({self.mass_unit})': 1.0,
+                                                           f'{CarbonCapture.name} ({self.product_unit})': 1.0,
+                                                           f'{GaseousHydrogen.name} ({self.product_unit})': 1.0,
+                                                           f'{Electricity.name} ({self.product_unit})': 1.0,
+                                                           f'{Water.name} ({GlossaryEnergy.mass_unit})': 1.0,
                                                            })
         self.co2_hydrogenation_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                          f'{Methanol.name} ({self.product_energy_unit})': 1.0
+                                                          f'{Methanol.name} ({self.product_unit})': 1.0
                                                           })
         self.co2_hydrogenation_techno_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                              f'{CO2HydrogenationDiscipline.techno_name}': 100.0,

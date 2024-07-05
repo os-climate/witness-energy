@@ -45,10 +45,10 @@ class CoalExtraction(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
     def compute_production(self):
-        self.production_detailed[f'{CO2.name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+        self.production_detailed[f'{CO2.name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
                                                                      self.data_energy_dict['high_calorific_value'] * \
                                                                      self.production_detailed[
-                                                                         f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
+                                                                         f'{SolidFuelTechno.energy_name} ({self.product_unit})']
         '''
                 Method to compute CH4 emissions from coal mines
                 The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
@@ -72,8 +72,8 @@ class CoalExtraction(SolidFuelTechno):
                                       self.data_energy_dict['calorific_value'] * 1e-3
         # need to multiply by 1e9 to be in m3 by density to be in kg and by 1e-9 to be in Mt
         # and add ch4 from abandoned mines
-        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = self.emission_factor_mt_twh * \
+        self.production_detailed[f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = self.emission_factor_mt_twh * \
                                                                                   self.production_detailed[
-                                                                                      f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
+                                                                                      f'{SolidFuelTechno.energy_name} ({self.product_unit})'].values + \
                                                                                   self.techno_infos_dict[
                                                                                       'ch4_from_abandoned_mines']

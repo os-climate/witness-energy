@@ -352,7 +352,7 @@ class EnergyMix(BaseStream):
             self.production_raw[column_name] = pd.Series(
                 self.sub_production_dict[energy][energy].values)
 
-        columns_to_sum = [column for column in self.production_raw if column.endswith('(TWh)')]
+        columns_to_sum = [column for column in self.production_raw if column.endswith(f"({GlossaryEnergy.energy_unit})")]
         self.production_raw[GlossaryEnergy.TotalProductionValue] = self.production_raw[columns_to_sum].sum(axis=1)
 
     def compute_net_consumable_energy(self):
@@ -402,7 +402,7 @@ class EnergyMix(BaseStream):
             self.consumable_energy_df[
                 column_name_energy] = raw_production_energy - consumed_energy_by_energy_sum - prod_raw_to_substract
 
-        columns_to_sum = [column for column in self.consumable_energy_df if column.endswith('(TWh)')]
+        columns_to_sum = [column for column in self.consumable_energy_df if column.endswith(f"({GlossaryEnergy.energy_unit})")]
         self.consumable_energy_df[GlossaryEnergy.TotalProductionValue] = self.consumable_energy_df[columns_to_sum].sum(
             axis=1)
 
@@ -418,12 +418,12 @@ class EnergyMix(BaseStream):
         self.production = deepcopy(self.consumable_energy_df)
         # taking into account consumption of ccs technos
         for ccs in self.ccs_list:
-            # production_column_name_ccs = f'{self.PRODUCTION} {ccs} (TWh)'
+            # production_column_name_ccs = f'{self.PRODUCTION} {ccs} ({GlossaryEnergy.energy_unit})'
             # if ccs in self.sub_consumption_dict:
             #     consumption_ccs_df = self.sub_consumption_dict[ccs]
             #     ccs_consumptions_list = []
             #     for column in consumption_ccs_df.columns:
-            #         if column.endswith('(TWh)'):
+            #         if column.endswith(f"({GlossaryEnergy.energy_unit})"):
             #             ccs_consumptions_list.append(consumption_ccs_df[column].values)
             #     self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
             #         ccs_consumptions_list) else 0.
@@ -433,17 +433,17 @@ class EnergyMix(BaseStream):
                 consumption_ccs_df = self.sub_consumption_dict[ccs]
                 ccs_consumptions_list = []
                 for column in consumption_ccs_df.columns:
-                    if column.endswith('(Mt)'):
+                    if column.endswith(f"({GlossaryEnergy.mass_unit})"):
                         ccs_consumptions_list.append(consumption_ccs_df[column].values)
                 self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
                     ccs_consumptions_list) else 0.
         # Delete energy used by ccs from energy production (and not only from total production)
         for energy in self.energy_list:
-            production_column_name_energy = f'{self.PRODUCTION} {energy} (TWh)'
+            production_column_name_energy = f'{self.PRODUCTION} {energy} ({GlossaryEnergy.energy_unit})'
             self.production[production_column_name_energy] -= self.consumed_energy_by_ccus_sum[energy]
 
         # Net energy production = Raw energy production - Energy consumed for energy production - Energy used by CCUS
-        columns_to_sum = [column for column in self.production if column.endswith('(TWh)')]
+        columns_to_sum = [column for column in self.production if column.endswith(f"({GlossaryEnergy.energy_unit})")]
         self.production[GlossaryEnergy.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
 
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[

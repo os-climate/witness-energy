@@ -27,6 +27,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
     HydrotreatedOilFuelTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HefaDeoxygenation(HydrotreatedOilFuelTechno):
@@ -57,8 +58,8 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']
         water_prod_factor = self.get_theoretical_water_prod()
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = water_prod_factor * self.production_detailed[
-            f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / water_calorific_value
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = water_prod_factor * self.production_detailed[
+            f'{HydrotreatedOilFuel.name} ({self.product_unit})'] / water_calorific_value
 
     def get_theoretical_natural_oil_needs(self):
         """

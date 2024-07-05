@@ -173,32 +173,32 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                           })
 
         self.smr_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(self.years),
-                                             f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(self.years),
-                                             f'{GlossaryEnergy.syngas} (TWh)': [3579.828092] * len(self.years),
+                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [230.779470] * len(self.years),
+                                             f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [82.649011] * len(self.years),
+                                             f'{GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})': [3579.828092] * len(self.years),
                                              f"{ResourceGlossary.WaterResource} (Mt)": [381.294427] * len(self.years)})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2304.779470] * len(self.years),
+                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [2304.779470] * len(self.years),
                                             'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(1e-5, 1,
+                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(1e-5, 1,
                                                                                                       len(self.years)),
                                                        f"{ResourceGlossary.CarbonResource} (Mt)": [0.008622] * len(
                                                            self.years)})
 
         self.plasmacracking_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                        f'{GlossaryEnergy.electricity} (TWh)': [0.019325] * len(self.years),
-                                                        f'{GlossaryEnergy.methane} (TWh)': [0.213945] * len(self.years)})
+                                                        f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [0.019325] * len(self.years),
+                                                        f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': [0.213945] * len(self.years)})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                      f'{GlossaryEnergy.electricity} (TWh)': [4.192699] * len(self.years),
+                                                      f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [4.192699] * len(self.years),
                                                       f"{ResourceGlossary.WaterResource} (Mt)": [0.021638] * len(
                                                           self.years)})
 
         self.electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2.684940] * len(self.years),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [2.684940] * len(self.years),
                                                      f"{ResourceGlossary.DioxygenResource} (Mt)": [0.019217] * len(
                                                          self.years)})
 

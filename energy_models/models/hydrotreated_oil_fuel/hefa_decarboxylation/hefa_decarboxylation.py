@@ -28,6 +28,7 @@ from energy_models.core.stream_type.resources_models.natural_oil import NaturalO
 from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
     HydrotreatedOilFuelTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HefaDecarboxylation(HydrotreatedOilFuelTechno):
@@ -54,9 +55,9 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
 
     def compute_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
+        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                self.production_detailed[
-                                                                                   f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
+                                                                                   f'{HydrotreatedOilFuel.name} ({self.product_unit})'] / \
                                                                                self.cost_details['efficiency']
 
     def get_theoretical_natural_oil_needs(self):

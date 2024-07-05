@@ -42,9 +42,9 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
 
     def compute_production(self):
         pass
-        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
-        #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
+        # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
+        #     self.consumption[f'{GaseousHydrogen.name} ({self.product_unit})']/\
         #     self.techno_infos_dict['efficiency']
 
-        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
+        # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_unit})'] * self.techno_infos_dict['heat_recovery_factor']

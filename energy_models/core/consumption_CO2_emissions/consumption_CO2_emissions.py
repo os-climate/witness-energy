@@ -130,7 +130,7 @@ class ConsumptionCO2Emissions(BaseStream):
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
             self.CO2_production[f'{energy} CO2 by use (Mt)'] = self.co2_per_use[energy] * np.maximum(
-                0.0, self.energy_production_detailed[f'production {energy} (TWh)'].values)
+                0.0, self.energy_production_detailed[f'production {energy} ({GlossaryEnergy.energy_unit})'].values)
 
         for energy in self.ccs_list:
             for col, production in self.sub_production_dict[energy].items():
@@ -242,7 +242,7 @@ class ConsumptionCO2Emissions(BaseStream):
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
             net_prod = net_production[
-                f'production {energy} (TWh)'].values
+                f'production {energy} ({GlossaryEnergy.energy_unit})'].values
 
             dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#co2_per_use'] = np.maximum(
                 0, net_prod)
