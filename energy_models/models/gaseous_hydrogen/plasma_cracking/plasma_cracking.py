@@ -49,13 +49,13 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
 
     def compute_production(self):
-        C_per_h2 = self.get_theoretical_graphene_production()
+        C_per_h2 = self.get_theoretical_carbon_production()
 
         self.production_detailed[f'{Carbon.name} ({GlossaryEnergy.mass_unit})'] = C_per_h2 * \
                                                                         self.production_detailed[
                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
-    def get_theoretical_graphene_production(self):
+    def get_theoretical_carbon_production(self):
         ''' 
         Get methane needs in kg C /kWh H2
         1 mol of C for 2 mol of H2

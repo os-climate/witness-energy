@@ -147,7 +147,7 @@ class CarbonCapture(BaseStream):
             production_by_techno[f'{self.name} {element} ({self.unit})'] = sub_production_dict[
                                                                                element][
                                                                                f'{self.name} ({self.unit})'].values * factor
-            production, consumption = self.compute_other_consumption_production(
+            production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
 

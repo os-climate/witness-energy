@@ -61,9 +61,9 @@ class EnergyDiscipline(StreamDiscipline):
         dynamic_inputs = {}
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self.update_default_technology_list()
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+                self_product_unit = GlossaryEnergy.unit_dicts[self.energy_name]
                 for techno in techno_list:
                     dynamic_inputs[
                         f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(
@@ -76,7 +76,10 @@ class EnergyDiscipline(StreamDiscipline):
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
+                        "dataframe_descriptor": {
+                            GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False),
+                            f"{self.energy_name} ({self_product_unit})": ("float", None, False),
+                        }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         "dynamic_dataframe_columns": True}
@@ -88,14 +91,6 @@ class EnergyDiscipline(StreamDiscipline):
                         "dynamic_dataframe_columns": True}
 
         self.add_inputs(dynamic_inputs)
-
-    def update_default_technology_list(self):
-        '''
-        Update the default value of technologies list with techno discipline below the energy node and in possible values
-        '''
-
-        found_technos = self.found_technos_under_energy()
-        self.set_dynamic_default_values({GlossaryEnergy.techno_list: found_technos})
 
     def found_technos_under_energy(self):
         '''

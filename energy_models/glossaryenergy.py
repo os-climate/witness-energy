@@ -756,3 +756,26 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
     mass_unit = "Mt"
     energy_unit = "TWh"
+
+    unit_dicts = {
+        renewable: energy_unit,
+        fossil: energy_unit,
+        biomass_dry: energy_unit,
+        methane: energy_unit,
+        f"{hydrogen}.{gaseous_hydrogen}": energy_unit,
+        f"{hydrogen}.{liquid_hydrogen}": energy_unit,
+        biogas: energy_unit,
+        syngas: energy_unit,
+        f"{fuel}.{liquid_fuel}": energy_unit,
+        f"{fuel}.{hydrotreated_oil_fuel}": energy_unit,
+        f"{fuel}.{biodiesel}": energy_unit,
+        f"{fuel}.{ethanol}": energy_unit,
+        f"{fuel}.{methanol}": energy_unit,
+        f"{heat}.{lowtemperatureheat}": energy_unit,
+        f"{heat}.{mediumtemperatureheat}": energy_unit,
+        f"{heat}.{hightemperatureheat}": energy_unit,
+        solid_fuel: energy_unit,
+        electricity: energy_unit,
+        carbon_capture: mass_unit,
+        carbon_storage: mass_unit,
+    }

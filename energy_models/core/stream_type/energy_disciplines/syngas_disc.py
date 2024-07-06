@@ -86,7 +86,6 @@ class SyngasDiscipline(EnergyDiscipline):
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {

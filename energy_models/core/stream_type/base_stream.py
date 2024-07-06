@@ -148,6 +148,7 @@ class BaseStream:
 
         self.compute_energy_type_capital(inputs)
 
+        #print(self.name, list(self.production.columns))
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 
     def compute_production(self, sub_production_dict, sub_consumption_dict):
@@ -170,16 +171,17 @@ class BaseStream:
             production[
                 f'{self.name}'] += production_by_techno[f'{self.name} {element} ({self.unit})'].values
 
-            production, consumption = self.compute_other_consumption_production(
+            production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption)
 
+        #print(self.name, "&&#", self.unit)
+        #print(self.name, [list(el.columns) for el in sub_production_dict.values()])
+        #print(self.name, list(production_by_techno.columns))
         return production, consumption, production_by_techno
 
-    def compute_other_consumption_production(self, element, sub_production_dict, sub_consumption_dict, production,
-                                             consumption, factor=1.0):
-        '''
-        Compute other consumption and production
-        '''
+    def compute_byproducts_consumption_and_production(self, element, sub_production_dict, sub_consumption_dict, production,
+                                                      consumption, factor=1.0):
+        """Compute byproducts consumptions and productions"""
 
         for elem, prod in sub_production_dict[element].items():
             # DO not count major energy production in this function (already
