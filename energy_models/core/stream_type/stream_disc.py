@@ -112,7 +112,11 @@ class StreamDiscipline(SoSWrapp):
                     }
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
-                        'dynamic_dataframe_columns': True}
+                        "dataframe_descriptor": {
+                            GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False),
+                            f"{techno}": ("float", None, False),
+                            f"{techno}_wotaxes": ("float", None, False),
+                        }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         'dynamic_dataframe_columns': True}

@@ -48,11 +48,14 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.years = years
 
-        self.hydropower_techno_prices = pd.DataFrame({'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
+        self.hydropower_techno_prices = pd.DataFrame({
+            GlossaryEnergy.Years: years,
+            'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
                                                       'Hydropower_wotaxes': np.linspace(100, 100 + len(years) - 1,
                                                                                         len(years))})
 
-        self.gasturbine_techno_prices = pd.DataFrame({'GasTurbine': np.linspace(10, 10 + len(years) - 1, len(years)),
+        self.gasturbine_techno_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                      'GasTurbine': np.linspace(10, 10 + len(years) - 1, len(years)),
                                                       'GasTurbine_wotaxes': np.linspace(10, 10 + len(years) - 1,
                                                                                         len(years))
                                                       })
