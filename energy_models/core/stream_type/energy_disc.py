@@ -57,40 +57,19 @@ class EnergyDiscipline(StreamDiscipline):
     _maturity = 'Research'
     energy_name = 'energy'
 
-    def setup_sos_disciplines(self):
+    def add_additionnal_dynamic_variables(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-                self_product_unit = GlossaryEnergy.unit_dicts[self.energy_name]
                 for techno in techno_list:
-                    dynamic_inputs[
-                        f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(
-                        GlossaryEnergy.TechnoCapitalDf)
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dataframe_descriptor": {
-                            GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False),
-                            f"{self.energy_name} ({self_product_unit})": ("float", None, False),
-                        }}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        "dynamic_dataframe_columns": True}
 
-        self.add_inputs(dynamic_inputs)
+        return dynamic_inputs, dynamic_outputs
 
     def found_technos_under_energy(self):
         '''

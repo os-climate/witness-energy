@@ -117,7 +117,13 @@ class StreamDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'Gha',
                         'dynamic_dataframe_columns': True}
 
+        add_di, add_do = self.add_additionnal_dynamic_variables()
+        dynamic_inputs.update(add_di)
         self.add_inputs(dynamic_inputs)
+
+    def add_additionnal_dynamic_variables(self):
+        """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
+        return {}, {}
 
     def run(self):
         '''
