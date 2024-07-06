@@ -100,18 +100,15 @@ class TechnoDiscipline(SoSWrapp):
     # -- Change output that are not clear, transform to dataframe since r_* is price
     DESC_OUT = {
         GlossaryEnergy.TechnoDetailedPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
-        GlossaryEnergy.TechnoPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         GlossaryEnergy.TechnoDetailedConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt', },
         GlossaryEnergy.TechnoDetailedProductionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
-        GlossaryEnergy.TechnoProductionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoProductionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         'age_distrib_production': {'type': 'dataframe', 'unit': 'TWh'},
         'mean_age_production': {'type': 'dataframe', 'unit': GlossaryEnergy.Years},
         GlossaryEnergy.CO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kg/kWh'},
-        GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
         GlossaryEnergy.InstalledPower: {'type': 'dataframe', 'unit': 'MW'},
@@ -221,6 +218,11 @@ class TechnoDiscipline(SoSWrapp):
                                                                             'namespace': 'ns_resource',
                                                                             "dynamic_dataframe_columns": True}
 
+        dynamic_outputs.update({
+            GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
+            GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name, energy_name=self.energy_name),
+            GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
+        })
         self.add_inputs(dynamic_inputs)
         d = self.add_additionnal_dynamic_output()
         d.update(dynamic_outputs)

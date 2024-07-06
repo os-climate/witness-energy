@@ -131,7 +131,7 @@ class BaseStream:
                                                                      inputs_dict['scaling_factor_techno_consumption']
             self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
 
-        print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.TechnoPricesValue}'].columns) for element in self.subelements_list])
+        print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}'].columns) for element in self.subelements_list])
 
     def compute(self, inputs, exp_min=True):
         '''

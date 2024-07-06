@@ -92,34 +92,18 @@ class StreamDiscipline(SoSWrapp):
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self_product_unit = GlossaryEnergy.unit_dicts[self.energy_name]
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
-                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dataframe_descriptor": {
-                            GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False),
-                            f"{self.energy_name} ({self_product_unit})": ("float", None, False),
-                        }
-                    }
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        "dataframe_descriptor": {
-                            GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False),
-                            f"{techno}": ("float", None, False),
-                            f"{techno}_wotaxes": ("float", None, False),
-                        }}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        'dynamic_dataframe_columns': True}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
 
         add_di, add_do = self.add_additionnal_dynamic_variables()
         dynamic_inputs.update(add_di)

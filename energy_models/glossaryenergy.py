@@ -756,6 +756,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
     mass_unit = "Mt"
     energy_unit = "TWh"
+    surface_unit = "Gha"
 
     unit_dicts = {
         renewable: energy_unit,
@@ -779,3 +780,38 @@ class GlossaryEnergy(GlossaryWitnessCore):
         carbon_capture: mass_unit,
         carbon_storage: mass_unit,
     }
+
+    @classmethod
+    def get_land_use_df(cls, techno_name: str):
+        return {
+            "type": "dataframe",
+            "unit": "Gha",
+            "dataframe_descriptor": {
+                cls.Years: ("int", [1900, cls.YearEndDefault], False),
+                f"{techno_name} ({cls.surface_unit})": ("float", None, False),
+            },
+        }
+
+    @classmethod
+    def get_techno_price_df(cls, techno_name: str):
+        return {
+            "type": "dataframe",
+            "unit": "Gha",
+            "dataframe_descriptor": {
+                cls.Years: ("int", [1900, cls.YearEndDefault], False),
+                f"{techno_name}": ("float", None, False),
+                f"{techno_name}_wotaxes": ("float", None, False),
+            },
+        }
+
+    @classmethod
+    def get_techno_prod_df(cls, energy_name: str, techno_name: str):
+        return {
+            "type": "dataframe",
+            "unit": cls.unit_dicts[energy_name],
+            "description": f"Production of {energy_name} by from techno {techno_name}",
+            "dataframe_descriptor": {
+                GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False,),
+                f"{energy_name} ({cls.unit_dicts[energy_name]})": ("float", None, False),
+            },
+        }

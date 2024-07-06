@@ -42,7 +42,8 @@ class HydrogenPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.electrolysis_techno_prices = pd.DataFrame(
-            {'Electrolysis.PEM': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years,
+             'Electrolysis.PEM': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                            0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                            0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                            0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -66,7 +67,8 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                    0.0928246539459331]) * 1000.0})
 
         self.smr_techno_prices = pd.DataFrame(
-            {'WaterGasShift': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+            {GlossaryEnergy.Years: years,
+                'WaterGasShift': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                         0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                         0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                         0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -89,7 +91,9 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                 0.03239930253734476]) * 1000.0
              })
 
-        self.plasmacracking_techno_prices = pd.DataFrame({'PlasmaCracking':
+        self.plasmacracking_techno_prices = pd.DataFrame({
+            GlossaryEnergy.Years: years,
+            'PlasmaCracking':
                                                               np.array(
                                                                   [0.06363, 0.0612408613576689, 0.059181808246196024,
                                                                    0.05738028027202377,

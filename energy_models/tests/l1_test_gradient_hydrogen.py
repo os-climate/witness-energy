@@ -103,7 +103,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                0.0928246539459331])[:len(self.years)] * 1000.0})
 
         self.smr_techno_prices = pd.DataFrame(
-            {'WaterGasShift': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+            {GlossaryEnergy.Years: years,'WaterGasShift': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                         0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                         0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                         0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -126,7 +126,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                 0.03239930253734476])[:len(self.years)] * 1000.0
              })
 
-        self.plasmacracking_techno_prices = pd.DataFrame({'PlasmaCracking':
+        self.plasmacracking_techno_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                          'PlasmaCracking':
                                                               np.array(
                                                                   [0.06363, 0.0612408613576689, 0.059181808246196024,
                                                                    0.05738028027202377,
