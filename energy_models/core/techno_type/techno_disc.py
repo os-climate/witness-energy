@@ -64,18 +64,10 @@ class TechnoDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),
-        GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                              'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                              GlossaryEnergy.InvestValue: ('float', None, True)},
-                                          'dataframe_edition_locked': False
-                                          },
-        GlossaryEnergy.MarginValue: {'type': 'dataframe', 'unit': '%',
-                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                              GlossaryEnergy.MarginValue: ('float', None, True)}
-                                     },
+        GlossaryEnergy.InvestLevelValue: GlossaryEnergy.TechnoInvestDf,
+        GlossaryEnergy.MarginValue: GlossaryEnergy.MarginDf,
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
-        GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
+        GlossaryEnergy.CO2TaxesValue: GlossaryEnergy.CO2Taxes,
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
@@ -103,7 +95,6 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.TechnoDetailedConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt', },
-        GlossaryEnergy.TechnoDetailedProductionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoProductionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         'age_distrib_production': {'type': 'dataframe', 'unit': 'TWh'},
         'mean_age_production': {'type': 'dataframe', 'unit': GlossaryEnergy.Years},
@@ -220,7 +211,12 @@ class TechnoDiscipline(SoSWrapp):
 
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
-            GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name, energy_name=self.energy_name),
+            GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name,
+                                                                                    energy_name=self.energy_name,
+                                                                                    byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
+            GlossaryEnergy.TechnoDetailedProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name,
+                                                                                            energy_name=self.energy_name,
+                                                                                            byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
         })
         self.add_inputs(dynamic_inputs)

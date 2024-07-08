@@ -101,7 +101,7 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name, byproducts_list=GlossaryEnergy.techno_byproducts[techno])
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
 

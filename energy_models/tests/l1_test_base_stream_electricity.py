@@ -125,6 +125,10 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                               'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                              f"{GlossaryEnergy.CH4} ({GlossaryEnergy.mass_unit})": 0.,
+                                              f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": 0.,
+                                              f"{GlossaryEnergy.N2O} ({GlossaryEnergy.mass_unit})": 0.,
+                                              f"{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat} ({GlossaryEnergy.energy_unit})": 0.,
                                               f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [100] * (
                                                       len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})

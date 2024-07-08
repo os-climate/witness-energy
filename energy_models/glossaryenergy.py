@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
 
@@ -275,6 +275,24 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ),
             GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
         },
+    }
+
+    MarginDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            MarginValue: ("float", None, True),
+        },
+    }
+    TechnoInvestDf = {
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, YearEndDefaultCore], False),
+            GlossaryWitnessCore.InvestValue: ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
     }
 
     UtilisationRatioDf = {
@@ -754,6 +772,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
     }
+
+    CO2FromFlueGas = "CO2 from Flue Gas"
+    bio_oil = "bio_oil"
+    water_resource = "water_resource"
+    char = "char"
+    O2 = "O2"
+    carbon_resource = "carbon_resource"
+    dioxygen_resource = "dioxygen_resource"
+    glycerol_resource = "glycerol_resource"
+    CO2_resource = "CO2_resource"
+
     mass_unit = "Mt"
     energy_unit = "TWh"
     surface_unit = "Gha"
@@ -779,6 +808,131 @@ class GlossaryEnergy(GlossaryWitnessCore):
         electricity: energy_unit,
         carbon_capture: mass_unit,
         carbon_storage: mass_unit,
+        GlossaryWitnessCore.N2O: mass_unit,
+        CO2FromFlueGas: mass_unit,
+        GlossaryWitnessCore.CH4: mass_unit,
+        CO2_resource: mass_unit,
+        glycerol_resource: mass_unit,
+        water_resource: mass_unit,
+        heating_oil: energy_unit,
+        gasoline: energy_unit,
+        kerosene: energy_unit,
+        ultra_low_sulfur_diesel: energy_unit,
+        liquefied_petroleum_gas: energy_unit,
+        bio_oil: mass_unit,
+        dioxygen_resource: mass_unit,
+        O2: mass_unit,
+        carbon_resource: mass_unit,
+        char: mass_unit,
+    }
+
+    techno_byproducts = {
+        FossilGas: [GlossaryWitnessCore.CH4, CO2FromFlueGas],
+        UpgradingBiogas: [carbon_capture],
+        Methanation: [water_resource],
+        WaterGasShift: [CO2FromFlueGas],
+        ElectrolysisSOEC: [O2],
+        ElectrolysisPEM: [O2],
+        ElectrolysisAWE: [O2],
+        PlasmaCracking: [carbon_resource],
+        BiomassGasification: [GlossaryWitnessCore.CH4],
+        CoalGasification: [CO2FromFlueGas],
+        Pyrolysis: [char, bio_oil, CO2FromFlueGas],
+        AutothermalReforming: [water_resource],
+        CoElectrolysis: [dioxygen_resource],
+        Refinery: [
+            kerosene,
+            ultra_low_sulfur_diesel,
+            GlossaryWitnessCore.CH4,
+            gasoline,
+            CO2FromFlueGas,
+            liquefied_petroleum_gas,
+            heating_oil,
+        ],
+        FischerTropsch: [water_resource, CO2FromFlueGas],
+        HefaDecarboxylation: [carbon_capture],
+        HefaDeoxygenation: [water_resource],
+        Transesterification: [glycerol_resource],
+        BiomassFermentation: [carbon_capture],
+        CoalExtraction: [GlossaryWitnessCore.CH4, CO2_resource],
+        Pelletizing: [CO2FromFlueGas],
+        SolarThermal: [f"{heat}.{hightemperatureheat}"],
+        Nuclear: [f"{heat}.{hightemperatureheat}"],
+        CombinedCycleGasTurbine: [
+            GlossaryWitnessCore.CH4,
+            CO2FromFlueGas,
+            GlossaryWitnessCore.N2O,
+            f"{heat}.{hightemperatureheat}",
+        ],
+        GasTurbine: [
+            GlossaryWitnessCore.CH4,
+            CO2FromFlueGas,
+            GlossaryWitnessCore.N2O,
+            f"{heat}.{hightemperatureheat}",
+        ],
+        BiogasFired: [f"{heat}.{hightemperatureheat}", CO2FromFlueGas],
+        CoalGen: [
+            CO2FromFlueGas,
+            GlossaryWitnessCore.N2O,
+            f"{heat}.{hightemperatureheat}",
+        ],
+        OilGen: [
+            CO2FromFlueGas,
+            GlossaryWitnessCore.N2O,
+            f"{heat}.{hightemperatureheat}",
+        ],
+        BiomassFired: [f"{heat}.{hightemperatureheat}", CO2FromFlueGas],
+        f"{direct_air_capture}.{AmineScrubbing}": [CO2FromFlueGas],
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [CO2FromFlueGas],
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": [CO2FromFlueGas],
+        NaturalGasBoilerLowHeat: [CO2FromFlueGas],
+        NaturalGasBoilerMediumHeat: [CO2FromFlueGas],
+        NaturalGasBoilerHighHeat: [CO2FromFlueGas],
+        ElectricBoilerLowHeat: [],
+        ElectricBoilerMediumHeat: [],
+        ElectricBoilerHighHeat: [],
+        HeatPumpLowHeat: [],
+        HeatPumpMediumHeat: [],
+        HeatPumpHighHeat: [],
+        CHPLowHeat: [electricity, CO2FromFlueGas],
+        CHPMediumHeat: [electricity, CO2FromFlueGas],
+        CHPHighHeat: [electricity, CO2FromFlueGas],
+        GeothermalLowHeat: [carbon_capture],
+        GeothermalMediumHeat: [carbon_capture],
+        GeothermalHighHeat: [carbon_capture],
+        HydrogenLiquefaction: [],
+        AnaerobicDigestion: [],
+        WindOffshore: [],
+        WindOnshore: [],
+        SolarPv: [],
+        Hydropower: [],
+        f"{flue_gas_capture}.{CalciumLooping}": [],
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": [],
+        f"{flue_gas_capture}.{CO2Membranes}": [],
+        f"{flue_gas_capture}.{MonoEthanolAmine}": [],
+        f"{flue_gas_capture}.{PiperazineProcess}": [],
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": [],
+        f"{flue_gas_capture}.{FlueGasTechno}": [],
+        BiomassBuryingFossilization: [],
+        DeepOceanInjection: [],
+        DeepSalineFormation: [],
+        DepletedOilGas: [],
+        EnhancedOilRecovery: [],
+        GeologicMineralization: [],
+        PureCarbonSolidStorage: [],
+        SMR: [],
+        RenewableSimpleTechno: [],
+        FossilSimpleTechno: [CO2FromFlueGas, GlossaryWitnessCore.CH4],
+        CarbonStorageTechno: [],
+        CO2Hydrogenation: [],
+        ManagedWood: [],
+        UnmanagedWood: [CO2_resource],
+        CropEnergy: [],
+        Reforestation: [],
+        Geothermal: [],
+        "Crop": [],
+        "Forest": [],
+        ReversedWaterGasShift: [water_resource],
     }
 
     @classmethod
@@ -787,7 +941,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "type": "dataframe",
             "unit": "Gha",
             "dataframe_descriptor": {
-                cls.Years: ("int", [1900, cls.YearEndDefault], False),
+                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name} ({cls.surface_unit})": ("float", None, False),
             },
         }
@@ -798,20 +952,34 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "type": "dataframe",
             "unit": "Gha",
             "dataframe_descriptor": {
-                cls.Years: ("int", [1900, cls.YearEndDefault], False),
+                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name}": ("float", None, False),
                 f"{techno_name}_wotaxes": ("float", None, False),
             },
         }
 
     @classmethod
-    def get_techno_prod_df(cls, energy_name: str, techno_name: str):
+    def get_techno_prod_df(
+        cls, energy_name: str, techno_name: str, byproducts_list: list[str]
+    ):
         return {
             "type": "dataframe",
             "unit": cls.unit_dicts[energy_name],
             "description": f"Production of {energy_name} by from techno {techno_name}",
             "dataframe_descriptor": {
-                GlossaryEnergy.Years: ("int", [1900, GlossaryEnergy.YearEndDefault], False,),
-                f"{energy_name} ({cls.unit_dicts[energy_name]})": ("float", None, False),
+                GlossaryEnergy.Years: (
+                    "int",
+                    [1900, GlossaryWitnessCore.YearEndDefault],
+                    False,
+                ),
+                f"{energy_name} ({cls.unit_dicts[energy_name]})": (
+                    "float",
+                    None,
+                    False,
+                ),
+                **{
+                    f"{bp} ({cls.unit_dicts[bp]})": ("float", None, False)
+                    for bp in byproducts_list
+                },
             },
         }

@@ -189,6 +189,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                             5358261123.715561, 5348373975.556368, 5338040877.222709]})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: years,
+                                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})":0.,
                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [14481557540.481977, 14913765758.991482,
                                                                                 15333782856.918108, 15744284722.847528,
                                                                                 16147198852.484566, 16543954567.431717,
@@ -222,6 +223,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                          1891117678.7879717, 1887628158.5415828, 1883981246.8879216]})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                       f"{GlossaryEnergy.carbon_resource} ({GlossaryEnergy.mass_unit})": 0.,
                                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [1097111725247.1581,
                                                                                            1074283458370.2065,
                                                                                            1059357209295.9789,

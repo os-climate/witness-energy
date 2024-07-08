@@ -50,7 +50,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                        'namespace': 'ns_flue_gas', 'unit': 'Mt',
                                        'dataframe_descriptor': {
                                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                           'CO2 from Flue Gas': ('float', None, False)}},
+                                           GlossaryEnergy.CO2FromFlueGas: ('float', None, False)}},
                'flue_gas_prod_ratio': {'type': 'dataframe',
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': '-',
