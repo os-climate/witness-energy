@@ -40,9 +40,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -91,18 +88,15 @@ class TechnoDiscipline(SoSWrapp):
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
     DESC_OUT = {
-        GlossaryEnergy.TechnoDetailedPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         GlossaryEnergy.TechnoDetailedConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt', },
         GlossaryEnergy.TechnoProductionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
-        'age_distrib_production': {'type': 'dataframe', 'unit': 'TWh'},
-        'mean_age_production': {'type': 'dataframe', 'unit': GlossaryEnergy.Years},
+        'mean_age_production': GlossaryEnergy.MeanAgeProductionDf,
         GlossaryEnergy.CO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
-        'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
-        GlossaryEnergy.InstalledPower: {'type': 'dataframe', 'unit': 'MW'},
+        GlossaryEnergy.InstalledPower: GlossaryEnergy.InstalledPowerDf,
         GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf,
         GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction
     }
@@ -218,6 +212,9 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
+            'non_use_capital': GlossaryEnergy.get_non_use_capital_df(techno_name=self.techno_name),  # todo: not coupled, rename cols and move to DESC_OUT
+            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name), # todo: not coupled, rename cols and move to DESC_OUT
+            GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         self.add_inputs(dynamic_inputs)
         d = self.add_additionnal_dynamic_output()
@@ -235,13 +232,13 @@ class TechnoDiscipline(SoSWrapp):
         if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
             resource_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
             if resource_used_for_prod is None:
-                resource_used_for_prod = ResourceGlossary.TechnoResourceUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoResourceUsedDict else []
+                resource_used_for_prod = GlossaryEnergy.TechnoResourceUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoResourceUsedDict else []
                 self.update_default_value(GlossaryEnergy.ResourcesUsedForProductionValue, 'in', resource_used_for_prod)
 
         if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
             energies_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
             if energies_used_for_prod is None:
-                energies_used_for_prod = ResourceGlossary.TechnoEnergiesUsedDict[self.techno_name] if self.techno_name in ResourceGlossary.TechnoEnergiesUsedDict else []
+                energies_used_for_prod = GlossaryEnergy.TechnoEnergiesUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoEnergiesUsedDict else []
                 self.update_default_value(GlossaryEnergy.EnergiesUsedForProductionValue, 'in', energies_used_for_prod)
 
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():

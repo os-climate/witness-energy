@@ -51,7 +51,7 @@ class BiomassFermentationPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.WaterResource: 2.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 10.0})

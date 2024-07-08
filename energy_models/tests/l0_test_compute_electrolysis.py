@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -52,8 +49,8 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.energy_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.WaterResource: 0.0,
-                                              ResourceGlossary.PlatinumResource: 32825887})
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.WaterResource: 0.0,
+                                              GlossaryEnergy.PlatinumResource: 32825887})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [0.3]})

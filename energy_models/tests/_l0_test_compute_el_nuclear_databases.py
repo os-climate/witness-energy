@@ -27,9 +27,6 @@ from climateeconomics.core.core_resources.resource_mix.resource_mix import (
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -45,11 +42,11 @@ class NuclearTestCase(unittest.TestCase):
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource, ResourceGlossary.UraniumResource])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.WaterResource, GlossaryEnergy.UraniumResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.WaterResource] = 2.0
-        self.resources_price[ResourceGlossary.UraniumResource] = 1390.0e3
-        self.resources_price[ResourceGlossary.CopperResource] = 10057.7 * 1000 * 1000  # in $/Mt
+        self.resources_price[GlossaryEnergy.WaterResource] = 2.0
+        self.resources_price[GlossaryEnergy.UraniumResource] = 1390.0e3
+        self.resources_price[GlossaryEnergy.CopperResource] = 10057.7 * 1000 * 1000  # in $/Mt
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.

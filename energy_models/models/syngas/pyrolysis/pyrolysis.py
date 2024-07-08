@@ -17,9 +17,6 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -36,7 +33,7 @@ class Pyrolysis(SyngasTechno):
         syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
 
         # wood needs in kg to produce 1kWh of syngas
-        self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] = 1 / syngas_kwh
+        self.cost_details[f"{GlossaryEnergy.WoodResource}_needs"] = 1 / syngas_kwh
 
     def compute_production(self):
 

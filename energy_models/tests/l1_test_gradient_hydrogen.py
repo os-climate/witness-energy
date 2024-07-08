@@ -31,9 +31,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import (
     ElectrolysisAWEDiscipline,
@@ -177,7 +174,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [230.779470] * len(self.years),
                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [82.649011] * len(self.years),
                                              f'{GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})': [3579.828092] * len(self.years),
-                                             f"{ResourceGlossary.WaterResource} (Mt)": [381.294427] * len(self.years)})
+                                             f"{GlossaryEnergy.WaterResource} (Mt)": [381.294427] * len(self.years)})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [2304.779470] * len(self.years),
@@ -186,7 +183,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(1e-5, 1,
                                                                                                       len(self.years)),
-                                                       f"{ResourceGlossary.CarbonResource} (Mt)": [0.008622] * len(
+                                                       f"{GlossaryEnergy.CarbonResource} (Mt)": [0.008622] * len(
                                                            self.years)})
 
         self.plasmacracking_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -195,12 +192,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                       f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [4.192699] * len(self.years),
-                                                      f"{ResourceGlossary.WaterResource} (Mt)": [0.021638] * len(
+                                                      f"{GlossaryEnergy.WaterResource} (Mt)": [0.021638] * len(
                                                           self.years)})
 
         self.electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [2.684940] * len(self.years),
-                                                     f"{ResourceGlossary.DioxygenResource} (Mt)": [0.019217] * len(
+                                                     f"{GlossaryEnergy.DioxygenResource} (Mt)": [0.019217] * len(
                                                          self.years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(

@@ -31,9 +31,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from energy_models.models.methane.methanation.methanation_disc import (
@@ -161,14 +158,14 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 200.0})
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.CO2Resource, ResourceGlossary.WaterResource])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2Resource, GlossaryEnergy.WaterResource])
         self.resources_price[GlossaryEnergy.Years] = self.years
-        self.resources_price[ResourceGlossary.CO2Resource] = np.array(
+        self.resources_price[GlossaryEnergy.CO2Resource] = np.array(
             [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
              0.0542,
              0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
              0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119])[:len(self.years)] * 1000.0
-        self.resources_price[ResourceGlossary.WaterResource] = 1.4
+        self.resources_price[GlossaryEnergy.WaterResource] = 1.4
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))

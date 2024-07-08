@@ -26,7 +26,9 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
     CalciumLoopingDiscipline,

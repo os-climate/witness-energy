@@ -23,9 +23,6 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import (
     LiquidFuelTechno,
 )
@@ -33,7 +30,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Refinery(LiquidFuelTechno):
-    OIL_RESOURCE_NAME = ResourceGlossary.OilResource
+    OIL_RESOURCE_NAME = GlossaryEnergy.OilResource
     # corresponds to crude oil price divided by efficiency TO BE MODIFIED
     oil_extraction_capex = 44.0 / 0.89
 

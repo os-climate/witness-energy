@@ -17,9 +17,6 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import (
     GaseousHydrogenTechno,
@@ -32,8 +29,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
     electrolysis class
     """
     def compute_resources_needs(self):
-        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
-        self.cost_details[f'{ResourceGlossary.PlatinumResource}_needs'] = self.get_theoretical_platinum_needs()
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
+        self.cost_details[f'{GlossaryEnergy.PlatinumResource}_needs'] = self.get_theoretical_platinum_needs()
 
     def compute_other_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to

@@ -53,7 +53,7 @@ def get_default_resources_prices(years):
                        kind='linear', fill_value='extrapolate')
 
     resources_prices_default_dict = {GlossaryEnergy.Years: years,
-                                     ResourceGlossary.CO2Resource: func(years)}
+                                     GlossaryEnergy.CO2Resource: func(years)}
 
     resources_prices_default_dict.update(
         {ResourceGlossary.GlossaryDict[resource]['name']: ResourceGlossary.GlossaryDict[resource]['price'] for resource
@@ -83,7 +83,7 @@ class ResourcesDisc(SoSWrapp):
 
     df_desc_resource = {
         GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-        **{resource : ('float', None, True) for resource in ResourceGlossary.ResourcesList}
+        **{resource : ('float', None, True) for resource in GlossaryEnergy.ResourcesList}
     }
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,

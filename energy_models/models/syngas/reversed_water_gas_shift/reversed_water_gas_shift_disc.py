@@ -18,9 +18,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
     SyngasTechnoDiscipline,
 )
@@ -188,7 +185,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         # now syngas is in % grad is divided by 100
         dprice_CO2 = self.techno_model.compute_dco2_needs_dsyngas_ratio()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, f"{ResourceGlossary.CO2Resource}_needs"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoDetailedPricesValue, f"{GlossaryEnergy.CO2Resource}_needs"), ('syngas_ratio',),
             np.identity(len(years)) * dprice_CO2 / 100.0)
 
         #         self.set_partial_derivative_for_other_types(
@@ -233,7 +230,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f"{ResourceGlossary.WaterResource} (Mt)"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoProductionValue, f"{GlossaryEnergy.WaterResource} (Mt)"), ('syngas_ratio',),
             dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dcons_electricity_dsyngas_ratio(

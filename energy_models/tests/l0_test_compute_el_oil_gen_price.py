@@ -22,9 +22,6 @@ import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -96,9 +93,9 @@ class OilGenPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.WaterResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.WaterResource
+        self.resources_price[GlossaryEnergy.WaterResource
         ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(

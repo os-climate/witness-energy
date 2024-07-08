@@ -21,9 +21,6 @@ from energy_models.core.stream_type.resources_models.calcium_oxide import Calciu
 from energy_models.core.stream_type.resources_models.potassium_hydroxide import (
     PotassiumHydroxide,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
     CCTechno,
 )
@@ -33,9 +30,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CalciumPotassium(CCTechno):
 
     def compute_resources_needs(self):
-        self.cost_details[f'{ResourceGlossary.PotassiumResource}_needs'] = self.compute_potassium_need() / self.techno_infos_dict[
+        self.cost_details[f'{GlossaryEnergy.PotassiumResource}_needs'] = self.compute_potassium_need() / self.techno_infos_dict[
             GlossaryEnergy.EnergyEfficiency]
-        self.cost_details[f'{ResourceGlossary.CalciumResource}_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
+        self.cost_details[f'{GlossaryEnergy.CalciumResource}_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
             GlossaryEnergy.EnergyEfficiency]
 
     def get_heat_needs(self):

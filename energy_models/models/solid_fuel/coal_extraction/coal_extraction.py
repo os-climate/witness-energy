@@ -20,9 +20,6 @@ import numpy as np
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import (
     SolidFuelTechno,
 )
@@ -30,7 +27,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalExtraction(SolidFuelTechno):
-    COAL_RESOURCE_NAME = ResourceGlossary.CoalResource
+    COAL_RESOURCE_NAME = GlossaryEnergy.CoalResource
 
     def __init__(self, name):
         super().__init__(name)

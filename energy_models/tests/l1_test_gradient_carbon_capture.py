@@ -27,9 +27,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_default_resources_CO2_emissions
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
@@ -167,9 +166,9 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            ])[:len(years)] * 0.02 / 1000 * 1.0e-9
 
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.AmineResource: amine_price,
-             ResourceGlossary.PotassiumResource: KOH_price,
-             ResourceGlossary.CalciumResource: CaO_price,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.AmineResource: amine_price,
+             GlossaryEnergy.PotassiumResource: KOH_price,
+             GlossaryEnergy.CalciumResource: CaO_price,
              })
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: np.linspace(0.1, 0.46, len(years))})

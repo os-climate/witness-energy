@@ -18,9 +18,6 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.oxygen import Oxygen
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -31,9 +28,9 @@ class AutothermalReforming(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+        self.cost_details[f"{GlossaryEnergy.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f'{ResourceGlossary.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
 
     def compute_other_energies_needs(self):

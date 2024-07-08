@@ -22,9 +22,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
 )
@@ -132,13 +129,13 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.PlatinumResource in product:
+                if GlossaryEnergy.PlatinumResource in product:
                     chart_name = f'Mass consumption of platinum for the {self.techno_name} technology with input investments'
                     new_chart_platinum = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [kg]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.PlatinumResource in reactant:
+            if GlossaryEnergy.PlatinumResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[

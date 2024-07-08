@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
     CalciumPotassiumScrubbingDiscipline,
@@ -96,8 +93,8 @@ class CalciumPotassiumTestCase(unittest.TestCase):
              })
 
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.PotassiumResource: KOH_price,
-             ResourceGlossary.CalciumResource: CaO_price,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.PotassiumResource: KOH_price,
+             GlossaryEnergy.CalciumResource: CaO_price,
              })
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)

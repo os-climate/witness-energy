@@ -29,9 +29,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion_disc import (
     AnaerobicDigestionDiscipline,
@@ -77,7 +74,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomassResource: electricity_price / 100.0
+            {GlossaryEnergy.Years: years, GlossaryEnergy.WetBiomassResource: electricity_price / 100.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(

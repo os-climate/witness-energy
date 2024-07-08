@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -51,7 +48,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
         # price of 1 kg of wood
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, ResourceGlossary.WoodResource: len(self.years) * [130]
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.WoodResource: len(self.years) * [130]
              })
 
         self.invest_level = pd.DataFrame(

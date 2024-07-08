@@ -17,9 +17,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
     MethaneTechno,
 )
@@ -27,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilGas(MethaneTechno):
-    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
+    NATURAL_GAS_RESOURCE_NAME = GlossaryEnergy.NaturalGasResource
 
     def get_fuel_needs(self):
         """

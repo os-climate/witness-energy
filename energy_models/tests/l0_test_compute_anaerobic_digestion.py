@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -61,7 +58,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomassResource: electricity_price / 100.0
+            {GlossaryEnergy.Years: years, GlossaryEnergy.WetBiomassResource: electricity_price / 100.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(

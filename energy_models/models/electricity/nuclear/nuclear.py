@@ -19,9 +19,6 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -29,12 +26,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Nuclear(ElectricityTechno):
-    URANIUM_RESOURCE_NAME = ResourceGlossary.UraniumResource
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
+    URANIUM_RESOURCE_NAME = GlossaryEnergy.UraniumResource
+    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
-        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs()
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()
         # self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'] = self.get_theoretical_copper_needs()
 
     def compute_specifif_costs_of_technos(self):

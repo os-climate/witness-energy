@@ -135,6 +135,26 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "power_production"  # todo : rename string to Installed Power [MW] (check unit)
     )
 
+    InstalledPowerDf = {
+        "type": "dataframe",
+        "unit": "MW",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            "new_power_production": ("float", None, True),
+            "total_installed_power": ("float", None, True),
+            "removed_power_production": ("float", None, True),
+        },
+    }
+
+    MeanAgeProductionDf = {
+        "type": "dataframe",
+        "unit": "years",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            "mean age": ("float", None, True),
+        },
+    }
+
     # energy techno discipline names
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
@@ -773,15 +793,70 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
     }
 
+    UraniumResource = "uranium_resource"
+    WaterResource = "water_resource"
+    SeaWaterResource = "sea_water_resource"
+    CO2Resource = "CO2_resource"
+    BiomassDryResource = "biomass_dry_resource"
+    WetBiomassResource = "wet_biomass_resource"
+    NaturalOilResource = "natural_oil_resource"
+    MethanolResource = "methanol_resource"
+    SodiumHydroxideResource = "sodium_hydroxide_resource"
+    WoodResource = "wood_resource"
+    CarbonResource = "carbon_resource"
+    ManagedWoodResource = "managed_wood_resource"
+    OxygenResource = "oxygen_resource"
+    DioxygenResource = "dioxygen_resource"
+    CrudeOilResource = "crude_oil_resource"
+    SolidFuelResource = "solid_fuel_resource"
+    CalciumResource = "calcium_resource"
+    CalciumOxydeResource = "calcium_oxyde_resource"
+    PotassiumResource = "potassium_resource"
+    PotassiumHydroxideResource = "potassium_hydroxide_resource"
+    AmineResource = "amine_resource"
+    EthanolAmineResource = "ethanol_amine_resource"
+    MonoEthanolAmineResource = "mono_ethanol_amine_resource"
+    GlycerolResource = "glycerol_resource"
+    NaturalGasResource = "natural_gas_resource"
+    CoalResource = "coal_resource"
+    OilResource = "oil_resource"
+    CopperResource = "copper_resource"
+    PlatinumResource = "platinum_resource"
+
+    ResourcesList = [UraniumResource,
+                     WaterResource,
+                     SeaWaterResource,
+                     CO2Resource,
+                     BiomassDryResource,
+                     WetBiomassResource,
+                     NaturalOilResource,
+                     MethanolResource,
+                     SodiumHydroxideResource,
+                     WoodResource,
+                     CarbonResource,
+                     ManagedWoodResource,
+                     OxygenResource,
+                     DioxygenResource,
+                     CrudeOilResource,
+                     SolidFuelResource,
+                     CalciumResource,
+                     CalciumOxydeResource,
+                     PotassiumResource,
+                     PotassiumHydroxideResource,
+                     AmineResource,
+                     EthanolAmineResource,
+                     MonoEthanolAmineResource,
+                     GlycerolResource,
+                     NaturalGasResource,
+                     CoalResource,
+                     OilResource,
+                     CopperResource,
+                     PlatinumResource, ]
+
     CO2FromFlueGas = "CO2 from Flue Gas"
     bio_oil = "bio_oil"
-    water_resource = "water_resource"
     char = "char"
     O2 = "O2"
-    carbon_resource = "carbon_resource"
-    dioxygen_resource = "dioxygen_resource"
-    glycerol_resource = "glycerol_resource"
-    CO2_resource = "CO2_resource"
 
     mass_unit = "Mt"
     energy_unit = "TWh"
@@ -811,35 +886,35 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GlossaryWitnessCore.N2O: mass_unit,
         CO2FromFlueGas: mass_unit,
         GlossaryWitnessCore.CH4: mass_unit,
-        CO2_resource: mass_unit,
-        glycerol_resource: mass_unit,
-        water_resource: mass_unit,
+        CO2Resource: mass_unit,
+        GlycerolResource: mass_unit,
+        WaterResource: mass_unit,
         heating_oil: energy_unit,
         gasoline: energy_unit,
         kerosene: energy_unit,
         ultra_low_sulfur_diesel: energy_unit,
         liquefied_petroleum_gas: energy_unit,
         bio_oil: mass_unit,
-        dioxygen_resource: mass_unit,
+        DioxygenResource: mass_unit,
         O2: mass_unit,
-        carbon_resource: mass_unit,
+        CarbonResource: mass_unit,
         char: mass_unit,
     }
 
     techno_byproducts = {
         FossilGas: [GlossaryWitnessCore.CH4, CO2FromFlueGas],
         UpgradingBiogas: [carbon_capture],
-        Methanation: [water_resource],
+        Methanation: [WaterResource],
         WaterGasShift: [CO2FromFlueGas],
         ElectrolysisSOEC: [O2],
         ElectrolysisPEM: [O2],
         ElectrolysisAWE: [O2],
-        PlasmaCracking: [carbon_resource],
+        PlasmaCracking: [CarbonResource],
         BiomassGasification: [GlossaryWitnessCore.CH4],
         CoalGasification: [CO2FromFlueGas],
         Pyrolysis: [char, bio_oil, CO2FromFlueGas],
-        AutothermalReforming: [water_resource],
-        CoElectrolysis: [dioxygen_resource],
+        AutothermalReforming: [WaterResource],
+        CoElectrolysis: [DioxygenResource],
         Refinery: [
             kerosene,
             ultra_low_sulfur_diesel,
@@ -849,12 +924,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
             liquefied_petroleum_gas,
             heating_oil,
         ],
-        FischerTropsch: [water_resource, CO2FromFlueGas],
+        FischerTropsch: [WaterResource, CO2FromFlueGas],
         HefaDecarboxylation: [carbon_capture],
-        HefaDeoxygenation: [water_resource],
-        Transesterification: [glycerol_resource],
+        HefaDeoxygenation: [WaterResource],
+        Transesterification: [GlycerolResource],
         BiomassFermentation: [carbon_capture],
-        CoalExtraction: [GlossaryWitnessCore.CH4, CO2_resource],
+        CoalExtraction: [GlossaryWitnessCore.CH4, CO2Resource],
         Pelletizing: [CO2FromFlueGas],
         SolarThermal: [f"{heat}.{hightemperatureheat}"],
         Nuclear: [f"{heat}.{hightemperatureheat}"],
@@ -926,13 +1001,114 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
         ManagedWood: [],
-        UnmanagedWood: [CO2_resource],
+        UnmanagedWood: [CO2Resource],
         CropEnergy: [],
         Reforestation: [],
         Geothermal: [],
         "Crop": [],
         "Forest": [],
-        ReversedWaterGasShift: [water_resource],
+        ReversedWaterGasShift: [WaterResource],
+    }
+
+    # dictionnary of energies used by each techno
+    TechnoEnergiesUsedDict = {
+        Transesterification: [electricity],
+        AnaerobicDigestion: [electricity],
+        ManagedWood: [electricity],
+        UnmanagedWood: [electricity],
+        f"{direct_air_capture}.{AmineScrubbing}": [electricity, methane],
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [electricity, methane],
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": [renewable, fossil],
+        f"{flue_gas_capture}.{CalciumLooping}": [electricity],
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": [electricity],
+        f"{flue_gas_capture}.{CO2Membranes}": [electricity],
+        f"{flue_gas_capture}.{FlueGasTechno}": [renewable],
+        f"{flue_gas_capture}.{MonoEthanolAmine}": [electricity],
+        f"{flue_gas_capture}.{PiperazineProcess}": [electricity],
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": [electricity],
+        BiomassFired: [biomass_dry],
+        CoalGen: [solid_fuel],
+        GasTurbine: [methane],
+        CombinedCycleGasTurbine: [methane],
+        BiogasFired: [biogas],
+        OilGen: [f"{fuel}.{liquid_fuel}"],
+        BiomassFermentation: [biomass_dry, electricity],
+        ElectrolysisAWE: [electricity],
+        ElectrolysisPEM: [electricity],
+        ElectrolysisSOEC: [electricity],
+        PlasmaCracking: [electricity, methane],
+        WaterGasShift: [electricity, syngas],
+        CHPHighHeat: [methane],
+        ElectricBoilerHighHeat: [electricity],
+        GeothermalHighHeat: [electricity],
+        HeatPumpHighHeat: [electricity],
+        NaturalGasBoilerHighHeat: [methane],
+        CHPLowHeat: [methane],
+        ElectricBoilerLowHeat: [electricity],
+        GeothermalLowHeat: [electricity],
+        HeatPumpLowHeat: [electricity],
+        NaturalGasBoilerLowHeat: [methane],
+        CHPMediumHeat: [methane],
+        ElectricBoilerMediumHeat: [electricity],
+        GeothermalMediumHeat: [electricity],
+        HeatPumpMediumHeat: [electricity],
+        NaturalGasBoilerMediumHeat: [methane],
+        HefaDecarboxylation: [f"{hydrogen}.{gaseous_hydrogen}", electricity],
+        HefaDeoxygenation: [f"{hydrogen}.{gaseous_hydrogen}", electricity],
+        FischerTropsch: [electricity],
+        Refinery: [f"{hydrogen}.{gaseous_hydrogen}", electricity],
+        HydrogenLiquefaction: [f"{hydrogen}.{gaseous_hydrogen}", electricity],
+        FossilGas: [electricity],
+        Methanation: [f"{hydrogen}.{gaseous_hydrogen}"],
+        UpgradingBiogas: [electricity, biogas],
+        CO2Hydrogenation: [
+            f"{hydrogen}.{gaseous_hydrogen}",
+            electricity,
+            carbon_capture,
+        ],
+        CoalExtraction: [electricity],
+        Pelletizing: [electricity, biomass_dry],
+        AutothermalReforming: [methane],
+        BiomassGasification: [electricity, biomass_dry],
+        CoElectrolysis: [electricity],
+        CoalGasification: [solid_fuel],
+        ReversedWaterGasShift: [electricity, syngas],
+        SMR: [electricity, methane],
+        AnimalManure: [electricity],
+        WetCropResidues: [electricity],
+        Geothermal: [f"{heat}.{mediumtemperatureheat}"],
+    }
+
+    # dict of resources used by technos
+    TechnoResourceUsedDict = {
+        Transesterification: [MethanolResource, NaturalOilResource, SodiumHydroxideResource,
+                                             WaterResource],
+        AnaerobicDigestion: [WetBiomassResource],
+        f'{direct_air_capture}.{AmineScrubbing}': [AmineResource],
+        f'{direct_air_capture}.{CalciumPotassiumScrubbing}': [CalciumResource,
+                                                                                            PotassiumResource],
+        CoalGen: [WaterResource],
+        Nuclear: [UraniumResource, WaterResource],
+        OilGen: [WaterResource],
+        BiomassFermentation: [WaterResource],
+        ElectrolysisAWE: [WaterResource],
+        ElectrolysisPEM: [WaterResource, PlatinumResource],
+        ElectrolysisSOEC: [WaterResource],
+        Refinery: [OilResource],
+        FossilGas: [NaturalGasResource],
+        Methanation: [CO2Resource],
+        CO2Hydrogenation: [WaterResource],
+        CoalExtraction: [CoalResource],
+        AutothermalReforming: [CO2Resource, OxygenResource],
+        CoElectrolysis: [CO2Resource, WaterResource],
+        Pyrolysis: [WoodResource],
+        WaterGasShift: [WaterResource],
+        ReversedWaterGasShift: [CO2Resource],
+        SMR: [WaterResource],
+        HefaDecarboxylation: [NaturalOilResource],
+        HefaDeoxygenation: [NaturalOilResource],
+        BiomassGasification: [WaterResource],
+        CropEnergy: [CO2Resource]
     }
 
     @classmethod
@@ -947,14 +1123,71 @@ class GlossaryEnergy(GlossaryWitnessCore):
         }
 
     @classmethod
-    def get_techno_price_df(cls, techno_name: str):
+    def get_non_use_capital_df(cls, techno_name: str):
         return {
             "type": "dataframe",
-            "unit": "Gha",
+            "unit": "G$",
+            "dataframe_descriptor": {
+                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+                techno_name: ("float", None, False),
+            },
+        }
+
+    @classmethod
+    def get_techno_detailed_price_df(cls, techno_name: str):
+        techno_used_resource_list = cls.TechnoResourceUsedDict[techno_name] if techno_name in cls.TechnoResourceUsedDict else []
+        techno_used_energy_list = cls.TechnoEnergiesUsedDict[techno_name] if techno_name in cls.TechnoEnergiesUsedDict else []
+        extra_cols = []
+        if techno_name == cls.PlasmaCracking:
+            extra_cols = [f"{techno_name}_amort", f"{techno_name}_factory_amort"]
+        if techno_name == cls.FischerTropsch:
+            extra_cols = ["syngas before transformation", "RWGS", "WGS", "WGS or RWGS", "syngas_needs_for_FT"]
+        return {
+            "type": "dataframe",
+            "unit": "$/MWh",
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name}": ("float", None, False),
                 f"{techno_name}_wotaxes": ("float", None, False),
+                f"Capex_{techno_name}": ("float", None, False),
+                cls.InvestValue: ("float", None, False),
+                "efficiency": ("float", None, False),
+                "energy_costs": ("float", None, False),
+                "transport": ("float", None, False),
+                f"{techno_name}_factory": ("float", None, False),
+                cls.MarginValue: ("float", None, False),
+                "CAPEX_Part": ("float", None, False),
+                "OPEX_Part": ("float", None, False),
+                "CO2_taxes_factory": ("float", None, False),
+                "CO2Tax_Part": ("float", None, False),
+                **{f"{resource}_needs": ("float", None, False) for resource in techno_used_resource_list},
+                **{f"{energy}_needs": ("float", None, False) for energy in techno_used_energy_list},
+                **{col: ("float", None, False) for col in extra_cols},
+            },
+        }
+
+    @classmethod
+    def get_techno_price_df(cls, techno_name: str):
+        return {
+            "type": "dataframe",
+            "unit": "$/MWh",
+            "dataframe_descriptor": {
+                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+                f"{techno_name}": ("float", None, False),
+                f"{techno_name}_wotaxes": ("float", None, False),
+            },
+        }
+
+    @classmethod
+    def get_age_distrib_prod_df(cls, energy_name: str):
+        techno_unit = cls.unit_dicts[energy_name]
+        return {
+            "type": "dataframe",
+            "unit": techno_unit,
+            "dataframe_descriptor": {
+                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+                f"distrib_prod ({techno_unit})": ("float", None, False),
+                "age_x_prod": ("float", None, False),
             },
         }
 
@@ -967,7 +1200,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "unit": cls.unit_dicts[energy_name],
             "description": f"Production of {energy_name} by from techno {techno_name}",
             "dataframe_descriptor": {
-                GlossaryEnergy.Years: (
+                cls.Years: (
                     "int",
                     [1900, GlossaryWitnessCore.YearEndDefault],
                     False,

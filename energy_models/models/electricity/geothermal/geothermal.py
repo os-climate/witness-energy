@@ -15,9 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -25,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Geothermal(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
+    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
     
 

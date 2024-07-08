@@ -19,9 +19,6 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -29,11 +26,11 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalGen(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
+    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
     def compute_resources_needs(self):
         # need in kg/kWh
-        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
     def compute_other_energies_needs(self):
         # in kwh of fuel by kwh of electricity
