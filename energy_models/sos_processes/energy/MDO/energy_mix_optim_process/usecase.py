@@ -13,15 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 from sostrades_core.study_manager.study_manager import StudyManager
-
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
     Study as subStudy,
 )
+
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import FunctionManagerDisc
 
 INVEST_DISC_NAME = 'InvestmentDistribution'
 
