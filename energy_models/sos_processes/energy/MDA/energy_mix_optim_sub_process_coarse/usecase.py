@@ -33,6 +33,7 @@ class Study(StudyEnergyMixFull):
             execution_engine=execution_engine,
             techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
         )
+        self.test_post_procs = False
 
 if "__main__" == __name__:
     uc_cls = Study()
