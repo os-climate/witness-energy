@@ -42,16 +42,16 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_solid_fuel_mix_dict = {}
 
-        if 'CoalExtraction' in self.technologies_list:
-            #             invest_solid_fuel_mix_dict['CoalExtraction'] = [
+        if GlossaryEnergy.CoalExtraction in self.technologies_list:
+            #             invest_solid_fuel_mix_dict[GlossaryEnergy.CoalExtraction] = [
             #                 99.9, 50.0] + [0.02] * (len(l_ctrl) - 2)
-            invest_solid_fuel_mix_dict['CoalExtraction'] = np.array(
+            invest_solid_fuel_mix_dict[GlossaryEnergy.CoalExtraction] = np.array(
                 [99, 50, 20, 50, 20, 50, 20, 50])
 
-        if 'Pelletizing' in self.technologies_list:
-            #             invest_solid_fuel_mix_dict['Pelletizing'] = [
+        if GlossaryEnergy.Pelletizing in self.technologies_list:
+            #             invest_solid_fuel_mix_dict[GlossaryEnergy.Pelletizing] = [
             #                 1, 50.0] + [99.9] * (len(l_ctrl) - 2)
-            invest_solid_fuel_mix_dict['Pelletizing'] = np.array(
+            invest_solid_fuel_mix_dict[GlossaryEnergy.Pelletizing] = np.array(
                 [1, 50, 80, 80, 80, 80, 80, 80])
 
         if self.bspline:
@@ -96,9 +96,9 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': 7.6})
 
-        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2'])
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
 
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0,
@@ -110,7 +110,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{solid_fuel_name}.CoalExtraction.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{solid_fuel_name}.Pelletizing.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.Pelletizing}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        }

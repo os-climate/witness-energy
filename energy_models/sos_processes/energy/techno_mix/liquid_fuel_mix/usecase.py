@@ -30,8 +30,8 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
-TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
+TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
 
 
 class Study(EnergyMixStudyManager):
@@ -52,12 +52,12 @@ class Study(EnergyMixStudyManager):
         invest_liquid_fuel_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'Refinery' in self.technologies_list:
-            invest_liquid_fuel_mix_dict['Refinery'] = [
+        if GlossaryEnergy.Refinery in self.technologies_list:
+            invest_liquid_fuel_mix_dict[GlossaryEnergy.Refinery] = [
                 max(10.0, 100.0 - 5.0 * i) for i in l_ctrl]
 
-        if 'FischerTropsch' in self.technologies_list:
-            invest_liquid_fuel_mix_dict['FischerTropsch'] = [
+        if GlossaryEnergy.FischerTropsch in self.technologies_list:
+            invest_liquid_fuel_mix_dict[GlossaryEnergy.FischerTropsch] = [
                 min(100.0, 0.1 + 10 * i) for i in l_ctrl]
 
         if self.bspline:
@@ -79,7 +79,7 @@ class Study(EnergyMixStudyManager):
 
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 16.0,
-                                      'CO2': 0.0,
+                                      GlossaryEnergy.CO2: 0.0,
                                       'crude oil': 38.0,
                                       GlossaryEnergy.carbon_capture: 70.,
                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
@@ -116,18 +116,18 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.Refinery.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.FischerTropsch.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.Refinery}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.FischerTropsch}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
         if self.main_study:
             values_dict.update({
                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.syngas}.syngas_ratio': np.ones(len(years)) * 0.33,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}': np.ones(len(years)) * 0.33,
             })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

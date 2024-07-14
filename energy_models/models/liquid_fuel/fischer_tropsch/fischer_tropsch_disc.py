@@ -145,7 +145,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                             'namespace': 'ns_energy',
                                                             'default': GaseousHydrogen.data_energy_dict,
                                                             'unit': 'defined in dict'},
-               f'{GlossaryEnergy.syngas}.data_fuel_dict': {'type': 'dict',
+               f'{GlossaryEnergy.syngas}.{GlossaryEnergy.data_fuel_dict}': {'type': 'dict',
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
                                          'default': Syngas.data_energy_dict,

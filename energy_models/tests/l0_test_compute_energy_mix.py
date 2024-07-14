@@ -381,7 +381,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.loss_percentage': 1.0,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.loss_percentage': 2.0,
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.loss_percentage}': 2.0,
                        f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production
                        }
 

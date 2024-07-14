@@ -64,7 +64,7 @@ def launch_data_pickle_generation(directory=''):
     # Collect input and output data from each energy and each techno
     mda_energy_data_streams_input_dict, mda_energy_data_streams_output_dict = {}, {}
     mda_energy_data_technologies_input_dict, mda_energy_data_technologies_output_dict = {}, {}
-    energy_list = [energy for energy in energy_list if energy != 'biomass_dry']
+    energy_list = [energy for energy in energy_list if energy != GlossaryEnergy.biomass_dry]
     ############
     # Energies #
     ############

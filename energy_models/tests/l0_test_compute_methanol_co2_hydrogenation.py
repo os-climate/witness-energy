@@ -96,7 +96,7 @@ class CO2HydrogenationPriceTestCase(unittest.TestCase):
 
     def test_02_co2_hydrogenation_discipline(self):
         self.name = 'Test'
-        self.model_name = 'CO2Hydrogenation'
+        self.model_name = GlossaryEnergy.CO2Hydrogenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

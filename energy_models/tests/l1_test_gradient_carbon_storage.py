@@ -86,10 +86,10 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = GlossaryEnergy.carbon_storage
 
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 12.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 12.})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
@@ -251,7 +251,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
     def test_03_deep_saline_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'DeepSalineFormation'
+        self.model_name = GlossaryEnergy.DeepSalineFormation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -423,7 +423,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
     def test_06_geologic_mineralization_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'GeologicMineralization'
+        self.model_name = GlossaryEnergy.GeologicMineralization
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,

@@ -109,6 +109,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
         mediumtemperatureheat,
         hightemperatureheat,
     ]
+    syngas_ratio = "syngas_ratio"
+    data_fuel_dict = "data_fuel_dict"
+    technologies_list = "technologies_list"
+    loss_percentage = "loss_percentage"
 
     LifetimeName = "lifetime"
     Transesterification = "Transesterification"
@@ -515,6 +519,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     # techno names
+    NaturalGas = "NaturalGas"
     CropEnergy = "CropEnergy"
     ManagedWood = "ManagedWood"
     UnmanagedWood = "UnmanagedWood"
@@ -551,7 +556,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     ElectrolysisSOEC = "Electrolysis.SOEC"
     PlasmaCracking = "PlasmaCracking"
     Electrolysis = "Electrolysis"
-    WaterGasShift = "WaterGasShift"
+    WaterGasShift = "WGS"
     CHPHighHeat = "CHPHighHeat"
     ElectricBoilerHighHeat = "ElectricBoilerHighHeat"
     GeothermalHighHeat = "GeothermalHighHeat"
@@ -584,7 +589,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CoElectrolysis = "CoElectrolysis"
     CoalGasification = "CoalGasification"
     Pyrolysis = "Pyrolysis"
-    ReversedWaterGasShift = "ReversedWaterGasShift"
+    ReversedWaterGasShift = "RWGS"
+    Crop = "Crop"
+    Forest = "Forest"
     SMR = "SMR"
     AnimalManure = "AnimalManure"
     WetCropResidues = "WetCropResidues"
@@ -1017,8 +1024,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CropEnergy: [],
         Reforestation: [],
         Geothermal: [],
-        "Crop": [],
-        "Forest": [],
+        Crop: [],
+        Forest: [],
         ReversedWaterGasShift: [WaterResource],
     }
 
@@ -1157,6 +1164,87 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GasTurbine: [CopperResource],
         BiogasFired: [CopperResource],
         BiomassFired: [CopperResource],
+    }
+
+    TechnoStreamProducedDict = {
+        FossilGas: methane,
+        UpgradingBiogas: methane,
+        Methanation: methane,
+        ElectrolysisSOEC: f"{hydrogen}.{gaseous_hydrogen}",
+        ElectrolysisPEM: f"{hydrogen}.{gaseous_hydrogen}",
+        ElectrolysisAWE: f"{hydrogen}.{gaseous_hydrogen}",
+        PlasmaCracking: f"{hydrogen}.{gaseous_hydrogen}",
+        HydrogenLiquefaction: f"{hydrogen}.{liquid_hydrogen}",
+        AnaerobicDigestion: biogas,
+        BiomassGasification: syngas,
+        SMR: syngas,
+        CoalGasification: syngas,
+        Pyrolysis: syngas,
+        AutothermalReforming: syngas,
+        CoElectrolysis: syngas,
+        Refinery: f"{fuel}.{liquid_fuel}",
+        FischerTropsch: f"{fuel}.{liquid_fuel}",
+        HefaDecarboxylation: f'{fuel}.{hydrotreated_oil_fuel}',
+        HefaDeoxygenation: f'{fuel}.{hydrotreated_oil_fuel}',
+        Transesterification: f'{fuel}.{biodiesel}',
+        BiomassFermentation: f'{fuel}.{ethanol}',
+        CoalExtraction: solid_fuel,
+        Pelletizing: solid_fuel,
+        WindOffshore: electricity,
+        WindOnshore: electricity,
+        SolarPv: electricity,
+        SolarThermal: electricity,
+        Hydropower: electricity,
+        Nuclear: electricity,
+        CombinedCycleGasTurbine: electricity,
+        GasTurbine: electricity,
+        BiogasFired: electricity,
+        CoalGen: electricity,
+        OilGen: electricity,
+        BiomassFired: electricity,
+        f"{direct_air_capture}.{AmineScrubbing}": carbon_capture,
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": carbon_capture,
+        f"{flue_gas_capture}.{CalciumLooping}": carbon_capture,
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": carbon_capture,
+        f"{flue_gas_capture}.{CO2Membranes}": carbon_capture,
+        f"{flue_gas_capture}.{MonoEthanolAmine}": carbon_capture,
+        f"{flue_gas_capture}.{PiperazineProcess}": carbon_capture,
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": carbon_capture,
+        BiomassBuryingFossilization: carbon_storage,
+        DeepOceanInjection: carbon_storage,
+        DeepSalineFormation: carbon_storage,
+        DepletedOilGas: carbon_storage,
+        EnhancedOilRecovery: carbon_storage,
+        GeologicMineralization: carbon_storage,
+        PureCarbonSolidStorage: carbon_storage,
+        ReversedWaterGasShift: syngas,
+        WaterGasShift: f"{hydrogen}.{gaseous_hydrogen}",
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_capture,
+        CropEnergy: biomass_dry,
+        ManagedWood: biomass_dry,
+        CarbonStorageTechno: carbon_storage,
+        Reforestation: carbon_storage,
+        Geothermal: electricity,
+        UnmanagedWood: biomass_dry,
+        f"{flue_gas_capture}.{FlueGasTechno}": carbon_capture,
+        ElectricBoilerHighHeat: f"{heat}.{hightemperatureheat}",
+        HeatPumpHighHeat: f"{heat}.{hightemperatureheat}",
+        GeothermalHighHeat: f"{heat}.{hightemperatureheat}",
+        CHPHighHeat: f"{heat}.{hightemperatureheat}",
+        NaturalGasBoilerHighHeat: f"{heat}.{hightemperatureheat}",
+        NaturalGasBoilerLowHeat: f"{heat}.{lowtemperatureheat}",
+        CHPMediumHeat: f"{heat}.{mediumtemperatureheat}",
+        HeatPumpMediumHeat: f"{heat}.{mediumtemperatureheat}",
+        ElectricBoilerLowHeat: f"{heat}.{lowtemperatureheat}",
+        GeothermalLowHeat: f"{heat}.{lowtemperatureheat}",
+        ElectricBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
+        GeothermalMediumHeat: f"{heat}.{mediumtemperatureheat}",
+        CO2Hydrogenation: f'{fuel}.{methanol}',
+        NaturalGasBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
+        HeatPumpLowHeat: f"{heat}.{lowtemperatureheat}",
+        CHPLowHeat: f"{heat}.{lowtemperatureheat}",
+        RenewableSimpleTechno: renewable,
+        FossilSimpleTechno: fossil,
     }
 
     @classmethod

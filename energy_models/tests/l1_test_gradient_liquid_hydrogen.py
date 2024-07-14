@@ -59,7 +59,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
-            {'HydrogenLiquefaction': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.HydrogenLiquefaction: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -92,7 +92,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                                   self.years), })
 
         self.hydrogen_liquefaction_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'HydrogenLiquefaction': 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.HydrogenLiquefaction: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              GlossaryEnergy.electricity: 0.0,
              'production': 0.0})
 
@@ -157,7 +157,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 
         self.land_use_required_HydrogenLiquefaction = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'HydrogenLiquefaction (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.HydrogenLiquefaction} (Gha)': 0.0})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
@@ -289,7 +289,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.{GlossaryEnergy.TechnoProductionValue}'][
+        inputs_dict[f'{namespace}.{self.energy_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.TechnoProductionValue}'][
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'] *= np.linspace(5.0, 5.0, len(self.years))
 
         technos = inputs_dict[f"{self.name}.technologies_list"]

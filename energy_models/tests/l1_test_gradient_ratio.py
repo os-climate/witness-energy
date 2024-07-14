@@ -87,7 +87,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single ratio (hydrogen consumption)
         '''
-        self.techno_name = 'HydrogenLiquefaction'
+        self.techno_name = GlossaryEnergy.HydrogenLiquefaction
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -277,7 +277,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on WaterGasShift techno since it has special gradients
         '''
-        self.techno_name = 'WaterGasShift'
+        self.techno_name = GlossaryEnergy.WaterGasShift
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -288,7 +288,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
+        mod_path = 'energy_models.models.gaseous_hydrogen.wgs.wgs_disc.WGSDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -375,7 +375,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on FischerTropsch techno since it has special gradients
         '''
-        self.techno_name = 'FischerTropsch'
+        self.techno_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -987,7 +987,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (natural_gas_resource consumption)
         '''
-        self.techno_name = 'FossilGas'
+        self.techno_name = GlossaryEnergy.FossilGas
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1179,7 +1179,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (coal_resource consumption)
         '''
-        self.techno_name = 'CoalExtraction'
+        self.techno_name = GlossaryEnergy.CoalExtraction
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1273,7 +1273,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (oil_resource consumption)
         '''
-        self.techno_name = 'Refinery'
+        self.techno_name = GlossaryEnergy.Refinery
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1367,7 +1367,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (platinum_resource consumption)
         '''
-        self.techno_name = 'Electrolysis.PEM'
+        self.techno_name = GlossaryEnergy.ElectrolysisPEM
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

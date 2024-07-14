@@ -124,7 +124,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
     def test_01_co2_hydrogenation_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'CO2Hydrogenation'
+        self.model_name = GlossaryEnergy.CO2Hydrogenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -224,7 +224,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
         })
-        techno_name = 'CO2Hydrogenation'
+        techno_name = GlossaryEnergy.CO2Hydrogenation
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

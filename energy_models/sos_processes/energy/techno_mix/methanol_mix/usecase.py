@@ -29,7 +29,7 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
 from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.glossaryenergy import GlossaryEnergy
 
-TECHNOLOGIES_LIST = ['CO2Hydrogenation']
+TECHNOLOGIES_LIST = [GlossaryEnergy.CO2Hydrogenation]
 
 
 class Study(EnergyMixStudyManager):
@@ -47,8 +47,8 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_methanol_mix_dict = {}
 
-        if 'CO2Hydrogenation' in self.technologies_list:
-            invest_methanol_mix_dict['CO2Hydrogenation'] = [
+        if GlossaryEnergy.CO2Hydrogenation in self.technologies_list:
+            invest_methanol_mix_dict[GlossaryEnergy.CO2Hydrogenation] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
         if self.bspline:
@@ -99,7 +99,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
 
         if self.main_study:

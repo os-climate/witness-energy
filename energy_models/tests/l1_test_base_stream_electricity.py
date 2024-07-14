@@ -77,9 +77,9 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, GlossaryEnergy.GasTurbine: 0.366208})
 
         self.land_use_required_GasTurbine = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'GasTurbine (Gha)': 0.0})
+            {GlossaryEnergy.Years: years, f'{GlossaryEnergy.GasTurbine} ({GlossaryEnergy.surface_unit})': 0.0})
         self.land_use_required_Hydropower = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'Hydropower (Gha)': 0.0})
+            {GlossaryEnergy.Years: years, f'{GlossaryEnergy.Hydropower} ({GlossaryEnergy.surface_unit})': 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
@@ -157,8 +157,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         print(self.ee.display_treeview_nodes(True))
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
-        inputs_checked = [f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoProductionValue}',
-                       f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoConsumptionValue}',
+        inputs_checked = [f'Test.electricity.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}',
+                       f'Test.electricity.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoConsumptionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}']
         outputs_checked = ['Test.prod_hydropower_constraint']

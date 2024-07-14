@@ -52,8 +52,8 @@ from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
 )
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
-    WaterGasShiftDiscipline,
+from energy_models.models.gaseous_hydrogen.wgs.wgs_disc import (
+    WGSDiscipline,
 )
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import (
     FischerTropschDiscipline,
@@ -86,13 +86,13 @@ class FlueGasDiscipline(SoSWrapp):
     POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': WGSDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.Pyrolysis}': PyrolysisDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,

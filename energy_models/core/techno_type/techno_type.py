@@ -125,6 +125,8 @@ class TechnoType:
         self.consumption_woratio = None
         self.land_use_woratio = None
         self.construction_resource_list = ['copper_resource']
+        if self.name not in GlossaryEnergy.TechnoStreamProducedDict:
+            raise Exception(f"{self.name} &&! {self.energy_name}")
 
     def init_dataframes(self):
         """Init dataframes with years"""

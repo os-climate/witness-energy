@@ -127,7 +127,7 @@ class FTPriceTestCase(unittest.TestCase):
     def test_02_FT_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'FischerTropsch'
+        self.model_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -172,7 +172,7 @@ class FTPriceTestCase(unittest.TestCase):
     def test_03_FT_with_ratio_available_cc(self):
 
         self.name = 'Test'
-        self.model_name = 'FischerTropsch'
+        self.model_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': f'{self.name}',

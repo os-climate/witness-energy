@@ -212,7 +212,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, 'ReversedWaterGasShift'), ('syngas_ratio',),
+            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.ReversedWaterGasShift), ('syngas_ratio',),
             np.identity(len(years)) / 100.0 * (dco2_emissions_dsyngas_ratio.to_numpy() +
                                                dcons_syngas_dsyngas_ratio) / efficiency[:, np.newaxis]
             + dcons_electricity_dsyngas_ratio)

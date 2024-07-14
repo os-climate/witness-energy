@@ -249,9 +249,9 @@ limitations under the License.
 #             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 #
 #         self.land_use_required_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'biomass_dry (Gha)': 0.0})
+#             {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.biomass_dry} (Gha)': 0.0})
 #         self.land_use_required_methane = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'mathane (Gha)': 0.0})
+#             {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.mathane} (Gha)': 0.0})
 #         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 #         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
 #         co2_taxes = [14.86, 17.22, 20.27,
@@ -354,7 +354,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -420,7 +420,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -483,7 +483,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -538,7 +538,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         outputs_names = [f'{name}.{model_name}.energy_mean_price']
 #         self.check_jacobian(location=dirname(__file__),
 #                             filename=f'jacobian_energy_mean_price_energy_prices_production.pkl',
@@ -594,7 +594,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -751,7 +751,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -896,7 +896,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -1190,7 +1190,7 @@ limitations under the License.
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_methane,
 #                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
 #                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.loss_percentage': 1.0,
-#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.loss_percentage': 2.0,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.loss_percentage}': 2.0,
 #                        }
 #
 #         self.ee.load_study_from_input_dict(inputs_dict)

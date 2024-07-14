@@ -185,12 +185,12 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in output_columns]
 
-        hydrogen_techno = ['Electrolysis.SOEC', 'Electrolysis.PEM', GlossaryEnergy.PlasmaCracking, GlossaryEnergy.WaterGasShift
+        hydrogen_techno = [GlossaryEnergy.ElectrolysisSOEC, GlossaryEnergy.ElectrolysisPEM, GlossaryEnergy.PlasmaCracking, GlossaryEnergy.WaterGasShift
                            ]
         output_hydrogen_prices = [
             f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in
             hydrogen_techno]
-        liquid_fuel_techno = ['Refinery', 'FischerTropsch']
+        liquid_fuel_techno = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
         output_lf_prices = [
             f'{self.name}.EnergyMix.liquid_fuel.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in
             liquid_fuel_techno]
@@ -492,7 +492,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #         self.check_jacobian(location=dirname(__file__), filename='jacobian_gradient_energymixoutputs_vs_energy_mixes_test.pkl',
 #                             discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
 #                             inputs=[
-#             'Test.EnergyMix.syngas.CoalGasification.syngas_CoalGasification_array_mix'],
+#             'Test.EnergyMix.syngas.{GlossaryEnergy.CoalGasification}.syngas_CoalGasification_array_mix'],
 #             outputs=energy_mix_output)
 
 

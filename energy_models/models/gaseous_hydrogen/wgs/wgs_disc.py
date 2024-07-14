@@ -31,10 +31,10 @@ from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc imp
     GaseousHydrogenTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
+from energy_models.models.gaseous_hydrogen.wgs.water_gas_shift import WGS
 
 
-class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
+class WGSDiscipline(GaseousHydrogenTechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'Water Gas Shift Model',
@@ -169,7 +169,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         capex_grad = self.techno_model.compute_dcapex_dsyngas_ratio()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'Capex_WaterGasShift'), ('syngas_ratio',), capex_grad / 100.0)
+            (GlossaryEnergy.TechnoDetailedPricesValue, f'Capex_{GlossaryEnergy.WaterGasShift}'), ('syngas_ratio',), capex_grad / 100.0)
 
         dwater_needs_dsyngas_ratio = self.techno_model.compute_dwater_needs_dsyngas_ratio()
 

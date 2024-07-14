@@ -26,15 +26,15 @@ from energy_models.core.energy_process_builder import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                              GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine, 'BiogasFired',
                              #'Geothermal',todo : removed because was using medium heat temperature
-                             'CoalGen', 'OilGen', 'BiomassFired']
-TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+                             GlossaryEnergy.CoalGen, 'OilGen', 'BiomassFired']
+TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                      GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine,
                      'BiogasFired',
                      #'Geothermal',todo : removed because was using medium heat temperature
-                     'CoalGen', 'OilGen', 'BiomassFired']
+                     GlossaryEnergy.CoalGen, 'OilGen', 'BiomassFired']
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
@@ -51,39 +51,39 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_electricity_mix_dict = {}
 
-        if 'WindOnshore' in self.technologies_list:
-            #             invest_electricity_mix_dict['WindOnshore'] = [
+        if GlossaryEnergy.WindOnshore in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.WindOnshore] = [
             #                 304.4 * 0.00838 + 0.6 * i for i in l_ctrl]
-            invest_electricity_mix_dict['WindOnshore'] = np.array(
+            invest_electricity_mix_dict[GlossaryEnergy.WindOnshore] = np.array(
                 [304.4 * 0.00838] + [0.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'WindOffshore' in self.technologies_list:
-            #             invest_electricity_mix_dict['WindOffshore'] = [
+        if GlossaryEnergy.WindOffshore in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.WindOffshore] = [
             #                 304.4 * 0.00838 + 0.3 * i for i in l_ctrl]
-            #             invest_electricity_mix_dict['WindOffshore'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.WindOffshore] = np.array([
             #                 304.4 * 0.00838, 0, 0, 0, 0, 0, 0, 0])
-            invest_electricity_mix_dict['WindOffshore'] = np.array(
+            invest_electricity_mix_dict[GlossaryEnergy.WindOffshore] = np.array(
                 [304.4 * 0.00838] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'SolarPv' in self.technologies_list:
-            #             invest_electricity_mix_dict['SolarPv'] = [
+        if GlossaryEnergy.SolarPv in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.SolarPv] = [
             #                 5 + 0.3 * i for i in l_ctrl]
-            #             invest_electricity_mix_dict['SolarPv'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.SolarPv] = np.array([
             #                 5.0, 20, 20, 20, 20, 20, 20, 20])
-            invest_electricity_mix_dict['SolarPv'] = np.array([5.0] * GlossaryEnergy.NB_POLES_FULL)
+            invest_electricity_mix_dict[GlossaryEnergy.SolarPv] = np.array([5.0] * GlossaryEnergy.NB_POLES_FULL)
 
-        if 'SolarThermal' in self.technologies_list:
-            #             invest_electricity_mix_dict['SolarThermal'] = [
+        if GlossaryEnergy.SolarThermal in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.SolarThermal] = [
             #                 304.4 * 0.00456 + i for i in l_ctrl]
-            invest_electricity_mix_dict['SolarThermal'] = np.array(
+            invest_electricity_mix_dict[GlossaryEnergy.SolarThermal] = np.array(
                 [304.4 * 0.00838] + [0.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'Geothermal' in self.technologies_list:
-            #             invest_electricity_mix_dict['Geothermal'] = [
+        if GlossaryEnergy.Geothermal in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.Geothermal] = [
             # 304.4 * 0.00081 * (1 + 0.0236)**i for i in l_ctrl]
-            #             invest_electricity_mix_dict['Geothermal'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.Geothermal] = np.array([
             #                 304.4 * 0.00081, 0, 0, 0, 0, 0, 0, 0])
-            invest_electricity_mix_dict['Geothermal'] = np.array(
+            invest_electricity_mix_dict[GlossaryEnergy.Geothermal] = np.array(
                 [304.4 * 0.00081] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
         if GlossaryEnergy.Hydropower in self.technologies_list:
@@ -93,17 +93,17 @@ class Study(EnergyMixStudyManager):
             #                 1.5, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0])
             invest_electricity_mix_dict[GlossaryEnergy.Hydropower] = np.array([2.0] * GlossaryEnergy.NB_POLES_FULL)
 
-        if 'Nuclear' in self.technologies_list:
-            #             invest_electricity_mix_dict['Nuclear'] = [
+        if GlossaryEnergy.Nuclear in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.Nuclear] = [
             #                 2.1 + 0.05 * i for i in l_ctrl]
-            #             invest_electricity_mix_dict['Nuclear'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.Nuclear] = np.array([
             #                 2.1, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5])
-            invest_electricity_mix_dict['Nuclear'] = np.array([2.1] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
+            invest_electricity_mix_dict[GlossaryEnergy.Nuclear] = np.array([2.1] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'CombinedCycleGasTurbine' in self.technologies_list:
-            #             invest_electricity_mix_dict['CombinedCycleGasTurbine'] = [
+        if GlossaryEnergy.CombinedCycleGasTurbine in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.CombinedCycleGasTurbine] = [
             #                 max(0.01, 2.1 - 0.2 * i) for i in l_ctrl]
-            invest_electricity_mix_dict['CombinedCycleGasTurbine'] = np.array(
+            invest_electricity_mix_dict[GlossaryEnergy.CombinedCycleGasTurbine] = np.array(
                 [2.1] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
         if GlossaryEnergy.GasTurbine in self.technologies_list:
@@ -111,32 +111,32 @@ class Study(EnergyMixStudyManager):
             #                 max(0.01, 0.5 - 0.3 * i) for i in l_ctrl]
             invest_electricity_mix_dict[GlossaryEnergy.GasTurbine] = np.array([2.1] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'BiogasFired' in self.technologies_list:
+        if GlossaryEnergy.BiogasFired in self.technologies_list:
             #             invest_electricity_mix_dict[GlossaryEnergy.GasTurbine] = [
             #                 max(0.01, 0.5 - 0.3 * i) for i in l_ctrl]
-            invest_electricity_mix_dict['BiogasFired'] = np.array([1.] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
+            invest_electricity_mix_dict[GlossaryEnergy.BiogasFired] = np.array([1.] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'BiomassFired' in self.technologies_list:
+        if GlossaryEnergy.BiomassFired in self.technologies_list:
             #             invest_electricity_mix_dict[GlossaryEnergy.GasTurbine] = [
             #                 max(0.01, 0.5 - 0.3 * i) for i in l_ctrl]
-            invest_electricity_mix_dict['BiomassFired'] = np.array([1.] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
+            invest_electricity_mix_dict[GlossaryEnergy.BiomassFired] = np.array([1.] + [5.] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'CoalGen' in self.technologies_list:
-            #             invest_electricity_mix_dict['CoalGen'] = [
+        if GlossaryEnergy.CoalGen in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.CoalGen] = [
             #                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
-            #             invest_electricity_mix_dict['CoalGen'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.CoalGen] = np.array([
             #                 0.1, 0, 0, 0, 0, 0, 0, 0])
-            invest_electricity_mix_dict['CoalGen'] = np.array([0.1] + [0.0001] * (GlossaryEnergy.NB_POLES_FULL - 1))
+            invest_electricity_mix_dict[GlossaryEnergy.CoalGen] = np.array([0.1] + [0.0001] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
-        if 'OilGen' in self.technologies_list:
-            #             invest_electricity_mix_dict['CoalGen'] = [
+        if GlossaryEnergy.OilGen in self.technologies_list:
+            #             invest_electricity_mix_dict[GlossaryEnergy.CoalGen] = [
             #                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
-            #             invest_electricity_mix_dict['CoalGen'] = np.array([
+            #             invest_electricity_mix_dict[GlossaryEnergy.CoalGen] = np.array([
             #                 0.1, 0, 0, 0, 0, 0, 0, 0])
-            invest_electricity_mix_dict['OilGen'] = np.array([0.0001] * GlossaryEnergy.NB_POLES_FULL)
+            invest_electricity_mix_dict[GlossaryEnergy.OilGen] = np.array([0.0001] * GlossaryEnergy.NB_POLES_FULL)
 
-        if 'RenewableElectricitySimpleTechno' in self.technologies_list:
-            invest_electricity_mix_dict['RenewableElectricitySimpleTechno'] = np.array(
+        if GlossaryEnergy.RenewableElectricitySimpleTechno in self.technologies_list:
+            invest_electricity_mix_dict[GlossaryEnergy.RenewableElectricitySimpleTechno] = np.array(
                 [0.1] + [0.0001] * (GlossaryEnergy.NB_POLES_FULL - 1))
 
         if self.bspline:
@@ -205,20 +205,20 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{electricity_name}.WindOffshore.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.WindOffshore.{GlossaryEnergy.TransportCostValue}': transport_offshore,
-                       f'{self.study_name}.{electricity_name}.WindOnshore.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.SolarPv.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.SolarThermal.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.TransportCostValue}': transport_offshore,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.WindOnshore}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.SolarPv}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.SolarThermal}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.Nuclear.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.CombinedCycleGasTurbine.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.Nuclear}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.BiogasFired.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.BiomassFired.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.Geothermal.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.CoalGen.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.OilGen.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.BiogasFired}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.BiomassFired}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.Geothermal}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryEnergy.OilGen}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportMarginValue}': margin,
 

@@ -155,7 +155,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Gas production
         '''
         fossil_gas_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.methane}.FossilGas.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}.{GlossaryEnergy.TechnoProductionValue}')
         computed_gas_production = fossil_gas_prod[f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'].loc[
                                       fossil_gas_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                       0] * 1000.0
@@ -219,10 +219,10 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Solar production
         '''
         elec_solar_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarPv.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}.{GlossaryEnergy.TechnoProductionValue}')
 
         elec_solarth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarThermal}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solar_production = elec_solar_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                         elec_solar_prod[
@@ -243,9 +243,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Wind production
         '''
         elec_windonshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOnshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}.{GlossaryEnergy.TechnoProductionValue}')
         elec_windoffshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windonshore_prod[
@@ -265,7 +265,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Nuclear production
         '''
         elec_nuclear_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Nuclear}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_nuclear_prod[
@@ -321,7 +321,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         elec_gt_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         elec_cgt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         h2_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_methane_co2_emissions = \
@@ -353,7 +353,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Coal CO2 emissions are emissions from coal energy + CoalGeneration from electricity
         '''
         elec_coal_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoDetailedProductionValue}')
 
         computed_coal_co2_emissions = \
             co2_emissions_by_energy[GlossaryEnergy.solid_fuel].loc[
@@ -374,7 +374,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Oil CO2 emissions are emissions from oil energy 
         '''
         elec_oil_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.OilGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.OilGen}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_oil_co2_emissions = co2_emissions_by_energy[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'].loc[
                                          co2_emissions_by_energy[
                                              GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] + \
@@ -624,9 +624,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         energy_production_raw_wind_iea = 1427.41  # TWH
 
         elec_windonshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOnshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}.{GlossaryEnergy.TechnoProductionValue}')
         elec_windoffshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windonshore_prod[
@@ -646,7 +646,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_raw_wind_iea} TWh vs WITNESS :{computed_wind_production} TWh')
 
         elec_solar_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarPv.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solarpv_production = elec_solar_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_solar_prod[
@@ -663,7 +663,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_solarpv_iea} TWh vs WITNESS :{computed_solarpv_production} TWh')
 
         elec_solarth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarThermal}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solarth_production = elec_solarth_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_solarth_prod[
@@ -681,7 +681,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         '''
         elec_geoth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Geothermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Geothermal}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_geoth_production = elec_geoth_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                         elec_geoth_prod[
@@ -699,7 +699,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_geoth_iea} TWh vs WITNESS :{computed_geoth_production} TWh')
         '''
         elec_coalgen_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_coalgen_production = elec_coalgen_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_coalgen_prod[
@@ -719,7 +719,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         elec_gt_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}')
         elec_cgt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_gasgen_production = elec_gt_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                          elec_gt_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
@@ -740,7 +740,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_gasgen_iea} TWh vs WITNESS :{computed_gasgen_production} TWh')
 
         elec_nuclear_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Nuclear}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_nuclear_prod[
@@ -864,7 +864,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})'][0]
 
         raw_fischertropsch_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.{GlossaryEnergy.FischerTropsch}.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_ft_production = raw_fischertropsch_prod[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})'].loc[
                                      raw_fischertropsch_prod[
@@ -926,7 +926,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
                         }
 
         raw_refinery_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.Refinery.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.{GlossaryEnergy.Refinery}.{GlossaryEnergy.TechnoProductionValue}')
 
         raw_refinery_prod_2020 = raw_refinery_prod.loc[
                                      raw_refinery_prod[
@@ -1058,7 +1058,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         electrolysis_price_iea = 7.7 / 33.3 * 1000  # between 3.2 and 7.7 $/kg
 
         electrolysis_price = hydrogen_prices[
-            'Electrolysis.SOEC'][0]
+            GlossaryEnergy.ElectrolysisSOEC][0]
         error_electrolysis_price = np.abs(
             electrolysis_price_iea - electrolysis_price) / electrolysis_price_iea * 100.0
 

@@ -141,17 +141,17 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 0})
 
         self.land_use_required_Pyrolysis = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'Pyrolysis (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.Pyrolysis} (Gha)': 0.0})
         self.land_use_required_SMR = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'SMR (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.SMR} (Gha)': 0.0})
         self.land_use_required_AutothermalReforming = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'AutothermalReforming (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.AutothermalReforming} (Gha)': 0.0})
         self.land_use_required_BiomassGasification = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'BiomassGasification (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.BiomassGasification} (Gha)': 0.0})
         self.land_use_required_CoalGasification = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'CoalGasification (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.CoalGasification} (Gha)': 0.0})
         self.land_use_required_CoElectrolysis = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'CoElectrolysis (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.CoElectrolysis} (Gha)': 0.0})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
@@ -2112,7 +2112,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                                     18.593079928586995,
                                                                                                     19.159324180191653,
                                                                                                     19.725568448434398],
-                                                                   'CO2': [-0.12309665757986775, -0.12309665757986775,
+                                                                   GlossaryEnergy.CO2: [-0.12309665757986775, -0.12309665757986775,
                                                                            -0.12309665757986775, -0.12309665757986775,
                                                                            -0.12309665757986775, -0.12309665757986775,
                                                                            -0.12309665757986775, -0.12309665757986775,
@@ -2688,7 +2688,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                             0.0, 0.0, 0.0, 0.0],
-                                                             'CO2': [-0.2769674795547024, -0.2769674795547024,
+                                                             GlossaryEnergy.CO2: [-0.2769674795547024, -0.2769674795547024,
                                                                      -0.2769674795547024, -0.2769674795547024,
                                                                      -0.2769674795547024, -0.2769674795547024,
                                                                      -0.2769674795547024, -0.2769674795547024,

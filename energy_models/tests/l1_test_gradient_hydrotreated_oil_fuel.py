@@ -106,7 +106,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
 
     def test_01_hefa_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'HefaDecarboxylation'
+        self.model_name = GlossaryEnergy.HefaDecarboxylation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -177,7 +177,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
 
     def test_02_hefa_green_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'HefaDeoxygenation'
+        self.model_name = GlossaryEnergy.HefaDeoxygenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

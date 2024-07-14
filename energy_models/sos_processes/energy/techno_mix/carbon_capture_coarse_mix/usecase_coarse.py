@@ -115,7 +115,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': flue_gas_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': flue_gas_mean,
-                       f'{self.study_name}.{ccs_name}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,

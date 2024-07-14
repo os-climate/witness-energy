@@ -129,7 +129,7 @@ class ResourceGlossary:
                    'price': 1180.} # https://www.made-in-china.com/price/solid-carbon-price.html
 
     GlossaryDict = {
-        'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, 'CO2': CO2, 'BiomassDry': BiomassDry,
+        'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, GlossaryEnergy.CO2: CO2, 'BiomassDry': BiomassDry,
         'WetBiomass': WetBiomass, 'NaturalOil': NaturalOil, 'Methanol': Methanol,
         'SodiumHydroxide': SodiumHydroxide, 'Wood': Wood, 'Carbon': Carbon, 'ManagedWood': ManagedWood,
         'Oxygen': Oxygen, 'Dioxygen': Dioxygen, 'CrudeOil': CrudeOil, 'SolidFuel': SolidFuel,

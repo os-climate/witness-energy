@@ -67,7 +67,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.electricity: 16.,
-             'CO2': 0.0,
+             GlossaryEnergy.CO2: 0.0,
              GlossaryEnergy.syngas: 34,
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
              })
@@ -111,7 +111,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.liquid_fuel}.Refinery']
+                                                == f'{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}']
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))

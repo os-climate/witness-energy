@@ -140,7 +140,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         dac_invest_level = \
             self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
-                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+                                 f'.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]

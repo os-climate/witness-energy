@@ -43,7 +43,7 @@ class BiomassBFPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, 'biomass_dry': 2.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.1})
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
 

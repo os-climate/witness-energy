@@ -43,7 +43,7 @@ class GeologicMineralizationPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.carbon_capture: 12.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.carbon_capture: 12.})
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
 
@@ -80,7 +80,7 @@ class GeologicMineralizationPriceTestCase(unittest.TestCase):
     def test_03_geologic_mineralization_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'GeologicMineralization'
+        self.model_name = GlossaryEnergy.GeologicMineralization
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,

@@ -558,7 +558,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
         for reactant in energy_consumption.columns:
             if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
-                if reactant.startswith('CO2'):
+                if reactant.startswith(GlossaryEnergy.CO2):
                     energy_twh = - \
                                      energy_consumption[reactant].values * \
                                  scaling_factor_energy_consumption
@@ -587,7 +587,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
         for reactant in energy_consumption.columns:
             if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
-                if reactant.startswith('CO2'):
+                if reactant.startswith(GlossaryEnergy.CO2):
                     pass
                 else:
                     energy_twh = - \

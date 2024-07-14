@@ -44,8 +44,8 @@ from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_d
 from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc import (
     PlasmaCrackingDiscipline,
 )
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
-    WaterGasShiftDiscipline,
+from energy_models.models.gaseous_hydrogen.wgs.wgs_disc import (
+    WGSDiscipline,
 )
 
 
@@ -110,7 +110,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                         0.03581750135963429, 0.03530598876014997, 0.03482320115289285,
                                         0.03436642036567466, 0.03393328183670935, 0.033521717015978045,
                                         0.03312990690071806, 0.032756244237772174, 0.03239930253734476])[:len(self.years)] * 1000.0,
-             'WaterGasShift_wotaxes': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+             f"{GlossaryEnergy.WaterGasShift}_wotaxes": np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                                 0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                                 0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                                 0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -301,11 +301,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 
         self.land_use_required_WaterGasShift = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'WaterGasShift (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.WaterGasShift} (Gha)': 0.0})
         self.land_use_required_Electrolysis = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'Electrolysis (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.Electrolysis} (Gha)': 0.0})
         self.land_use_required_PlasmaCracking = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'PlasmaCracking (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.PlasmaCracking} (Gha)': 0.0})
 
         self.invest_plasmacracking = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                    GlossaryEnergy.InvestValue: [1.0e-11] + list(
@@ -343,7 +343,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
+        mod_path = 'energy_models.models.gaseous_hydrogen.wgs.wgs_disc.WGSDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -351,7 +351,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = WaterGasShiftDiscipline.techno_infos_dict_default
+        techno_infos_dict = WGSDiscipline.techno_infos_dict_default
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,

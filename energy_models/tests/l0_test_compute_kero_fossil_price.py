@@ -110,7 +110,7 @@ class RefineryPriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.liquid_fuel}.Refinery']
+                                                == f'{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -132,7 +132,7 @@ class RefineryPriceTestCase(unittest.TestCase):
 
     def test_03_refinery_discipline(self):
         self.name = 'Test'
-        self.model_name = 'Refinery'
+        self.model_name = GlossaryEnergy.Refinery
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

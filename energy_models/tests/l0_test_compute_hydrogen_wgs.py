@@ -130,7 +130,7 @@ class WGSPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
+        mod_path = 'energy_models.models.gaseous_hydrogen.wgs.wgs_disc.WGSDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -188,7 +188,7 @@ class WGSPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
+        mod_path = 'energy_models.models.gaseous_hydrogen.wgs.wgs_disc.WGSDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -235,7 +235,7 @@ class WGSPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
+        mod_path = 'energy_models.models.gaseous_hydrogen.wgs.wgs_disc.WGSDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

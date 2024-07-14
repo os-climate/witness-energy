@@ -77,7 +77,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
                 # not to delete the test, we do not care about the biomass dry values (they are not anymore in the generator data dict
                 self.CO2_per_use[f'{energy}'] = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.CO2PerUse]['value']
                 self.CH4_per_use[f'{energy}'] = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.CH4PerUse]['value']

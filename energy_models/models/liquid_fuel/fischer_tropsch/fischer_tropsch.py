@@ -38,9 +38,9 @@ from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import
     LiquidFuelTechno,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
-    WaterGasShiftDiscipline,
+from energy_models.models.gaseous_hydrogen.wgs.water_gas_shift import WGS
+from energy_models.models.gaseous_hydrogen.wgs.wgs_disc import (
+    WGSDiscipline,
 )
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import (
     RWGS,
@@ -89,7 +89,7 @@ class FischerTropsch(LiquidFuelTechno):
         Overloaded for each energy type
         '''
         self.data_energy_dict = inputs_dict['data_fuel_dict']
-        self.syngas_energy_dict = inputs_dict[f'{GlossaryEnergy.syngas}.data_fuel_dict']
+        self.syngas_energy_dict = inputs_dict[f'{GlossaryEnergy.syngas}.{GlossaryEnergy.data_fuel_dict}']
         self.gaseous_hydrogen_energy_dict = inputs_dict[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.data_fuel_dict']
 
     def select_resources_ratios(self):
@@ -431,7 +431,7 @@ class FischerTropsch(LiquidFuelTechno):
         inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
                        GlossaryEnergy.YearEnd: self.year_end,
                        GlossaryEnergy.UtilisationRatioValue: utlisation_ratio,
-                       'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': WGSDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.StreamPricesValue: self.stream_prices,
                        GlossaryEnergy.StreamsCO2EmissionsValue: self.streams_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
@@ -440,15 +440,15 @@ class FischerTropsch(LiquidFuelTechno):
                        # the hypothesis looks fine
                        GlossaryEnergy.InvestLevelValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: WGSDiscipline.invest_before_year_start,
                        GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
                        GlossaryEnergy.MarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        GlossaryEnergy.TransportCostValue: pd.DataFrame({GlossaryEnergy.Years: years, 'transport': 0.0}),
                        GlossaryEnergy.TransportMarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
-                       'initial_production': WaterGasShiftDiscipline.initial_production,
-                       'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
+                       'initial_production': WGSDiscipline.initial_production,
+                       'initial_age_distrib': WGSDiscipline.initial_age_distribution,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,

@@ -49,32 +49,32 @@ class Study(EnergyMixStudyManager):
 
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'BiomassBuryingFossilization' in self.technologies_list:
-            invest_carbon_storage_mix_dict['BiomassBuryingFossilization'] = [
+        if GlossaryEnergy.BiomassBuryingFossilization in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.BiomassBuryingFossilization] = [
                 5 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'DeepOceanInjection' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DeepOceanInjection'] = [
+        if GlossaryEnergy.DeepOceanInjection in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DeepOceanInjection] = [
                 10 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'DeepSalineFormation' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DeepSalineFormation'] = [
+        if GlossaryEnergy.DeepSalineFormation in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DeepSalineFormation] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'DepletedOilGas' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DepletedOilGas'] = [
+        if GlossaryEnergy.DepletedOilGas in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DepletedOilGas] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'EnhancedOilRecovery' in self.technologies_list:
-            invest_carbon_storage_mix_dict['EnhancedOilRecovery'] = [
+        if GlossaryEnergy.EnhancedOilRecovery in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.EnhancedOilRecovery] = [
                 1 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'GeologicMineralization' in self.technologies_list:
-            invest_carbon_storage_mix_dict['GeologicMineralization'] = [
+        if GlossaryEnergy.GeologicMineralization in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.GeologicMineralization] = [
                 2 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'PureCarbonSolidStorage' in self.technologies_list:
-            invest_carbon_storage_mix_dict['PureCarbonSolidStorage'] = [
+        if GlossaryEnergy.PureCarbonSolidStorage in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.PureCarbonSolidStorage] = [
                 5 * (1 + 0.0) ** i for i in l_ctrl]
 
         if GlossaryEnergy.CarbonStorageTechno in self.technologies_list:

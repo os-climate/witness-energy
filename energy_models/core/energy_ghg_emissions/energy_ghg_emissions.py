@@ -176,8 +176,8 @@ class EnergyGHGEmissions(BaseStream):
          CO2 expelled by energy mix technologies during the process 
          i.e. for machinery or tractors 
         '''
-        energy_producing_co2 = self.ghg_production_dict['CO2'][[
-            col for col in self.ghg_production_dict['CO2'] if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+        energy_producing_co2 = self.ghg_production_dict[GlossaryEnergy.CO2][[
+            col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
         energy_producing_co2_list = [key.replace(
             f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_producing_co2]
         if len(energy_producing_co2_list) != 0:
@@ -193,8 +193,8 @@ class EnergyGHGEmissions(BaseStream):
          on a different gas (biogas for upgrading biogas and flue gas for
          Amien scrubbing)
         '''
-        energy_producing_carbon_capture = self.ghg_production_dict['CO2'][[
-            col for col in self.ghg_production_dict['CO2'] if
+        energy_producing_carbon_capture = self.ghg_production_dict[GlossaryEnergy.CO2][[
+            col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if
             col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_producing_carbon_capture_list = [key.replace(
             f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_producing_carbon_capture]
@@ -226,8 +226,8 @@ class EnergyGHGEmissions(BaseStream):
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
         self.CO2_sources[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = \
-        self.ghg_production_dict['CO2'][[
-            col for col in self.ghg_production_dict['CO2'] if
+        self.ghg_production_dict[GlossaryEnergy.CO2][[
+            col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if
             col.endswith(f'{CarbonCapture.flue_gas_name} {self.ghg_input_unit}')]].sum(axis=1)
 
     def update_emissions_in_gt(self):
@@ -255,7 +255,7 @@ class EnergyGHGEmissions(BaseStream):
             # gather all production columns with a CO2 name in it
             for col, production in self.sub_production_dict[energy].items():
                 if col in self.CO2_list:
-                    self.ghg_production_dict['CO2'][f'{energy} {col}'] = production.values
+                    self.ghg_production_dict[GlossaryEnergy.CO2][f'{energy} {col}'] = production.values
                 else:
                     for ghg in self.GHG_TYPE_LIST:
                         if col == f'{ghg} {self.ghg_input_unit}':
