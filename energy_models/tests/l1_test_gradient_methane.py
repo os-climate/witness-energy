@@ -62,7 +62,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                     0.089236536471781, 0.08899046935409588,
                                                                     0.08874840310033885,
@@ -113,7 +113,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
 
@@ -208,8 +208,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                            self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -231,8 +231,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -269,8 +269,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_methanation,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -293,8 +293,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -329,12 +329,10 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -356,8 +354,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',

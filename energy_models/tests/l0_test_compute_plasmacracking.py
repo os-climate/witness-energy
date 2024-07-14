@@ -46,7 +46,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4})
         hydro_margin = list(func(list(years)))
 
@@ -89,7 +89,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         self.transport = pd.DataFrame({GlossaryEnergy.Years: years,
                                        'transport': H2_transport})
 
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
@@ -165,9 +165,9 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
@@ -220,9 +220,9 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_for_grad,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(

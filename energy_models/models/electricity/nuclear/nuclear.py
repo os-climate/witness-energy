@@ -27,12 +27,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class Nuclear(ElectricityTechno):
     URANIUM_RESOURCE_NAME = GlossaryEnergy.UraniumResource
-    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
         self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()
-        # self.cost_details[f'{self.COPPER_RESOURCE_NAME}_needs'] = self.get_theoretical_copper_needs()
 
     def compute_specifif_costs_of_technos(self):
         self.specific_costs = pd.DataFrame({
@@ -40,7 +38,7 @@ class Nuclear(ElectricityTechno):
             'waste_disposal': self.compute_nuclear_waste_disposal_cost()
         })
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
                                                                                                self.consumption_detailed[
                                                                                                    f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
@@ -49,18 +47,6 @@ class Nuclear(ElectricityTechno):
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_unit})']) / \
         #       self.techno_infos_dict['efficiency']
 
-
-    def compute_consumption_and_installed_power(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
-                                                                                       self.installed_power[
-                                                                                           'new_power_production']  # in Mt
 
     def get_theoretical_uranium_fuel_needs(self):
         """
@@ -88,16 +74,6 @@ class Nuclear(ElectricityTechno):
         water_needs = (1541 + 2725) / 2 / 1000
 
         return water_needs
-
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
-
-        return copper_need
 
     def compute_nuclear_waste_disposal_cost(self):
         """

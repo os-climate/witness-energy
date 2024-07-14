@@ -178,16 +178,16 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             np.identity(len(self.techno_model.years)) * dwater_needs_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CostOfEnergiesUsageValue, GlossaryEnergy.electricity), ('syngas_ratio',),
+            (GlossaryEnergy.CostOfStreamsUsageValue, GlossaryEnergy.electricity), ('syngas_ratio',),
             np.zeros(len(self.techno_model.years), ))
 
         efficiency = self.techno_model.compute_efficiency()
         eff_new_axis = efficiency[:, np.newaxis]
         dsyngas_dsyngas_ratio = np.identity(len(
-            self.techno_model.years)) * dsyngas_needs_dsyngas_ratio * self.techno_model.energy_prices[
+            self.techno_model.years)) * dsyngas_needs_dsyngas_ratio * self.techno_model.stream_prices[
                                     GlossaryEnergy.syngas].to_numpy() / eff_new_axis
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CostOfEnergiesUsageValue, GlossaryEnergy.syngas), ('syngas_ratio',),
+            (GlossaryEnergy.CostOfStreamsUsageValue, GlossaryEnergy.syngas), ('syngas_ratio',),
             dsyngas_dsyngas_ratio / 100.0)
 
         dwater_dsyngas_ratio = np.identity(len(
@@ -238,11 +238,11 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
         #             (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.electricity),  ('syngas_ratio',), np.zeros(len(self.techno_model.years),))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, 'WaterGasShift'), ('syngas_ratio',),
+            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.WaterGasShift), ('syngas_ratio',),
             np.identity(len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) / 100.0)
 
         CO2_emissions_is_positive = np.maximum(0.0, np.sign(
-            self.techno_model.carbon_intensity['WaterGasShift'].values))
+            self.techno_model.carbon_intensity[GlossaryEnergy.WaterGasShift].values))
         dprice_CO2_fact = np.identity(
             len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) * \
                           self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
@@ -284,7 +284,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                       np.identity(len(self.techno_model.years)) * dco2_prod_dsyngas_ratio * \
                                       production_energy.to_numpy()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, 'CO2 from Flue Gas (Mt)'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoProductionValue, f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"), ('syngas_ratio',),
             dco2_flue_gas_dsyngas_ratio / 100.0)
 
         #######################################
@@ -331,13 +331,13 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                         np.newaxis] / scaling_factor_techno_consumption,
             production_energy * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f"{GlossaryEnergy.WaterResource} (Mt)"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionValue, f"{GlossaryEnergy.WaterResource} ({GlossaryEnergy.mass_unit})"), ('syngas_ratio',),
             dwater_consumption_dsyngas_ratio / 100.0)
         dwater_consumption_woratio_dsyngas_ratio = self.techno_model.compute_dwater_consumption_dsyngas_ratio(
             dwater_needs_dsyngas_ratio, dprodenergy_dsyngas_ratio / scaling_factor_techno_consumption,
                                         production_energy_woratio * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f"{GlossaryEnergy.WaterResource} (Mt)"),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f"{GlossaryEnergy.WaterResource} ({GlossaryEnergy.mass_unit})"),
             ('syngas_ratio',), dwater_consumption_woratio_dsyngas_ratio / 100.0)
 
         ###################################
@@ -379,7 +379,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             if techno != GlossaryEnergy.Years:
                 techno_model = WGS(self.techno_name)
                 # Update init values syngas price and syngas_ratio
-                inputs_dict[GlossaryEnergy.EnergyPricesValue][GlossaryEnergy.syngas] = \
+                inputs_dict[GlossaryEnergy.StreamPricesValue][GlossaryEnergy.syngas] = \
                     inputs_dict['energy_detailed_techno_prices'][
                         techno]
                 inputs_dict['syngas_ratio'] = np.ones(

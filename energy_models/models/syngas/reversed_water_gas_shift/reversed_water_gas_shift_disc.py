@@ -124,7 +124,6 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        print(inputs_dict.keys())
         self.techno_model = RWGS(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
@@ -138,7 +137,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         # self.techno_model.compute_price()
         SyngasTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
@@ -230,7 +229,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f"{GlossaryEnergy.WaterResource} (Mt)"), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoProductionValue, f"{GlossaryEnergy.WaterResource} ({GlossaryEnergy.mass_unit})"), ('syngas_ratio',),
             dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dcons_electricity_dsyngas_ratio(
@@ -251,5 +250,5 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.carbon_capture} (Mt)'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'), ('syngas_ratio',),
             dcons_co2_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)

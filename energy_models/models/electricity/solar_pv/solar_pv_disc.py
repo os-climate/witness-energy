@@ -82,7 +82,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 2822,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 2822 / 1e9 # According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 

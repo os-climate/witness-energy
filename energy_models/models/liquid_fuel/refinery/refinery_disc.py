@@ -180,7 +180,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
@@ -200,14 +200,14 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                           len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / \
                          100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
                 grad_total)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), grad_total)
+                (GlossaryEnergy.StreamPricesValue, energy), grad_total)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 value)
 
             grad_on_co2_tax = value * \
@@ -216,7 +216,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                   GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
                 0, np.sign(carbon_emissions[self.techno_name])).values
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 grad_on_co2_tax)
             
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=

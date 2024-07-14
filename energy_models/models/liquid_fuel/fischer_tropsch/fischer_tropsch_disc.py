@@ -169,7 +169,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
         # Grad of price vs energyprice
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         grad_dict_resources_co2 = self.techno_model.grad_co2_emission_vs_resources_co2_emissions()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
@@ -244,17 +244,17 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             self.grad_total[energy] = value * \
                                       self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
                 self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
+                (GlossaryEnergy.StreamPricesValue, energy), self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), value)
 
                 # to manage gradient when carbon_emissions is null:
                 # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
@@ -273,7 +273,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
@@ -340,7 +340,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             if techno != GlossaryEnergy.Years:
                 techno_model = FischerTropsch(self.techno_name)
                 # Update init values syngas price and syngas_ratio
-                inputs_dict[GlossaryEnergy.EnergyPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
+                inputs_dict[GlossaryEnergy.StreamPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
                     techno]
                 inputs_dict['syngas_ratio'] = np.ones(
                     len(years)) * inputs_dict['syngas_ratio_technos'][techno]
@@ -434,7 +434,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedPricesValue)
-        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfStreamsUsageValue)
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
@@ -518,7 +518,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     def get_chart_detailed_price_in_dollar_kg(self):
 
         techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
-        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfStreamsUsageValue)
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
             'calorific_value']

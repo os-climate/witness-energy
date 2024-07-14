@@ -28,10 +28,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CHPHighHeat(highheattechno):
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # CO2 production
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \

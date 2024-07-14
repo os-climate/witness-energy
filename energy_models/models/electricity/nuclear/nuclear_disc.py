@@ -79,7 +79,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'decommissioning_cost_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
-                                 'copper_needs': 1473,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1473/ 1e9, # According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented. Computing the need in Mt/MW
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 

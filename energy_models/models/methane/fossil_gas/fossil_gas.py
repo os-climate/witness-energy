@@ -42,13 +42,13 @@ class FossilGas(MethaneTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \

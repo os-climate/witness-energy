@@ -46,9 +46,9 @@ class TestIndependentInvest(unittest.TestCase):
         year_range = self.y_e - self.y_s + 1
         energy_mix_invest_dic = {}
         energy_mix_invest_dic[GlossaryEnergy.Years] = self.years
-        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.SolarPv'] = np.ones(len(self.years)) * 10.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.WindOnshore'] = np.ones(len(self.years)) * 20.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.CoalGen'] = np.ones(len(self.years)) * 30.0
+        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}'] = np.ones(len(self.years)) * 10.0
+        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}'] = np.ones(len(self.years)) * 20.0
+        energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}'] = np.ones(len(self.years)) * 30.0
         energy_mix_invest_dic[f'{GlossaryEnergy.methane}.FossilGas'] = np.ones(len(self.years)) * 40.0
         energy_mix_invest_dic[f'{GlossaryEnergy.methane}.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
         energy_mix_invest_dic[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift'] = np.ones(

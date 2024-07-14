@@ -45,12 +45,15 @@ class RWGSPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 110.,
-                                           GlossaryEnergy.syngas: np.ones(len(years)) * 90.
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 110.,
+                                           GlossaryEnergy.syngas: np.ones(len(years)) * 90.,
+                                           GlossaryEnergy.carbon_capture: 12.4
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.02})
+        self.stream_co2_emissions = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                     GlossaryEnergy.electricity: 0.02,
+                                                     GlossaryEnergy.syngas: 0.02,
+                                                     GlossaryEnergy.carbon_capture: 12.4})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
@@ -93,8 +96,8 @@ class RWGSPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

@@ -32,7 +32,7 @@ class CoElectrolysis(SyngasTechno):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
@@ -82,7 +82,7 @@ class CoElectrolysis(SyngasTechno):
 
         return oxygen_production
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         o2_production = self.get_oxygen_production()
 
         self.production_detailed[f'{Dioxygen.name} ({GlossaryEnergy.mass_unit})'] = o2_production / \

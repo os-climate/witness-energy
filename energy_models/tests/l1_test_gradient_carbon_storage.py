@@ -85,11 +85,11 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         self.energy_name = GlossaryEnergy.carbon_storage
 
-        self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry: 2.43})
+        self.stream_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 12.})
 
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry : 2.43})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
@@ -116,7 +116,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.SolidCarbon: 50.})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
@@ -162,8 +162,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -183,8 +183,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -220,10 +220,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -240,8 +238,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -277,10 +275,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -297,8 +293,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -334,10 +330,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -353,8 +347,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -394,10 +388,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -414,8 +406,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.carbon_quantity_to_be_stored',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
 
@@ -455,10 +447,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -475,8 +465,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -512,10 +502,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -532,8 +520,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -570,10 +558,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault,
-                                                            self.year_end + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -590,8 +576,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',

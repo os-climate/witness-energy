@@ -70,9 +70,9 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = CarbonCapture.name
+        self.energy_name = GlossaryEnergy.carbon_capture
         flue_gas_name = FlueGas.node_name
-        ccs_name = f'{self.prefix_name}.{CarbonCapture.name}'
+        ccs_name = f'{self.prefix_name}.{GlossaryEnergy.carbon_capture}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
@@ -106,7 +106,7 @@ class Study(EnergyMixStudyManager):
 
         flue_gas_list = [f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}', f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}']
         fossil_simple_techno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                  f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                                  f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -128,8 +128,8 @@ class Study(EnergyMixStudyManager):
                 {
 
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.flue_gas_co2_ratio': np.array(
                         [0.13]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.TechnoProductionValue}': fossil_simple_techno_prod,

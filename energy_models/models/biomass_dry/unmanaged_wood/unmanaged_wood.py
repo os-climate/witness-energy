@@ -34,7 +34,7 @@ class UnmanagedWood(BiomassDryTechno):
         self.price_mix = None
         self.mean_age_df = None
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
@@ -96,7 +96,7 @@ class UnmanagedWood(BiomassDryTechno):
 
         return dconso_dinvest
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'

@@ -201,11 +201,11 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} (Mt)'),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} (Mt)'),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(

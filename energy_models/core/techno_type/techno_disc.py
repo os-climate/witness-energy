@@ -83,7 +83,8 @@ class TechnoDiscipline(SoSWrapp):
         'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
-        GlossaryEnergy.EnergiesUsedForProductionValue: GlossaryEnergy.EnergiesUsedForProduction
+        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
+        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -154,26 +155,16 @@ class TechnoDiscipline(SoSWrapp):
                     resources_prices["default"] = default_resources_prices
                     dynamic_inputs.update({GlossaryEnergy.ResourcesPriceValue: resources_prices})
 
-            if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
-                energies_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
-                if energies_used_for_production is not None:
-                    cost_of_energies_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfEnergiesUsageDf)
-                    cost_of_energies_usage_var["dataframe_descriptor"].update({energy: ("float", [0., 1e30], False) for energy in energies_used_for_production})
-                    dynamic_outputs[GlossaryEnergy.CostOfEnergiesUsageValue] = cost_of_energies_usage_var
+            if GlossaryEnergy.StreamsUsedForProductionValue in self.get_data_in():
+                streams_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.StreamsUsedForProductionValue)
+                if streams_used_for_production is not None:
+                    cost_of_streams_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfStreamsUsageDf)
+                    cost_of_streams_usage_var["dataframe_descriptor"].update({stream: ("float", [0., 1e30], False) for stream in streams_used_for_production})
+                    dynamic_outputs[GlossaryEnergy.CostOfStreamsUsageValue] = cost_of_streams_usage_var
 
-                    energy_prices_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyPrices)
-                    energy_prices_var["dataframe_descriptor"] = {GlossaryEnergy.Years: ("int", [1900, 2100], False)}
-                    energy_prices_var["dataframe_descriptor"].update({energy: ("float", [0., 1e30], False) for energy in energies_used_for_production})
                     dynamic_inputs.update({
-                        GlossaryEnergy.EnergyPricesValue: energy_prices_var
-                    })
-                    energies_co2_emissions = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyCO2Emissions)
-                    energies_co2_emissions["namespace"] = GlossaryEnergy.NS_ENERGY
-                    energies_co2_emissions["dataframe_descriptor"] = {GlossaryEnergy.Years: ("int", [1900, 2100], False)}
-                    energies_co2_emissions["dataframe_descriptor"].update(
-                        {energy: ("float", [0., 1e30], False) for energy in energies_used_for_production})
-                    dynamic_inputs.update({
-                        GlossaryEnergy.EnergyCO2EmissionsValue: energies_co2_emissions
+                        GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_stream_prices_df(stream_used_for_production=streams_used_for_production),
+                        GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=streams_used_for_production)
                     })
 
             if 'is_apply_ratio' in self.get_data_in():
@@ -235,11 +226,17 @@ class TechnoDiscipline(SoSWrapp):
                 resource_used_for_prod = GlossaryEnergy.TechnoResourceUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoResourceUsedDict else []
                 self.update_default_value(GlossaryEnergy.ResourcesUsedForProductionValue, 'in', resource_used_for_prod)
 
-        if GlossaryEnergy.EnergiesUsedForProductionValue in self.get_data_in():
-            energies_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.EnergiesUsedForProductionValue)
+        if GlossaryEnergy.ResourcesUsedForBuildingValue in self.get_data_in():
+            resource_used_for_building = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForBuildingValue)
+            if resource_used_for_building is None:
+                resource_used_for_building = GlossaryEnergy.TechnoBuildingResourceDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoBuildingResourceDict else []
+                self.update_default_value(GlossaryEnergy.ResourcesUsedForBuildingValue, 'in', resource_used_for_building)
+
+        if GlossaryEnergy.StreamsUsedForProductionValue in self.get_data_in():
+            energies_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.StreamsUsedForProductionValue)
             if energies_used_for_prod is None:
-                energies_used_for_prod = GlossaryEnergy.TechnoEnergiesUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoEnergiesUsedDict else []
-                self.update_default_value(GlossaryEnergy.EnergiesUsedForProductionValue, 'in', energies_used_for_prod)
+                energies_used_for_prod = GlossaryEnergy.TechnoStreamsUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoStreamsUsedDict else []
+                self.update_default_value(GlossaryEnergy.StreamsUsedForProductionValue, 'in', energies_used_for_prod)
 
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -286,7 +283,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage,
-                        GlossaryEnergy.CostOfEnergiesUsageValue: self.techno_model.cost_of_energies_usage,
+                        GlossaryEnergy.CostOfStreamsUsageValue: self.techno_model.cost_of_streams_usage,
                         GlossaryEnergy.SpecificCostsForProductionValue: self.techno_model.specific_costs
                         }
 
@@ -476,7 +473,7 @@ class TechnoDiscipline(SoSWrapp):
         self.techno_consumption_derivative = {}
         for column in consumption:
             if column != GlossaryEnergy.Years:
-                if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]:
+                if column in [f'{resource} ({GlossaryEnergy.mass_unit})' for resource in self.techno_model.construction_resource_list]:
                     var_cons = (consumption[column] / installed_power['new_power_production']).fillna(0)
                     self.dcons_column_dinvest = self.dpower_dinvest.copy()
                 else:
@@ -493,10 +490,10 @@ class TechnoDiscipline(SoSWrapp):
                         var_cons[line] = var_cons[line + 1]
                     self.dcons_column_dinvest[line, :] = self.dprod_dinvest[line,
                                                          :] * var_cons[line]
-                    if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]:
+                    if column in [f'{resource} ({GlossaryEnergy.mass_unit})' for resource in self.techno_model.construction_resource_list]:
                         self.dcons_column_dinvest[line, :] = self.dpower_dinvest[line,
                                                              :] * var_cons[line]
-                if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]:
+                if column in [f'{resource} ({GlossaryEnergy.mass_unit})' for resource in self.techno_model.construction_resource_list]:
                     applied_ratio_construction = 1
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoConsumptionValue, column),
@@ -530,7 +527,7 @@ class TechnoDiscipline(SoSWrapp):
                     if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             GlossaryEnergy.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryEnergy.Years:
-                            if column in [f'{resource} (Mt)' for resource in
+                            if column in [f'{resource} ({GlossaryEnergy.mass_unit})' for resource in
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
@@ -546,7 +543,7 @@ class TechnoDiscipline(SoSWrapp):
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
-                            if column in [f'{resource} (Mt)' for resource in
+                            if column in [f'{resource} ({GlossaryEnergy.mass_unit})' for resource in
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
@@ -619,18 +616,18 @@ class TechnoDiscipline(SoSWrapp):
                                       self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.StreamPricesValue, energy),
                 self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.StreamPricesValue, energy),
                 self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                     value)
 
                 # to manage gradient when carbon_emissions is null:
@@ -650,7 +647,7 @@ class TechnoDiscipline(SoSWrapp):
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                     self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=

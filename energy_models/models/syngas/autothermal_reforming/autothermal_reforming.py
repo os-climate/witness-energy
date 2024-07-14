@@ -33,7 +33,7 @@ class AutothermalReforming(SyngasTechno):
         self.cost_details[f'{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
@@ -86,7 +86,7 @@ class AutothermalReforming(SyngasTechno):
 
         return water_needs
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # kg of H2O produced with 1kg of CH4
         H2Oprod = self.get_h2o_production()
 

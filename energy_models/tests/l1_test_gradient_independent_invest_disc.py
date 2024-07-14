@@ -138,7 +138,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.biomass_dry.technologies_list': [],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': [GlossaryEnergy.WaterGasShift,
                                                                                     'Electrolysis.AWE'],
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
                                                                          'flue_gas_capture.CalciumLooping'],

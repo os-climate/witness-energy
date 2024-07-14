@@ -124,6 +124,10 @@ class ResourceGlossary:
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 32825887.76}
 
+    SolidCarbon = {'name': GlossaryEnergy.SolidCarbon,
+                   GlossaryEnergy.CO2EmissionsValue: 0.0,
+                   'price': 1180.} # https://www.made-in-china.com/price/solid-carbon-price.html
+
     GlossaryDict = {
         'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, 'CO2': CO2, 'BiomassDry': BiomassDry,
         'WetBiomass': WetBiomass, 'NaturalOil': NaturalOil, 'Methanol': Methanol,
@@ -132,5 +136,5 @@ class ResourceGlossary:
         'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium,
         'PotassiumHydroxide': PotassiumHydroxide, 'Amine': Amine, 'EthanolAmine': EthanolAmine,
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
-        'Coal': Coal, 'Oil': Oil, 'Copper': Copper, 'Platinum': Platinum,
+        'Coal': Coal, 'Oil': Oil, 'Copper': Copper, 'Platinum': Platinum, GlossaryEnergy.SolidCarbon: SolidCarbon
     }

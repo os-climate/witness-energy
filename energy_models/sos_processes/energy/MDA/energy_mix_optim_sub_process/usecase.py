@@ -34,13 +34,10 @@ from energy_models.core.energy_study_manager import (
     ENERGY_TYPE,
     EnergyStudyManager,
 )
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
@@ -59,7 +56,6 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
@@ -135,7 +131,7 @@ class Study(EnergyStudyManager):
 
         invest_energy_mix_dict = {
             GlossaryEnergy.Years: years,
-            Electricity.name: [4.49, 35, 35, 35, 35, 35, 35, 35],
+            GlossaryEnergy.electricity: [4.49, 35, 35, 35, 35, 35, 35, 35],
             BioGas.name: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
             BiomassDry.name: [0.003, 0.5, 1.0, 1.0, 1.0, 0.8, 0.8, 0.8],
             Methane.name: [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -146,7 +142,7 @@ class Study(EnergyStudyManager):
             lowtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             SolidFuel.name: [0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
             BioDiesel.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            Syngas.name: [1.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            GlossaryEnergy.syngas: [1.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             LiquidHydrogen.name: [0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             HydrotreatedOilFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             Ethanol.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -174,15 +170,15 @@ class Study(EnergyStudyManager):
         if self.coarse_mode:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
-                CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
-                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
+                GlossaryEnergy.carbon_capture: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
+                GlossaryEnergy.carbon_storage: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
             }
 
         else:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
-                CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
-                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
+                GlossaryEnergy.carbon_capture: [2.0] + [25] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
+                GlossaryEnergy.carbon_storage: [0.003] + [5] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
             }
 
         if self.bspline:
@@ -499,7 +495,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
             f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
-            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
 
@@ -515,7 +511,7 @@ class Study(EnergyStudyManager):
         energy_prices = pd.DataFrame(
             {
                 GlossaryEnergy.Years: self.years,
-                Electricity.name: 9.0,
+                GlossaryEnergy.electricity: 9.0,
                 BiomassDry.name: 68.12 / 3.36,
                 BioGas.name: 90,
                 Methane.name: 34.0,
@@ -525,9 +521,9 @@ class Study(EnergyStudyManager):
                 hightemperatureheat.name: 71.0,
                 mediumtemperatureheat.name: 71.0,
                 lowtemperatureheat.name: 71.0,
-                Syngas.name: 40.0,
-                CarbonCapture.name: 0.0,
-                CarbonStorage.name: 0.0,
+                GlossaryEnergy.syngas: 40.0,
+                GlossaryEnergy.carbon_capture: 0.0,
+                GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
                 Renewable.name: 90.0,
@@ -542,7 +538,7 @@ class Study(EnergyStudyManager):
         energy_carbon_emissions = pd.DataFrame(
             {
                 GlossaryEnergy.Years: self.years,
-                Electricity.name: 0.0,
+                GlossaryEnergy.electricity: 0.0,
                 BiomassDry.name: -0.425 * 44.01 / 12.0 / 3.36,
                 BioGas.name: -0.618,
                 Methane.name: 0.123 / 15.4,
@@ -552,9 +548,9 @@ class Study(EnergyStudyManager):
                 hightemperatureheat.name: 0.0,
                 mediumtemperatureheat.name: 0.0,
                 lowtemperatureheat.name: 0.0,
-                Syngas.name: 0.0,
-                CarbonCapture.name: 0.0,
-                CarbonStorage.name: 0.0,
+                GlossaryEnergy.syngas: 0.0,
+                GlossaryEnergy.carbon_capture: 0.0,
+                GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
                 Renewable.name: 0.0,
@@ -605,10 +601,10 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
-            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
             f"{self.study_name}.{self.coupling_name}.{GHGemissionsDiscipline.name}.{GlossaryEnergy.ResidentialEnergyConsumptionDfValue}": residential_energy_prod,
-            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
@@ -637,9 +633,9 @@ class Study(EnergyStudyManager):
         ]
         flue_gas_list = [techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos]
 
-        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
+        if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
 
         if self.coarse_mode:
@@ -671,9 +667,9 @@ class Study(EnergyStudyManager):
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
         ]
 
-        if CarbonCapture.name in GlossaryEnergy.DEFAULT_TECHNO_DICT:
+        if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
 
         if not self.coarse_mode:

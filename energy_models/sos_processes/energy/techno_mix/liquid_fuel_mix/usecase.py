@@ -81,13 +81,14 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.electricity: 16.0,
                                       'CO2': 0.0,
                                       'crude oil': 38.0,
+                                      GlossaryEnergy.carbon_capture: 70.,
                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
                                       GlossaryEnergy.syngas: 50.0})
 
-        self.syngas_detailed_prices = pd.DataFrame({'CoalGasification': np.ones(len(years)) * 50.0,
-                                                    'CoElectrolysis': 2.0 * 50.0,
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.CoalGasification: np.ones(len(years)) * 50.0,
+                                                    GlossaryEnergy.CoElectrolysis: 2.0 * 50.0,
                                                     'ATR': 1.5 * 50.0,
-                                                    'SMR': 50.0})
+                                                    GlossaryEnergy.SMR: 50.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -107,7 +108,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4,
-             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533})
+             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533, GlossaryEnergy.carbon_capture: 0.})
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -124,9 +125,9 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update({
                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.33,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.syngas}.syngas_ratio': np.ones(len(years)) * 0.33,
             })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

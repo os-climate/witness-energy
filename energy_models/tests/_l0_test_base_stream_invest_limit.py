@@ -48,7 +48,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
             {'Electrolysis.PEM': np.linspace(100, 100 + len(years) - 1, len(years)),
              'Electrolysis.PEM_wotaxes': np.linspace(100, 100 + len(years) - 1, len(years))})
 
-        self.wgs_techno_prices = pd.DataFrame({'WaterGasShift': np.linspace(10, 10 + len(years) - 1, len(years)),
+        self.wgs_techno_prices = pd.DataFrame({GlossaryEnergy.WaterGasShift: np.linspace(10, 10 + len(years) - 1, len(years)),
                                                'WaterGasShift_wotaxes': np.linspace(10, 10 + len(years) - 1, len(years))
                                                })
 
@@ -66,7 +66,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'Electrolysis.PEM': 0.0, GlossaryEnergy.electricity: 0.0, 'production': 0.0})
 
         self.wgs_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, GlossaryEnergy.syngas: 0.0, GlossaryEnergy.electricity: 0.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.WaterGasShift: 0.366208, GlossaryEnergy.syngas: 0.0, GlossaryEnergy.electricity: 0.0,
              'production': 0.366208})
 
         self.land_use_required_WaterGasShift = pd.DataFrame(
@@ -114,7 +114,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(100, 100, len(self.years)),
-                                       'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
+                                       f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [
@@ -123,13 +123,13 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
+                       f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, 'Electrolysis.PEM'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
@@ -142,7 +142,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
         # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
@@ -151,17 +151,17 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
 
         self.assertListEqual(np.around(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10].tolist(), 2).tolist(),
                              np.around(
-                                 (self.wgs_techno_prices['WaterGasShift'].values[0:10] * (100 - low_prod) / 100),
+                                 (self.wgs_techno_prices[GlossaryEnergy.WaterGasShift].values[0:10] * (100 - low_prod) / 100),
                                  2).tolist()
                              )
         self.assertListEqual(np.around(co2_emissions[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10].tolist(), 2).tolist(),
                              np.around(
-                                 (self.wgs_carbon_emissions['WaterGasShift'].values[0:10] * (100 - low_prod) / 100),
+                                 (self.wgs_carbon_emissions[GlossaryEnergy.WaterGasShift].values[0:10] * (100 - low_prod) / 100),
                                  2).tolist()
                              )
 
         self.assertEqual(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[-1],
-                         (self.wgs_techno_prices['WaterGasShift'].values[-1] +
+                         (self.wgs_techno_prices[GlossaryEnergy.WaterGasShift].values[-1] +
                           self.electrolysis_techno_prices['Electrolysis.PEM'].values[-1]) / 2.0)
 
     def test_02_low_prod_for_both_technos(self):
@@ -191,7 +191,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(1e-6, 1e-6, len(self.years)),
-                                       'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
+                                       f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [
@@ -200,13 +200,13 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
+                       f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, 'Electrolysis.PEM'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
@@ -219,7 +219,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
 
@@ -227,11 +227,11 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         # on price and CO2 emissions ( the exponential is here to smooth the
         # cut off)
         self.assertListEqual(np.round(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10], 1).tolist(),
-                             ((self.wgs_techno_prices['WaterGasShift'].values[0:10] +
+                             ((self.wgs_techno_prices[GlossaryEnergy.WaterGasShift].values[0:10] +
                                self.electrolysis_techno_prices['Electrolysis.PEM'].values[0:10]) / 2.0).tolist()
                              )
         self.assertListEqual(np.round(co2_emissions[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10], 4).tolist(),
-                             np.round((self.wgs_carbon_emissions['WaterGasShift'].values[0:10] +
+                             np.round((self.wgs_carbon_emissions[GlossaryEnergy.WaterGasShift].values[0:10] +
                                        self.electrolysis_carbon_emissions['Electrolysis.PEM'].values[0:10]) / 2.0,
                                       4).tolist()
                              )

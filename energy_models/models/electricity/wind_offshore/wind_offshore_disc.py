@@ -66,7 +66,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 8000,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 8000 / 1e9  # According to the IEA, WindOffshore panels needs 8000 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 

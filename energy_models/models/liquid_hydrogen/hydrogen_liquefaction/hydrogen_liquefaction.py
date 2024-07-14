@@ -32,7 +32,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
     inputs
 
     """
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
         # for 1kwh of gas hydrogen, we get 0.98
@@ -40,11 +40,11 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                                               self.cost_details['efficiency']
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         pass
         # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_unit})']/\
         #     self.techno_infos_dict['efficiency']
 
         # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_unit})'] * self.techno_infos_dict['heat_recovery_factor']
+        #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] * self.techno_infos_dict['heat_recovery_factor']

@@ -56,12 +56,12 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.years = years
         self.energy_name = 'ethanol'
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 0.135 * 1000,
              GlossaryEnergy.biomass_dry: 45.0,
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.electricity: 0.0,
              GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
@@ -125,8 +125,8 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                                           GlossaryEnergy.UtilisationRatioValue: 50.0 * np.ones_like(self.years)})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -149,10 +149,10 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',

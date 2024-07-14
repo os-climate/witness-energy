@@ -64,7 +64,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.years = years
         self.energy_name = GlossaryEnergy.liquid_fuel
         # crude oil price : 1.3$/gallon
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.electricity: 16.,
              'CO2': 0.0,
@@ -72,17 +72,17 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
              })
 
-        self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.SMR: np.ones(len(years)) * 34,
                                                     # price to be updated for
                                                     # CO2
-                                                    'CoElectrolysis': np.ones(len(years)) * 60,
-                                                    'BiomassGasification': np.ones(len(years)) * 50
+                                                    GlossaryEnergy.CoElectrolysis: np.ones(len(years)) * 60,
+                                                    GlossaryEnergy.BiomassGasification: np.ones(len(years)) * 50
                                                     })
-        self.syngas_ratio_technos = {'SMR': 0.33,
-                                     'CoElectrolysis': 1.0,
-                                     'BiomassGasification': 2.0
+        self.syngas_ratio_technos = {GlossaryEnergy.SMR: 0.33,
+                                     GlossaryEnergy.CoElectrolysis: 1.0,
+                                     GlossaryEnergy.BiomassGasification: 2.0
                                      }
-        self.energy_carbon_emissions = pd.DataFrame({
+        self.stream_co2_emissions = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.electricity: 0.0,
             GlossaryEnergy.syngas: 0.0,
@@ -154,8 +154,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                            self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -179,8 +179,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}', ],
@@ -216,8 +216,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -243,8 +243,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -281,8 +281,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_negative,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -308,8 +308,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',

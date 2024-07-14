@@ -89,7 +89,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 self.energy_production[f'{energy}'] = biomass_energy_prod
                 biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.EnergyConsumptionValue][
                     'value'].copy()
-                biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{GlossaryEnergy.WetBiomassResource} (Mt)'])
+                biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{GlossaryEnergy.WetBiomassResource} ({GlossaryEnergy.mass_unit})'])
 
                 self.energy_consumption[f'{energy}'] = biomass_cons_prod
 

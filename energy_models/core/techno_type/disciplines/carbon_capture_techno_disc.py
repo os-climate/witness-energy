@@ -65,7 +65,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = CarbonCapture.name
+    energy_name = GlossaryEnergy.carbon_capture
 
     def set_partial_derivatives_flue_gas(self, energy_name=GlossaryEnergy.electricity):
 
@@ -388,13 +388,13 @@ class CCTechnoDiscipline(TechnoDiscipline):
             GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'World CO2 capture via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} (Mt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} ({GlossaryEnergy.mass_unit})',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
             initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
-        study_prod = study_production[f'{self.energy_name} (Mt)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.mass_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

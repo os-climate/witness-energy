@@ -26,18 +26,16 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalGen(ElectricityTechno):
-    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
-
     def compute_resources_needs(self):
         # need in kg/kWh
         self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # in kwh of fuel by kwh of electricity
         self.cost_details[f'{SolidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / \
                                                 self.cost_details['efficiency']
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})'] = \
             self.production_detailed[
@@ -51,28 +49,6 @@ class CoalGen(ElectricityTechno):
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
-
-    def compute_consumption_and_installed_power(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
-                                                                                       self.installed_power[
-                                                                                           'new_power_production']  # in Mt
-
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
-
-        return copper_need
 
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):

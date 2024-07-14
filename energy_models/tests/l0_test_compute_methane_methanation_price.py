@@ -42,7 +42,7 @@ class MethanationPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array(
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array(
             [0.1266023955250543, 0.12472966837635774, 0.12308937523217356, 0.12196584543238155,
              0.12101159171871603, 0.12018900859836591, 0.1192884942915236, 0.11865333029969044,
              0.11827242819796199, 0.11804896544898459, 0.11796960162047375, 0.11791110278481422,
@@ -53,7 +53,7 @@ class MethanationPriceTestCase(unittest.TestCase):
              0.12691667296790637, 0.12714334679576733, 0.12738215136005188]) * 1000
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
         # Use the same inest as SMR techno
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -123,8 +123,8 @@ class MethanationPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

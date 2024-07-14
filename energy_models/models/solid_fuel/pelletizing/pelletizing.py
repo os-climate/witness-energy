@@ -25,7 +25,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Pelletizing(SolidFuelTechno):
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # in kg of fuel by kg of pellets depends on moisture level
         self.cost_details[f'{BiomassDry.name}_needs'] = (1 + self.data_energy_dict['biomass_dry_moisture']) / \
                                                  (1 + self.data_energy_dict['pellets_moisture'])
@@ -35,7 +35,7 @@ class Pelletizing(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # Cost of electricity for 1 kWh of pellet
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] * \
                                                                                         self.production_detailed[

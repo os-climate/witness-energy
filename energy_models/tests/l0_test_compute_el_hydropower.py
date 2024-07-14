@@ -83,13 +83,13 @@ class HydropowerTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.Hydropower']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.Hydropower}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -124,8 +124,8 @@ class HydropowerTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

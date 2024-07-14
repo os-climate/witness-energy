@@ -38,12 +38,12 @@ class CoalGasification(SyngasTechno):
 
         return fuel_need
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # in kwh of fuel by kwh of syngas
         self.cost_details[f'{SolidFuel.name}_needs'] = self.get_fuel_needs()
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
 
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \

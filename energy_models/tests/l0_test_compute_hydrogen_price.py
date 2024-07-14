@@ -68,7 +68,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
 
         self.smr_techno_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-                'WaterGasShift': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+                GlossaryEnergy.WaterGasShift: np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                         0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                         0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                         0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -93,7 +93,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
 
         self.plasmacracking_techno_prices = pd.DataFrame({
             GlossaryEnergy.Years: years,
-            'PlasmaCracking':
+            GlossaryEnergy.PlasmaCracking:
                                                               np.array(
                                                                   [0.06363, 0.0612408613576689, 0.059181808246196024,
                                                                    0.05738028027202377,
@@ -223,7 +223,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                          1891117678.7879717, 1887628158.5415828, 1883981246.8879216]})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                       f"{GlossaryEnergy.CarbonResource} ({GlossaryEnergy.mass_unit})": 0.,
+                                                       f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})": 0.,
                                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [1097111725247.1581,
                                                                                            1074283458370.2065,
                                                                                            1059357209295.9789,
@@ -396,9 +396,9 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, 'Electrolysis.PEM': 0.0})
 
         self.plasma_cracking_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'PlasmaCracking': 0.013})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.PlasmaCracking: 0.013})
         self.smr_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.1721})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.WaterGasShift: 0.1721})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
@@ -445,29 +445,29 @@ class HydrogenPriceTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.techno_list}': ['WaterGasShift', 'Electrolysis.PEM',
-                                                                     'PlasmaCracking'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.smr_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoPricesValue}': self.smr_techno_prices,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.CO2EmissionsValue}': self.smr_carbon_emissions,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
+                       f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, 'Electrolysis.PEM',
+                                                                     GlossaryEnergy.PlasmaCracking],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': self.smr_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.smr_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.smr_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoProductionValue}': self.electrolysis_production,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_Electrolysis,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoConsumptionValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.TechnoConsumptionValue}': self.plasmacracking_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoProductionValue}': self.plasmacracking_production,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoPricesValue}': self.plasmacracking_techno_prices,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.CO2EmissionsValue}': self.plasma_cracking_carbon_emissions,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_PlasmaCracking}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.TechnoProductionValue}': self.plasmacracking_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.TechnoPricesValue}': self.plasmacracking_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.CO2EmissionsValue}': self.plasma_cracking_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_PlasmaCracking}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

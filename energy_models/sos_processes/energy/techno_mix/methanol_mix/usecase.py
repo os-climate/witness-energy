@@ -23,8 +23,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -71,9 +69,9 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      Electricity.name: 16.0,
+                                      GlossaryEnergy.electricity: 16.0,
                                       GaseousHydrogen.name: 80.0,
-                                      CarbonCapture.name: 70.0})
+                                      GlossaryEnergy.carbon_capture: 70.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -93,7 +91,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, Electricity.name: 0.0, GaseousHydrogen.name: 0.0, CarbonCapture.name: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GaseousHydrogen.name: 0.0, GlossaryEnergy.carbon_capture: 0.0})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -106,9 +104,9 @@ class Study(EnergyMixStudyManager):
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

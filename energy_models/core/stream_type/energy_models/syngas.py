@@ -28,8 +28,8 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class Syngas(EnergyType):
     name = GlossaryEnergy.syngas
-    default_techno_list = ['Pyrolysis', 'SMR', 'AutothermalReforming',
-                           'CoElectrolysis', 'BiomassGasification', 'CoalGasification']
+    default_techno_list = [GlossaryEnergy.Pyrolysis, GlossaryEnergy.SMR, GlossaryEnergy.AutothermalReforming,
+                           GlossaryEnergy.CoElectrolysis, GlossaryEnergy.BiomassGasification, GlossaryEnergy.CoalGasification]
     data_energy_dict = {
         'maturity': 10,
         'WACC': 0.1,

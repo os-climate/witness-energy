@@ -15,8 +15,6 @@ limitations under the License.
 '''
 import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import (
     highheattechno,
@@ -33,13 +31,13 @@ class GeothermalHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_energies_needs(self):
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+    def compute_other_streams_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                self.production_detailed[
                                                                                    f'{hightemperatureheat.name} ({self.product_unit})'] / \
                                                                                self.cost_details['efficiency']
@@ -69,8 +67,7 @@ class GeothermalHeat(highheattechno):
     def get_theoretical_steel_needs(self):
         """
         Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
-        According to the www.energy.gov, Geothermal need 968 kg of copper for each MW implemented
-        Computing the need in Mt/MW
+        According to the www.energy.gov, Geothermal need 968 kg of copper for each MW implemented. Computing the need in Mt/MW
         """
         steel_need = self.techno_infos_dict['steel_needs'] / 1000 / 1000 / 1000
 

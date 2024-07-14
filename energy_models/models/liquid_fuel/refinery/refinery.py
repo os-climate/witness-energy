@@ -67,12 +67,12 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
         ) / self.data_energy_dict['calorific_value'] / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.techno_infos_dict['hydrogen_demand'] / self.cost_details['efficiency']
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
             self.production_detailed[f'{energy} ({self.product_unit})'] = self.production_detailed[

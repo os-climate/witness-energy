@@ -125,8 +125,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

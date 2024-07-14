@@ -82,7 +82,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9# According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 

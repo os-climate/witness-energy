@@ -32,7 +32,7 @@ class FossilSimpleTechno(FossilTechno):
             GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
         })
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels

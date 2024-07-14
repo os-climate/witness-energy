@@ -46,7 +46,7 @@ class CropEnergy(BiomassDryTechno):
 
         self.land_surface_for_food = inputs_dict[self.LAND_SURFACE_FOR_FOOD_DF]
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_crop = f'{self.energy_name}_crop (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'

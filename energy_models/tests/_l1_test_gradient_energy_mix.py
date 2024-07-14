@@ -277,7 +277,7 @@ limitations under the License.
 #
 #         energy_prices_biomass = np.linspace(9, 9, self.year_range)
 #         energy_prices_wotaxes_biomass = np.linspace(9, 9, self.year_range)
-#         self.energy_prices_biomass = pd.DataFrame(
+#         self.stream_prices_biomass = pd.DataFrame(
 #             {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: energy_prices_biomass,
 #              'biomass_dry_wotaxes': energy_prices_wotaxes_biomass})
 #
@@ -354,7 +354,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -420,7 +420,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -483,7 +483,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -538,7 +538,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         outputs_names = [f'{name}.{model_name}.energy_mean_price']
 #         self.check_jacobian(location=dirname(__file__),
 #                             filename=f'jacobian_energy_mean_price_energy_prices_production.pkl',
@@ -594,7 +594,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -751,7 +751,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -896,7 +896,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy.syngas}.syngas_ratio'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -1174,7 +1174,7 @@ limitations under the License.
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
-#                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices_biomass,
+#                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2PerUse}': self.CO2_per_use_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_biomass,

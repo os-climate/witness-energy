@@ -16,12 +16,8 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.resources_models.monotethanolamine import (
-    Monotethanolamine,
-)
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
     MethaneTechno,
 )
@@ -30,17 +26,20 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class UpgradingBiogas(MethaneTechno):
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
 
         self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
 
+    def compute_resources_needs(self):
+        self.cost_details[f"{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss()
 
-    def compute_production(self):
+
+    def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                self.production_detailed[
                                                                                    f'{MethaneTechno.energy_name} ({self.product_unit})']
 
@@ -48,17 +47,6 @@ class UpgradingBiogas(MethaneTechno):
         # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
         #     self.techno_infos_dict['low_heat_production'] * \
         #     self.production[f'{MethaneTechno.energy_name} ({self.product_unit})']  # in TWH
-
-    def compute_energies_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-        super().compute_energies_consumption()
-        self.consumption_detailed[f'{Monotethanolamine.name} ({GlossaryEnergy.mass_unit})'] = self.get_MEA_loss() * \
-                                                                                    self.production_detailed[
-                                                                                        f'{MethaneTechno.energy_name} ({self.product_unit})']
-
 
     def get_biogas_needs(self):
         '''

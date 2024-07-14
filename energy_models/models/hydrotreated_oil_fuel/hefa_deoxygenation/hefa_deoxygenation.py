@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -49,12 +48,12 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs(
         ) / naturaloil_data['calorific_value']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.cost_details['efficiency']
-        self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']
         water_prod_factor = self.get_theoretical_water_prod()

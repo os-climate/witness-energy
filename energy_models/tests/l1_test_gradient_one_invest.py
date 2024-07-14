@@ -55,9 +55,9 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         self.years = np.arange(self.y_s, self.y_e + 1)
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
-        dict2[f'{GlossaryEnergy.electricity}.SolarPv'] = np.ones(len(self.years)) * 0.1
-        dict2[f'{GlossaryEnergy.electricity}.WindOnshore'] = np.ones(len(self.years)) * 0.2
-        dict2[f'{GlossaryEnergy.electricity}.CoalGen'] = np.ones(len(self.years)) * 0.3
+        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}'] = np.ones(len(self.years)) * 0.1
+        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}'] = np.ones(len(self.years)) * 0.2
+        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}'] = np.ones(len(self.years)) * 0.3
         dict2[f'{GlossaryEnergy.methane}.FossilGas'] = np.ones(len(self.years)) * 0.4
         dict2[f'{GlossaryEnergy.methane}.UpgradingBiogas'] = np.ones(len(self.years)) * 0.5
         dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift'] = np.ones(
@@ -119,7 +119,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
                                                                                        'CoalGen'],
                        f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': [
-                           'WaterGasShift',
+                           GlossaryEnergy.WaterGasShift,
                            'Electrolysis.AWE'],
                        f'{self.name}.{GlossaryEnergy.carbon_capture}.technologies_list': [
                            f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',

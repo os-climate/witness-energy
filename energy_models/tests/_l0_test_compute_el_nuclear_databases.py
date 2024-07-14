@@ -66,13 +66,13 @@ class NuclearTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years.tolist()})
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years.tolist()})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.Nuclear']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.Nuclear}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         self.resource_list = [
@@ -123,8 +123,8 @@ class NuclearTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{model_name_US}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
 

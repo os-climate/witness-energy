@@ -25,12 +25,11 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiogasFired(ElectricityTechno):
-    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{BioGas.name}_needs'] = self.techno_infos_dict[f'{BioGas.name}_needs']
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.production_detailed[
@@ -39,28 +38,6 @@ class BiogasFired(ElectricityTechno):
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
             self.consumption_detailed[f'{BioGas.name} ({self.product_unit})'] - \
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
-
-    def compute_consumption_and_installed_power(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * \
-                                                                                       self.installed_power[
-                                                                                           'new_power_production']  # in Mt
-
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station
-        It needs 1100 kg / MW
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
-
-        return copper_need
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

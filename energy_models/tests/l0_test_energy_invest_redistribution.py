@@ -57,7 +57,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.techno_list_renewable = ['RenewableSimpleTechno']
         self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
                                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
-        self.techno_list_carbon_storage = ['CarbonStorageTechno']
+        self.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
 
         data_invest = {
             GlossaryEnergy.Years: self.years

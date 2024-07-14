@@ -98,7 +98,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in output_columns]
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_price_test.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
@@ -137,14 +137,14 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in output_columns]
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_invest.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
-                            outputs=output_prices + [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'],
+                            outputs=output_prices + [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}'],
                             parallel=True)
 
     def test_03_check_gradient_of_price_vs_co2_emissions_open_loop(self):
@@ -183,9 +183,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in output_columns]
 
-        hydrogen_techno = ['Electrolysis.SOEC', 'Electrolysis.PEM', 'PlasmaCracking', 'WaterGasShift'
+        hydrogen_techno = ['Electrolysis.SOEC', 'Electrolysis.PEM', GlossaryEnergy.PlasmaCracking, GlossaryEnergy.WaterGasShift
                            ]
         output_hydrogen_prices = [
             f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in
@@ -199,10 +199,10 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
-                            inputs=[f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}'],
+                            inputs=[f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}'],
                             outputs=output_prices + output_co2_emissions + output_hydrogen_prices + output_lf_prices +
-                                    [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}',
-                                     f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyCO2EmissionsValue}'], parallel=True)
+                                    [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}',
+                                     f'{self.name}.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}'], parallel=True)
 
     def test_04_check_gradient_energymixoutputs_vs_energy_investment(self):
 
@@ -282,9 +282,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
         energy_emissions = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyCO2EmissionsValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')
 
         dump_dir = join(dirname(__file__), self.name)
 
@@ -304,8 +304,8 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         full_values_dict = {
             f'{usecase.study_name}.sub_mda_class': 'MDAGaussSeidel',
-            f'{usecase.study_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-            f'{usecase.study_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_emissions}
+            f'{usecase.study_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+            f'{usecase.study_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_emissions}
 
         exec_eng2.load_study_from_input_dict(full_values_dict)
         energy_list = [GlossaryEnergy.methane, GlossaryEnergy.solid_fuel, GlossaryEnergy.syngas,
@@ -319,7 +319,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         energy_price_outputs = []
         for energy in energy_list:
             energy_price_outputs.append(
-                f'{usecase.study_name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}')
+                f'{usecase.study_name}.EnergyMix.{energy}.{GlossaryEnergy.StreamPricesValue}')
             techno_list = self.ee.dm.get_value(
                 f'{usecase.study_name}.EnergyMix.{energy}.{GlossaryEnergy.techno_list}')
             for techno in techno_list:

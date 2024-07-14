@@ -23,7 +23,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -75,7 +74,7 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Syngas.name
+        self.energy_name = GlossaryEnergy.syngas
 
         energy_name = f'{energy_mix_name}.{self.energy_name}'
         years = np.arange(self.year_start, self.year_end + 1)
@@ -131,8 +130,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
 
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

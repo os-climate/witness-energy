@@ -42,8 +42,8 @@ class CarbonStorageTechnoPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'CO2': 0, GlossaryEnergy.carbon_capture: 12.})
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
 
@@ -80,7 +80,7 @@ class CarbonStorageTechnoPriceTestCase(unittest.TestCase):
     def test_03_carbon_storage_techno_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'CarbonStorageTechno'
+        self.model_name = GlossaryEnergy.CarbonStorageTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -104,9 +104,9 @@ class CarbonStorageTechnoPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_capture: 12.}),
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

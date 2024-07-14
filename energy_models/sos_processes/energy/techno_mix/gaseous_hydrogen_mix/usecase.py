@@ -30,9 +30,9 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = [
-    'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
-TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
-                     'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
+    GlossaryEnergy.WaterGasShift, 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE', GlossaryEnergy.PlasmaCracking]
+TECHNOLOGIES_LIST = [GlossaryEnergy.WaterGasShift, 'Electrolysis.SOEC',
+                     'Electrolysis.PEM', 'Electrolysis.AWE', GlossaryEnergy.PlasmaCracking]
 
 
 class Study(EnergyMixStudyManager):
@@ -51,12 +51,12 @@ class Study(EnergyMixStudyManager):
         invest_hydrogen_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'PlasmaCracking' in self.technologies_list:
-            invest_hydrogen_mix_dict['PlasmaCracking'] = [
+        if GlossaryEnergy.PlasmaCracking in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.PlasmaCracking] = [
                 0.001 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'WaterGasShift' in self.technologies_list:
-            invest_hydrogen_mix_dict['WaterGasShift'] = [10.0] * len(l_ctrl)
+        if GlossaryEnergy.WaterGasShift in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.WaterGasShift] = [10.0] * len(l_ctrl)
 
         if 'Electrolysis.SOEC' in self.technologies_list:
             invest_hydrogen_mix_dict['Electrolysis.SOEC'] = [
@@ -126,12 +126,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.5,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.syngas}.syngas_ratio': np.ones(len(years)) * 0.5,
                        f'{self.study_name}.{energy_name}.Electrolysis.PEM.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.Electrolysis.AWE.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.Electrolysis.SOEC.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.PlasmaCracking.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.WaterGasShift.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
@@ -139,8 +139,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

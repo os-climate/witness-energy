@@ -45,7 +45,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
         # price of 1 kg of wood
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.WoodResource: len(self.years) * [130]
@@ -81,7 +81,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
 
     def test_02_pyrolysis_discipline(self):
         self.name = 'Test'
-        self.model_name = 'Pyrolysis'
+        self.model_name = GlossaryEnergy.Pyrolysis
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -99,8 +99,8 @@ class PyrolysisPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

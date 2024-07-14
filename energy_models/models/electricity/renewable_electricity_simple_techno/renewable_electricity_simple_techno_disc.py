@@ -77,7 +77,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 # 'copper_needs': 1100, #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                 # f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     techno_info_dict = techno_infos_dict_default

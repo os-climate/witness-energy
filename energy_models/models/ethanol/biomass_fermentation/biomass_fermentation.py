@@ -15,9 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.ethanol_techno import (
@@ -40,14 +38,14 @@ class BiomassFermentation(EthanolTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{BiomassDry.name}_needs'] = self.get_theoretical_biomass_needs() / self.cost_details['efficiency']
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                self.production_detailed[
                                                                                    f'{Ethanol.name} ({self.product_unit})'] / \
                                                                                self.cost_details['efficiency']

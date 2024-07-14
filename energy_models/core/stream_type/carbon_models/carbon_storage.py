@@ -25,7 +25,7 @@ class CarbonStorage(BaseStream):
                            'DeepSalineFormation', 'DepletedOilGas',
                            'EnhancedOilRecovery', 'GeologicMineralization',
                            'PureCarbonSolidStorage', 'Reforestation',
-                           'CarbonStorageTechno']
+                           GlossaryEnergy.CarbonStorageTechno]
     # Data dict from CO2 dioxyde
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,

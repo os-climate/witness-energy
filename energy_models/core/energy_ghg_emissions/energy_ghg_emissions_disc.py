@@ -109,9 +109,9 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                'float', None, True),
                                                            f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})': (
                                                                'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_capture} (Mt)': (
+                                                           f'production {GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})': (
                                                                'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_storage} (Mt)': (
+                                                           f'production {GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})': (
                                                                'float', None, True),
                                                            'Total production': ('float', None, True),
                                                            'Total production (uncut)': ('float', None, True),

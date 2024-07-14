@@ -76,7 +76,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 

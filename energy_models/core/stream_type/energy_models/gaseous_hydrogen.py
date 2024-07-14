@@ -22,7 +22,7 @@ class GaseousHydrogen(EnergyType):
     name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
     short_name = GlossaryEnergy.gaseous_hydrogen
     default_techno_list = ['Electrolysis.PEM', 'Electrolysis.AWE',
-                           'Electrolysis.SOEC', 'WaterGasShift', 'PlasmaCracking']
+                           'Electrolysis.SOEC', GlossaryEnergy.WaterGasShift, GlossaryEnergy.PlasmaCracking]
     data_energy_dict = {'maturity': 10,
                         'WACC': 0.1,
                         'NOx_per_energy': 7.0,

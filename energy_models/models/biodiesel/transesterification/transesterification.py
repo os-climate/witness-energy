@@ -17,7 +17,6 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.glycerol import Glycerol
 from energy_models.core.stream_type.resources_models.methanol import Methanol
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
@@ -46,10 +45,10 @@ class Transesterification(BioDieselTechno):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
         # need in kWh/kwh biodiesel
     
-    def compute_other_energies_needs(self):
-        self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+    def compute_other_streams_needs(self):
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         self.production_detailed[f'{Glycerol.name} ({GlossaryEnergy.mass_unit})'] = 0.12 * self.production_detailed[
             f'{BioDiesel.name} ({self.product_unit})'] / \
                                                                           self.data_energy_dict['calorific_value']

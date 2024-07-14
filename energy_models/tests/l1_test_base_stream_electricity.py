@@ -50,12 +50,12 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.hydropower_techno_prices = pd.DataFrame({
             GlossaryEnergy.Years: years,
-            'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
+            GlossaryEnergy.Hydropower: np.linspace(100, 100 + len(years) - 1, len(years)),
                                                       'Hydropower_wotaxes': np.linspace(100, 100 + len(years) - 1,
                                                                                         len(years))})
 
         self.gasturbine_techno_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      'GasTurbine': np.linspace(10, 10 + len(years) - 1, len(years)),
+                                                      GlossaryEnergy.GasTurbine: np.linspace(10, 10 + len(years) - 1, len(years)),
                                                       'GasTurbine_wotaxes': np.linspace(10, 10 + len(years) - 1,
                                                                                         len(years))
                                                       })
@@ -71,10 +71,10 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
 
         self.hydropower_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'Hydropower': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Hydropower: 0.0})
 
         self.gasturbine_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'GasTurbine': 0.366208})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.GasTurbine: 0.366208})
 
         self.land_use_required_GasTurbine = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'GasTurbine (Gha)': 0.0})
@@ -122,7 +122,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         years_low_prod = 10
         hydropower_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(100, 100, len(self.years)),
-                                              'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
+                                              f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": [844.027980] * len(self.years)})
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               f"{GlossaryEnergy.CH4} ({GlossaryEnergy.mass_unit})": 0.,
@@ -135,34 +135,34 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.techno_list}': ['Hydropower', 'GasTurbine'],
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}': self.hydropower_consumption,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.hydropower_consumption,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoProductionValue}': hydropower_production,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoPricesValue}': self.hydropower_techno_prices,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.CO2EmissionsValue}': self.hydropower_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_Hydropower,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoConsumptionValue}': self.gasturbine_consumption,
-                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.gasturbine_consumption,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoProductionValue}': gasturbine_production,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoPricesValue}': self.gasturbine_techno_prices,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.CO2EmissionsValue}': self.gasturbine_carbon_emissions,
-                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_GasTurbine}
+                       f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.Hydropower, GlossaryEnergy.GasTurbine],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoConsumptionValue}': self.hydropower_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.hydropower_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}': hydropower_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoPricesValue}': self.hydropower_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.CO2EmissionsValue}': self.hydropower_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_Hydropower,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoConsumptionValue}': self.gasturbine_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.gasturbine_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}': gasturbine_production,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoPricesValue}': self.gasturbine_techno_prices,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.CO2EmissionsValue}': self.gasturbine_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_GasTurbine}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-
+        print(self.ee.display_treeview_nodes(True))
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
-        inputs_name = [f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoProductionValue}',
+        inputs_checked = [f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoProductionValue}',
                        f'Test.electricity.GasTurbine.{GlossaryEnergy.TechnoConsumptionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoConsumptionValue}']
-        outputs_name = ['Test.prod_hydropower_constraint']
+        outputs_checked = ['Test.prod_hydropower_constraint']
         self.check_jacobian(location=dirname(__file__), filename='jacobian_energy_mix_electricity_stream.pkl',
                             local_data=disc.local_data,
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
-                            inputs=inputs_name, outputs=outputs_name)
+                            inputs=inputs_checked, outputs=outputs_checked)

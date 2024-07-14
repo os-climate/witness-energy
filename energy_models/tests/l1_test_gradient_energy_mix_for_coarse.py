@@ -93,7 +93,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = []
 
         inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in self.energy_list
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in self.energy_list
             if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
@@ -112,7 +112,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
-            f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
+            f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in
             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list

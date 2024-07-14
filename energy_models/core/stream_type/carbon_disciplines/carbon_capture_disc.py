@@ -62,7 +62,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
-    energy_name = CarbonCapture.name
+    energy_name = GlossaryEnergy.carbon_capture
 
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()
 
@@ -154,23 +154,23 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type',
                      'DAC'), (
-                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                     np.identity(len_matrix) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type_woratio',
                      'DAC'), (
-                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                     np.identity(len_matrix) * scaling_factor_energy_production)
             elif techno.startswith('flue_gas_capture'):
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type',
                      'flue gas'), (
-                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                     np.identity(len_matrix) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type_woratio',
                      'flue gas'), (
-                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                     np.identity(len_matrix) * scaling_factor_energy_production)
 
                 if self.energy_model.flue_gas_percentage is not None:
@@ -188,7 +188,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         ('carbon_captured_type',
                          'flue gas limited'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                         f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                         np.identity(len_matrix) * grad_fluegas_limited)
 
                     self.set_partial_derivative_for_other_types(
@@ -259,7 +259,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         ('carbon_captured_type',
                          'flue gas limited'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                         f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                         np.identity(len_matrix) * scaling_factor_energy_production)
 
                 # ---_woratio case (had to separate the two conditions)
@@ -276,7 +276,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         ('carbon_captured_type_woratio',
                          'flue gas limited'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                         f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                         np.identity(len_matrix) * grad_fluegas_limited_woratio)
 
                     list_columnstechnoprod = list(
@@ -320,7 +320,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         ('carbon_captured_type_woratio',
                          'flue gas limited'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                         f'{GlossaryEnergy.carbon_capture} ({CarbonCapture.unit})'),
                         np.identity(len_matrix) * inputs_dict['scaling_factor_techno_production'])
 
             if self.energy_model.flue_gas_percentage is not None:
@@ -353,12 +353,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         if self.energy_model.flue_gas_percentage is not None:
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, self.energy_name), ('flue_gas_production',
+                (GlossaryEnergy.StreamPricesValue, self.energy_name), ('flue_gas_production',
                                                                        CarbonCapture.flue_gas_name),
                 np.identity(len_matrix) * grad_price_vs_fg_prod)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'), (
+                (GlossaryEnergy.StreamPricesValue, f'{self.energy_name}_wotaxes'), (
                     'flue_gas_production', CarbonCapture.flue_gas_name),
                 np.identity(len_matrix) * grad_price_wotaxes_vs_fg_prod)
 
@@ -489,7 +489,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/kWh]', chart_name=chart_name)
@@ -513,7 +513,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         return new_chart
 
     def get_chart_energy_price_in_dollar_kg(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         cut_energy_name = self.energy_name.split(".")
         display_energy_name = cut_energy_name[len(
             cut_energy_name) - 1].replace("_", " ")

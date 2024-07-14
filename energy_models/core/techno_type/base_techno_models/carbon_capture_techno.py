@@ -19,13 +19,12 @@ import numpy as np
 import scipy.interpolate as sc
 from scipy.stats import linregress
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechno(TechnoType):
-    energy_name = CarbonCapture.name
+    energy_name = GlossaryEnergy.carbon_capture
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
@@ -163,7 +162,7 @@ class CCTechno(TechnoType):
 
             grad = np.array(slopes)[:, np.newaxis] \
                    * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] * \
-                   self.energy_prices[energy_name].values[:, np.newaxis]
+                   self.stream_prices[energy_name].values[:, np.newaxis]
         else:
             grad = 0.0
         return np.identity(len(fg_mean_ratio)) * grad

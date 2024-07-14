@@ -65,7 +65,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 2900,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 2900 / 1e9 # According to the IEA, Onshore Wind turbines need 2900 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
