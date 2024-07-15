@@ -29,7 +29,7 @@ class CCUS(BaseStream):
     """
     Class CCUS
     """
-    name = GlossaryEnergy.CCUS
+    name = GlossaryEnergy.ccus_type
     PRODUCTION = 'production'
     DELTA_ENERGY_PRICES = 'delta_energy_prices'
     DELTA_CO2_EMISSIONS = 'delta_co2_emissions'

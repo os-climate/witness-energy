@@ -82,6 +82,10 @@ class Study(EnergyMixStudyManager):
             invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
             invest_carbon_storage_mix_dict[GlossaryEnergy.CarbonStorageTechno][0] = invest_2020_ccus / 3.
 
+        if GlossaryEnergy.Reforestation in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.Reforestation] = [
+                5 * (1 + 0.0) ** i for i in l_ctrl]
+
         if self.bspline:
             invest_carbon_storage_mix_dict[GlossaryEnergy.Years] = self.years
 

@@ -29,9 +29,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
 )
 from energy_models.core.energy_study_manager import (
-    AGRI_TYPE,
-    CCUS_TYPE,
-    ENERGY_TYPE,
     EnergyStudyManager,
 )
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
@@ -64,6 +61,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -78,7 +76,7 @@ class Study(EnergyStudyManager):
             bspline=True,
             execution_engine=None,
             use_utilisation_ratio: bool = False,
-            techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV
+            techno_dict=techno_dict_midway
     ):
         super().__init__(
             file_path=file_path,
@@ -105,6 +103,7 @@ class Study(EnergyStudyManager):
         self.bspline = bspline
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.test_post_procs = False
+        
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -236,8 +235,8 @@ class Study(EnergyStudyManager):
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
             instance_sub_study = None # initialize variable
-            if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
-                prefix_name = f"{GlossaryEnergy.CCUS}"
+            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type:
+                prefix_name = f"{GlossaryEnergy.ccus_type}"
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
@@ -248,7 +247,7 @@ class Study(EnergyStudyManager):
                     invest_discipline=self.invest_discipline,
                     technologies_list=self.techno_dict[sub_study_name]["value"],
                 )
-            elif self.techno_dict[sub_study_name]["type"] == ENERGY_TYPE:
+            elif self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.energy_type:
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
@@ -258,13 +257,13 @@ class Study(EnergyStudyManager):
                     invest_discipline=self.invest_discipline,
                     technologies_list=self.techno_dict[sub_study_name]["value"],
                 )
-            elif self.techno_dict[sub_study_name]["type"] == AGRI_TYPE:
+            elif self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.agriculture_type:
                 pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]"
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name][GlossaryEnergy.stream_type]} is not in [{GlossaryEnergy.energy_type},{GlossaryEnergy.ccus_type},{GlossaryEnergy.agriculture_type}]"
                 )
-            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE and instance_sub_study is not None:
+            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] != GlossaryEnergy.agriculture_type and instance_sub_study is not None:
                 instance_sub_study.configure_ds_boundaries(
                     lower_bound_techno=self.lower_bound_techno,
                     upper_bound_techno=self.upper_bound_techno,
@@ -338,8 +337,8 @@ class Study(EnergyStudyManager):
 
                 if self.use_utilisation_ratio:
                     # add design variable for utilization ratio per technology
-                    design_var_descriptor[f'{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array'] = {
-                        'out_name': f'{GlossaryEnergy.CCUS}.{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    design_var_descriptor[f'{GlossaryEnergy.ccus_type}.{ccs}.{technology}.utilization_ratio_array'] = {
+                        'out_name': f'{GlossaryEnergy.ccus_type}.{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
                         'out_type': 'dataframe',
                         'key': GlossaryEnergy.UtilisationRatioValue,
                         'index': self.years,
@@ -387,7 +386,7 @@ class Study(EnergyStudyManager):
         for energy_or_ccs in self.ccs_list:
             for techno in self.dict_technos[energy_or_ccs]:
                 variables.append(
-                    f"{GlossaryEnergy.CCUS}.{energy_or_ccs}.{techno}.utilization_ratio_array"
+                    f"{GlossaryEnergy.ccus_type}.{energy_or_ccs}.{techno}.utilization_ratio_array"
                 )
         low_bound = [1.] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS
         upper_bound = [100.] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS
@@ -426,11 +425,11 @@ class Study(EnergyStudyManager):
                 array_invest_var_name = f"{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
                 value = dspace.loc[dspace['variable'] == array_invest_var_name, 'value'].values[0]
                 out_dict.update({
-                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{array_invest_var_name}": np.array(value)
+                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.ccus_type}.{array_invest_var_name}": np.array(value)
                 })
 
                 if self.use_utilisation_ratio:
-                    array_utilization_ratio_var_name = f"{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array"
+                    array_utilization_ratio_var_name = f"{GlossaryEnergy.ccus_type}.{ccs}.{technology}.utilization_ratio_array"
                     value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
                     out_dict.update({
                         f"{self.study_name}.{self.coupling_name}.{array_utilization_ratio_var_name}": np.array(value)
@@ -630,13 +629,13 @@ class Study(EnergyStudyManager):
         # The flue gas list will depend on technologies present in the
         # techno_dict
         possible_technos = [
-            f"{energy}.{techno}" for energy, tech_dict in self.techno_dict.items() for techno in tech_dict["value"]
+            f"{energy}.{techno}" for energy, tech_dict in self.techno_dict.items() for techno in tech_dict[GlossaryEnergy.value]
         ]
         flue_gas_list = [techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos]
 
         if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
 
         if self.coarse_mode:
@@ -662,7 +661,7 @@ class Study(EnergyStudyManager):
         possible_technos = [
             f"{energy}.{techno}"
             for energy, tech_dict in self.techno_dict.items()
-            for techno in tech_dict["value"]
+            for techno in tech_dict[GlossaryEnergy.value]
         ]
         flue_gas_list = [
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
@@ -670,7 +669,7 @@ class Study(EnergyStudyManager):
 
         if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
 
         if not self.coarse_mode:
@@ -709,7 +708,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    uc_cls.load_data()
-    uc_cls.run()
     uc_cls.test()

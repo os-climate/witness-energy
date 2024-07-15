@@ -610,17 +610,19 @@ class GlossaryEnergy(GlossaryWitnessCore):
     DirectAirCaptureTechno = "DirectAirCaptureTechno"
 
     # Techno Dicts :
+    stream_type = "type"
     energy_type = "energy"
     agriculture_type = "agriculture"
-    CCUS = "CCUS"
+    ccus_type = "CCUS"
+    value = "value"
     DEFAULT_TECHNO_DICT_DEV = {
         methane: {
-            "type": energy_type,
-            "value": [FossilGas, UpgradingBiogas, Methanation],
+            stream_type: energy_type,
+            value: [FossilGas, UpgradingBiogas, Methanation],
         },
         f"{hydrogen}.{gaseous_hydrogen}": {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 WaterGasShift,
                 ElectrolysisSOEC,
                 ElectrolysisPEM,
@@ -628,15 +630,15 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 PlasmaCracking,
             ],
         },
-        biogas: {"type": energy_type, "value": [AnaerobicDigestion]},
-        syngas: {"type": energy_type, "value": [BiomassGasification]},
+        biogas: {stream_type: energy_type, value: [AnaerobicDigestion]},
+        syngas: {stream_type: energy_type, value: [BiomassGasification]},
         f"{fuel}.{liquid_fuel}": {
-            "type": energy_type,
-            "value": [Refinery, FischerTropsch],
+            stream_type: energy_type,
+            value: [Refinery, FischerTropsch],
         },
         hightemperatureheat_energyname: {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 NaturalGasBoilerHighHeat,
                 ElectricBoilerHighHeat,
                 HeatPumpHighHeat,
@@ -645,8 +647,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         mediumtemperatureheat_energyname: {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 NaturalGasBoilerMediumHeat,
                 ElectricBoilerMediumHeat,
                 HeatPumpMediumHeat,
@@ -655,8 +657,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         lowtemperatureheat_energyname: {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 NaturalGasBoilerLowHeat,
                 ElectricBoilerLowHeat,
                 HeatPumpLowHeat,
@@ -665,24 +667,24 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         f"{fuel}.{hydrotreated_oil_fuel}": {
-            "type": energy_type,
-            "value": [HefaDecarboxylation, HefaDeoxygenation],
+            stream_type: energy_type,
+            value: [HefaDecarboxylation, HefaDeoxygenation],
         },
-        f"{fuel}.{biodiesel}": {"type": energy_type, "value": [Transesterification]},
-        f"{fuel}.{ethanol}": {"type": energy_type, "value": [BiomassFermentation]},
-        solid_fuel: {"type": energy_type, "value": [CoalExtraction, Pelletizing]},
+        f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
+        f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
+        solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
         biomass_dry: {
-            "type": agriculture_type,
-            "value": [ManagedWood, UnmanagedWood, CropEnergy],
+            stream_type: agriculture_type,
+            value: [ManagedWood, UnmanagedWood, CropEnergy],
         },
-        electricity: {"type": energy_type, "value": [WindOffshore]},
+        electricity: {stream_type: energy_type, value: [WindOffshore]},
         f"{hydrogen}.{liquid_hydrogen}": {
-            "type": energy_type,
-            "value": [HydrogenLiquefaction],
+            stream_type: energy_type,
+            value: [HydrogenLiquefaction],
         },
         carbon_capture: {
-            "type": CCUS,
-            "value": [
+            stream_type: ccus_type,
+            value: [
                 f"{direct_air_capture}.{AmineScrubbing}",
                 f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
                 f"{flue_gas_capture}.{CalciumLooping}",
@@ -694,8 +696,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         carbon_storage: {
-            "type": CCUS,
-            "value": [
+            stream_type: ccus_type,
+            value: [
                 BiomassBuryingFossilization,
                 DeepOceanInjection,
                 DeepSalineFormation,
@@ -708,26 +710,26 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     DEFAULT_COARSE_TECHNO_DICT = {
-        renewable: {"type": energy_type, "value": [RenewableSimpleTechno]},
-        fossil: {"type": energy_type, "value": [FossilSimpleTechno]},
+        renewable: {stream_type: energy_type, value: [RenewableSimpleTechno]},
+        fossil: {stream_type: energy_type, value: [FossilSimpleTechno]},
         carbon_capture: {
-            "type": CCUS,
-            "value": [DirectAirCapture, FlueGasCapture],
+            stream_type: ccus_type,
+            value: [DirectAirCapture, FlueGasCapture],
         },
         carbon_storage: {
-            "type": CCUS,
-            "value": [CarbonStorageTechno],
+            stream_type: ccus_type,
+            value: [CarbonStorageTechno],
         },
     }
 
     DEFAULT_TECHNO_DICT = {
         methane: {
-            "type": energy_type,
-            "value": [FossilGas, UpgradingBiogas, Methanation],
+            stream_type: energy_type,
+            value: [FossilGas, UpgradingBiogas, Methanation],
         },
         f"{hydrogen}.{gaseous_hydrogen}": {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 WaterGasShift,
                 ElectrolysisSOEC,
                 ElectrolysisPEM,
@@ -736,14 +738,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         f"{hydrogen}.{liquid_hydrogen}": {
-            "type": energy_type,
-            "value": [HydrogenLiquefaction],
+            stream_type: energy_type,
+            value: [HydrogenLiquefaction],
         },
-        # methanol: {"type": energy_type, 'value': [CO2Hydrogenation]},
-        biogas: {"type": energy_type, "value": [AnaerobicDigestion]},
+        # methanol: {stream_type: energy_type, 'value': [CO2Hydrogenation]},
+        biogas: {stream_type: energy_type, value: [AnaerobicDigestion]},
         syngas: {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 BiomassGasification,
                 SMR,
                 CoalGasification,
@@ -753,20 +755,20 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         f"{fuel}.{liquid_fuel}": {
-            "type": energy_type,
-            "value": [Refinery, FischerTropsch],
+            stream_type: energy_type,
+            value: [Refinery, FischerTropsch],
         },
         f"{fuel}.{hydrotreated_oil_fuel}": {
-            "type": energy_type,
-            "value": [HefaDecarboxylation, HefaDeoxygenation],
+            stream_type: energy_type,
+            value: [HefaDecarboxylation, HefaDeoxygenation],
         },
-        f"{fuel}.{biodiesel}": {"type": energy_type, "value": [Transesterification]},
-        f"{fuel}.{ethanol}": {"type": energy_type, "value": [BiomassFermentation]},
-        solid_fuel: {"type": energy_type, "value": [CoalExtraction, Pelletizing]},
-        biomass_dry: {"type": agriculture_type, "value": []},
+        f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
+        f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
+        solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
+        biomass_dry: {stream_type: agriculture_type, value: []},
         electricity: {
-            "type": energy_type,
-            "value": [
+            stream_type: energy_type,
+            value: [
                 WindOffshore,
                 WindOnshore,
                 SolarPv,
@@ -782,8 +784,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         carbon_capture: {
-            "type": CCUS,
-            "value": [
+            stream_type: ccus_type,
+            value: [
                 f"{direct_air_capture}.{AmineScrubbing}",
                 f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
                 f"{flue_gas_capture}.{CalciumLooping}",
@@ -795,8 +797,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         carbon_storage: {
-            "type": CCUS,
-            "value": [
+            stream_type: ccus_type,
+            value: [
                 BiomassBuryingFossilization,
                 DeepOceanInjection,
                 DeepSalineFormation,
@@ -806,6 +808,29 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 PureCarbonSolidStorage,
             ],
         },
+    }
+
+    stream_to_type_mapper = {
+        fossil: energy_type,
+        renewable: energy_type,
+        methane: energy_type,
+        f'{heat}.{lowtemperatureheat}': energy_type,
+        f'{heat}.{mediumtemperatureheat}': energy_type,
+        f'{heat}.{hightemperatureheat}': energy_type,
+        f'{hydrogen}.{gaseous_hydrogen}': energy_type,
+        f'{hydrogen}.{liquid_hydrogen}': energy_type,
+        biogas: energy_type,
+        syngas: energy_type,
+        f'{fuel}.{liquid_fuel}': energy_type,
+        f'{fuel}.{hydrotreated_oil_fuel}': energy_type,
+        f'{fuel}.{biodiesel}': energy_type,
+        f'{fuel}.{ethanol}': energy_type,
+        f'{fuel}.{methanol}': energy_type,
+        solid_fuel: energy_type,
+        biomass_dry: agriculture_type,
+        electricity: energy_type,
+        carbon_capture: ccus_type,
+        carbon_storage: ccus_type
     }
 
     UraniumResource = "uranium_resource"
@@ -1239,7 +1264,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GeothermalLowHeat: f"{heat}.{lowtemperatureheat}",
         ElectricBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
         GeothermalMediumHeat: f"{heat}.{mediumtemperatureheat}",
-        CO2Hydrogenation: f'{fuel}.{methanol}',
+        #CO2Hydrogenation: f'{fuel}.{methanol}',
         NaturalGasBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
         HeatPumpLowHeat: f"{heat}.{lowtemperatureheat}",
         CHPLowHeat: f"{heat}.{lowtemperatureheat}",

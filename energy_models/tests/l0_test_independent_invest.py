@@ -119,10 +119,10 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift,
                                                                                     GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                                                                               f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
-                                                                              GlossaryEnergy.GeologicMineralization],
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
+                                                                                                                                      GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
                        }
@@ -137,7 +137,7 @@ class TestIndependentInvest(unittest.TestCase):
 
                 if GlossaryEnergy.carbon_capture in column or GlossaryEnergy.carbon_storage in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.{GlossaryEnergy.CCUS}.{column}.{GlossaryEnergy.InvestLevelValue}')[
+                        f'{self.name}.{GlossaryEnergy.ccus_type}.{column}.{GlossaryEnergy.InvestLevelValue}')[
                         GlossaryEnergy.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(
@@ -197,10 +197,10 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift,
                                                                                     GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                                                                               f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
-                                                                              GlossaryEnergy.GeologicMineralization],
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
+                                                                                                                                      GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
                        f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
@@ -217,7 +217,7 @@ class TestIndependentInvest(unittest.TestCase):
 
                 if GlossaryEnergy.carbon_capture in column or GlossaryEnergy.carbon_storage in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.{GlossaryEnergy.CCUS}.{column}.{GlossaryEnergy.InvestLevelValue}')[
+                        f'{self.name}.{GlossaryEnergy.ccus_type}.{column}.{GlossaryEnergy.InvestLevelValue}')[
                         GlossaryEnergy.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(

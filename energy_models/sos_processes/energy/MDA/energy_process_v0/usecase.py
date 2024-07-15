@@ -31,9 +31,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
 )
 from energy_models.core.energy_study_manager import (
-    AGRI_TYPE,
-    CCUS_TYPE,
-    ENERGY_TYPE,
     EnergyStudyManager,
 )
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
@@ -124,10 +121,10 @@ class Study(EnergyStudyManager):
     def create_study_list(self):
         self.sub_study_dict = {}
         self.sub_study_path_dict = {}
-        for energy in self.energy_list + self.ccs_list:
-            cls, path = self.get_energy_mix_study_cls(energy)
-            self.sub_study_dict[energy] = cls
-            self.sub_study_path_dict[energy] = path
+        for stream in self.energy_list + self.ccs_list:
+            cls, path = self.get_energy_mix_study_cls(stream)
+            self.sub_study_dict[stream] = cls
+            self.sub_study_path_dict[stream] = path
 
     def setup_objectives(self):
 
@@ -447,8 +444,8 @@ class Study(EnergyStudyManager):
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
             instance_sub_study = None  # initialize variable
-            if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
-                prefix_name = GlossaryEnergy.CCUS
+            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type:
+                prefix_name = GlossaryEnergy.ccus_type
                 instance_sub_study = sub_study(
                     year_start=self.year_start,
                     year_end=self.year_end,
@@ -457,9 +454,9 @@ class Study(EnergyStudyManager):
                     prefix_name=prefix_name,
                     execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline,
-                    technologies_list=self.techno_dict[sub_study_name]["value"],
+                    technologies_list=self.techno_dict[sub_study_name][GlossaryEnergy.value],
                 )
-            elif self.techno_dict[sub_study_name]["type"] == ENERGY_TYPE:
+            elif self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.energy_type:
                 instance_sub_study = sub_study(
                     year_start=self.year_start,
                     year_end=self.year_end,
@@ -467,15 +464,15 @@ class Study(EnergyStudyManager):
                     main_study=False,
                     execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline,
-                    technologies_list=self.techno_dict[sub_study_name]["value"],
+                    technologies_list=self.techno_dict[sub_study_name][GlossaryEnergy.value],
                 )
-            elif self.techno_dict[sub_study_name]["type"] == AGRI_TYPE:
+            elif self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.agriculture_type:
                 pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]"
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name][GlossaryEnergy.stream_type]} is not in [{GlossaryEnergy.energy_type},{GlossaryEnergy.ccus_type},{GlossaryEnergy.agriculture_type}]"
                 )
-            if self.techno_dict[sub_study_name]["type"] != AGRI_TYPE and instance_sub_study is not None:
+            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] != GlossaryEnergy.agriculture_type and instance_sub_study is not None:
                 instance_sub_study.configure_ds_boundaries(
                     lower_bound_techno=self.lower_bound_techno,
                     upper_bound_techno=self.upper_bound_techno,
@@ -658,7 +655,7 @@ class Study(EnergyStudyManager):
         possible_technos = [
             f"{energy}.{techno}"
             for energy, tech_dict in self.techno_dict.items()
-            for techno in tech_dict["value"]
+            for techno in tech_dict[GlossaryEnergy.value]
         ]
         flue_gas_list = [
             techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
@@ -666,7 +663,7 @@ class Study(EnergyStudyManager):
 
         if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+                f"{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
