@@ -19,10 +19,6 @@ import pandas as pd
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -73,6 +69,10 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -122,6 +122,7 @@ class Study(EnergyStudyManager):
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
+        self.test_post_procs = False
 
     def create_study_list(self):
         self.sub_study_dict = {}

@@ -19,10 +19,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
@@ -69,6 +65,11 @@ from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase im
     DEFAULT_FLUE_GAS_LIST,
 )
 
+from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 INVEST_DISC_NAME = "InvestmentDistribution"
 
 
@@ -108,6 +109,7 @@ class Study(EnergyStudyManager):
         self.create_study_list()
         self.bspline = bspline
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.test_post_procs = False
 
     def create_study_list(self):
         self.sub_study_dict = {}
