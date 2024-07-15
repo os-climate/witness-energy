@@ -16,16 +16,17 @@ limitations under the License.
 '''
 
 
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.base_functions.specific_check import specific_check_years
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as Study_v0,
 )
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
