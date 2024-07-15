@@ -78,6 +78,7 @@ class Study(StudyManager):
             techno_dict=techno_dict,
         )
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
+        self.test_post_procs = True
 
     def setup_objectives(self):
         func_df = Study_v0.setup_objectives(self)

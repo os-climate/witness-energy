@@ -109,6 +109,7 @@ class Study(EnergyStudyManager):
         self.create_study_list()
         self.bspline = bspline
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.test_post_procs = False
 
     def create_study_list(self):
         self.sub_study_dict = {}

@@ -40,6 +40,7 @@ class Study(StudyManager):
         self.optim_name = 'MDO'
         self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV
         self.use_utilisation_ratio = use_utilisation_ratio
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         data_usecase = subStudy(techno_dict=self.techno_dict, use_utilisation_ratio=self.use_utilisation_ratio)
