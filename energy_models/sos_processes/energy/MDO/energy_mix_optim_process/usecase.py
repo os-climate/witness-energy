@@ -14,13 +14,14 @@ limitations under the License.
 
 '''
 from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
     Study as subStudy,
 )
 from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
-
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import FunctionManagerDisc
 
 INVEST_DISC_NAME = 'InvestmentDistribution'
 

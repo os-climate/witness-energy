@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from plotly import figure_factory as ff
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter

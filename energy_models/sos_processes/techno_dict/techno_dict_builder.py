@@ -213,18 +213,23 @@ inital_selection = [
 
 
 if __name__ == '__main__':
-    from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase_with_utilization_ratio import (
-        Study,
-    )
+    sub_techno_dict, n_technos, n_streams = techno_dict_builder(
+        techno_infos=techno_info_dict,
+        initial_selection=inital_selection,
+        minimal_stream_number=7,
+        minimal_techno_number=20,
+        max_carbon_storage_technos=3)
 
-    sub_techno_dict, n_technos, n_streams = techno_dict_builder(techno_infos=techno_info_dict, initial_selection=inital_selection, minimal_stream_number=2, minimal_techno_number=4, max_carbon_storage_technos=4)
     ts = datetime.now().strftime("%Y-%m-%d %h%M")
-
     curdir = os.path.dirname(__file__)
     filename = os.path.join(curdir, "data", f"techno_dict_{ts}_{n_technos}technos_{n_streams}streams.json")
+    filename = os.path.join(curdir, "data", "techno_dict_test.json")
     with open(filename, 'w') as json_file:
         json.dump(sub_techno_dict, json_file, indent=4)
     techno_dict_midway = sub_techno_dict
+    from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase_with_utilization_ratio import (
+        Study,
+    )
     study = Study(run_usecase=True)
     study.load_data()
     study.run()
