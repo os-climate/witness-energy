@@ -27,4 +27,3 @@ def load_dict(filename: str):
     return loaded_dict
 
 techno_dict_midway = load_dict(filename)
-t
