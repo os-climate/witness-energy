@@ -30,6 +30,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.electricity.nuclear.nuclear_disc import NuclearDiscipline
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
 
 
@@ -86,7 +87,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single ratio (hydrogen consumption)
         '''
-        self.techno_name = 'HydrogenLiquefaction'
+        self.techno_name = GlossaryEnergy.HydrogenLiquefaction
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -124,7 +125,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -181,7 +182,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses several ratios (electricity and methane consumption)
         '''
-        self.techno_name = 'SMR'
+        self.techno_name = GlossaryEnergy.SMR
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -218,7 +219,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -276,7 +277,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on WaterGasShift techno since it has special gradients
         '''
-        self.techno_name = 'WaterGasShift'
+        self.techno_name = GlossaryEnergy.WaterGasShift
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -315,7 +316,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -374,7 +375,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on FischerTropsch techno since it has special gradients
         '''
-        self.techno_name = 'FischerTropsch'
+        self.techno_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -412,7 +413,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -453,6 +454,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+
+        streams_co2_emissions = inputs_dict[f"{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}"]
+        streams_co2_emissions[GlossaryEnergy.carbon_capture] = -2.34
+        inputs_dict[f"{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}"] = streams_co2_emissions
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -508,7 +513,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -715,7 +720,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # limited case
         inputs_dict[
             f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}.{GlossaryEnergy.TechnoProductionValue}'][
-            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
+            f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -982,7 +987,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (natural_gas_resource consumption)
         '''
-        self.techno_name = 'FossilGas'
+        self.techno_name = GlossaryEnergy.FossilGas
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1019,7 +1024,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -1113,7 +1118,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -1151,6 +1156,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+        inputs_dict[f'{namespace}.{self.techno_name}.techno_infos_dict'] = NuclearDiscipline.techno_infos_dict_default
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -1173,7 +1179,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (coal_resource consumption)
         '''
-        self.techno_name = 'CoalExtraction'
+        self.techno_name = GlossaryEnergy.CoalExtraction
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1210,7 +1216,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -1267,7 +1273,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (oil_resource consumption)
         '''
-        self.techno_name = 'Refinery'
+        self.techno_name = GlossaryEnergy.Refinery
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1304,7 +1310,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -1361,7 +1367,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (platinum_resource consumption)
         '''
-        self.techno_name = 'Electrolysis.PEM'
+        self.techno_name = GlossaryEnergy.ElectrolysisPEM
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -1398,7 +1404,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
                        GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',

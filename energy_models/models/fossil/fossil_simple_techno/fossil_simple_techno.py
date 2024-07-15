@@ -32,22 +32,22 @@ class FossilSimpleTechno(FossilTechno):
             GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
         })
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels
         co2_per_use = self.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
                       self.data_energy_dict['calorific_value']
         co2_from_raw_to_net = self.production_detailed[
-                                  f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (
+                                  f'{FossilTechno.energy_name} ({self.product_unit})'].values * (
                                       1.0 - Fossil.raw_to_net_production) * co2_per_use
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
+                                                                                            f'{FossilTechno.energy_name} ({self.product_unit})'] + \
                                                                                         co2_from_raw_to_net
         '''
         Method to compute CH4 emissions from gas production
@@ -61,6 +61,6 @@ class FossilSimpleTechno(FossilTechno):
                           self.techno_infos_dict['CH4_venting_emission_factor'] + \
                           self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
-        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+        self.production_detailed[f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
                                                                                   self.production_detailed[
-                                                                                      f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values
+                                                                                      f'{FossilTechno.energy_name} ({self.product_unit})'].values

@@ -43,10 +43,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.biogas: np.ones(len(years)) * 5.0})
         # From CO2 prod of methane fossil
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biogas: 0.123 / 15.4})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
@@ -80,7 +80,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.BiogasFired']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.BiogasFired}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -119,8 +119,8 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -139,10 +139,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
 

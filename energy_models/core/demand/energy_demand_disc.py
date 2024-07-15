@@ -29,7 +29,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -82,7 +81,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
-    energy_constraint_list = [Electricity.name] + \
+    energy_constraint_list = [GlossaryEnergy.electricity] + \
                              EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 

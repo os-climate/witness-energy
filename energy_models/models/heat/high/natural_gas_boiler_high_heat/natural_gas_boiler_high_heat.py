@@ -31,7 +31,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # methane_needs
 
         # output needed in this method is in $/kwh of heat
@@ -41,14 +41,14 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[
-                                                                                            f'{Methane.name} ({self.product_energy_unit})']
+                                                                                            f'{Methane.name} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh 

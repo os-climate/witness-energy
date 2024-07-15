@@ -49,7 +49,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         pkl_file.close()
 
         self.CO2_per_use = {}
-        self.energy_prices = {}
+        self.stream_prices = {}
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
@@ -65,7 +65,7 @@ class CCUSDiscTestCase(unittest.TestCase):
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
+            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
                 'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
                 f'{energy}'][GlossaryEnergy.EnergyConsumptionWithoutRatioValue]['value']
@@ -130,7 +130,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.energy_prices[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = \
                 self.energy_consumption_woratio[energy]

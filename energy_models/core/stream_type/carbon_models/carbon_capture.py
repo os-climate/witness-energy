@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CarbonCapture(BaseStream):
     name = GlossaryEnergy.carbon_capture
-    flue_gas_name = 'CO2 from Flue Gas'
+    flue_gas_name = GlossaryEnergy.CO2FromFlueGas
     unit = 'Mt'
     default_techno_list = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}', f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',
                            f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
@@ -147,7 +147,7 @@ class CarbonCapture(BaseStream):
             production_by_techno[f'{self.name} {element} ({self.unit})'] = sub_production_dict[
                                                                                element][
                                                                                f'{self.name} ({self.unit})'].values * factor
-            production, consumption = self.compute_other_consumption_production(
+            production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
 

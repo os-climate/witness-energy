@@ -44,7 +44,7 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_fossil_mix_dict = {}
 
-        if 'FossilSimpleTechno' in self.technologies_list:
+        if GlossaryEnergy.FossilSimpleTechno in self.technologies_list:
             invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 300.
             invest_fossil_mix_dict['FossilSimpleTechno'][0] = DatabaseWitnessEnergy.InvestFossil2020.value
 
@@ -105,8 +105,8 @@ class Study(EnergyMixStudyManager):
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

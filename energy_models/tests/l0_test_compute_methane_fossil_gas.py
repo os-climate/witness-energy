@@ -42,7 +42,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
@@ -65,7 +65,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                                                                    0.0928246539459331]) * 1000.0
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # Use the same inest as SMR techno
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -94,9 +94,9 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, 'CO2', 'water', 'natural_gas_resource'])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water', 'natural_gas_resource'])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price['CO2'] = np.array(
+        self.resources_price[GlossaryEnergy.CO2] = np.array(
             [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
              0.0542,
              0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
@@ -135,8 +135,8 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

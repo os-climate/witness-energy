@@ -76,7 +76,7 @@ class Fossil(EnergyType):
         #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
-        if ghg_type == 'CO2':
+        if ghg_type == GlossaryEnergy.CO2:
             co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
                                 self.data_energy_dict_input['construction_use_part'])

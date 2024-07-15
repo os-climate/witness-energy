@@ -36,7 +36,7 @@ class GasolineDiscipline(EnergyDiscipline):
 
     DESC_IN = {
         GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['Refinery'],
+                                     'possible_values': [GlossaryEnergy.Refinery],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',
                                      'structuring': True, 'unit': '-'},

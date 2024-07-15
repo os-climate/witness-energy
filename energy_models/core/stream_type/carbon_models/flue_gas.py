@@ -83,7 +83,7 @@ class FlueGas(BaseStream):
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.0})
 
         for techno in self.subelements_list:
-            self.mix_weights[techno] = self.production[f'{self.name} {techno} (Mt)'] / \
+            self.mix_weights[techno] = self.production[f'{self.name} {techno} ({GlossaryEnergy.mass_unit})'] / \
                                        self.production[f'{self.name}']
             self.flue_gas_ratio_mean[GlossaryEnergy.FlueGasMean] += self.flue_gas_ratio_dict[techno] * \
                                                                     self.mix_weights[techno].values

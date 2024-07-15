@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -37,7 +36,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
         ns_study = self.ee.study_name
 
-        carbon_storage_name = CarbonStorage.name
+        carbon_storage_name = GlossaryEnergy.carbon_storage
         energy_mix = 'EnergyMix'
         func_manager_name = "FunctionManagerDisc"
 

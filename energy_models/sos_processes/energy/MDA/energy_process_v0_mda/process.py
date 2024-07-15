@@ -38,7 +38,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
         carbon_storage = PureCarbonSS.energy_name
-        ccs_mix = GlossaryEnergy.CCUS
+        ccs_mix = GlossaryEnergy.ccus_type
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):

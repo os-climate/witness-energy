@@ -15,16 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class RenewableElectricitySimpleTechno(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
+    COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
 
     # def compute_consumption_and_power_production(self):
     #     """
@@ -35,7 +33,7 @@ class RenewableElectricitySimpleTechno(ElectricityTechno):
     #     # FOR ALL_RESOURCES DISCIPLINE
 
     #     copper_needs = self.get_theoretical_copper_needs(self)
-    #     self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+    #     self.consumption[f'{self.COPPER_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
 
     # @staticmethod
     # def get_theoretical_copper_needs(self):

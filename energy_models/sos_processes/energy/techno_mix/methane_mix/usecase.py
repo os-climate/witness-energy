@@ -42,18 +42,18 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_methane_mix_dict = {}
 
-        if 'FossilGas' in self.technologies_list:
-            #             invest_methane_mix_dict['FossilGas'] = [
+        if GlossaryEnergy.FossilGas in self.technologies_list:
+            #             invest_methane_mix_dict[GlossaryEnergy.FossilGas] = [
             #                 max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-            invest_methane_mix_dict['FossilGas'] = [0.02] + [5.0] * (GlossaryEnergy.NB_POLES_FULL - 1)
+            invest_methane_mix_dict[GlossaryEnergy.FossilGas] = [0.02] + [5.0] * (GlossaryEnergy.NB_POLES_FULL - 1)
 
-        if 'UpgradingBiogas' in self.technologies_list:
-            #             invest_methane_mix_dict['UpgradingBiogas'] = [
+        if GlossaryEnergy.UpgradingBiogas in self.technologies_list:
+            #             invest_methane_mix_dict[GlossaryEnergy.UpgradingBiogas] = [
             #                 max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
-            invest_methane_mix_dict['UpgradingBiogas'] = [0.02] + [5.0] * (GlossaryEnergy.NB_POLES_FULL - 1)
+            invest_methane_mix_dict[GlossaryEnergy.UpgradingBiogas] = [0.02] + [5.0] * (GlossaryEnergy.NB_POLES_FULL - 1)
 
-        if 'Methanation' in self.technologies_list:
-            invest_methane_mix_dict['Methanation'] = [0.001] * GlossaryEnergy.NB_POLES_FULL
+        if GlossaryEnergy.Methanation in self.technologies_list:
+            invest_methane_mix_dict[GlossaryEnergy.Methanation] = [0.001] * GlossaryEnergy.NB_POLES_FULL
 
         if self.bspline:
             invest_methane_mix_dict[GlossaryEnergy.Years] = self.years
@@ -95,9 +95,9 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
-        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water'])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.biogas: - 0.05, GlossaryEnergy.solid_fuel: 0.64 / 4.86,
@@ -108,18 +108,18 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.FossilGas.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.UpgradingBiogas.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.FossilGas}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.UpgradingBiogas}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

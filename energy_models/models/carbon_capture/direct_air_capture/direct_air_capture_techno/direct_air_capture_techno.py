@@ -40,16 +40,16 @@ class DirectAirCaptureTechno(CCTechno):
 
         return heat_need
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[
                                                                                             f'{Fossil.name}_needs'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                            f'{CCTechno.energy_name} ({self.product_unit})'] * \
                                                                                         Fossil.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Fossil.data_energy_dict[
