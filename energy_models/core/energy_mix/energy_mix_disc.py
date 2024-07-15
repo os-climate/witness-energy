@@ -26,26 +26,6 @@ from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agricult
     AgricultureMixDiscipline,
 )
 from plotly import graph_objects as go
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.base_functions.exp_min import (
-    compute_dfunc_with_exp_min,
-    compute_func_with_exp_min,
-)
-from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
-    InstanciatedPieChart,
-)
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
-)
-from sostrades_core.tools.post_processing.tables.instanciated_table import (
-    InstanciatedTable,
-)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -68,6 +48,27 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
+
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
 
 
 class Energy_Mix_Discipline(SoSWrapp):

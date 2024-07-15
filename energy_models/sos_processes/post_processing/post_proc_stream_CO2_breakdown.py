@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/07/12 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from matplotlib.pyplot import cm
+import matplotlib.pyplot as plt
 from plotly import figure_factory as ff
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -421,8 +421,8 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     # i_label_dict associates each label with an integer value
     i_label_dict = dict((key, i) for i, key in enumerate(label_list))
     fig = go.Figure()
-    cmap_over = cm.get_cmap('Reds')
-    cmap_under = cm.get_cmap('Greens')
+    cmap_over = plt.get_cmap('Reds')
+    cmap_under = plt.get_cmap('Greens')
     if summary:
         source, target = [], []
         source_name, target_name = [], []
