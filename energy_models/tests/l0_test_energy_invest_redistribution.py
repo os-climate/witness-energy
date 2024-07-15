@@ -57,7 +57,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.techno_list_renewable = ['RenewableSimpleTechno']
         self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
                                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
-        self.techno_list_carbon_storage = ['CarbonStorageTechno']
+        self.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
 
         data_invest = {
             GlossaryEnergy.Years: self.years
@@ -115,8 +115,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.{GlossaryEnergy.renewable}.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
@@ -139,8 +139,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = \
-            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
-                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
+                                 f'.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]

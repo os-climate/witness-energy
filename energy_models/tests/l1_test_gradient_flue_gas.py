@@ -26,7 +26,9 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
     CalciumLoopingDiscipline,
@@ -81,7 +83,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         self.flue_gas_mean_piperazine = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.2})
 
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.electricity: np.ones(len(self.years)) * 80.0,
              GlossaryEnergy.methane: np.ones(len(self.years)) * 80.0})
@@ -108,7 +110,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 100})
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
 
         transport_cost = 0,
@@ -159,11 +161,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -186,8 +188,8 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -223,11 +225,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = PressureSwingAdsorptionDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -249,9 +251,9 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -287,11 +289,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = PiperazineProcessDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -312,9 +314,9 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -349,11 +351,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = MonoEthanolAmineDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -374,9 +376,9 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -412,11 +414,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = CO2MembranesDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -439,8 +441,8 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -476,11 +478,11 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         techno_infos_dict = ChilledAmmoniaProcessDiscipline.techno_infos_dict_default
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -503,8 +505,8 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',

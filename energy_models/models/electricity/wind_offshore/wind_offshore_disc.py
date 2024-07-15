@@ -23,9 +23,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -69,7 +66,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 8000,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 8000 / 1e9  # According to the IEA, WindOffshore panels needs 8000 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -130,13 +127,13 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc

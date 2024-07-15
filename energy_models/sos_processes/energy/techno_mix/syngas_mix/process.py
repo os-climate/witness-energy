@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -35,7 +34,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
         ns_study = self.ee.study_name
 
-        syngas_name = Syngas.name
+        syngas_name = GlossaryEnergy.syngas
         energy_mix = 'EnergyMix'
         ns_dict = {'ns_syngas': f'{ns_study}.{energy_mix}.{syngas_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',

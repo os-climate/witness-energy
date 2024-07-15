@@ -66,7 +66,6 @@ class StreamDiscipline(SoSWrapp):
 
     # -- Here are the results of concatenation of each techno prices,consumption and production
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         # energy_production and energy_consumption stored in PetaWh for
         # coupling variables scaling
@@ -89,30 +88,35 @@ class StreamDiscipline(SoSWrapp):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
-                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        'dynamic_dataframe_columns': True}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name, byproducts_list=GlossaryEnergy.techno_byproducts[techno])
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
 
+        dynamic_outputs.update({
+            GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_one_stream_price_df(stream_name=self.energy_name)
+        })
+        add_di, add_do = self.add_additionnal_dynamic_variables()
+        dynamic_inputs.update(add_di)
+        dynamic_outputs.update(add_do)
         self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
+
+    def add_additionnal_dynamic_variables(self):
+        """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
+        return {}, {}
 
     def run(self):
         '''
@@ -139,7 +143,7 @@ class StreamDiscipline(SoSWrapp):
                 consumption[column] /= inputs_dict['scaling_factor_energy_consumption']
                 consumption_woratio[column] /= inputs_dict['scaling_factor_energy_consumption']
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: cost_details,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: cost_details,
                         'energy_detailed_techno_prices': cost_details_technos,
                         GlossaryEnergy.EnergyConsumptionValue: consumption,
                         GlossaryEnergy.EnergyConsumptionWithoutRatioValue: consumption_woratio,
@@ -276,23 +280,23 @@ class StreamDiscipline(SoSWrapp):
                                     len(years)) * 100.0 * grad_techno_mix_vs_prod)
 
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyPricesValue, self.energy_name),
+                        (GlossaryEnergy.StreamPricesValue, self.energy_name),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', column_name),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_price_vs_prod)
 
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'),
+                        (GlossaryEnergy.StreamPricesValue, f'{self.energy_name}_wotaxes'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', column_name),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(
                             len(years)) * grad_price_wotaxes_vs_prod)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, self.energy_name),
+                (GlossaryEnergy.StreamPricesValue, self.energy_name),
                 (f'{techno}.{GlossaryEnergy.TechnoPricesValue}', techno),
                 np.diag(outputs_dict['techno_mix'][techno] / 100.0))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'),
+                (GlossaryEnergy.StreamPricesValue, f'{self.energy_name}_wotaxes'),
                 (f'{techno}.{GlossaryEnergy.TechnoPricesValue}', f'{techno}_wotaxes'),
                 np.diag(outputs_dict['techno_mix'][techno] / 100.0))
 
@@ -378,7 +382,7 @@ class StreamDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -402,7 +406,7 @@ class StreamDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_energy_price_in_dollar_kg(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)

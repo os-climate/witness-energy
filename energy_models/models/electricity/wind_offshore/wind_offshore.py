@@ -15,37 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
 
 
 class WindOffshore(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
-
-    
-
-    def compute_consumption_and_installed_power(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
-                                                                                       self.installed_power[
-                                                                                           'new_power_production']  # in Mt
-
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        According to the IEA, Offshore Wind turbines need 8000 kg of copper for each MW implemented
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
-
-        return copper_need
+    pass

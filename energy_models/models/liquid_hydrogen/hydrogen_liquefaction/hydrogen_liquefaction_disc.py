@@ -119,8 +119,8 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     #     'applied_ratio')['applied_ratio'].values
     #
     # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
+    # production_gradient = self.techno_consumption_derivative[f'{GlossaryEnergy.electricity} ({self.techno_model.product_unit})']
     # m = self.set_partial_derivative_for_other_types(
     #     (GlossaryEnergy.TechnoProductionValue,
-    #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
+    #      f'{lowtemperatureheat.name} ({self.techno_model.product_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
     #     (production_gradient - dprod_name_dinvest))

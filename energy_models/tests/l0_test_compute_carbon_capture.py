@@ -125,7 +125,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
         inputs_dict[
             f'Test.EnergyMix.carbon_capture.flue_gas_capture.{GlossaryEnergy.CalciumLooping}.{GlossaryEnergy.TechnoProductionValue}'][
-            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= 5.0
+            f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

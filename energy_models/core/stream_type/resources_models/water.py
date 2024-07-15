@@ -15,13 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Water(BaseStream):
-    name = ResourceGlossary.WaterResource
+    name = GlossaryEnergy.WaterResource
     data_energy_dict = {'reference': '',
                         'maturity': 5,
                         'density': 997.0,

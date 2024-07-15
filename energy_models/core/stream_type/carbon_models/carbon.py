@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Carbon(BaseStream):
-    name = ResourceGlossary.CarbonResource
+    name = GlossaryEnergy.CarbonResource
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         GlossaryEnergy.CO2PerUse: ResourceGlossary.Carbon[GlossaryEnergy.CO2EmissionsValue],

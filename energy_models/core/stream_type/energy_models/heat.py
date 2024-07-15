@@ -20,8 +20,8 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class lowtemperatureheat(EnergyType):
     name = GlossaryEnergy.heat + '.' + 'lowtemperatureheat'
     short_name = 'low heat'
-    default_techno_list = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+    default_techno_list = [GlossaryEnergy.NaturalGasBoilerLowHeat, GlossaryEnergy.ElectricBoilerLowHeat,
+                           GlossaryEnergy.HeatPumpLowHeat, GlossaryEnergy.GeothermalLowHeat, GlossaryEnergy.CHPLowHeat]
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
@@ -31,8 +31,8 @@ class lowtemperatureheat(EnergyType):
 class mediumtemperatureheat(EnergyType):
     name = GlossaryEnergy.mediumtemperatureheat_energyname
     short_name = 'medium heat'
-    default_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+    default_techno_list = [GlossaryEnergy.NaturalGasBoilerMediumHeat, GlossaryEnergy.ElectricBoilerMediumHeat,
+                           GlossaryEnergy.HeatPumpMediumHeat, GlossaryEnergy.GeothermalMediumHeat, GlossaryEnergy.CHPMediumHeat]
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 400,
                         'Lowest_Temperature': 100,

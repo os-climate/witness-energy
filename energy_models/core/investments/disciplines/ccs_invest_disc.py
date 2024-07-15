@@ -29,8 +29,6 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
 
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -66,8 +64,8 @@ class InvestCCSDiscipline(SoSWrapp):
                                GlossaryEnergy.carbon_storage: ('float', None, False), },
                            'dataframe_edition_locked': False},
         GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                  'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                                  'default': [CarbonCapture.name, CarbonStorage.name],
+                                  'possible_values': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage],
+                                  'default': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage],
                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                   'editable': False,
                                   'structuring': True}

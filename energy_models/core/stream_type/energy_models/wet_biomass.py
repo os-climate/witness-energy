@@ -15,14 +15,11 @@ limitations under the License.
 
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class WetBiomass(EnergyType):
-    name = ResourceGlossary.WetBiomassResource
+    name = GlossaryEnergy.WetBiomassResource
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Raffa, D.W., Bogdanski, A. and Tittonell, P., 2015.

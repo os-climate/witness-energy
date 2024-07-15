@@ -33,7 +33,7 @@ class Study(subStudy):
             use_utilisation_ratio=True
         )
         self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
-        self.test_post_procs = True
+        self.test_post_procs = False
 
 
 if "__main__" == __name__:

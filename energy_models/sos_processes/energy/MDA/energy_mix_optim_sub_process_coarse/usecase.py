@@ -37,4 +37,5 @@ class Study(StudyEnergyMixFull):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

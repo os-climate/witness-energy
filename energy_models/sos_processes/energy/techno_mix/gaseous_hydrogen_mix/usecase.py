@@ -30,9 +30,9 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = [
-    'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
-TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
-                     'Electrolysis.PEM', 'Electrolysis.AWE', 'PlasmaCracking']
+    GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisSOEC, GlossaryEnergy.ElectrolysisPEM, GlossaryEnergy.ElectrolysisAWE, GlossaryEnergy.PlasmaCracking]
+TECHNOLOGIES_LIST = [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisSOEC,
+                     GlossaryEnergy.ElectrolysisPEM, GlossaryEnergy.ElectrolysisAWE, GlossaryEnergy.PlasmaCracking]
 
 
 class Study(EnergyMixStudyManager):
@@ -51,23 +51,23 @@ class Study(EnergyMixStudyManager):
         invest_hydrogen_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'PlasmaCracking' in self.technologies_list:
-            invest_hydrogen_mix_dict['PlasmaCracking'] = [
+        if GlossaryEnergy.PlasmaCracking in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.PlasmaCracking] = [
                 0.001 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'WaterGasShift' in self.technologies_list:
-            invest_hydrogen_mix_dict['WaterGasShift'] = [10.0] * len(l_ctrl)
+        if GlossaryEnergy.WaterGasShift in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.WaterGasShift] = [10.0] * len(l_ctrl)
 
-        if 'Electrolysis.SOEC' in self.technologies_list:
-            invest_hydrogen_mix_dict['Electrolysis.SOEC'] = [
+        if GlossaryEnergy.ElectrolysisSOEC in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.ElectrolysisSOEC] = [
                 0.01 + 0.001 * i for i in l_ctrl]
 
-        if 'Electrolysis.AWE' in self.technologies_list:
-            invest_hydrogen_mix_dict['Electrolysis.AWE'] = [
+        if GlossaryEnergy.ElectrolysisAWE in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.ElectrolysisAWE] = [
                 0.01 + 0.001 * i for i in l_ctrl]
 
-        if 'Electrolysis.PEM' in self.technologies_list:
-            invest_hydrogen_mix_dict['Electrolysis.PEM'] = [
+        if GlossaryEnergy.ElectrolysisPEM in self.technologies_list:
+            invest_hydrogen_mix_dict[GlossaryEnergy.ElectrolysisPEM] = [
                 0.01 + 0.001 * i for i in l_ctrl]
 
         if self.bspline:
@@ -112,9 +112,9 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
-        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water'])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0,
@@ -126,21 +126,21 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.5,
-                       f'{self.study_name}.{energy_name}.Electrolysis.PEM.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.Electrolysis.AWE.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.Electrolysis.SOEC.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.PlasmaCracking.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.WaterGasShift.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}': np.ones(len(years)) * 0.5,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.ElectrolysisAWE}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.ElectrolysisSOEC}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.PlasmaCracking}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

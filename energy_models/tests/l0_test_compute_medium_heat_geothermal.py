@@ -43,12 +43,12 @@ class GeothermalHeatLowTemperatureTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                            GlossaryEnergy.electricity: np.ones(len(years)) * 0.0,
                                            GlossaryEnergy.biomass_dry: np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
 
@@ -106,9 +106,9 @@ class GeothermalHeatLowTemperatureTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

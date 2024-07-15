@@ -59,14 +59,14 @@ class ElectricityTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = Electricity.name
+    energy_name = GlossaryEnergy.electricity
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         grad_dict_resource = self.techno_model.grad_price_vs_resources_price()
 

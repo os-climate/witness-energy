@@ -45,11 +45,11 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         # per kWh
-        self.energy_prices = pd.DataFrame({
+        self.stream_prices = pd.DataFrame({
             GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: np.ones(len(years)) * 48
         })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.solid_fuel: 0.0})
 
         self.invest_level = pd.DataFrame(
@@ -92,7 +92,7 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
 
     def test_02_biomass_gas_discipline(self):
         self.name = 'Test'
-        self.model_name = 'BiomassGasification'
+        self.model_name = GlossaryEnergy.BiomassGasification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -111,8 +111,8 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

@@ -26,8 +26,8 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
-TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.HydrogenLiquefaction]
+TECHNOLOGIES_LIST = [GlossaryEnergy.HydrogenLiquefaction]
 
 
 class Study(EnergyMixStudyManager):
@@ -46,8 +46,8 @@ class Study(EnergyMixStudyManager):
         invest_liquid_hydrogen_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'HydrogenLiquefaction' in self.technologies_list:
-            invest_liquid_hydrogen_mix_dict['HydrogenLiquefaction'] = [
+        if GlossaryEnergy.HydrogenLiquefaction in self.technologies_list:
+            invest_liquid_hydrogen_mix_dict[GlossaryEnergy.HydrogenLiquefaction] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
         if self.bspline:
@@ -97,7 +97,7 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{lh_name}.HydrogenLiquefaction.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{lh_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        }
@@ -105,8 +105,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
