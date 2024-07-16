@@ -118,6 +118,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
 
+    BoolApplyRatio = "is_apply_ratio"
+    BoolApplyStreamRatio = "is_stream_demand"
+    BoolApplyResourceRatio = "is_apply_resource_ratio"
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
