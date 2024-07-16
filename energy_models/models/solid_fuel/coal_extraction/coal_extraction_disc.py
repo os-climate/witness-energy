@@ -160,7 +160,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue,
-             f'{Methane.emission_name} ({self.techno_model.mass_unit})'),
+             f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             (
                         self.dprod_dinvest.T * self.techno_model.emission_factor_mt_twh * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)

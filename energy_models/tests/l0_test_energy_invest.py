@@ -62,9 +62,9 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         dict3 = {}
         dict3[GlossaryEnergy.Years] = self.years
-        dict3['SMR'] = np.ones(len(self.years))
-        dict3['Electrolysis'] = np.ones(len(self.years)) * 0.5
-        dict3['CoalGasification'] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.SMR] = np.ones(len(self.years))
+        dict3[GlossaryEnergy.Electrolysis] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.CoalGasification] = np.ones(len(self.years)) * 0.5
         self.techno_mix = pd.DataFrame(dict3)
         invest_ref = 1.0e3  # G$ means 1 milliard of dollars
         invest = np.zeros(len(self.years))
@@ -204,8 +204,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['SMR', 'Electrolysis',
-                                                                                       'CoalGasification'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis,
+                                                                                       GlossaryEnergy.CoalGasification],
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_df_techno}
 
@@ -237,7 +237,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        technology_list = ['SMR', 'Electrolysis', 'CoalGasification']
+        technology_list = [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis, GlossaryEnergy.CoalGasification]
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': technology_list,

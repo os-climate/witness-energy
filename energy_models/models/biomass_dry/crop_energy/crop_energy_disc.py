@@ -197,15 +197,15 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         d_conso_dland_for_food = self.techno_model.compute_grad_dconso_dland_for_food()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'),
+            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} (Mt)'),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} (Mt)'),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
@@ -427,7 +427,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
              residue_food_production_init).tolist(),
             'Initial production for energy by 2020 factories', 'lines')
 
-        study_prod = study_production[f'{self.energy_name} (TWh)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

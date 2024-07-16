@@ -231,7 +231,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         BiomassDryTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
@@ -253,7 +253,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
             capex, production, production_mix)
 
         for column in production:
-            if column == f'{self.energy_name} ({self.techno_model.product_energy_unit})':
+            if column == f'{self.energy_name} ({self.techno_model.product_unit})':
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoProductionValue, column),
                     (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
@@ -439,7 +439,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
             initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production for energy by 2020 factories',
             'lines')
 
-        study_prod = study_production[f'{self.energy_name} (TWh)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

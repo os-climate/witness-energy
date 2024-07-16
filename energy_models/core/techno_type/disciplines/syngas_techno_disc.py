@@ -60,7 +60,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
     DESC_IN.update(TechnoDiscipline.DESC_IN)
     syngas_ratio = None
     _maturity = 'Research'
-    energy_name = Syngas.name
+    energy_name = GlossaryEnergy.syngas
 
     # -- add specific techno outputs to this
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%'}}
@@ -79,7 +79,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 

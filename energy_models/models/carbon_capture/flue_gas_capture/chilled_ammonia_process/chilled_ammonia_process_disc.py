@@ -152,7 +152,7 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
 
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(

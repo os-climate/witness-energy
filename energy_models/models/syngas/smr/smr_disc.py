@@ -132,9 +132,9 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     #         'applied_ratio')['applied_ratio'].values
     #
     #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    #     consumption_gradient = self.techno_consumption_derivative[f'{SyngasTechno.energy_name} ({self.techno_model.product_energy_unit})']
-    #     #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+    #     consumption_gradient = self.techno_consumption_derivative[f'{SyngasTechno.energy_name} ({self.techno_model.product_unit})']
+    #     #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
     #     self.set_partial_derivative_for_other_types(
     #         (GlossaryEnergy.TechnoProductionValue,
-    #          f'{highheattechno.energy_name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
+    #          f'{highheattechno.energy_name} ({self.techno_model.product_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
     #         (consumption_gradient- dprod_name_dinvest))

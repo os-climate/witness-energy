@@ -23,15 +23,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassBuryingFossilization(CSTechno):
-    def compute_energies_consumption(self):
-        """
-        Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
-        """
-
-        # Consumption
-
-        self.consumption_detailed[f'{BiomassDry.name} (TWh)'] = self.production_detailed[
-                                                                    f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                BiomassDry.data_energy_dict[GlossaryEnergy.CO2PerUse] * \
-                                                                BiomassDry.data_energy_dict['calorific_value']
+    def compute_other_streams_needs(self):
+        self.cost_details[f"{GlossaryEnergy.biomass_dry}_needs"] = BiomassDry.data_energy_dict['calorific_value'] /\
+                                                                   BiomassDry.data_energy_dict[GlossaryEnergy.CO2PerUse]

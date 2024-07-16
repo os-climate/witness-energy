@@ -31,7 +31,7 @@ class BiomassDryTechno(TechnoType):
             density_per_ha = density_per_ha * self.techno_infos_dict['density']
 
         self.land_use[f'{self.name} (Gha)'] = \
-            self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
+            self.production_detailed[f'{self.energy_name} ({self.product_unit})'] / \
             self.data_energy_dict['calorific_value'] / \
             density_per_ha
 
