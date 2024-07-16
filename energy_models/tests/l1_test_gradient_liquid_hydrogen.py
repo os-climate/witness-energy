@@ -29,8 +29,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc import (
@@ -59,7 +59,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
-            {'HydrogenLiquefaction': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.HydrogenLiquefaction: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -83,16 +83,16 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        0.0928246539459331])[:len(self.years)] * 1000.0})
 
         self.hydrogen_liquefaction_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                               f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(
+                                                               f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': [230.779470] * len(
                                                                    self.years),
-                                                               f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(self.years), })
+                                                               f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [82.649011] * len(self.years), })
 
         self.hydrogen_liquefaction_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                               LiquidHydrogen.name + ' (TWh)': [2304.779470] * len(
                                                                   self.years), })
 
         self.hydrogen_liquefaction_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'HydrogenLiquefaction': 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.HydrogenLiquefaction: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              GlossaryEnergy.electricity: 0.0,
              'production': 0.0})
 
@@ -108,11 +108,11 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331])[:len(self.years)] * 1000
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: electricity_price,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: electricity_price,
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.ones(len(self.years)) * 33.,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.02, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
 
         self.invest_level = pd.DataFrame(
@@ -157,7 +157,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 
         self.land_use_required_HydrogenLiquefaction = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'HydrogenLiquefaction (Gha)': 0.0})
+            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.HydrogenLiquefaction} (Gha)': 0.0})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
@@ -197,9 +197,9 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
@@ -208,8 +208,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
                            axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict
@@ -226,8 +226,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -289,8 +289,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.{GlossaryEnergy.TechnoProductionValue}'][
-            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
+        inputs_dict[f'{namespace}.{self.energy_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'] *= np.linspace(5.0, 5.0, len(self.years))
 
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({

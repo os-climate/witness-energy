@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -57,11 +54,11 @@ class WGSPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
                                            GlossaryEnergy.syngas: np.ones(len(years)) * 33.
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
 
         self.invest_level = pd.DataFrame(
@@ -81,29 +78,29 @@ class WGSPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
         self.syngas_ratio = np.ones(len(years)) * 100.0
-        self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34.,
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.SMR: np.ones(len(years)) * 34.,
                                                     
-                                                    'CoElectrolysis': np.ones(len(years)) * 60.,
-                                                    'BiomassGasification': np.ones(len(years)) * 50.
+                                                    GlossaryEnergy.CoElectrolysis: np.ones(len(years)) * 60.,
+                                                    GlossaryEnergy.BiomassGasification: np.ones(len(years)) * 50.
                                                     })
-        self.syngas_ratio_technos = {'SMR': 33.0,
-                                     'CoElectrolysis': 100.0,
-                                     'BiomassGasification': 200.0
+        self.syngas_ratio_technos = {GlossaryEnergy.SMR: 33.0,
+                                     GlossaryEnergy.CoElectrolysis: 100.0,
+                                     GlossaryEnergy.BiomassGasification: 200.0
                                      }
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             ResourceGlossary.WaterResource: 31 * [0.002],
-             ResourceGlossary.UraniumResource: 1390,
-             ResourceGlossary.CO2Resource: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995,
+             GlossaryEnergy.WaterResource: 31 * [0.002],
+             GlossaryEnergy.UraniumResource: 1390,
+             GlossaryEnergy.CO2Resource: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995,
                                             0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063,
                                             0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
                                             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
-             ResourceGlossary.BiomassDryResource: [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
+             GlossaryEnergy.BiomassDryResource: [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812,
                                                    0.06812, 0.06812, 0.06812],
-             ResourceGlossary.WetBiomassResource: [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
+             GlossaryEnergy.WetBiomassResource: [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056,
                                                    0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056]
@@ -143,8 +140,8 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -201,8 +198,8 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -247,8 +244,8 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

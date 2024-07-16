@@ -23,8 +23,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -50,16 +48,16 @@ class CO2HydrogenationPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                            GaseousHydrogen.name: 300.0,
-                                           CarbonCapture.name: 150.0,
-                                           Electricity.name: 10,
+                                           GlossaryEnergy.carbon_capture: 150.0,
+                                           GlossaryEnergy.electricity: 10,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years,
+        self.stream_co2_emissions = pd.DataFrame({GlossaryEnergy.Years: years,
                                                      GaseousHydrogen.name: 10.0,
-                                                     CarbonCapture.name: 0.0,
-                                                     Electricity.name: 0.0,
+                                                     GlossaryEnergy.carbon_capture: 0.0,
+                                                     GlossaryEnergy.electricity: 0.0,
                                                      })
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, Water.name: 2.0})
 
@@ -98,7 +96,7 @@ class CO2HydrogenationPriceTestCase(unittest.TestCase):
 
     def test_02_co2_hydrogenation_discipline(self):
         self.name = 'Test'
-        self.model_name = 'CO2Hydrogenation'
+        self.model_name = GlossaryEnergy.CO2Hydrogenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -117,9 +115,9 @@ class CO2HydrogenationPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

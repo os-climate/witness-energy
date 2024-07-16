@@ -18,11 +18,9 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.oxygen import Oxygen
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class AutothermalReforming(SyngasTechno):
@@ -30,12 +28,12 @@ class AutothermalReforming(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+        self.cost_details[f"{GlossaryEnergy.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f'{ResourceGlossary.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
 
@@ -88,13 +86,13 @@ class AutothermalReforming(SyngasTechno):
 
         return water_needs
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # kg of H2O produced with 1kg of CH4
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
-                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
                                                                        H2Oprod
 
     def get_h2o_production(self):

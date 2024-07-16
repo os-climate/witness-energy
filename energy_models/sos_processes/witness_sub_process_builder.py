@@ -45,7 +45,7 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
 
     def build_energy_and_ccs_list(self):
         energy_list = [key for key, value in self._techno_dict.items() if value['type'] == 'energy']
-        ccs_list = [key for key, value in self._techno_dict.items() if value['type'] == GlossaryEnergy.CCUS]
+        ccs_list = [key for key, value in self._techno_dict.items() if value['type'] == GlossaryEnergy.ccus_type]
         return energy_list, ccs_list
 
     def setup_process(

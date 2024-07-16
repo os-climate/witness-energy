@@ -29,5 +29,5 @@ class AnaerobicDigestion(BioGasTechno):
                                                  self.data_energy_dict['density'] / \
                                                  self.data_energy_dict['calorific_value']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()

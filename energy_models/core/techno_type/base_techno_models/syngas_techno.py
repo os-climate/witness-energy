@@ -17,7 +17,6 @@ limitations under the License.
 from copy import deepcopy
 
 from energy_models.core.stream_type.energy_models.syngas import (
-    Syngas,
     compute_calorific_value,
     compute_density,
     compute_molar_mass,
@@ -27,7 +26,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SyngasTechno(TechnoType):
-    energy_name = Syngas.name
+    energy_name = GlossaryEnergy.syngas
     syngas_COH2_ratio = None
 
     def configure_energy_data(self, inputs_dict):

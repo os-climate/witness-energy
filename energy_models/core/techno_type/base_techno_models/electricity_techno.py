@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityTechno(TechnoType):
-    energy_name = Electricity.name
+    energy_name = GlossaryEnergy.electricity
 
     def compute_transport(self):
         # Electricity has no Calorific value overload

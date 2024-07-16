@@ -31,13 +31,8 @@ class PureCarbonSS(CSTechno):
         super().__init__(name)
         self.carbon_to_be_stored_constraint = None
 
-    def compute_energies_consumption(self):
-        # Consumption
-        # Production is gaseous CO2 equivalent
-        # COnsumption is real Carbon storage (C)
-        self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[
-                                                                             f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                         Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
+    def compute_resources_needs(self):
+        self.cost_details[f'{GlossaryEnergy.SolidCarbon}_needs'] = 1 / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """
@@ -45,7 +40,7 @@ class PureCarbonSS(CSTechno):
         """
 
         if (carbon_quantity_to_be_stored is not None) & (consumption is not None):
-            constraint = consumption[f'{Carbon.name} ({self.mass_unit})'] - \
+            constraint = consumption[f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] - \
                          carbon_quantity_to_be_stored[GlossaryEnergy.carbon_storage]
             self.carbon_to_be_stored_constraint = pd.DataFrame(
                 {GlossaryEnergy.Years: self.years, 'carbon_to_be_stored_constraint': constraint})

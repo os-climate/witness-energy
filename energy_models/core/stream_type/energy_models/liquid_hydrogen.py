@@ -23,7 +23,7 @@ class LiquidHydrogen(EnergyType):
     """
     name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}'
     short_name = GlossaryEnergy.liquid_hydrogen
-    default_techno_list = ['HydrogenLiquefaction']
+    default_techno_list = [GlossaryEnergy.HydrogenLiquefaction]
     unit = 'TWh'
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,

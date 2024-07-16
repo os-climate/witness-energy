@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -39,7 +38,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
         energy_mix = 'EnergyMix'
         flue_gas_name = FlueGas.node_name
-        carbon_capture_name = CarbonCapture.name
+        carbon_capture_name = GlossaryEnergy.carbon_capture
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',

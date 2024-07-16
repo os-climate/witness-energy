@@ -410,7 +410,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
             initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production for energy by 2020 factories',
             'lines')
 
-        study_prod = study_production[f'{self.energy_name} (TWh)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

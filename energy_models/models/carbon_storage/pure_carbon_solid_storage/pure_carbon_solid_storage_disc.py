@@ -74,6 +74,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 1,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
+                                 f"{GlossaryEnergy.CarbonResource}_needs": 1. / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse],
                                  'techno_evo_eff': 'no',
                                  }
 
@@ -206,7 +207,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         consumption_wo_ratio = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionWithoutRatioValue)
         applied_ratio = self.get_sosdisc_outputs('applied_ratio')['applied_ratio'].values
         d_constraint_d_utillisation_ratio = np.diag(
-            consumption_wo_ratio[f'{Carbon.name} ({self.techno_model.mass_unit})'].values *
+            consumption_wo_ratio[f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'].values *
             applied_ratio / 100.
         )
 

@@ -17,11 +17,7 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
     CCTechno,
 )
@@ -43,33 +39,33 @@ class Amine(CCTechno):
 
         return heat_need
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f"{Methane.name}_needs"] = self.get_heat_needs()
 
     def compute_resources_needs(self):
-        self.cost_details[f'{ResourceGlossary.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.AmineResource}_needs'] = self.compute_amine_need() / self.cost_details['efficiency']
 
     def compute_scope_2_emissions(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''
 
-        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details[f"{Methane.name}_needs"]
+        self.carbon_intensity[Methane.name] = self.streams_CO2_emissions[Methane.name] * self.cost_details[f"{Methane.name}_needs"]
 
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
+        self.carbon_intensity[GlossaryEnergy.electricity] = self.streams_CO2_emissions[GlossaryEnergy.electricity] * self.cost_details[
             f'{GlossaryEnergy.electricity}_needs']
 
-        self.carbon_intensity[ResourceGlossary.AmineResource] = self.resources_CO2_emissions[
-                                                                    ResourceGlossary.AmineResource] * \
-                                                                self.cost_details[f'{ResourceGlossary.AmineResource}_needs']
-        self.carbon_intensity['Scope 2'] = self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.AmineResource] - 1.0
+        self.carbon_intensity[GlossaryEnergy.AmineResource] = self.resources_CO2_emissions[
+                                                                    GlossaryEnergy.AmineResource] * \
+                                                                self.cost_details[f'{GlossaryEnergy.AmineResource}_needs']
+        self.carbon_intensity['Scope 2'] = self.carbon_intensity[Methane.name] + self.carbon_intensity[GlossaryEnergy.electricity] + self.carbon_intensity[GlossaryEnergy.AmineResource] - 1.0
 
-    def compute_production(self):
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+    def compute_byproducts_production(self):
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[
                                                                                             f"{Methane.name}_needs"] * \
                                                                                         self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                            f'{CCTechno.energy_name} ({self.product_unit})'] * \
                                                                                         Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
