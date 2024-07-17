@@ -24,8 +24,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 )
 
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -219,7 +217,7 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}.{key}': value for key, value in self.input_dict.items()}
         self.ee.load_study_from_input_dict(namespaced_input_dict)
         self.ee.execute()
-        ccs_list = [CarbonCapture.name, CarbonStorage.name]
+        ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_invest_ccs_disc.pkl',

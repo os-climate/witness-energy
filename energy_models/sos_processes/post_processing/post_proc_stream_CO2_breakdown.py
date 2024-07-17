@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/07/12 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.pyplot import cm
 from plotly import figure_factory as ff
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -337,7 +337,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} (TWh)'].values * \
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
             invest_techno = techno_disc.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)[
@@ -421,8 +421,8 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     # i_label_dict associates each label with an integer value
     i_label_dict = dict((key, i) for i, key in enumerate(label_list))
     fig = go.Figure()
-    cmap_over = cm.get_cmap('Reds')
-    cmap_under = cm.get_cmap('Greens')
+    cmap_over = plt.get_cmap('Reds')
+    cmap_under = plt.get_cmap('Greens')
     if summary:
         source, target = [], []
         source_name, target_name = [], []
@@ -687,7 +687,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} (TWh)'].values * \
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
             # Calculate total CO2 emissions

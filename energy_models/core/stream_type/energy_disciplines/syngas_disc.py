@@ -65,7 +65,7 @@ class SyngasDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = Syngas.name
+    energy_name = GlossaryEnergy.syngas
 
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%',
                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
@@ -81,38 +81,17 @@ class SyngasDiscipline(EnergyDiscipline):
         self.energy_model = Syngas(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
-        dynamic_inputs = {}
+    def add_additionnal_dynamic_variables(self):
+        dynamic_inputs, dynamic_outputs = EnergyDiscipline.add_additionnal_dynamic_variables(self)
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                        'type': 'dataframe', 'unit': 'kg/kWh',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.syngas_ratio'] = {
-                        'type': 'array', 'unit': '%'}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
-                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%'}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
 
-        self.add_inputs(dynamic_inputs)
+        return dynamic_inputs, dynamic_outputs
 
     def run(self):
         '''
@@ -187,7 +166,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('syngas_ratio',),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_syngas_prod)
             self.set_partial_derivative(
                 'syngas_ratio',
@@ -214,7 +193,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2PerUse, GlossaryEnergy.CO2PerUse),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_carbon_tax_vs_prod)
 
             if co2_per_use != 0:

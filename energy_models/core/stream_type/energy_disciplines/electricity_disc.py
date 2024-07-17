@@ -70,15 +70,13 @@ class ElectricityDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = Electricity.name
+    energy_name = GlossaryEnergy.electricity
     DESC_OUT = {}
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
-    def setup_sos_disciplines(self):
-        super().setup_sos_disciplines()
-
-        dynamic_outputs = {}
+    def add_additionnal_dynamic_variables(self):
+        dynamic_inputs, dynamic_outputs = EnergyDiscipline.add_additionnal_dynamic_variables(self)
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
@@ -88,7 +86,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                                      'unit': 'TWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': GlossaryEnergy.NS_FUNCTIONS}
-        self.add_outputs(dynamic_outputs)
+        return dynamic_inputs, dynamic_outputs
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -122,7 +120,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         if Electricity.hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
+                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.electricity} ({Electricity.unit})'),
                                                         - inputs_dict['scaling_factor_techno_production'] * np.identity(
                                                             len(years)) / inputs_dict['hydropower_constraint_ref'])
 

@@ -67,7 +67,7 @@ class BiomassWetDiscipline(EnergyDiscipline):
         # -- compute informations
         cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: cost_details,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: cost_details,
                         GlossaryEnergy.EnergyConsumptionValue: consumption / inputs_dict[
                             'scaling_factor_energy_consumption'],
                         GlossaryEnergy.EnergyProductionValue: production / inputs_dict[

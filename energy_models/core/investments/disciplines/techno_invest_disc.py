@@ -59,9 +59,9 @@ class InvestTechnoDiscipline(SoSWrapp):
         'invest_techno_mix': {'type': 'dataframe',
                               'dataframe_descriptor': {
                                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                  'SMR': ('float', None, False),
-                                  'Electrolysis': ('float', None, False),
-                                  'CoalGasification': ('float', None, False), },
+                                  GlossaryEnergy.SMR: ('float', None, False),
+                                  GlossaryEnergy.Electrolysis: ('float', None, False),
+                                  GlossaryEnergy.CoalGasification: ('float', None, False), },
                               'dataframe_edition_locked': False},
         GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True}
     }

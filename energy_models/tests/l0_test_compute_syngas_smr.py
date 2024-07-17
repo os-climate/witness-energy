@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -47,7 +44,7 @@ class SMRPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
@@ -73,14 +70,14 @@ class SMRPriceTestCase(unittest.TestCase):
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
-        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.CO2Resource: np.array(
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.CO2Resource: np.array(
             [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
              0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872,
              0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0,
-                                              ResourceGlossary.OxygenResource: 60,
-                                              ResourceGlossary.WaterResource: 1.4
+                                              GlossaryEnergy.OxygenResource: 60,
+                                              GlossaryEnergy.WaterResource: 1.4
                                               })
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.electricity: 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [1.0]})
@@ -111,7 +108,7 @@ class SMRPriceTestCase(unittest.TestCase):
 
     def test_02_smr_discipline(self):
         self.name = 'Test'
-        self.model_name = 'SMR'
+        self.model_name = GlossaryEnergy.SMR
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -129,8 +126,8 @@ class SMRPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

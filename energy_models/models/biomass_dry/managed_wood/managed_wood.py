@@ -32,10 +32,10 @@ class ManagedWood(BiomassDryTechno):
         self.production_mix = None
         self.price_mix = None
         self.mean_age_df = None
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
@@ -44,7 +44,7 @@ class ManagedWood(BiomassDryTechno):
         self.production_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         managed_production = deepcopy(
-            self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
+            self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_unit})'])
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = managed_production[0] * self.techno_infos_dict['residue_density_percentage'] * \
@@ -68,7 +68,7 @@ class ManagedWood(BiomassDryTechno):
         self.production_mix[name_tot] = managed_production
 
         # compute output production dedicated to energy
-        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_unit})'] = self.production_mix[
                                                                                                        name_residue] + \
                                                                                                    self.production_mix[
                                                                                                        name_wood]
@@ -97,9 +97,9 @@ class ManagedWood(BiomassDryTechno):
         mean_age_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.age_distrib_prod_df['age_x_prod'] = self.age_distrib_prod_df['age'] * \
-                                                 self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
+                                                 self.age_distrib_prod_df[f'distrib_prod ({self.product_unit})']
 
-        production = self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})']
+        production = self.production_woratio[f'{self.energy_name} ({self.product_unit})']
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = production[0] * self.techno_infos_dict['residue_density_percentage'] * \

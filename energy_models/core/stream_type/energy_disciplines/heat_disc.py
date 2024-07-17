@@ -86,7 +86,7 @@ class HeatDiscipline(SoSWrapp):
                                             'editable': False, 'structuring': True},
                }
 
-    DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+    DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
@@ -110,7 +110,7 @@ class HeatDiscipline(SoSWrapp):
                 self.energy_list = list(
                     set(HeatDiscipline.heat_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe',
                                                                                       'unit': '$/MWh',
                                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                       'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -163,7 +163,7 @@ class HeatDiscipline(SoSWrapp):
 
         # loop over heat energies
         for energy in self.energy_list:
-            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.EnergyPricesValue}')
+            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.StreamPricesValue}')
             energy_techno_prices = self.get_sosdisc_inputs(
                 f'{energy}.energy_detailed_techno_prices')
             energy_cons = self.get_sosdisc_inputs(
@@ -204,7 +204,7 @@ class HeatDiscipline(SoSWrapp):
             level=0, axis=1).sum()
         # energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: energy_prices,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         GlossaryEnergy.EnergyProductionValue: energy_production,
                         GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
@@ -283,7 +283,7 @@ class HeatDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_mwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)

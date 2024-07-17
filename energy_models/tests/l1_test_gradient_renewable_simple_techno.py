@@ -25,8 +25,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -65,10 +65,10 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                              0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                              0.0928246539459331])[:len(self.years)]
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: electricity_price
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: electricity_price
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 10.0})
 
         self.invest_level = pd.DataFrame(
@@ -139,16 +139,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
             {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 635.0, 638.0]})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
@@ -161,8 +161,8 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -213,16 +213,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
             {'past years': [], GlossaryEnergy.InvestValue: []})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
@@ -236,8 +236,8 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',

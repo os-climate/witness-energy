@@ -43,10 +43,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.methane: np.ones(len(years)) * 27.07})
         # From CO2 prod of methane fossil
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4})
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 21.0})
@@ -117,8 +117,8 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -137,10 +137,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()

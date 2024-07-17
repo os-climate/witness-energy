@@ -15,13 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EthanolAmine(BaseStream):
-    name = ResourceGlossary.EthanolAmineResource
+    name = GlossaryEnergy.EthanolAmineResource
     data_energy_dict = {'chemical_formula': 'HOCH2CH2NH2',
                         'maturity': 5,
                         # 1.0117 g/cm3

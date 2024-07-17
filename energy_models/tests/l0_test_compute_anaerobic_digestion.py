@@ -22,9 +22,6 @@ import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -58,13 +55,13 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000.0
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomassResource: electricity_price / 100.0
+            {GlossaryEnergy.Years: years, GlossaryEnergy.WetBiomassResource: electricity_price / 100.0
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -124,8 +121,8 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

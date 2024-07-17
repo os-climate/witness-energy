@@ -56,20 +56,20 @@ class FTPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 20,
-                                           GlossaryEnergy.syngas: 34
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 20,
+                                           GlossaryEnergy.syngas: 34, GlossaryEnergy.carbon_capture: 12.
                                            })
-        self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.SMR: np.ones(len(years)) * 34,
                                                     
-                                                    'CoElectrolysis': np.ones(len(years)) * 60,
-                                                    'BiomassGasification': np.ones(len(years)) * 50
+                                                    GlossaryEnergy.CoElectrolysis: np.ones(len(years)) * 60,
+                                                    GlossaryEnergy.BiomassGasification: np.ones(len(years)) * 50
                                                     })
-        self.syngas_ratio_technos = {'SMR': 0.33,
-                                     'CoElectrolysis': 1.0,
-                                     'BiomassGasification': 2.0
+        self.syngas_ratio_technos = {GlossaryEnergy.SMR: 0.33,
+                                     GlossaryEnergy.CoElectrolysis: 1.0,
+                                     GlossaryEnergy.BiomassGasification: 2.0
                                      }
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.carbon_capture: 12.})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(
@@ -127,7 +127,7 @@ class FTPriceTestCase(unittest.TestCase):
     def test_02_FT_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'FischerTropsch'
+        self.model_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -148,8 +148,8 @@ class FTPriceTestCase(unittest.TestCase):
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
 
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -172,7 +172,7 @@ class FTPriceTestCase(unittest.TestCase):
     def test_03_FT_with_ratio_available_cc(self):
 
         self.name = 'Test'
-        self.model_name = 'FischerTropsch'
+        self.model_name = GlossaryEnergy.FischerTropsch
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': f'{self.name}',
@@ -195,8 +195,8 @@ class FTPriceTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
 
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

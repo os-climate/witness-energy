@@ -15,11 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
+
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.base_functions.specific_check import specific_check_years
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -78,6 +79,7 @@ class Study(StudyManager):
             techno_dict=techno_dict,
         )
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
+        self.test_post_procs = True
 
     def setup_objectives(self):
         func_df = Study_v0.setup_objectives(self)
