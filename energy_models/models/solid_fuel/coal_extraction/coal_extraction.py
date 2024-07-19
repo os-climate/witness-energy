@@ -17,7 +17,6 @@ limitations under the License.
 
 import numpy as np
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import (
@@ -42,7 +41,7 @@ class CoalExtraction(SolidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
 
     def compute_byproducts_production(self):
-        self.production_detailed[f'{CO2.name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
                                                                      self.data_energy_dict['high_calorific_value'] * \
                                                                      self.production_detailed[
                                                                          f'{SolidFuelTechno.energy_name} ({self.product_unit})']
