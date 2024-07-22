@@ -106,12 +106,6 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
 
         self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               GlossaryEnergy.OxygenResource: len(self.years) * [60.0],
-                                              GlossaryEnergy.CO2Resource: np.array(
-                                                  [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464,
-                                                   0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
-                                                   0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074,
-                                                   0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098,
-                                                   0.1144, 0.119])[:len(self.years)] * 1000.0,
                                               GlossaryEnergy.WaterResource: 1.4
                                               })
         self.stream_co2_emissions = pd.DataFrame(

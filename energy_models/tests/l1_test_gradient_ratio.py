@@ -128,8 +128,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -222,8 +222,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -319,8 +319,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, 'syngas_ratio',
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -416,8 +416,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, 'syngas_ratio',
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -516,8 +516,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', GlossaryEnergy.FlueGasMean,
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, GlossaryEnergy.FlueGasMean,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1027,8 +1027,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand', 'ratio_objective']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1121,8 +1121,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1219,8 +1219,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1313,8 +1313,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1407,8 +1407,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']

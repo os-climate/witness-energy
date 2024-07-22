@@ -118,6 +118,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
 
+    BoolApplyRatio = "is_apply_ratio"
+    BoolApplyStreamRatio = "is_stream_demand"
+    BoolApplyResourceRatio = "is_apply_resource_ratio"
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
@@ -973,7 +976,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         HefaDeoxygenation: [WaterResource],
         Transesterification: [GlycerolResource],
         BiomassFermentation: [carbon_capture],
-        CoalExtraction: [GlossaryWitnessCore.CH4, CO2Resource],
+        CoalExtraction: [GlossaryWitnessCore.CH4, carbon_capture],
         Pelletizing: [CO2FromFlueGas],
         SolarThermal: [f"{heat}.{hightemperatureheat}"],
         Nuclear: [f"{heat}.{hightemperatureheat}"],
@@ -1045,7 +1048,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
         ManagedWood: [],
-        UnmanagedWood: [CO2Resource],
+        UnmanagedWood: [carbon_capture],
         CropEnergy: [],
         Reforestation: [],
         Geothermal: [],
@@ -1107,7 +1110,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         Refinery: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # idea : creer une techno puit de pétrole (CrudeOil)
         HydrogenLiquefaction: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # might need some heat ? produced or consumed, not clear
         FossilGas: [electricity], # "transport fuel"
-        Methanation: [f"{hydrogen}.{gaseous_hydrogen}"],  # consumed CO2 (which can come from carbon_capture)
+        Methanation: [f"{hydrogen}.{gaseous_hydrogen}", carbon_capture],
         UpgradingBiogas: [electricity, biogas], # heat not electricity
         CO2Hydrogenation: [
             f"{hydrogen}.{gaseous_hydrogen}",
@@ -1116,9 +1119,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
         ],
         CoalExtraction: [electricity],  # transport fuel instead of electricity
         Pelletizing: [electricity, biomass_dry],  # might be heat instead of electricity
-        AutothermalReforming: [methane], # add heat
+        AutothermalReforming: [methane, carbon_capture], # add heat
         BiomassGasification: [electricity, biomass_dry],  # heat instead of electricity, produce syngas
-        CoElectrolysis: [electricity],  # consumed CO2 (which can come from carbon_capture)
+        CoElectrolysis: [electricity, carbon_capture],
         CoalGasification: [solid_fuel],  # add heat
         ReversedWaterGasShift: [electricity, syngas], # heat instead of electricity, CO2 instead of carbon_capture
         SMR: [electricity, methane],  # heat instead of elec
@@ -1132,6 +1135,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: [carbon_capture],  # add transport fuel
         GeologicMineralization: [carbon_capture],  # add transport fuel
         CarbonStorageTechno: [carbon_capture],
+        CropEnergy: [carbon_capture],
     }
 
     # dict of resources used by technos
@@ -1157,11 +1161,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
         ElectrolysisSOEC: [WaterResource],
         Refinery: [OilResource],
         FossilGas: [NaturalGasResource],
-        Methanation: [CO2Resource],
         CO2Hydrogenation: [WaterResource],
         CoalExtraction: [CoalResource],
-        AutothermalReforming: [CO2Resource, OxygenResource],
-        CoElectrolysis: [CO2Resource, WaterResource],
+        AutothermalReforming: [OxygenResource],
+        CoElectrolysis: [WaterResource],
         Pyrolysis: [WoodResource],
         WaterGasShift: [WaterResource],
         ReversedWaterGasShift: [CO2Resource],
@@ -1169,7 +1172,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         HefaDecarboxylation: [NaturalOilResource],
         HefaDeoxygenation: [NaturalOilResource],
         BiomassGasification: [WaterResource],
-        CropEnergy: [CO2Resource],
         UpgradingBiogas: [MonoEthanolAmineResource],
         PureCarbonSolidStorage: [SolidCarbon],  # note : could be a stream but we prefered to let it as a resource for the moment
     }

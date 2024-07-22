@@ -20,7 +20,6 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import (
     BiomassDryTechno,
 )
@@ -189,4 +188,4 @@ class CropEnergy(BiomassDryTechno):
         return dlanduse_dinvest
 
     def compute_resources_needs(self):
-        self.cost_details[f'{CO2.name}_needs'] = -self.techno_infos_dict['CO2_from_production'] / self.data_energy_dict['high_calorific_value']
+        self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = -self.techno_infos_dict['CO2_from_production'] / self.data_energy_dict['high_calorific_value']

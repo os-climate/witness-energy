@@ -100,6 +100,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         pass
 
     def test_01_biomass_fermentation_discipline_analytic_grad(self):
+        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.model_name = 'BiomassFermentation'
         self.ee = ExecutionEngine(self.name)

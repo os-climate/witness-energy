@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.wet_biomass_techno import (
     WetBiomassTechno,
 )
@@ -28,6 +27,6 @@ class WetCropResidues(WetBiomassTechno):
 
 
     def compute_byproducts_production(self):
-        self.production_detailed[f'{CO2.name} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
                                                        self.data_energy_dict['calorific_value'] * \
                                                        self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']
