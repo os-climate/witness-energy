@@ -122,10 +122,6 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                                          0, 0, 0, 0, 0, 0, 0, 0,
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -133,12 +129,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(HydrotreatedOilFuelTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT

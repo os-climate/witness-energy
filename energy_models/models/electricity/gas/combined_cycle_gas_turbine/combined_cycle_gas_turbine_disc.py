@@ -94,9 +94,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     # Major hypothesis: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 51.0 * share]})
-    # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
+        # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
     # Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
     # In US according to EIA 53% of capa from CCGT and 47 for GT in 2017
     share_ccgt = 0.75
@@ -115,12 +113,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}
+               
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

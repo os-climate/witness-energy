@@ -85,9 +85,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     # Invest before year start
     # from
     # https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [1.41, 14.0, 14.0]})
-
+    
     # from database https://solarpaces.nrel.gov/
     # Nb plants 'Operational' and not pilot/demo/proto
     # only commercial or production
@@ -106,12 +104,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

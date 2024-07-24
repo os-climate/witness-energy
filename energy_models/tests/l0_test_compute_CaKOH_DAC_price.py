@@ -23,9 +23,6 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
-    CalciumPotassiumScrubbingDiscipline,
-)
 
 
 class CalciumPotassiumTestCase(unittest.TestCase):
@@ -165,8 +162,6 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        }
 

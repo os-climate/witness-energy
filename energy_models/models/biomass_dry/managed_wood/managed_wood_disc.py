@@ -140,9 +140,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [1.135081, 1.135081, 1.135081]})
-    # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
+        # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
     # 3.36 : calorific value of wood kwh/kg
@@ -199,12 +197,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(BiomassDryTechnoDiscipline.DESC_IN)
 

@@ -76,9 +76,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
     # We do not invest on biomass gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [7.6745661, 8.9729523, 104.91]})
-    # initial production : 45,21 million tonnes => x calorific value and
+        # initial production : 45,21 million tonnes => x calorific value and
     # conversion in TWh
     initial_production = 217.04
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -96,12 +94,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

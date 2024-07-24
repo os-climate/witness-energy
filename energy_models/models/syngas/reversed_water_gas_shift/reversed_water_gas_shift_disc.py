@@ -82,9 +82,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
 
     # Fake investments (not found in the litterature...)
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.1715, 0.1715]})
-    # From Future of hydrogen : accounting for around three quarters of the
+        # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes. and 23+ from coal gasification
     # that means that WGS is used for 98% of the hydrogen production
     initial_production = 0.0
@@ -107,12 +105,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'syngas_ratio': {'type': 'array', 'unit': '%'},
                'needed_syngas_ratio': {'type': 'float', 'unit': '%'}
                }

@@ -104,9 +104,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     initial_capture = 15  # Mt
 
     # We assume 0.5 MT increase per year, with a capex ~ 40$/ton
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.6]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -130,12 +128,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
                                                                      GlossaryEnergy.FlueGasMean: (
                                                                      'float', None, True), }
                                             },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 

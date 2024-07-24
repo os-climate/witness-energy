@@ -128,9 +128,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 87.0, 76.5, 90.0, 67.5]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [2.6, 2.6, 2.6, 2.6, 2.6, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
                                                          1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
@@ -147,12 +145,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

@@ -234,8 +234,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           AmineScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
 
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -301,8 +299,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        #
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -366,8 +362,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           CalciumLoopingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
 
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
@@ -507,8 +501,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
