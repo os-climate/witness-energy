@@ -104,12 +104,7 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

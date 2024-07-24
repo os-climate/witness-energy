@@ -105,9 +105,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
     # We do not invest on biomass gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0, 0.0]})
-
+    
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
     # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas
@@ -137,12 +135,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

@@ -88,10 +88,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # and Nuclear Power Estimates up to 2050
     initial_production = 2657.0
     # Invest in 2019 => 29.6 bn
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [30.0, 29.0, 33.0,
-                                                                                       34.0, 33.0, 39.0]})
-
     # Age distribution => IAEA OPEX Nuclear 2020 - Number of Reactors by Age
     # (as of 1 January 2020)
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -111,12 +107,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

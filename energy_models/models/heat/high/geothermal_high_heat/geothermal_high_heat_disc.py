@@ -93,9 +93,6 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 3830 / (25 * 8760) * np.array([182500 / 3])})  # 1.83E+08]
     flux_input_dict = {'land_rate': 23000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -104,12 +101,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
 
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }

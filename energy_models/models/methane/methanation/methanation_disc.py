@@ -85,8 +85,6 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                              'distrib': [0.0, 8.82, 2.05, 0.93, 23.5, 0.0, 52.94, 11.76, 0.0, 0.0,
                                                          0.0, 0.0, 0.0, 0.0]})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -94,12 +92,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

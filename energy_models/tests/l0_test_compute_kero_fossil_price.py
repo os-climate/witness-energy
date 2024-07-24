@@ -32,7 +32,6 @@ from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import (
     UltraLowSulfurDiesel,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 
 
 class RefineryPriceTestCase(unittest.TestCase):
@@ -156,9 +155,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           RefineryDiscipline.invest_before_year_start, }
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

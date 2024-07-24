@@ -23,9 +23,6 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
-    DirectAirCaptureTechnoDiscipline,
-)
 
 
 class DirectAirCaptureTechnoTestCase(unittest.TestCase):
@@ -135,8 +132,6 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        }
 

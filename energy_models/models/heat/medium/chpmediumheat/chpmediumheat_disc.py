@@ -106,10 +106,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})
 
     # Renewable Methane Association [online]
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: 2.145 / (16 * 8760) * np.array([0, 0.2608])})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
@@ -118,12 +114,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                            }
                                        },
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT

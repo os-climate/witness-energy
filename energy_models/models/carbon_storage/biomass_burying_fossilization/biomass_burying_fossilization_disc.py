@@ -70,9 +70,7 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0  # in kg at year_start
-    invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryEnergy.InvestValue: []})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -94,12 +92,7 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 

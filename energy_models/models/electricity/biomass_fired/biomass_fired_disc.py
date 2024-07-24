@@ -94,10 +94,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # https://public.tableau.com/views/IRENARETimeSeries/Charts?:embed=y&:showVizHome=no&publish=yes&:toolbar=no
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: [1.1632 * 3000 / 1000, 1.1632 * 3000 / 1000]})
-    # In G$
 
     # From IRENA Data
     # https://public.tableau.com/views/IRENARETimeSeries/Charts?:embed=y&:showVizHome=no&publish=yes&:toolbar=no
@@ -118,12 +114,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

@@ -113,9 +113,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     # From ourworldindata
     initial_production = 43752. - energy_own_use
     # First invest is zero to get exactly the initial production in 2020
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 7.8, 9.0]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [2.49, 0.55, 0.0, 0.0, 2.64, 0.55, 6.75, 6.74, 0.0, 1.97, 7.87,
                                                          7.34, 10.19, 9.47, 11.9, 5.55, 2.3, 4.8, 0.89, 0.0, 0.0, 3.42,
@@ -129,12 +127,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

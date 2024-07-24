@@ -18,9 +18,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import (
@@ -149,14 +146,4 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-        if disc.name == 'EnergyMix.fuel.liquid_fuel.Refinery':
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-            for graph in graph_list:
-                graph.to_plotly().show()
+    uc_cls.test()

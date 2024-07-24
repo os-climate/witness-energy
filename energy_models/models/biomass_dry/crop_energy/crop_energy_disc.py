@@ -108,9 +108,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0]})
-    # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
+        # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
                          3.36 * energy_crop_percentage  # in Twh
@@ -135,12 +133,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                CropEnergy.LAND_SURFACE_FOR_FOOD_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                      'visibility': BiomassDryTechnoDiscipline.SHARED_VISIBILITY,
                                                      'namespace': GlossaryEnergy.NS_WITNESS,

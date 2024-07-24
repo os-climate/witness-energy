@@ -76,9 +76,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                                  [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1,
                                                   0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
 
-    invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryEnergy.InvestValue: [0.0443575, 0.0443575]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
@@ -88,13 +85,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('float', None, True),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)}
-                                                               }}
+               }
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

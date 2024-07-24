@@ -72,9 +72,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 635.0, 638.0]})
-
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [4.14634146, 6.2195122, 2.77439024, 6.92073171, 6.92073171,
                                                          3.44512195, 2.77439024, 2.07317073, 4.84756098, 3.44512195,
@@ -84,8 +81,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                                          6.2195122, 4.14634140, 2.77439024, 2.5304878],
                                              })
 
-    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
-    invest_before_year_start_var['default'] = invest_before_year_start
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -93,7 +88,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: invest_before_year_start_var
                }
     # -- add specific techno outputs to this
     DESC_IN.update(RenewableTechnoDiscipline.DESC_IN)
