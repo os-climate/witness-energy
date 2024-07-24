@@ -63,13 +63,12 @@ class TechnoType:
         self.margin = None
         self.maturity = None
         self.invest_before_ystart = None
-        self.is_apply_resource_ratio = None
         self.ratio_available_resource = None
         self.CO2_taxes = None
         self.resources_prices = None
         self.invest_level = None
         self.production_detailed = None
-        self.is_apply_resource_ratio = None
+        self.apply_resource_ratio = None
         self.ratio_available_resource = None
         self.transport_cost = None
         self.transport_margin = None
@@ -110,9 +109,9 @@ class TechnoType:
         self.scaling_factor_techno_consumption = None
         # self.product_unit_billion = 'TWh'
         self.all_streams_demand_ratio = None
-        self.is_stream_demand = False
+        self.apply_ratio = False
+        self.apply_stream_ratio = False
         self.is_resource_ratio = False
-        self.is_applied_resource_ratios = None
         self.smooth_type = None
         self.ratio_df = None
         self.non_use_capital = None
@@ -179,12 +178,13 @@ class TechnoType:
 
         self.scaling_factor_techno_consumption = inputs_dict['scaling_factor_techno_consumption']
         self.scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
-        self.is_stream_demand = inputs_dict['is_stream_demand']
-        self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
+        self.apply_ratio = inputs_dict[GlossaryEnergy.BoolApplyRatio]
+        self.apply_stream_ratio = inputs_dict[GlossaryEnergy.BoolApplyStreamRatio]
+        self.apply_resource_ratio = inputs_dict[GlossaryEnergy.BoolApplyResourceRatio]
         self.smooth_type = inputs_dict['smooth_type']
-        if self.is_stream_demand:
+        if self.apply_stream_ratio:
             self.all_streams_demand_ratio = inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue]
-        if self.is_apply_resource_ratio:
+        if self.apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
         if inputs_dict[GlossaryEnergy.UtilisationRatioValue] is not None:
@@ -222,14 +222,14 @@ class TechnoType:
         self.production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.installed_power = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.ratio_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
-        self.is_stream_demand = inputs_dict['is_stream_demand']
-        self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
+        self.apply_stream_ratio = inputs_dict[GlossaryEnergy.BoolApplyStreamRatio]
+        self.apply_resource_ratio = inputs_dict[GlossaryEnergy.BoolApplyResourceRatio]
         self.smooth_type = inputs_dict['smooth_type']
-        if self.is_stream_demand:
+        if self.apply_stream_ratio:
             self.all_streams_demand_ratio = inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue].loc[
                 inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue][GlossaryEnergy.Years]
                 <= self.year_end]
-        if self.is_apply_resource_ratio:
+        if self.apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
         self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
@@ -267,11 +267,11 @@ class TechnoType:
              This function is to be overloaded in specific techno_models
         """
         ratio_df = pd.DataFrame()
-        if self.is_stream_demand:
+        if self.apply_stream_ratio:
             ratio_df = pd.concat(
                 [ratio_df, self.all_streams_demand_ratio], ignore_index=True)
 
-        if self.is_apply_resource_ratio:
+        if self.apply_resource_ratio:
             for resource in EnergyMix.RESOURCE_LIST:
                 ratio_df[resource] = self.ratio_available_resource[resource].values
         for col in ratio_df.columns:
@@ -1193,7 +1193,7 @@ class TechnoType:
         self.store_consumption_and_production_and_landuse_wo_ratios()
         self.apply_utilisation_ratio()
         self.select_resources_ratios()
-        self.apply_resources_ratios(inputs_dict['is_apply_ratio'])
+        self.apply_resources_ratios(self.apply_ratio)
 
         self.compute_capital()
         self.get_mean_age_over_years()

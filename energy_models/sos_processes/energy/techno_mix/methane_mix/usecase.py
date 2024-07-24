@@ -76,7 +76,8 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.electricity: 16.0,
                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
                                       GlossaryEnergy.syngas: 80.0,
-                                      GlossaryEnergy.biogas: 70.0})
+                                      GlossaryEnergy.biogas: 70.0,
+                                      GlossaryEnergy.carbon_capture: 70.})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -102,7 +103,7 @@ class Study(EnergyMixStudyManager):
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.biogas: - 0.05, GlossaryEnergy.solid_fuel: 0.64 / 4.86,
              GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
-             'crude oil': 0.02533})
+             'crude oil': 0.02533, GlossaryEnergy.carbon_capture: - 0.64 / 4.888})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,

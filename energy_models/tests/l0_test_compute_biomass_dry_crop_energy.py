@@ -58,10 +58,10 @@ class CropEnergyPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price, GlossaryEnergy.carbon_capture: 70.})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.carbon_capture: -2.})
         # invest: 1Mha of crop land each year
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,

@@ -76,11 +76,11 @@ class TechnoDiscipline(SoSWrapp):
                         'possible_values': ['smooth_max', 'soft_max', 'cons_smooth_max'],
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
-        'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
+        GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
+        GlossaryEnergy.BoolApplyStreamRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
+        GlossaryEnergy.BoolApplyResourceRatio: {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
         GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
@@ -167,10 +167,10 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=streams_used_for_production)
                     })
 
-            if 'is_apply_ratio' in self.get_data_in():
+            if GlossaryEnergy.BoolApplyRatio in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
-                if self.get_sosdisc_inputs('is_stream_demand'):
+                if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyStreamRatio):
                     demand_ratio_dict = dict(
                         zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
                     demand_ratio_dict[GlossaryEnergy.Years] = years
@@ -182,7 +182,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                                  'namespace': 'ns_energy',
                                                                                  "dynamic_dataframe_columns": True
                                                                                  }
-                if self.get_sosdisc_inputs('is_apply_resource_ratio'):
+                if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyResourceRatio):
                     resource_ratio_dict = dict(
                         zip(EnergyMix.RESOURCE_LIST, np.ones(len(years)) * 100.0))
                     resource_ratio_dict[GlossaryEnergy.Years] = years
@@ -359,7 +359,7 @@ class TechnoDiscipline(SoSWrapp):
 
         # ---Gradient main techno prod vs each ratio
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios(
-            inputs_dict['is_apply_ratio'])
+            inputs_dict[GlossaryEnergy.BoolApplyRatio])
         self.dprod_dratio = {}
         if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
             for ratio_name in inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue].columns:
@@ -705,7 +705,7 @@ class TechnoDiscipline(SoSWrapp):
                       GlossaryEnergy.UtilisationRatioValue,
                       'Non-Use Capital',
                       'Power production']
-        if self.get_sosdisc_inputs('is_apply_ratio'):
+        if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyRatio):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))

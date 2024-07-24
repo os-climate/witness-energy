@@ -120,8 +120,8 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             'scaling_factor_techno_production': self.scaling_factor_techno_production,
                             ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                             GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                            'is_stream_demand': self.is_stream_demand,
-                            'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                            GlossaryEnergy.BoolApplyStreamRatio: self.is_stream_demand,
+                            GlossaryEnergy.BoolApplyResourceRatio: self.is_apply_resource_ratio,
                             'smooth_type': 'smooth_max',
                             'data_fuel_dict': Electricity.data_energy_dict,
                             }

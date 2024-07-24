@@ -211,6 +211,20 @@ inital_selection = [
     GlossaryEnergy.HefaDecarboxylation,
 ]
 
+technos_to_avoid = [
+GlossaryEnergy.BiomassFermentation,
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}",  # remove
+GlossaryEnergy.BiomassBuryingFossilization,
+GlossaryEnergy.PureCarbonSolidStorage
+]
+streams_to_avoid = [
+GlossaryEnergy.hightemperatureheat_energyname,
+GlossaryEnergy.mediumtemperatureheat_energyname,
+GlossaryEnergy.lowtemperatureheat_energyname
+]
+
 
 if __name__ == '__main__':
     sub_techno_dict, n_technos, n_streams = techno_dict_builder(

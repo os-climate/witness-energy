@@ -40,7 +40,7 @@ def get_default_resources_CO2_emissions(years):
     resources_CO2_emissions_dict.update({ResourceGlossary.GlossaryDict[resource]['name']:
                                              ResourceGlossary.GlossaryDict[resource][GlossaryEnergy.CO2EmissionsValue]
                                          for resource in ResourceGlossary.GlossaryDict.keys()})
-    resources_CO2_emissions_dict[GlossaryEnergy.SolidCarbon] = resources_CO2_emissions_dict[GlossaryEnergy.CO2Resource]
+    resources_CO2_emissions_dict[GlossaryEnergy.SolidCarbon] = 0.
     return pd.DataFrame(resources_CO2_emissions_dict)
 
 
@@ -60,7 +60,7 @@ def get_default_resources_prices(years):
         {ResourceGlossary.GlossaryDict[resource]['name']: ResourceGlossary.GlossaryDict[resource]['price'] for resource
          in ResourceGlossary.GlossaryDict.keys()})
 
-    resources_prices_default_dict[GlossaryEnergy.SolidCarbon] = resources_prices_default_dict[GlossaryEnergy.CO2Resource]
+    resources_prices_default_dict[GlossaryEnergy.SolidCarbon] = 0.
     return pd.DataFrame(resources_prices_default_dict)
 
 
