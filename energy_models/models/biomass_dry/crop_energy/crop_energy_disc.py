@@ -22,7 +22,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import (
     BiomassDryTechnoDiscipline,
 )
@@ -201,11 +200,11 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
+            (GlossaryEnergy.TechnoConsumptionValue, f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} ({GlossaryEnergy.mass_unit})'),
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(

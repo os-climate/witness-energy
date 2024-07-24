@@ -26,13 +26,14 @@ class CoElectrolysis(SyngasTechno):
     syngas_COH2_ratio = 100.0  # in %
 
     def compute_resources_needs(self):
-        # need in kg to produce 1kwh of syngas
-        self.cost_details[f"{GlossaryEnergy.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
 
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_other_streams_needs(self):
+        # need in kg to produce 1kwh of syngas
+        self.cost_details[f"{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 

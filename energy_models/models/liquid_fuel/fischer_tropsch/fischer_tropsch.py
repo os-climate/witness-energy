@@ -96,7 +96,7 @@ class FischerTropsch(LiquidFuelTechno):
         """! Select the ratios to be added to ratio_df
         """
         ratio_df = LiquidFuelTechno.select_resources_ratios(self)
-        if GlossaryEnergy.carbon_capture in ratio_df.columns and self.is_stream_demand:
+        if GlossaryEnergy.carbon_capture in ratio_df.columns and self.apply_stream_ratio:
             ratio_df[GlossaryEnergy.carbon_capture] = ratio_df[GlossaryEnergy.carbon_capture].values
         else:
             ratio_df[GlossaryEnergy.carbon_capture] = np.ones(len(self.years))
@@ -400,16 +400,17 @@ class FischerTropsch(LiquidFuelTechno):
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        'smooth_type': self.smooth_type,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       GlossaryEnergy.BoolApplyRatio: self.apply_ratio,
+                       GlossaryEnergy.BoolApplyStreamRatio: self.apply_stream_ratio,
+                       GlossaryEnergy.BoolApplyResourceRatio: self.apply_resource_ratio,
                        'data_fuel_dict': self.syngas_energy_dict,
                        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.ReversedWaterGasShift],
                        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.ReversedWaterGasShift] if GlossaryEnergy.ReversedWaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.ReversedWaterGasShift],
                        }
-        if self.is_stream_demand:
+        if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
-        if self.is_apply_resource_ratio:
+        if self.apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
         self.syngas_ratio_techno = RWGS('RWGS')
@@ -457,16 +458,17 @@ class FischerTropsch(LiquidFuelTechno):
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        'smooth_type': self.smooth_type,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       GlossaryEnergy.BoolApplyRatio: self.apply_ratio,
+                       GlossaryEnergy.BoolApplyStreamRatio: self.apply_stream_ratio,
+                       GlossaryEnergy.BoolApplyResourceRatio: self.apply_resource_ratio,
                        'data_fuel_dict': self.gaseous_hydrogen_energy_dict,
                        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.WaterGasShift] if GlossaryEnergy.WaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.WaterGasShift],
                        }
-        if self.is_stream_demand:
+        if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
-        if self.is_apply_resource_ratio:
+        if self.apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
         self.syngas_ratio_techno = WGS('WGS')

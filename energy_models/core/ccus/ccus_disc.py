@@ -31,7 +31,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -142,10 +141,10 @@ class CCUS_Discipline(SoSWrapp):
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
                     'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(
-                        {GlossaryEnergy.Years: np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
+                        {GlossaryEnergy.Years: np.arange(year_start, year_end + 1), f'{GlossaryEnergy.carbon_capture} for food (Mt)': 0.0}),
                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                             'CO2_resource for food (Mt)': ('float', None, True), }
+                                             f'{GlossaryEnergy.carbon_capture} for food (Mt)': ('float', None, True), }
                 }
 
         self.add_inputs(dynamic_inputs),
@@ -276,10 +275,10 @@ class CCUS_Discipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                         np.identity(len(years)) * value / 1.0e3)
-                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
+                elif energy_prod_info.startswith(f'{GlossaryEnergy.carbon_capture} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd),
-                        ('co2_for_food', f'{CO2.name} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
+                        ('co2_for_food', f'{GlossaryEnergy.carbon_capture} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
 
                 elif energy_prod_info.startswith(f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
@@ -329,9 +328,9 @@ class CCUS_Discipline(SoSWrapp):
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse), value)
-                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
+                elif energy_prod_info.startswith(f'{GlossaryEnergy.carbon_capture} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{CO2.name} for food (Mt)'), value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{GlossaryEnergy.carbon_capture} for food (Mt)'), value)
 
                 elif energy_prod_info.startswith(f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
@@ -480,7 +479,7 @@ class CCUS_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_for_food[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food', 'bar')
+            (-co2_for_food[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values / 1.0e3).tolist(), f'{GlossaryEnergy.carbon_capture} used for food', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -548,7 +547,7 @@ class CCUS_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CO2.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
             'CO2 from energy mix (machinery fuels)')
         new_chart.add_series(serie)
 

@@ -31,7 +31,7 @@ class Methanation(MethaneTechno):
 
     def compute_resources_needs(self):
         # in kg of CO2 for kWh of CH4
-        self.cost_details[f'{CO2.name}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
 
     def compute_other_streams_needs(self):
         # in kWh of H2 for kWh of CH4

@@ -51,7 +51,6 @@ from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
@@ -1812,7 +1811,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food', 'bar')
+            (-co2_emissions[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values / 1.0e3).tolist(), f'{GlossaryEnergy.carbon_capture} used for food', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -1880,7 +1879,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CO2.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
             'CO2 from energy mix (machinery fuels)')
         new_chart.add_series(serie)
 

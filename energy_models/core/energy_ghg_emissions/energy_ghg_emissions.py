@@ -26,7 +26,6 @@ from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agricult
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -42,7 +41,7 @@ class EnergyGHGEmissions(BaseStream):
     CO2_list = [f'{GlossaryEnergy.carbon_capture} {ghg_input_unit}',
                 f'{CarbonCapture.flue_gas_name} {ghg_input_unit}',
                 f'{GlossaryEnergy.carbon_storage} {ghg_input_unit}',
-                f'{CO2.name} {ghg_input_unit}',
+                f'{GlossaryEnergy.carbon_capture} {ghg_input_unit}',
                 f'{Carbon.name} {ghg_input_unit}']
 
     GHG_TYPE_LIST = GHGEmissions.GHG_TYPE_LIST
@@ -177,15 +176,15 @@ class EnergyGHGEmissions(BaseStream):
          i.e. for machinery or tractors 
         '''
         energy_producing_co2 = self.ghg_production_dict[GlossaryEnergy.CO2][[
-            col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+            col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_producing_co2_list = [key.replace(
-            f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_producing_co2]
+            f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_producing_co2]
         if len(energy_producing_co2_list) != 0:
-            self.CO2_sources[f'{CO2.name} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
+            self.CO2_sources[f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
                 axis=1).values
         else:
             self.CO2_sources[
-                f'{CO2.name} from energy mix {self.ghg_input_unit}'] = 0.0
+                f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
@@ -211,15 +210,15 @@ class EnergyGHGEmissions(BaseStream):
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = self.CO2_consumption[[
-            col for col in self.CO2_consumption if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+            col for col in self.CO2_consumption if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_removing_co2_list = [key.replace(
-            f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_removing_co2]
+            f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_removing_co2]
         if len(energy_removing_co2_list) != 0:
-            self.CO2_sinks[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
+            self.CO2_sinks[f'{GlossaryEnergy.carbon_capture} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
                 axis=1).values
         else:
             self.CO2_sinks[
-                f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = 0.0
+                f'{GlossaryEnergy.carbon_capture} removed by energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' Total C02 from Flue gas 
             sum of all production of flue gas
@@ -411,39 +410,39 @@ class EnergyGHGEmissions(BaseStream):
          i.e. for machinery or tractors 
         '''
         energy_producing_co2 = co2_production[[
-            col for col in co2_production if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+            col for col in co2_production if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_producing_co2_list = [key.replace(
-            f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_producing_co2]
+            f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_producing_co2]
         if len(energy_producing_co2_list) != 0:
             for energy1 in energy_producing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#prod'] = np.ones(
+                    f'{GlossaryEnergy.carbon_capture} from energy mix (Mt) vs {energy1}#{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}#prod'] = np.ones(
                     len_years)
 
-        #             self.total_co2_emissions[f'{CO2.name} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
+        #             self.total_co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
         #                 axis=1).values
         #         else:
         #             self.total_co2_emissions[
-        #                 f'{CO2.name} from energy mix {self.ghg_input_unit}'] = 0.0
+        #                 f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[
-            col for col in co2_consumption if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+            col for col in co2_consumption if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_removing_co2_list = [key.replace(
-            f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_removing_co2]
+            f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_removing_co2]
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
+                    f'{GlossaryEnergy.carbon_capture} removed by energy mix (Mt) vs {energy1}#{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}#cons'] = np.ones(
                     len_years)
-        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
+        #             self.total_co2_emissions[f'{GlossaryEnergy.carbon_capture} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
         #                 axis=1).values
         #         else:
         #             self.total_co2_emissions[
-        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
+        #                 f'{GlossaryEnergy.carbon_capture} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' Total C02 from Flue gas
             sum of all production of flue gas 
@@ -496,13 +495,13 @@ class EnergyGHGEmissions(BaseStream):
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[
-            col for col in co2_consumption if col.endswith(f'{CO2.name} {self.ghg_input_unit}')]]
+            col for col in co2_consumption if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
         energy_removing_co2_list = [key.replace(
-            f' {CO2.name} {self.ghg_input_unit}', '') for key in energy_removing_co2]
+            f' {GlossaryEnergy.carbon_capture} {self.ghg_input_unit}', '') for key in energy_removing_co2]
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
+                    f'{GlossaryEnergy.carbon_capture} removed by energy mix (Mt) vs {energy1}#{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}#cons'] = np.ones(
                     len_years)
 
         return dtot_CO2_emissions
