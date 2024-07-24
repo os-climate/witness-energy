@@ -31,9 +31,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
-    AmineScrubbingDiscipline,
-)
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
     CalciumPotassiumScrubbingDiscipline,
 )
