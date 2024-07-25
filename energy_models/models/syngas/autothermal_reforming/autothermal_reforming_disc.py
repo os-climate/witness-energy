@@ -45,7 +45,6 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.AutothermalReforming
     lifetime = 15
-    construction_delay = 3  # years
     # 'reaction': '2CH4 + CO2 + O2 = 3H2 + 3CO + H2O',
     techno_infos_dict_default = {'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -68,8 +67,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     syngas_ratio = AutothermalReforming.syngas_COH2_ratio

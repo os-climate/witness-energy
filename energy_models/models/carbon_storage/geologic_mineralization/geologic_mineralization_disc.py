@@ -46,7 +46,6 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.GeologicMineralization
     lifetime = 35
-    construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
@@ -68,7 +67,6 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 1,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
 

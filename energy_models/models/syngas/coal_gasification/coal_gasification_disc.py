@@ -44,7 +44,6 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.CoalGasification
     lifetime = 20
-    construction_delay = 4  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.15,
                                  # Source for CO2_from_production: IEA 2022, IEA ETSAP 2010
@@ -67,8 +66,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
                                  'efficiency': 1.0,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                     'techno_evo_eff': 'no',}
     # We do not invest on coal gasification yet
     
     syngas_ratio = CoalGasification.syngas_COH2_ratio

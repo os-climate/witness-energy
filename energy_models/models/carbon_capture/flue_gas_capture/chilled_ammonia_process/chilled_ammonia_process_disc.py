@@ -45,7 +45,6 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
-    construction_delay = 1
 
     # Most of the data from this model come from :
     # Guandalini, G., Romano, M.C., Ho, M., Wiley, D., Rubin, E.S. and Abanades, J.C., 2019.
@@ -96,7 +95,7 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
+                                 }
 
     techno_info_dict = techno_infos_dict_default
 

@@ -47,7 +47,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.PlasmaCracking
     lifetime = 25
-    construction_delay = 2
     techno_infos_dict_default = {'reaction': 'CH4 = C + 2H2',
                                  'maturity': 5,
                                  'Opex_percentage': 0.2,
@@ -70,7 +69,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.15,
                                  'efficiency_max': 0.6,
                                  'nb_years_amort_capex': 10.,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 1e-12
     initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),

@@ -48,8 +48,6 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.WindOnshore
     lifetime = 30  # ATB NREL 2020
-    construction_delay = 3  # ATB NREL 2020
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.05,  # Weighted averaged cost of capital / ATB NREL 2020
@@ -64,7 +62,6 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 2900 / 1e9 # According to the IEA, Onshore Wind turbines need 2900 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

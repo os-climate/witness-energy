@@ -47,7 +47,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
     lifetime = 25
-    construction_delay = 1
 
     heat_to_power_lost = 0.243
     heat_duty = 18
@@ -82,7 +81,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
+                                 }
 
     techno_info_dict = techno_infos_dict_default
 

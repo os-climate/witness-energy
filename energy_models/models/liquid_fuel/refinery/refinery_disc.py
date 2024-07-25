@@ -48,7 +48,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.Refinery
     lifetime = 35
-    construction_delay = 3
     # only energetical valuable product taken into acocun. Wastes are not
     # taken into account
     # mass ratio of product for 1 kg of crude oil refined
@@ -118,7 +117,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 

@@ -43,7 +43,6 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
     techno_name = GlossaryEnergy.CoElectrolysis
     lifetime = 40
-    construction_delay = 2  # years
     # 'reaction': 'H20 + CO2 = H2 + CO + O2',
 
     techno_infos_dict_default = {'CO2_from_production': 0,
@@ -64,7 +63,6 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
                                  'efficiency': 0.8,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     syngas_ratio = CoElectrolysis.syngas_COH2_ratio

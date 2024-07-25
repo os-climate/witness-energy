@@ -52,7 +52,6 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # Biotechnology for biofuels, 10(1), pp.1-16.
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
     lifetime = 30  # years
-    construction_delay = 3  # years
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -67,8 +66,6 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Opex_percentage': 0.0715,
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780

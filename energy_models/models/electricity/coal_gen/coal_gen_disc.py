@@ -53,7 +53,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.
     # Quantifying operational lifetimes for coal power plants under the Paris
     # goals. Nature communications, 10(1), pp.1-9.
-    construction_delay = 5  # For 1000MW hypercritical in Korea
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
                                  # Lorenczik, S., Kim, S., Wanner, B., Bermudez Menendez, J.M., Remme, U., Hasegawa,
@@ -117,7 +116,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 0.41,
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1150 /1e9 #According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

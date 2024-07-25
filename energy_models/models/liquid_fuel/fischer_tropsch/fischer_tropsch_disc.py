@@ -68,7 +68,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.FischerTropsch
     lifetime = 30
-    construction_delay = 3
     # 'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',
     #          'reaction2': '(2n+1)H2 + nCO --> CnH_2n+1 + nH20 ',
 
@@ -97,7 +96,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  # N/2N+1 with N number of carbon mol in
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review

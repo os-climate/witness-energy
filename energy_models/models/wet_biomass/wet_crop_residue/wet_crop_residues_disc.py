@@ -48,7 +48,6 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
 
     techno_name = GlossaryEnergy.WetCropResidues
     lifetime = 25
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'crop_residues_moisture': 0.50,
                                  'crop_residue_colorific_value': 3.15,  # irena
@@ -85,7 +84,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'efficiency': 0.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # To be defined
         # 7% of available power is the amount of crop residue in 2017
     # (worldbioenergy.org)

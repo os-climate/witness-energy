@@ -54,7 +54,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.FossilSimpleTechno
     lifetime = 25
-    construction_delay = 3
 
     prod_solid_fuel = 45000.  # TWh
     prod_liquid_fuel = 53000.  # TWh
@@ -81,7 +80,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': co2_from_prod,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'resource_price': 75.0,
                                  'resource_price_unit': '$/MWh',
                                  'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,

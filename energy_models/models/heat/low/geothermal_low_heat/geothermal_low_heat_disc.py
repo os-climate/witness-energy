@@ -51,7 +51,6 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
 
-    construction_delay = 1  # in years
     techno_infos_dict_default = {
         'Capex_init': 3830,
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
@@ -60,8 +59,6 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.122,
         # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
@@ -93,9 +90,6 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 3830 / (25 * 8760) * np.array([182500 / 3])})
     flux_input_dict = {'land_rate': 18000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

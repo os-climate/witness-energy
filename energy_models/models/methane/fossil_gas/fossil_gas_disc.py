@@ -43,7 +43,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.FossilGas
     lifetime = 23
-    construction_delay = 3  # years
     techno_infos_dict_default = {'available_power': 15000000,
                                  'available_power_unit': 'm^3',
                                  'capacity_factor': 0.4,
@@ -71,7 +70,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'WACC': 0.0878,
                                  'efficiency': 0.4,
                                  # https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,  # in kWh/kg
                                  'maturity': 5
                                  }
     energy_own_use = 3732.83  # TWh

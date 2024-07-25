@@ -50,7 +50,6 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.SolarThermal
     lifetime = 25  # JRC, IRENA, SolarPACES
-    construction_delay = 3  # JRC, ATB NREL, database https://solarpaces.nrel.gov/
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
                                  # OPEX : lmean of lazard / JRC / ATB NREL
@@ -75,7 +74,6 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'density_per_ha_unit': 'kWh/ha',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }

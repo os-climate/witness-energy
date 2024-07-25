@@ -46,7 +46,6 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.ElectrolysisAWE
-    construction_delay = 1  # year
     # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019.
     # Advances in alkaline water electrolyzers: A review.
     # Journal of Energy Storage, 23, pp.392-403.
@@ -72,7 +71,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # see doc
     initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015

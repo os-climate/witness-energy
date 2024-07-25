@@ -46,7 +46,6 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
 
     techno_name = GlossaryEnergy.AnimalManure
     lifetime = 25
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'moisture': 0.85,
 
@@ -73,7 +72,7 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                  'efficiency': 0.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # invest: 7% of ha are planted each year at 13047.328euro/ha
         # To be defined
     initial_production = 1e-12  # in Twh

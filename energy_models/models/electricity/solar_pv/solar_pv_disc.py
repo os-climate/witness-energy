@@ -48,7 +48,6 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.SolarPv
     lifetime = 25  # IRENA, EOLES model
-    construction_delay = 1
     # Source for Opex percentage, Capex init, capacity factor:
     # IEA 2022, World Energy Outlook 2019,
     # https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY
@@ -81,7 +80,6 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertient
                                  'techno_evo_eff': 'no',
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 2822 / 1e9 # According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

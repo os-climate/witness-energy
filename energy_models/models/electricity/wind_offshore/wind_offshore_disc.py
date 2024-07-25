@@ -49,8 +49,6 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.WindOffshore
     lifetime = 30  # ATB NREL 2020
-    construction_delay = 3  # ATB NREL 2020
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.052,  # Weighted averaged cost of capital / ATB NREL 2020
@@ -65,7 +63,6 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 8000 / 1e9  # According to the IEA, WindOffshore panels needs 8000 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

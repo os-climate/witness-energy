@@ -50,9 +50,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
     lifetime = 60
-    # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation
-    # Technologies., average
-    construction_delay = 6
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.024,
@@ -72,7 +69,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'heat_recovery_factor': 0.6,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'waste_disposal_levy': 0.1 * 1e-2 * 1e3,  # conversion from c/kWh to $/MWh
                                  'waste_disposal_levy_unit': '$/MWh',
                                  'decommissioning_cost': 1000,

@@ -50,7 +50,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.CropEnergy
     lifetime = 50
-    construction_delay = 1  # years
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -106,7 +105,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces

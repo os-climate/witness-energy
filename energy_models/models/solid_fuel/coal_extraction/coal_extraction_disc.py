@@ -47,7 +47,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.CoalExtraction
     lifetime = 35
-    construction_delay = 3
 
     # Most coal seams are too deep underground for opencast mining and require
     # underground mining, a method that currently accounts for about 60
@@ -103,7 +102,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'enthalpy_unit': 'kWh/m^3',
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'energy_burn': 'no'}
 

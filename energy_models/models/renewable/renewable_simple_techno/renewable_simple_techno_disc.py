@@ -49,7 +49,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.RenewableSimpleTechno
     lifetime = 30
-    construction_delay = 3
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
@@ -66,7 +65,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'resource_price': 70.0,
                                  'resource_price_unit': '$/MWh'}
 

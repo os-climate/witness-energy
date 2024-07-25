@@ -1278,9 +1278,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
          FossilGas: 3,
          ReversedWaterGasShift: 2,
          UpgradingBiogas: 2,
-         Methanation: 2,
-         WaterGasShift: 2,
-         ElectrolysisSOEC: 1,
+         Methanation: 2,  # Thema, M., Bauer, F. and Sterner, M., 2019.  Power-to-Gas: Electrolysis and methanation status review.  Renewable and Sustainable Energy Reviews, 112, pp.775-787. the average time needed for planning and constructing was about 1.5years from Thema2019
+         WaterGasShift: 2, # Giuliano, A., Freda, C. and Catizzone, E., 2020. Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections. Bioengineering, 7(3), p.70.
+         ElectrolysisSOEC: 1, # Haldor Topsoe, 2021 Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production https://blog.topsoe.com/haldor-topsoe-to-build-large-scale-soec-electrolyzer-manufacturing-facility-to-meet-customer-needs-for-green-hydrogen-production  Construction will start in 2022 and will ends in 2023
          ElectrolysisPEM: 2,
          ElectrolysisAWE: 1,
          PlasmaCracking: 2,
@@ -1300,17 +1300,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
          BiomassFermentation: 2,
          CoalExtraction: 3,
          Pelletizing: 3,
-         WindOffshore: 3,
-         WindOnshore: 3,
+         WindOffshore: 3,  # ATB NREL 2020
+         WindOnshore: 3,  # ATB NREL 2020
          SolarPv: 1,
-         SolarThermal: 3,
+         SolarThermal: 3, # JRC, ATB NREL, database https://solarpaces.nrel.gov/
          Hydropower: 3,
-         Nuclear: 6,
+         Nuclear: 6, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
          CombinedCycleGasTurbine: 2,
-         GasTurbine: 2,
+         GasTurbine: 2, #Lazard
          BiogasFired: 2,
-         CoalGen: 5,
-         OilGen: 5,
+         CoalGen: 5,  # For 1000MW hypercritical in Korea
+         OilGen: 5,  # For 1000MW hypercritical in Korea
          BiomassFired: 2,
          f"{direct_air_capture}.{AmineScrubbing}": 3,
          f"{direct_air_capture}.{CalciumPotassiumScrubbing}": 3,
@@ -1327,6 +1327,32 @@ class GlossaryEnergy(GlossaryWitnessCore):
          EnhancedOilRecovery: 0,
          GeologicMineralization: 0,
          PureCarbonSolidStorage: 0,
+        UnmanagedWood: 3,
+        Reforestation: 3,
+        CarbonStorageTechno: 0,
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": 3,
+        CropEnergy: 1,
+        Geothermal: 7,     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). # National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        ManagedWood: 3,
+        f"{flue_gas_capture}.{FlueGasTechno}": 1,
+        HeatPumpHighHeat: 1,
+        ElectricBoilerHighHeat: 2,
+        GeothermalHighHeat: 1,
+        ElectricBoilerLowHeat: 2,
+        CHPHighHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        NaturalGasBoilerHighHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        NaturalGasBoilerLowHeat: 2,
+        GeothermalLowHeat: 1,
+        HeatPumpLowHeat: 1,
+        GeothermalMediumHeat: 1,
+        HeatPumpMediumHeat: 1,
+        CHPLowHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        FossilSimpleTechno: 3,
+        NaturalGasBoilerMediumHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        CO2Hydrogenation: 3,
+        RenewableSimpleTechno: 3, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
+        CHPMediumHeat: 2,
+        ElectricBoilerMediumHeat: 2,
     }
 
     @classmethod

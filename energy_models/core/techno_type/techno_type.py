@@ -49,6 +49,7 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.construction_delay: int = 0
         self.cost_of_resources_usage = None
         self.cost_of_streams_usage = None
         self.specific_costs = None
@@ -235,6 +236,7 @@ class TechnoType:
         self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
             GlossaryEnergy.UtilisationRatioValue].values
         self.techno_infos_dict = inputs_dict['techno_infos_dict']
+        self.construction_delay = inputs_dict[GlossaryEnergy.ConstructionDelay]
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -921,12 +923,6 @@ class TechnoType:
 
     def compute_primary_installed_power(self):
 
-        if GlossaryEnergy.ConstructionDelay in self.techno_infos_dict:
-            construction_delay = self.techno_infos_dict[GlossaryEnergy.ConstructionDelay]
-        else:
-            print(
-                f'The construction_delay data is not set for {self.name} : default = 3 years  ')
-            construction_delay = 3
 
         if 'full_load_hours' in self.techno_infos_dict:
             full_load_hours = self.techno_infos_dict['full_load_hours']
@@ -935,8 +931,7 @@ class TechnoType:
             #     f'The full_load_hours data is not set for {self.name} : default = 8760.0 hours, full year hours  ')
             full_load_hours = 8760.0
 
-        production_from_invest = self.compute_prod_from_invest(
-            construction_delay=construction_delay)
+        production_from_invest = self.compute_prod_from_invest()
 
         # Conversion from TWh to MW
         self.installed_power['new_power_production'] = production_from_invest.loc[production_from_invest[
@@ -968,15 +963,7 @@ class TechnoType:
         aging_distrib_year_df[f'distrib_prod ({self.product_unit})'] = self.initial_age_distrib['distrib'] * \
                                                                               self.initial_production / 100.0
 
-        if GlossaryEnergy.ConstructionDelay in self.techno_infos_dict:
-            construction_delay = self.techno_infos_dict[GlossaryEnergy.ConstructionDelay]
-        else:
-            print(
-                f'The construction_delay data is not set for {self.name} : default = 3 years  ')
-            construction_delay = 3
-
-        production_from_invest = self.compute_prod_from_invest(
-            construction_delay=construction_delay)
+        production_from_invest = self.compute_prod_from_invest()
 
         # get the whole dataframe for new production with one line for each
         # year at each age
@@ -1024,13 +1011,13 @@ class TechnoType:
         # Fill Nan with zeros
         self.age_distrib_prod_df.fillna(0.0, inplace=True)
 
-    def compute_prod_from_invest(self, construction_delay):
+    def compute_prod_from_invest(self):
         '''
         Compute the energy production of a techno from investment in TWh
         Add a delay for factory construction
         '''
 
-        years_before_year_start = np.arange(self.year_start - construction_delay, self.year_start)
+        years_before_year_start = np.arange(self.year_start - self.construction_delay, self.year_start)
         invest_before_year_start = self.invest_before_ystart[GlossaryEnergy.InvestValue].values
         capex_year_start = self.cost_details.loc[self.cost_details[GlossaryEnergy.Years] == self.year_start, f'Capex_{self.name}'].values[0]
         invest_before_year_start_df = pd.DataFrame({
@@ -1045,7 +1032,7 @@ class TechnoType:
         production_from_invests = prod_from_invests_df[GlossaryEnergy.InvestValue].values / \
                                                      prod_from_invests_df[f'Capex_{self.name}'].values
         prod_from_invests_df['prod_from_invest'] = production_from_invests
-        prod_from_invests_df[GlossaryEnergy.Years] += construction_delay
+        prod_from_invests_df[GlossaryEnergy.Years] += self.construction_delay
         prod_from_invests_df = prod_from_invests_df[prod_from_invests_df[GlossaryEnergy.Years] <= self.year_end]
 
         return prod_from_invests_df
@@ -1307,11 +1294,9 @@ class TechnoType:
         for i in range(nb_years):
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                               capex_list[i]
-            len_non_zeros = min(max(0, nb_years -
-                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
+            len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
                                 techno_dict['lifetime'])
-            first_len_zeros = min(
-                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
+            first_len_zeros = min(i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
@@ -1358,11 +1343,10 @@ class TechnoType:
             dprod_list_dcapex_list = np.zeros(
                 (nb_years, nb_years), dtype='complex128')
         for i in range(nb_years):
-            len_non_zeros = min(max(0, nb_years -
-                                    techno_dict[GlossaryEnergy.ConstructionDelay] - i),
+            len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict[GlossaryEnergy.ConstructionDelay], nb_years)
+                i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex
@@ -1389,13 +1373,13 @@ class TechnoType:
 
         return dprod_list_dcapex_list
 
-    def compute_dpower_dinvest(self, capex_list, invest_list, techno_dict, dcapex_dinvest,
+    def compute_dpower_dinvest(self, capex_list, invest_list, dcapex_dinvest,
                                scaling_factor_techno_consumption):
         nb_years = len(capex_list)
         dpower_list_dinvest_list = np.zeros(
             (nb_years, nb_years))
 
-        delay = techno_dict[GlossaryEnergy.ConstructionDelay]
+        delay = self.construction_delay
         # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
         for i in range(delay, nb_years):
             if capex_list[i - delay] != 0:
