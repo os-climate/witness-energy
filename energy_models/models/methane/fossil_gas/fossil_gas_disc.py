@@ -90,8 +90,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': distrib_our_world_indata * 100.0 / distrib_our_world_indata.sum()})  # to do
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 31.2, 31.2]})
     FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
@@ -101,12 +99,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

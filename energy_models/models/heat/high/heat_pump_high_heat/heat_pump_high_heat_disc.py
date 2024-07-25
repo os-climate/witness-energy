@@ -111,11 +111,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # Expected Globally Heat Generated in 2030 is 2592 GW
     # Yearly Heat Generation increment will be 170 GW
     # invest_before_year_start = pd.DataFrame(
-    #     {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([1*8760*0.5*0.5/3])})
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 0 * np.array([1 * 8760 * 0.5 * 0.5 / 3])})  # Invest before year start is 0
-    # invest_before_year_start = pd.DataFrame(
     #     {'past years': np.arange(-construction_delay, 0),
     #      GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([0, 1*8760*0.5/3])})
     flux_input_dict = {'land_rate': 24000, 'land_rate_unit': '$/Gha', }
@@ -126,12 +121,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)

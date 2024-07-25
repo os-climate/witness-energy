@@ -92,9 +92,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
 
     # invest: 0.1 Mha are planted each year at 13047.328euro/ha
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0, 0, 0]})
-    #
+        #
     initial_storage = 0  # in MtCO2
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -125,12 +123,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 

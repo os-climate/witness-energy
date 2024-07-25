@@ -100,8 +100,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
     # License: CC BY 4.0.
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.015, 0.017, 0.009]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -109,12 +107,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(BiogasTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

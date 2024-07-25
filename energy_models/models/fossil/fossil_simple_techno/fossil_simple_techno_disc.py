@@ -94,9 +94,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     # net production = 90717.76   TWh
     initial_production = 136917.16  # TWh
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,
                                                          4.25932906, 3.43007916, 2.56313607, 5.99321523, 4.25932906,
@@ -106,9 +104,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                              })
     FLUE_GAS_RATIO = np.array([0.12])
 
-    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
-    invest_before_year_start_var['default'] = invest_before_year_start
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -116,7 +111,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: invest_before_year_start_var,
                }
 
     # -- add specific techno outputs to this

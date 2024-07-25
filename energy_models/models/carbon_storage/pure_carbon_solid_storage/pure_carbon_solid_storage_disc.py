@@ -81,9 +81,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0
-    invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryEnergy.InvestValue: []})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -108,12 +106,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,

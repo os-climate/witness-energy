@@ -88,9 +88,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime + 1),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.03, 0.04]})
-
+    
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
@@ -98,12 +96,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(MethanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT

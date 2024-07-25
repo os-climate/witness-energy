@@ -102,9 +102,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.0, 2.0, 2.0]})
-
+    
     # FischerTropsch Wikipedia :
     # 140000+34000 BPD in Qatar GtL
     # 12000 BPD in Malaysia GtL
@@ -131,12 +129,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
 

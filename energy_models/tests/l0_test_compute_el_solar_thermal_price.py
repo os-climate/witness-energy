@@ -103,7 +103,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                             'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
                             GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                            GlossaryEnergy.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
                             GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
                             GlossaryEnergy.MarginValue: self.margin,
                             GlossaryEnergy.TransportCostValue: self.transport,

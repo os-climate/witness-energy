@@ -56,9 +56,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                                          5.848393573822739, 2.2088353407762535, 3.162650601721087,
                                                          8.631749219311956]})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 3.0, 2.0]})
-
+    
     # use biodiesel calorific value to compute co2 from production
 
     # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
@@ -86,13 +84,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                                       },}
     DESC_IN.update(BioDieselTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = BioDieselTechnoDiscipline.DESC_OUT

@@ -87,9 +87,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
 
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
     # To be defined
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0, 0.0]})
-    # 7% of available power is the amount of crop residue in 2017
+        # 7% of available power is the amount of crop residue in 2017
     # (worldbioenergy.org)
     initial_production = 4.828 * 0.07 * 1522.4 * 3.36  # in Twh
     # Age distribution fake
@@ -112,12 +110,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(WetBiomassTechnoDiscipline.DESC_IN)
 

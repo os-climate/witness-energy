@@ -70,9 +70,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
     # We do not invest on coal gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.636, 2.636, 2.636, 2.636]})
-
+    
     syngas_ratio = CoalGasification.syngas_COH2_ratio
 
     # From Future of hydrogen : Around 70 Mt of dedicated hydrogen are produced today, 76% from natural gas and
@@ -105,12 +103,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
