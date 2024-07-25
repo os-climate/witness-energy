@@ -91,11 +91,6 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # Invest from IRENA
     # Renewable Power Generation Costs in 2020
     # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.4, 2.9, 2.5,
-                                                                                       2.7, 2.4, 2.5,
-                                                                                       1.2]})
-
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [
                                                  9.800600043, 7.549068948, 6.398734632, 5.909842548, 8.986986843,
@@ -112,12 +107,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

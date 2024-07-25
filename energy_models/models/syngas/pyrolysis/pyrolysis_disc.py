@@ -76,9 +76,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
-    # From Future of hydrogen : accounting for around three quarters of the
+        # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 1e-12  # in TWh at year_start MT*kWh/kg = TWh
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -95,12 +93,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}
+               
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

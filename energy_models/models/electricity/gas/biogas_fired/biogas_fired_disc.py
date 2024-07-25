@@ -84,10 +84,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     # https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018
     # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: [1.0375 * 2141 / 1000, 1.0375 * 2141 / 1000]})
-    # In G$
 
     # Source for Initial prod in TWh (2019):
     # IEA 2022, Data Tables,
@@ -113,12 +109,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

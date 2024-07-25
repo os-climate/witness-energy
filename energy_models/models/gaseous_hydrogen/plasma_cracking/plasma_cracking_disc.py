@@ -88,9 +88,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                                          1.7560205289962763,
                                                          4.366363995027777, 3.3114883533312236, 1.250690879995941,
                                                          1.7907619419001841, 4.88748519534807, 0.0]})
-    invest_before_year_start = pd.DataFrame({
-        'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
-
     CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
                                 'CO2_credits': 50.})
 
@@ -106,13 +103,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                        'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True,
                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                         'CO2_credits': ('float', None, True), }

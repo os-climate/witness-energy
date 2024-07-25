@@ -140,8 +140,6 @@ class CoalPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin, }
-        # f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-        # RefineryDiscipline.invest_before_year_start, }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

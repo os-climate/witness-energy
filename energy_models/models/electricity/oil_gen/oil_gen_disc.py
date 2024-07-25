@@ -137,9 +137,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     # https://www.iea.org/reports/world-energy-investment-2019/power-sector
     # License: CC BY 4.0.
     # (linear from 2016, 2017, 2018 data)
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [21.0, 20.0, 19.0, 18.0, 17.0]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
                                                          1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
@@ -157,12 +155,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'flue_gas_co2_ratio': {'type': 'array', 'default': oil_flue_gas_ratio, 'unit': ''},
                }
 

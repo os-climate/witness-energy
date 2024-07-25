@@ -106,9 +106,6 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 0 * np.array([(1 * 8760 * 0.5 * 0.5 / 3)])})  # Invest before year start is 0
     flux_input_dict = {'land_rate': 14000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -117,12 +114,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)

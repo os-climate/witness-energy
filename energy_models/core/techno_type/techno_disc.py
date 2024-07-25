@@ -40,6 +40,7 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -84,7 +85,8 @@ class TechnoDiscipline(SoSWrapp):
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
         GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
-        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction
+        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
+        GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -220,6 +222,15 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years 
         '''
+        if GlossaryEnergy.InvestmentBeforeYearStartValue in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'techno_infos_dict' in self.get_data_in():
+            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+            techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
+            invest_before_year_start_val = self.get_sosdisc_inputs(GlossaryEnergy.InvestmentBeforeYearStartValue)
+            if year_start is not None and techno_infos_dict is not None and invest_before_year_start_val is None:
+                default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
+                    techno_name=self.techno_name, year_start=year_start, construction_delay=techno_infos_dict[GlossaryEnergy.ConstructionDelay])
+                self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
+
         if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
             resource_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
             if resource_used_for_prod is None:

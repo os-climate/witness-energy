@@ -94,8 +94,6 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})
 
     # Renewable Association [online]
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: 0})
     flux_input_dict = {'land_rate': 26000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
@@ -105,12 +103,6 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                            }
                                        },
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)

@@ -75,9 +75,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
 
     syngas_ratio = SMR.syngas_COH2_ratio
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [10.75, 10.76]})
-    # From Future of hydrogen : accounting for around three quarters of the
+        # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     # 70 MT of hydrogen then 70*33.3 TWh of hydrogen we need approximately
     # 1.639 kWh of syngas to produce one of hydrogen (see WGS results)
@@ -104,12 +102,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

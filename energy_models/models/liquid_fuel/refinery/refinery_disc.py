@@ -133,10 +133,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     # Source for invest: IEA 2022; World Energy Investment,
     # https://www.iea.org/reports/world-energy-investment-2020,
     # License: CC BY 4.0.
-    invest_before_year_start = pd.DataFrame(
-
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 477, 470]})
-
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [4.7, 4.63, 4.52, 4.85, 4.299999999999999,
                                                          4.189999999999999, 4.079999999999998, 3.969999999999998,
@@ -159,12 +155,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 

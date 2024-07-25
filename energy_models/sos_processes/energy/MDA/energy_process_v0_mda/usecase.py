@@ -17,7 +17,6 @@ limitations under the License.
 
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -111,12 +110,6 @@ class Study(StudyManager):
         values_dict_list.append(numerical_values_dict)
 
         return values_dict_list
-
-    def specific_check_inputs(self):
-        """
-        Specific check of years column
-        """
-        specific_check_years(self.execution_engine.dm)
 
 
 if '__main__' == __name__:
