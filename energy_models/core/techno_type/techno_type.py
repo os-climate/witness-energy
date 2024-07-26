@@ -960,8 +960,7 @@ class TechnoType:
         # To break the object link with initial distrib
         aging_distrib_year_df = pd.DataFrame(
             {'age': self.initial_age_distrib['age'].values})
-        aging_distrib_year_df[f'distrib_prod ({self.product_unit})'] = self.initial_age_distrib['distrib'] * \
-                                                                              self.initial_production / 100.0
+        aging_distrib_year_df[f'distrib_prod ({self.product_unit})'] = self.initial_age_distrib['distrib'] * self.initial_production / 100.0
 
         production_from_invest = self.compute_prod_from_invest()
 

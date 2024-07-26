@@ -126,8 +126,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               
+                      
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

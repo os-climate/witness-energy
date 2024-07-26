@@ -88,6 +88,7 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
+        'initial_production': {'type': 'float', 'unit': 'TWh'}
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -223,6 +224,13 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years 
         '''
+        if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
+            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+            initial_production = self.get_sosdisc_inputs('initial_production')
+            if initial_production is None and year_start is not None:
+                initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
+                self.update_default_value('initial_production', 'in', initial_production)
+
         construction_delay = None
         if GlossaryEnergy.ConstructionDelay in self.get_data_in():
             construction_delay = self.get_sosdisc_inputs(GlossaryEnergy.ConstructionDelay)

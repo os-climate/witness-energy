@@ -112,8 +112,7 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               }
+                      }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT

@@ -92,8 +92,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               }
+                      }
     DESC_IN.update(MethanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT

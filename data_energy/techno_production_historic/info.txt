@@ -1,0 +1,4 @@
+Antoine Perrot, 25 July 2024 : these production csv have been generated using the class variable "initial_production" which is at the beginning of the disciplline
+class of each techno. At the same places in the code, some infos might exist on how the production have been computed, with sources when available.
+At this time the year start default in witness is 2020.
+We want to gather all these value in dataframe (years, production) and to complete the data later in order to change the year start easily.
