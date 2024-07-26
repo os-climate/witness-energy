@@ -58,7 +58,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 1  # years
     # COP = 3.5
 
     techno_infos_dict_default = {
@@ -69,8 +68,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1.0,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -116,8 +113,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     flux_input_dict = {'land_rate': 24000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

@@ -60,7 +60,6 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
@@ -70,8 +69,6 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.8,  # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
         'natural_gas_calorific_val_unit': 'kJ/kg',
@@ -129,8 +126,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               
+                      
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

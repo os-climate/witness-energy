@@ -54,7 +54,6 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
     # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections.
     # Bioengineering, 7(3), p.70.
     lifetime = 20  # Giuliano2020 amortized on 20 years
-    construction_delay = 2  # years in Giuliano2020
     techno_infos_dict_default = {'maturity': 5,
                                  'reaction': 'syngas(H2+r1CO) + cH20  = dCO2 + e(H2+r2C0)',
                                  # p8 of Giuliano2020 : Maintenance and labor costs were associated to the capital costs and
@@ -88,7 +87,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # perfectly efficient
                                  'input_power_unit': 'mol/h',
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     # Fake investments (not found in the litterature...)
         # From Future of hydrogen : accounting for around three quarters of the
@@ -111,8 +110,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

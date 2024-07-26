@@ -45,7 +45,6 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.UpgradingBiogas
     lifetime = 20
-    construction_delay = 2  # years
     # 'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',
 
     techno_infos_dict_default = {'Opex_percentage': 0.04,
@@ -73,8 +72,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'maturity': 3,
                                  'learning_rate': 0.2,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     # At present, about  3.5 Mtoe of biomethane is produced around the world and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe
@@ -92,8 +90,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

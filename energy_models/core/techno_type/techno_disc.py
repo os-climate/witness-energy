@@ -86,7 +86,9 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
         GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
         GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
-        GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf
+        GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
+        GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
+        'initial_production': {'type': 'float', 'unit': 'TWh'}
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -222,13 +224,26 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years 
         '''
+        if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
+            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+            initial_production = self.get_sosdisc_inputs('initial_production')
+            if initial_production is None and year_start is not None:
+                initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
+                self.update_default_value('initial_production', 'in', initial_production)
+
+        construction_delay = None
+        if GlossaryEnergy.ConstructionDelay in self.get_data_in():
+            construction_delay = self.get_sosdisc_inputs(GlossaryEnergy.ConstructionDelay)
+            if construction_delay is None:
+                construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[self.techno_name]
+                self.update_default_value(GlossaryEnergy.ConstructionDelay, 'in', construction_delay)
+
         if GlossaryEnergy.InvestmentBeforeYearStartValue in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'techno_infos_dict' in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
             invest_before_year_start_val = self.get_sosdisc_inputs(GlossaryEnergy.InvestmentBeforeYearStartValue)
-            if year_start is not None and techno_infos_dict is not None and invest_before_year_start_val is None:
+            if year_start is not None and construction_delay is not None and invest_before_year_start_val is None:
                 default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
-                    techno_name=self.techno_name, year_start=year_start, construction_delay=techno_infos_dict[GlossaryEnergy.ConstructionDelay])
+                    techno_name=self.techno_name, year_start=year_start, construction_delay=construction_delay)
                 self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
 
         if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
@@ -316,6 +331,7 @@ class TechnoDiscipline(SoSWrapp):
         utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
             GlossaryEnergy.UtilisationRatioValue].values
         ratio_df = self.techno_model.ratio_df
+        construction_delay = inputs_dict[GlossaryEnergy.ConstructionDelay]
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(invest_level.loc[invest_level[GlossaryEnergy.Years]
                                                                                    <= self.techno_model.year_end][
                                                                       GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
@@ -345,7 +361,7 @@ class TechnoDiscipline(SoSWrapp):
 
         self.dpower_dinvest = self.techno_model.compute_dpower_dinvest(
             capex, invest_level[GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
-            self.techno_model.techno_infos_dict, dcapex_dinvest, inputs_dict['scaling_factor_techno_consumption'])
+            dcapex_dinvest, inputs_dict['scaling_factor_techno_consumption'])
 
         applied_ratio = outputs_dict['applied_ratio']['applied_ratio'].values
         dprod_name_dinvest = (
@@ -430,7 +446,7 @@ class TechnoDiscipline(SoSWrapp):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
                     if self.techno_model.is_invest_before_year(
-                            years[line] - self.techno_model.techno_infos_dict[GlossaryEnergy.ConstructionDelay]) \
+                            years[line] - construction_delay) \
                             and var_prod[line] == 0.0 and self.dprod_dinvest[line, :].sum() != 0.0 and line != len(
                         years) - 1:
                         var_prod[line] = var_prod[line + 1]
@@ -495,7 +511,7 @@ class TechnoDiscipline(SoSWrapp):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
                     if self.techno_model.is_invest_before_year(
-                            years[line] - self.techno_model.techno_infos_dict[GlossaryEnergy.ConstructionDelay]) \
+                            years[line] - construction_delay) \
                             and var_cons[line] == 0.0 and self.dprod_dinvest[line, :].sum() != 0.0 and line != len(
                         years) - 1:
                         var_cons[line] = var_cons[line + 1]

@@ -45,7 +45,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     techno_name = GlossaryEnergy.GasTurbine
     lifetime = 30  # Source U.S. Energy Information Administration 2020
-    construction_delay = 2  # years #Lazard
     # Taud, R., Karg, J. and O'Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
@@ -80,7 +79,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'kwh_methane/kwh': methane_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9# According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
@@ -104,8 +102,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

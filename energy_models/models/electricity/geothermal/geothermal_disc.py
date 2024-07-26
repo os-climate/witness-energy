@@ -51,10 +51,6 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.
     # Publications Office of the European Union, Luxemburgo.
     lifetime = 30
-    # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
-    # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
-    # National Renewable Energy Lab.(NREL), Golden, CO (United States).
-    construction_delay = 7
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.045,
@@ -78,7 +74,6 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
@@ -102,8 +97,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

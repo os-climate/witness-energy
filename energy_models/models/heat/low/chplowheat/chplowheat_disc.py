@@ -54,7 +54,6 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
@@ -64,8 +63,6 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
         # https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.6,  # consumptions and productions already have efficiency included
         # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,
@@ -115,8 +112,7 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               }
+                      }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT

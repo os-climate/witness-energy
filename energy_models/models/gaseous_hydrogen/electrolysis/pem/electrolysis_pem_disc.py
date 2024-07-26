@@ -53,7 +53,6 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY
     # https://www.fch.europa.eu/news/launch-refhyne-worlds-largest-electrolysis-plant-rhineland-refinery
-    construction_delay = 2  # year
     lifetime = 11  # Around 90000 operating hours with 8000 hours a year
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.025,
@@ -76,7 +75,6 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.65,
                                  'efficiency_max': 0.75,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'platinum_needs': 1.0 / 8.0,  # Fuel Cell technologies Office 2017
                                  'platinum_needs_units': 'g/KW', }
 

@@ -54,7 +54,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
         'Capex_init': 1300,
@@ -62,8 +61,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.52,  # consumptions and productions already have efficiency included
         # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,
@@ -113,8 +110,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               }
+                      }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
