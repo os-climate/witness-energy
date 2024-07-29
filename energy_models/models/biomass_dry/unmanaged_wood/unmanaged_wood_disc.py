@@ -50,7 +50,6 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     techno_name = GlossaryEnergy.UnmanagedWood
     lifetime = 150
-    construction_delay = 3  # years, time for wood to dry
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
@@ -137,7 +136,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'recyle_part': recycle_part,
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # invest: no invest, regenerated naturally forests
         # www.fao.org : 54% of forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
@@ -185,8 +184,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),

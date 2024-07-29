@@ -50,7 +50,6 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
     lifetime = 30  # years
-    construction_delay = 3  # years
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -64,9 +63,6 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
-
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
@@ -113,8 +109,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

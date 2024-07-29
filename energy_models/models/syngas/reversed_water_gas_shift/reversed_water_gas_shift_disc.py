@@ -45,7 +45,6 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.ReversedWaterGasShift
     lifetime = 20
-    construction_delay = 2
     techno_infos_dict_default = {'maturity': 5,
                                  'reaction': 'dCO2 + e(H2+r1C0) = syngas(H2+r2CO) + cH20',
                                  'CO2_from_production': 0.0,
@@ -79,7 +78,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
                                  'efficiency': 0.75,  # pump + compressor efficiency Rezaei2019
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     # Fake investments (not found in the litterature...)
         # From Future of hydrogen : accounting for around three quarters of the
@@ -100,8 +99,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

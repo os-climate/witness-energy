@@ -48,7 +48,6 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.Hydropower
     lifetime = 50
-    construction_delay = 3
     techno_infos_dict_default = {'type': 'electricity_creation',
                                  'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
@@ -66,7 +65,6 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
                                  'full_load_hours': 8760.0,
                                  'capacity_factor': 0.46,  # IRENA
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
@@ -87,8 +85,7 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

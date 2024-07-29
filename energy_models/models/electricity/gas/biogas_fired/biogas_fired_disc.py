@@ -47,7 +47,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
 
     techno_name = GlossaryEnergy.BiogasFired
     lifetime = 20  # Value for CHP units
-    construction_delay = 2  # years
 
     # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
@@ -74,7 +73,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  f'{BioGas.name}_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
@@ -104,8 +102,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

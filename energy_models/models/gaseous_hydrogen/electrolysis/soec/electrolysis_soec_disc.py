@@ -46,11 +46,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.ElectrolysisSOEC
-    # Haldor Topsoe, 2021
-    # Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production
-    # https://blog.topsoe.com/haldor-topsoe-to-build-large-scale-soec-electrolyzer-manufacturing-facility-to-meet-customer-needs-for-green-hydrogen-production
-    # Construction will start in 2022 and will ends in 2023
-    construction_delay = 1  # year
+
     lifetime = 8  # Around 60000hours
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.03,
@@ -71,7 +67,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.84,
                                  'efficiency_max': 0.92,  # because of topsoe
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 0.0
 

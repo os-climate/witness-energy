@@ -48,7 +48,6 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     techno_name = GlossaryEnergy.CombinedCycleGasTurbine
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
-    construction_delay = 2  # years
     # Taud, R., Karg, J. and O'Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
@@ -86,7 +85,6 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  # 'efficiency': 0.55,       #https://www.ipieca.org/resources/energy-efficiency-solutions/combined-cycle-gas-turbines-2022#:~:text=The%20overall%20efficiency%20of%20an,drops%20significantly%20at%20partial%20load.
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW.
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
@@ -108,8 +106,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

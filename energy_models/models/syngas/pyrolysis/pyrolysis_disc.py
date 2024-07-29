@@ -46,7 +46,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Pyrolysis
     lifetime = 20
-    construction_delay = 2
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
@@ -63,7 +62,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood
@@ -88,8 +86,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

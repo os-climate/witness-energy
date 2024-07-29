@@ -46,7 +46,6 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
-    construction_delay = 1
 
     # Most of the data from this model come from :
     # Guandalini, G., Romano, M.C., Ho, M., Wiley, D., Rubin, E.S. and Abanades, J.C., 2019.
@@ -97,7 +96,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
+                                 }
 
     techno_info_dict = techno_infos_dict_default
 
@@ -117,7 +116,6 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},

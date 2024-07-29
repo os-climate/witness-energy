@@ -49,7 +49,6 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
     lifetime = 25  # Wang2019 Rosenfeld2020 says 20
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0625,
                                  # production of CO2 in kg per kg of pellets
@@ -74,7 +73,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'available_power_unit': 'kg/year',
                                  'efficiency': 0.85,  # boiler efficiency
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # We do not invest on biomass gasification yet
         # initial production : 45,21 million tonnes => x calorific value and
     # conversion in TWh
@@ -89,8 +88,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

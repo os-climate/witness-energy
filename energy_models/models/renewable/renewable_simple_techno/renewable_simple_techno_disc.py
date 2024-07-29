@@ -49,7 +49,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.RenewableSimpleTechno
     lifetime = 30
-    construction_delay = 3
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
@@ -66,7 +65,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'resource_price': 70.0,
                                  'resource_price_unit': '$/MWh'}
 
@@ -83,8 +81,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
