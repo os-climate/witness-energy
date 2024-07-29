@@ -53,7 +53,6 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
     lifetime = 25  # Wang2019 Rosenfeld2020 says 20
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.015,  # Rosenfeld2020
                                  'CO2_from_production': 0.0,
@@ -103,7 +102,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Wang2019 + ratio water + ratio masse syngas
                                  # / masse H2
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # We do not invest on biomass gasification yet
     
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
@@ -130,8 +129,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

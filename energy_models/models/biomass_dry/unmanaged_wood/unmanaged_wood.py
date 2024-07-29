@@ -85,7 +85,7 @@ class UnmanagedWood(BiomassDryTechno):
                 var_prod = d_production_tot
                 for line in range(len(years)):
                     if self.is_invest_before_year(
-                            years[line] - self.techno_infos_dict[GlossaryEnergy.ConstructionDelay]) \
+                            years[line] - self.construction_delay) \
                             and var_prod[line] == 0.0 and dprod_dinvest[line, :].sum() != 0.0 and line != len(
                         years) - 1:
                         var_prod[line] = var_prod[line + 1]

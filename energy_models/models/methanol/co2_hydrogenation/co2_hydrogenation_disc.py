@@ -51,7 +51,6 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     methanol_calorific_value = Methanol.data_energy_dict['calorific_value']
 
     lifetime = 20  # years
-    construction_delay = 3  # years
 
     techno_infos_dict_default = {
         'Capex_init': 35.58 / (20 * 50) / 5.54,
@@ -60,8 +59,6 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
         'Opex_percentage': 0.06,
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -95,8 +92,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               }
+                      }
     DESC_IN.update(MethanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT

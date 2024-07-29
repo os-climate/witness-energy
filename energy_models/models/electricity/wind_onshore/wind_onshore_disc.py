@@ -48,8 +48,6 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.WindOnshore
     lifetime = 30  # ATB NREL 2020
-    construction_delay = 3  # ATB NREL 2020
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.05,  # Weighted averaged cost of capital / ATB NREL 2020
@@ -64,7 +62,6 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 2900 / 1e9 # According to the IEA, Onshore Wind turbines need 2900 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
@@ -87,8 +84,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},

@@ -46,7 +46,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'
     lifetime = 35
-    construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
                                  'reaction': 'RNH2(Amine) + CO2 <--> (RNHCOO-) + (H+)',
                                  # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
@@ -91,7 +90,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -128,7 +126,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},

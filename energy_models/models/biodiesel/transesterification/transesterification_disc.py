@@ -47,7 +47,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     techno_name = GlossaryEnergy.Transesterification
     energy_name = BioDiesel.name
     lifetime = 15
-    construction_delay = 3  # years
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.0, 4.085787594423131, 11.083221775965836, 9.906291833479699,
@@ -76,8 +75,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'full_load_hours': 7920.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay
+                                     'techno_evo_eff': 'no',
                                  }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

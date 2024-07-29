@@ -43,12 +43,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Methanation
     lifetime = 15
-    # Thema, M., Bauer, F. and Sterner, M., 2019.
-    # Power-to-Gas: Electrolysis and methanation status review.
-    # Renewable and Sustainable Energy Reviews, 112, pp.775-787.
-    # the average time needed for planning and constructing was about 1.5years
-    # from Thema2019
-    construction_delay = 2
+
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
@@ -66,8 +61,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     # Methanation is mostly used in PtG plants
@@ -87,8 +81,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

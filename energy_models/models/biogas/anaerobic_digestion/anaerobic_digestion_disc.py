@@ -45,7 +45,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.AnaerobicDigestion
     lifetime = 20
-    construction_delay = 3  # years Not Found
     techno_infos_dict_default = {'maturity': 3,
                                  'Opex_percentage': 0.85,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
@@ -79,7 +78,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'efficiency': 0.4,
                                  'WACC': 0.06,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay
                                  }
 
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
@@ -102,8 +100,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # License: CC BY 4.0.
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },

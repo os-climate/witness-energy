@@ -46,7 +46,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.HydrogenLiquefaction
-    construction_delay = 2  # year
     lifetime = 40
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0127,
@@ -67,7 +66,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'available_power': 73000000,
                                  'available_power_unit': 'kg/year',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 70.0 * 33.3 * 0.001
 

@@ -50,7 +50,6 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     techno_name = GlossaryEnergy.ManagedWood
     lifetime = 150
-    construction_delay = 3  # years, time for wood to dry
 
     # available planted forests in 2020: 294 Mha (worldbioenergy.org)
 
@@ -137,7 +136,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                  'recyle_part': recycle_part,
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
         # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
@@ -190,8 +189,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),

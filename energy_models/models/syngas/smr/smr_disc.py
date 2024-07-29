@@ -43,7 +43,6 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
     techno_name = GlossaryEnergy.SMR
     lifetime = 25
-    construction_delay = 2  # years
     techno_infos_dict_default = {'reaction': 'H20 + CH4 = 3H2 + CO',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -69,8 +68,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     syngas_ratio = SMR.syngas_COH2_ratio
@@ -97,8 +95,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                                          1.7907619419001841, 4.88748519534807]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
