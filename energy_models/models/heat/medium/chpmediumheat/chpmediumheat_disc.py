@@ -59,8 +59,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init': 1300,
         # https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
         'Capex_init_unit': '$/kW',
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 0.52,  # consumptions and productions already have efficiency included
         # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,

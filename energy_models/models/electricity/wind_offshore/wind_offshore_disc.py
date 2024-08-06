@@ -53,7 +53,6 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.052,  # Weighted averaged cost of capital / ATB NREL 2020
                                  'learning_rate': 0.07,  # Cost development of low carbon energy technologies
-                                 'lifetime': lifetime,
                                  'Capex_init': 4353,  # Irena Future of wind 2019
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,  # Full year hours

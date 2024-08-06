@@ -66,7 +66,6 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'elec_demand_unit': 'kW',
                                  'WACC': 0.0878,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex initial at year 2020
                                  'Capex_init_vs_CO_conversion': [5.0e6, 9.2e6],
                                  'Capex_init_vs_CO_conversion_unit': 'euro',

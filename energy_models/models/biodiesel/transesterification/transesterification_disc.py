@@ -64,8 +64,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     # 0.11 kgCO2/kWh
     co2_from_production = (6.7 / 1000) * BioDiesel.data_energy_dict['calorific_value']
     techno_infos_dict_default = {'Opex_percentage': 0.04,
-                                 'lifetime': lifetime,
-                                 # for now constant in time but should increase with time
                                  'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
                                  'Capex_init_unit': '$/kg',
                                  'efficiency': 0.99,

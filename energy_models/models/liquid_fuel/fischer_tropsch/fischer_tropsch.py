@@ -409,7 +409,8 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.ReversedWaterGasShift],
                        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.ReversedWaterGasShift] if GlossaryEnergy.ReversedWaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.ReversedWaterGasShift]
+                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.ReversedWaterGasShift],
+                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.ReversedWaterGasShift]
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -471,7 +472,8 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.WaterGasShift] if GlossaryEnergy.WaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.WaterGasShift],
-                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.WaterGasShift]
+                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.WaterGasShift],
+                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.WaterGasShift],
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio

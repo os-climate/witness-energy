@@ -82,7 +82,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'heat_demand_unit': 'kWh/kWh',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
-                                 'lifetime': lifetime,  # should be modified
                                  # Estimating average total cost of open pit coal mines in Australia
                                  # Average : 5Mtcoal/year for 258M Australian$
                                  #  -- 1AU$ = 0.77$

@@ -87,7 +87,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,  # augmentation of forests ha per year?
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # capex from
                                  # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
                                  # 237.95 euro/ha (717 $/acre)

@@ -57,7 +57,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
                                  'learning_rate': 0.00,  # Cost development of low carbon energy technologies
-                                 'lifetime': lifetime,
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'Capex_init': 6765,
                                  'Capex_init_unit': '$/kW',

@@ -80,7 +80,6 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Energy Procedia, 101, pp.806-813.
                                  'WACC': 0.07,  # WACC Saraa2016
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex in kEuro in Sara2016 we divide by 2
                                  # for the PPS cost reduction aimed in the
                                  # paper

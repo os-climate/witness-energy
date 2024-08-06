@@ -63,8 +63,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     c02_capacity_year = 790.2 * 0.85 * 8760 * 550
     carbon_capture_efficiency = 0.90
 
-    techno_infos_dict_default = {'lifetime': lifetime,
-                                 'capacity_factor': 0.85,  # SAEECCT - Coal capacity factor
+    techno_infos_dict_default = {'capacity_factor': 0.85,  # SAEECCT - Coal capacity factor
                                  'maturity': 0,
                                  'Opex_percentage': 0.032,  # SAEECCT 62.6M$ -> 1921M$
                                  'learning_rate': 0,

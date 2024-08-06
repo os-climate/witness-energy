@@ -49,7 +49,6 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     techno_infos_dict_default = {'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'Opex_percentage': 0.02,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Cormos, A.M., Szima, S., Fogarasi, S. and Cormos, C.C., 2018.
                                  # Economic assessments of hydrogen production processes based on natural gas reforming with carbon capture.
                                  # Chem. Eng. Trans, 70, pp.1231-1236.

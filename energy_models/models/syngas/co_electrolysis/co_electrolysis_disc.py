@@ -50,7 +50,6 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand': 8.82,
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.07,
-                                 'lifetime': lifetime,
                                  'Capex_init': 600,
                                  'Capex_init_unit': '$/kW',
                                  'maturity': 5,

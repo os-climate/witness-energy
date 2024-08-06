@@ -59,7 +59,6 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  # Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017.
                                  # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell.
                                  # Journal of Power Sources, 364, pp.41-51.
-                                 'lifetime': lifetime,
                                  'Capex_init': 450,
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 0.8,

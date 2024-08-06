@@ -57,7 +57,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  'learning_rate': 0.25,
                                  'maximum_learning_capex_ratio': 0.33,
-                                 'lifetime': lifetime,
                                  'Capex_init': 12440000.0,
                                  'Capex_init_unit': 'pounds',
                                  'pounds_dollar': 1.32,

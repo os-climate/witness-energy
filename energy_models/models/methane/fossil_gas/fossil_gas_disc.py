@@ -54,7 +54,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
                                  'CH4_emission_factor': 0.142e-3 / 0.277,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'fuel_demand': 1,
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'elec_demand': 0.00735,

@@ -72,8 +72,6 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'Capex_init': 1.95 * 1000 / 789 / 7.42,
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.02,
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',

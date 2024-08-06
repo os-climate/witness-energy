@@ -96,9 +96,6 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # Energy Policy, 86, pp.198-218.
                                  # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
                                  'learning_rate': 0.083,
-                                 'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
-
                                  # ESMAP, Study of Equipment Prices in the Power Sector, 2009
                                  # https://esmap.org/sites/default/files/esmap-files/TR122-09_GBL_Study_of_Equipment_Prices_in_the_Power_Sector.pdf
                                  # (mean value p46)

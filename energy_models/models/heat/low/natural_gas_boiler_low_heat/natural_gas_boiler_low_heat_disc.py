@@ -67,8 +67,6 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'Opex_init': 10.565,
         'Opex_init_unit': '$/kW',
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 0.8,  # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
         'natural_gas_calorific_val_unit': 'kJ/kg',

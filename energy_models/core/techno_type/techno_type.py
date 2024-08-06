@@ -49,6 +49,7 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.lifetime: int = 20
         self.construction_delay: int = 0
         self.cost_of_resources_usage = None
         self.cost_of_streams_usage = None
@@ -195,6 +196,7 @@ class TechnoType:
         self.resources_used_for_production = inputs_dict[GlossaryEnergy.ResourcesUsedForProductionValue]
         self.resources_used_for_building = inputs_dict[GlossaryEnergy.ResourcesUsedForBuildingValue]
         self.streams_used_for_production = inputs_dict[GlossaryEnergy.StreamsUsedForProductionValue]
+        self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -237,6 +239,7 @@ class TechnoType:
             GlossaryEnergy.UtilisationRatioValue].values
         self.techno_infos_dict = inputs_dict['techno_infos_dict']
         self.construction_delay = inputs_dict[GlossaryEnergy.ConstructionDelay]
+        self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -611,9 +614,8 @@ class TechnoType:
         and the lifetime of the selected solution
         """
         wacc = self.techno_infos_dict['WACC']
-        lifetime = self.techno_infos_dict['lifetime']
 
-        capital_recovery_factor = (wacc * (1.0 + wacc) ** lifetime) / ((1.0 + wacc) ** lifetime - 1.0)
+        capital_recovery_factor = (wacc * (1.0 + wacc) ** self.lifetime) / ((1.0 + wacc) ** self.lifetime - 1.0)
 
         return capital_recovery_factor
 
@@ -1001,7 +1003,7 @@ class TechnoType:
         self.age_distrib_prod_df = self.age_distrib_prod_df.loc[
             # Suppress all lines where age is higher than lifetime
             (self.age_distrib_prod_df['age'] <
-             self.techno_infos_dict['lifetime'])
+             self.lifetime)
             # Suppress all lines where age is higher than lifetime
             & (self.age_distrib_prod_df[GlossaryEnergy.Years] < self.year_end + 1)
             # Fill Nan with zeros and suppress all zeros
@@ -1294,7 +1296,7 @@ class TechnoType:
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                               capex_list[i]
             len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
-                                techno_dict['lifetime'])
+                                self.lifetime)
             first_len_zeros = min(i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
@@ -1343,7 +1345,7 @@ class TechnoType:
                 (nb_years, nb_years), dtype='complex128')
         for i in range(nb_years):
             len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
-                                techno_dict['lifetime'])
+                                self.lifetime)
             first_len_zeros = min(
                 i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
@@ -1362,7 +1364,7 @@ class TechnoType:
 
         for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
             len_non_zeros = min(
-                techno_dict['lifetime'], nb_years - index)
+                self.lifetime, nb_years - index)
             dprod_list_dcapex_list[:, 0] += np.hstack((np.zeros(index),
                                                        np.ones(
                                                            len_non_zeros) * dpprod_dpcapex0,

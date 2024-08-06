@@ -66,7 +66,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
-                                 'lifetime': lifetime,  # should be modified
                                  # 0.6577,  # 730 euro/tCO2 in Fashi2019 Capex
                                  # initial at year 2020 1.11 euro/$
                                  'Capex_init': 0.88,  # average for solid techno, Fashi2019

@@ -59,7 +59,6 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.2,  # augmentation of forests ha per year?
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # To be defined, should be nearly 0
                                  'Capex_init': 59.48,
                                  'Capex_init_unit': 'euro/ha',

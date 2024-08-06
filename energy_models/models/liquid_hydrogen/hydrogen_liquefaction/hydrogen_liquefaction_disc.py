@@ -58,7 +58,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  # 'heat_recovery_factor': 0.8,
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 500000000,

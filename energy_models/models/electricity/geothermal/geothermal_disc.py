@@ -60,7 +60,6 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # Zucker, A., 2018. Cost development of low carbon energy technologies.
                                  # https://publications.jrc.ec.europa.eu/repository/bitstream/JRC109894/cost_development_of_low_carbon_energy_technologies_v2.2_final_online.pdf
                                  'learning_rate': 0.05,
-                                 'lifetime': lifetime,
                                  # Timilsina, G.R., 2020.
                                  # Demystifying the Costs of Electricity Generation Technologies.
                                  # https://openknowledge.worldbank.org/bitstream/handle/10986/34018/Demystifying-the-Costs-of-Electricity-Generation-Technologies.pdf?sequence=4

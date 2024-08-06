@@ -52,7 +52,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production': 0.2,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
-                                 'lifetime': lifetime,
                                  # 1600T/day of wood capacity, 180M$ of Capital
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,

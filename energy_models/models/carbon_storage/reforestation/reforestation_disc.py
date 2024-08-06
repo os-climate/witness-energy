@@ -64,7 +64,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                                  # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                                  # 76.553 ans is computed on the forests distribution of those 150 last years

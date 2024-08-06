@@ -32,21 +32,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import (
-    ElectrolysisAWEDiscipline,
-)
-from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc import (
-    ElectrolysisPEMDiscipline,
-)
-from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc import (
-    ElectrolysisSOECDiscipline,
-)
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc import (
-    PlasmaCrackingDiscipline,
-)
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
-    WaterGasShiftDiscipline,
-)
 
 
 class HydrogenJacobianTestCase(AbstractJacobianUnittest):
@@ -70,6 +55,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
+        self.override_dump_jacobian = 1
         self.energy_name = GlossaryEnergy.hydrogen
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
@@ -351,8 +337,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = WaterGasShiftDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -372,7 +356,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.is_stream_demand': True,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -421,8 +405,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = PlasmaCrackingDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -440,7 +422,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -501,8 +483,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = ElectrolysisPEMDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -520,7 +500,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -567,8 +547,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = ElectrolysisSOECDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -586,7 +564,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -633,8 +611,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = ElectrolysisAWEDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -652,7 +628,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -109,7 +109,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # with time 10%/10year according to Fasihi2019
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
-                                 'lifetime': lifetime,  # should be modified
                                  # 22000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020

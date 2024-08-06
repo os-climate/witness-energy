@@ -64,7 +64,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'Opex_percentage': 0.04,
                                  'WACC': 0.075,
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,
                                  # IRENA (value from Figure 7.1, page 111)
                                  'Capex_init': 2141,
                                  'Capex_init_unit': '$/kW',

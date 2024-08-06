@@ -64,8 +64,6 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         # https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y
         # (page 67)
         'Opex_percentage': 0.0715,
-        'lifetime': lifetime,  # for now constant in time but should increase with time
-        'lifetime_unit': GlossaryEnergy.Years,
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780

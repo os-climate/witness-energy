@@ -73,7 +73,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'Opex_percentage': 0.024,
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
-                                 'lifetime': lifetime,
                                  'Capex_init': 100.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',

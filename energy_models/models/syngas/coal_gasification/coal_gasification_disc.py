@@ -61,7 +61,6 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,
                                  'Capex_init': 0.05,
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,

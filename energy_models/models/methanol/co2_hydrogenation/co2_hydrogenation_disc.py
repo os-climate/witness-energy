@@ -57,8 +57,6 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
         # Total capital [M$] / (annual production * lifetime) [kt] / conversion factor [kWh/kg] = [$/kWh]
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.06,
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 1,
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',

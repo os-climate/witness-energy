@@ -52,7 +52,6 @@ class CarbonStorageTechnoDiscipline(CSTechnoDiscipline):
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,
                                  'Capex_init': 0.0175,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 1,

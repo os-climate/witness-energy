@@ -48,7 +48,6 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     # 'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',
 
     techno_infos_dict_default = {'Opex_percentage': 0.04,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'Capex_init': 1570000.0,  # CAPEX p27 only for upgrading by amine
                                  'Capex_init_unit': 'euro',
                                  'available_power': 3440000.0,

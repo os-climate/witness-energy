@@ -57,8 +57,6 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'Opex_percentage': 0.0287,
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.122,
         # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf

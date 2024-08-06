@@ -47,7 +47,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     lifetime = 20
     techno_infos_dict_default = {'maturity': 3,
                                  'Opex_percentage': 0.85,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # Rajendran, K., Gallachóir, B.ó. and Murphy, J.D., 2019.

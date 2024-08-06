@@ -55,8 +55,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     c02_capacity_year = 790.2 * 0.85 * 8760 * 550
     carbon_capture_efficiency = 0.90
 
-    techno_infos_dict_default = {'lifetime': lifetime,
-                                 'capacity_factor': 0.85,
+    techno_infos_dict_default = {'capacity_factor': 0.85,
                                  'maturity': 0,
                                  'Opex_percentage': 0,
                                  'learning_rate': 0,

@@ -88,7 +88,9 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
-        'initial_production': {'type': 'float', 'unit': 'TWh'}
+        'initial_production': {'type': 'float', 'unit': 'TWh'},
+        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "description": "lifetime of a plant of the techno"},
+        #"growth_rate_distrib": {'type': 'float', 'unit': 'years', "description": "lifetime of a plant of the techno"},
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -222,8 +224,21 @@ class TechnoDiscipline(SoSWrapp):
 
     def update_default_values(self):
         '''
-        Update all default dataframes with years 
+        Update all default dataframes with years
         '''
+        if GlossaryEnergy.LifetimeName in self.get_data_in():
+            lifetime = self.get_sosdisc_inputs(GlossaryEnergy.LifetimeName)
+            if lifetime is None:
+                lifetime = GlossaryEnergy.TechnoLifetimeDict[self.techno_name]
+                self.update_default_value(GlossaryEnergy.LifetimeName, 'in', lifetime)
+
+        # if 'growth_rate_distrib' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
+        #     year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        #     growth_rate_distrib = self.get_sosdisc_inputs('growth_rate_distrib')
+        #     if growth_rate_distrib is None and year_start is not None:
+        #         growth_rate_distrib, _ = DatabaseWitnessEnergy.get_techno_age_distrib(self.techno_name, year=year_start)
+        #         self.update_default_value('growth_rate_distrib', 'in', growth_rate_distrib)
+
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             initial_production = self.get_sosdisc_inputs('initial_production')

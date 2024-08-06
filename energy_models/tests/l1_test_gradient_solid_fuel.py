@@ -32,12 +32,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import (
-    CoalExtractionDiscipline,
-)
-from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import (
-    PelletizingDiscipline,
-)
 
 
 class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
@@ -181,8 +175,6 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = CoalExtractionDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -198,7 +190,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -241,8 +233,6 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = PelletizingDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -257,7 +247,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

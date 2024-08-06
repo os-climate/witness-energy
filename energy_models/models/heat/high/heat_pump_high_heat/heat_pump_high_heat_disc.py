@@ -66,8 +66,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04,
         ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 1.0,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
