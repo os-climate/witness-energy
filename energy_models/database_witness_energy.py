@@ -137,7 +137,7 @@ class DatabaseWitnessEnergy:
     techno_age_distrib_folder = join(Path(__file__).parents[1], "data_energy", "techno_factories_age")
 
     @classmethod
-    def get_techno_age_distrib(cls, techno_name: str, year: int, is_available_at_year: bool = False):
+    def get_techno_age_distrib_factor(cls, techno_name: str, year: int, is_available_at_year: bool = False):
         name_formatted = techno_name.replace(".", "_")
         name_formatted = name_formatted.lower()
         path_to_csv = os.path.join(cls.techno_age_distrib_folder, name_formatted) + ".csv"

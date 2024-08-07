@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -50,7 +48,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.
     # Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.
     # Publications Office of the European Union, Luxemburgo.
-    lifetime = 30
+
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.045,
@@ -85,22 +83,9 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # Invest from IRENA
     # Renewable Power Generation Costs in 2020
     # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [
-                                                 9.800600043, 7.549068948, 6.398734632, 5.909842548, 8.986986843,
-                                                 6.916385074, 3.867999137, 6.614422316, 0, 3.192177727, 6.326838738,
-                                                 4.600337264, 3.177798548, 3.335969516, 2.05622259, 2.05622259,
-                                                 2.05622259, 1.567330505, 2.530735495, 3.2784528, 3.2784528,
-                                                 3.2784528, 3.220936085, 0, 0, 0, 0, 0, 0]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

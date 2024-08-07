@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
     SyngasTechnoDiscipline,
@@ -45,7 +44,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     syngas_ratio = Pyrolysis.syngas_COH2_ratio
 
     techno_name = GlossaryEnergy.Pyrolysis
-    lifetime = 20
+
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
@@ -76,20 +75,11 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
         # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 1e-12  # in TWh at year_start MT*kWh/kg = TWh
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [4.75611097, 4.44546605, 6.78106804, 4.57186564, 6.66476688,
-                                                         3.4997533, 4.00989891, 5.10571635, 4.81945507, 4.87417378,
-                                                         4.2461254, 5.41593564, 6.62282244, 6.29274159, 6.69463399,
-                                                         4.5047143, 4.52828241, 4.75677933, 7.40968989]})
     FLUE_GAS_RATIO = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               
+                      
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

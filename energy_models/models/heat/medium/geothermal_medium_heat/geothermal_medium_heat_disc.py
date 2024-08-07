@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -49,7 +47,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.GeothermalMediumHeat
     energy_name = mediumtemperatureheat.name
 
-    lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+
 
     techno_infos_dict_default = {
         'Capex_init': 3830,
@@ -80,22 +78,10 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # in TWh
     initial_production = 182500 / 3  # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
 
-    distrib = [9.677419355, 7.52688172, 0,
-               5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355, 7.52688172, 1.075268817,
-               2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
-
     flux_input_dict = {'land_rate': 15000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               
+                      
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)

@@ -46,7 +46,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.PlasmaCracking
-    lifetime = 25
+
     techno_infos_dict_default = {'reaction': 'CH4 = C + 2H2',
                                  'maturity': 5,
                                  'Opex_percentage': 0.2,
@@ -71,21 +71,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  }
 
     initial_production = 1e-12
-    initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),
-                                             'distrib': [3.317804973859207,
-                                                         6.975128305927281, 4.333201737255864,
-                                                         3.2499013031833868, 1.5096723255070685,
-                                                         1.7575996841282722,
-                                                         4.208448479896288, 2.7398341887870643,
-                                                         5.228582707722979,
-                                                         10.057639166085064, 0.0, 2.313462297352473,
-                                                         6.2755625737595535,
-                                                         5.609159099363739, 6.3782076592711885,
-                                                         8.704303197679629,
-                                                         6.1950256610618135, 3.7836557445596464,
-                                                         1.7560205289962763,
-                                                         4.366363995027777, 3.3114883533312236, 1.250690879995941,
-                                                         1.7907619419001841, 4.88748519534807, 0.0]})
     CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
                                 'CO2_credits': 50.})
 
@@ -97,10 +82,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}},
+
                'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True,
                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                         'CO2_credits': ('float', None, True), }

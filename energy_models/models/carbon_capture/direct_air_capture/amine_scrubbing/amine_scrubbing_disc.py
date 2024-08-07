@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -45,7 +44,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         'version': '',
     }
     techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'
-    lifetime = 35
     techno_infos_dict_default = {'maturity': 0,
                                  'reaction': 'RNH2(Amine) + CO2 <--> (RNHCOO-) + (H+)',
                                  # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
@@ -107,28 +105,12 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5.0e-3  # in Mt at year_start
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0]
-                                             })
+
     # use the same flue gas ratio as gas turbine one
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
                }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)

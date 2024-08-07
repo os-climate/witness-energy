@@ -393,7 +393,6 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.TransportMarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        'initial_production': RWGSDiscipline.initial_production,
-                       'initial_age_distrib': RWGSDiscipline.initial_age_distribution,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
@@ -410,7 +409,8 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.ReversedWaterGasShift] if GlossaryEnergy.ReversedWaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.ReversedWaterGasShift],
                        GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.ReversedWaterGasShift]
+                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.ReversedWaterGasShift],
+                       GlossaryEnergy.InitialPlantsAgeDistribFactor: DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=RWGSDiscipline.techno_name, year=self.year_start)[0],
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -456,7 +456,6 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.TransportMarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        'initial_production': WaterGasShiftDiscipline.initial_production,
-                       'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
@@ -474,6 +473,7 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.WaterGasShift],
+                       GlossaryEnergy.InitialPlantsAgeDistribFactor:DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=WaterGasShiftDiscipline.techno_name, year=self.year_start)[0],
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio

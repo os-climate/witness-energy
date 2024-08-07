@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -49,7 +47,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.SolarThermal
-    lifetime = 25  # JRC, IRENA, SolarPACES
+
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
                                  # OPEX : lmean of lazard / JRC / ATB NREL
@@ -86,21 +84,9 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     # from database https://solarpaces.nrel.gov/
     # Nb plants 'Operational' and not pilot/demo/proto
     # only commercial or production
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [9.677419355, 7.52688172, 0,
-                                                         5.376344086, 4.301075269, 5.376344086, 11.82795699,
-                                                         21.50537634,
-                                                         13.97849462, 9.677419355, 7.52688172, 1.075268817,
-                                                         2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

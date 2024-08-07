@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.methane_techno_disc import (
     MethaneTechnoDiscipline,
@@ -42,7 +41,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     # -- add specific techno inputs to this
 
     techno_name = GlossaryEnergy.FossilGas
-    lifetime = 23
+
     techno_infos_dict_default = {'available_power': 15000000,
                                  'available_power_unit': 'm^3',
                                  'capacity_factor': 0.4,
@@ -84,18 +83,11 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                          1.68, 0.9, 1.7,
                                          1.87, 0.9, 3.3,
                                          4.63, 3.3])
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': distrib_our_world_indata * 100.0 / distrib_our_world_indata.sum()})  # to do
-
     FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

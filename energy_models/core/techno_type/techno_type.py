@@ -50,6 +50,7 @@ class TechnoType:
 
     def __init__(self, name):
         self.lifetime: int = 20
+        self.initial_age_distrib_distrib_factor: float = 1.
         self.construction_delay: int = 0
         self.cost_of_resources_usage = None
         self.cost_of_streams_usage = None
@@ -160,14 +161,6 @@ class TechnoType:
             self.maturity = self.techno_infos_dict['maturity']
 
         self.initial_production = inputs_dict['initial_production']
-        self.initial_age_distrib = inputs_dict['initial_age_distrib']
-        if self.initial_age_distrib is not None and self.initial_age_distrib['distrib'].sum() > 100.001 or \
-                self.initial_age_distrib[
-                    'distrib'].sum() < 99.999:
-            sum_distrib = self.initial_age_distrib['distrib'].sum()
-            raise Exception(
-                f'The distribution sum is not equal to 100 % : {sum_distrib}')
-
         # invest level from G$ to M$
         self.scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
         self.invest_before_ystart = inputs_dict[GlossaryEnergy.InvestmentBeforeYearStartValue] * \
@@ -240,6 +233,7 @@ class TechnoType:
         self.techno_infos_dict = inputs_dict['techno_infos_dict']
         self.construction_delay = inputs_dict[GlossaryEnergy.ConstructionDelay]
         self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
+        self.initial_age_distrib_distrib_factor = inputs_dict[GlossaryEnergy.InitialPlantsAgeDistribFactor]
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -1168,6 +1162,7 @@ class TechnoType:
     def compute(self, inputs_dict):
         self.configure_parameters_update(inputs_dict)
         # -- compute informations
+        self.compute_initial_age_distribution()
         self.compute_price()
         self.compute_primary_energy_production()
         self.compute_land_use()
@@ -1555,3 +1550,15 @@ class TechnoType:
 
 
     "---------END OF GRADIENTS---------"
+
+    def compute_initial_age_distribution(self):
+        initial_value = 1
+        decay_rate = self.initial_age_distrib_distrib_factor
+        n_year = self.lifetime - 1
+        total_sum = sum(initial_value * (decay_rate ** i) for i in range(n_year))
+        distribution = [(initial_value * (decay_rate ** i) / total_sum) * 100 for i in range(n_year)]
+        distrib = np.flip(distribution)
+        self.initial_age_distrib = pd.DataFrame({
+            "age": np.arange(1, self.lifetime),
+            "distrib": distrib
+        })

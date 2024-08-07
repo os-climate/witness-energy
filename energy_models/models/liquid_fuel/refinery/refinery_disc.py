@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,7 +46,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.Refinery
-    lifetime = 35
+
     # only energetical valuable product taken into acocun. Wastes are not
     # taken into account
     # mass ratio of product for 1 kg of crude oil refined
@@ -130,28 +129,11 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     # Source for invest: IEA 2022; World Energy Investment,
     # https://www.iea.org/reports/world-energy-investment-2020,
     # License: CC BY 4.0.
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [4.7, 4.63, 4.52, 4.85, 4.299999999999999,
-                                                         4.189999999999999, 4.079999999999998, 3.969999999999998,
-                                                         3.8599999999999977, 3.7499999999999973, 3.639999999999997,
-                                                         3.5299999999999967, 3.4199999999999964, 3.309999999999996,
-                                                         3.1999999999999957, 3.0899999999999954, 2.979999999999995,
-                                                         2.8699999999999948, 2.7599999999999945, 2.649999999999994,
-                                                         2.539999999999994, 2.4299999999999935, 2.319999999999993,
-                                                         2.209999999999993, 2.0999999999999925, 1.9899999999999922,
-                                                         1.879999999999992, 1.7699999999999916, 1.6599999999999913,
-                                                         1.609999999999991, 1.8399999999999906, 1.7299999999999903,
-                                                         1.61999999999999]
-                                             })
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 

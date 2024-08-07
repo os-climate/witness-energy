@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,7 +45,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.WindOnshore
-    lifetime = 30  # ATB NREL 2020
+
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.05,  # Weighted averaged cost of capital / ATB NREL 2020
@@ -74,20 +72,9 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     # Invest in 2019 => 138.2 bn less 29.6 bn offshore => 108.6 bn
     
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [
-                                                 8.73, 7.46, 7.89, 8.49, 9.73, 8.08, 5.56, 7.07,
-                                                 6.41, 6.15, 6.10, 4.27, 3.22, 2.35, 1.84, 1.30,
-                                                 1.27, 1.14, 1.03, 0.96, 0.95, 0, 0, 0, 0, 0, 0, 0, 0]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import (
     SolidFuelTechnoDiscipline,
@@ -48,7 +47,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
-    lifetime = 25  # Wang2019 Rosenfeld2020 says 20
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0625,
                                  # production of CO2 in kg per kg of pellets
@@ -77,21 +76,11 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
         # initial production : 45,21 million tonnes => x calorific value and
     # conversion in TWh
     initial_production = 217.04
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [10.39, 11.93, 1.13, 7.97, 7.14,
-                                                         6.4, 5.73, 11.66, 11.66, 0.89,
-                                                         0.89, 3.55, 3.55, 4.56, 2.53,
-                                                         2.53, 1.27, 0.63, 0.63, 1.01,
-                                                         1.01, 1.01, 1.01, 0.92]})
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

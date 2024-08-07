@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,7 +45,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.SolarPv
-    lifetime = 25  # IRENA, EOLES model
+
     # Source for Opex percentage, Capex init, capacity factor:
     # IEA 2022, World Energy Outlook 2019,
     # https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY
@@ -87,19 +85,9 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     initial_production = 700  # in TWh at year_start source IEA 2019
     # Invest before year start in $ source IEA 2019
     
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [20.4, 18.8, 15.2, 10.1, 8.0, 7.6, 5.9, 6, 3.4, 1.5, 1.3, 0.25,
-                                                         0.19, 0.18,
-                                                         0.17, 0.16, 0.15, 0.14, 0.13, 0.12, 0.10, 0.1, 0.1, 0.01]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

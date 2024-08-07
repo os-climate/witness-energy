@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -49,7 +48,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # where it comes)
 
     techno_name = GlossaryEnergy.ManagedWood
-    lifetime = 150
+
 
     # available planted forests in 2020: 294 Mha (worldbioenergy.org)
 
@@ -154,22 +153,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                          years_between_harvest / (1 - recycle_part)  # in Twh
 
     # distrib computed, for planted forests since 150 years
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [2.81, 2.81, 2.81, 2.81, 2.81, 2.78, 2.75, 2.72, 2.69, 2.66,
-                                                         2.61, 2.57, 2.52, 2.48, 2.43, 2.37, 2.32, 2.26, 2.2, 2.15,
-                                                         2.11, 2.08, 2.04, 2.01, 1.97, 1.94, 1.9, 1.87, 1.84, 1.8,
-                                                         1.77, 1.73, 1.7, 1.66, 1.63, 1.59, 1.56, 1.52, 0.07, 1.49,
-                                                         0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 1.11,
-                                                         1.49, 1.49, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.79, 0.76,
-                                                         0.73, 0.69, 0.66, 0.62, 0.59, 0.55, 0.52, 0.48, 0.45, 0.07,
-                                                         1.49, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.06, 0.06, 0.06,
-                                                         0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]})
+    
 
     # distrib computed, for planted forests since 1980 (40years)
     #                                              'distrib': [3.25, 3.26, 3.27, 3.27, 3.27, 3.24, 3.21, 3.17, 3.14, 3.1,
@@ -188,12 +172,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
+                      
                }
     # -- add specific techno inputs to this
     DESC_IN.update(BiomassDryTechnoDiscipline.DESC_IN)
@@ -361,12 +340,9 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     def get_chart_initial_production(self):
         # surcharge of the methode in techno_disc to change historical data with the
         # energy part
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
 

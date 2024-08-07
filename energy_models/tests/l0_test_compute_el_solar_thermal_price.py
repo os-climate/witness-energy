@@ -110,7 +110,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                             GlossaryEnergy.StreamPricesValue: self.stream_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
-                            'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
                             GlossaryEnergy.RessourcesCO2EmissionsValue: get_default_resources_CO2_emissions(
                                 np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                             GlossaryEnergy.StreamsCO2EmissionsValue: pd.DataFrame(),

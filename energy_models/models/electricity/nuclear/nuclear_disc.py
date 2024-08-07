@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -49,7 +47,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
-    lifetime = 60
+
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.024,
@@ -85,23 +83,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # Invest in 2019 => 29.6 bn
     # Age distribution => IAEA OPEX Nuclear 2020 - Number of Reactors by Age
     # (as of 1 January 2020)
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [
-                                                 1.36, 2.04, 0.91, 2.27, 2.27, 1.13, 0.91, 0.68, 1.59, 1.13, 0.45, 0.68,
-                                                 0.45, 0.91, 1.13, 0.45, 1.36, 0.68, 1.36, 0.91, 0.91, 0.68, 1.36, 0.91,
-                                                 1.13, 2.04, 1.36, 0.91, 2.27, 2.49, 3.17, 4.76, 5.22, 7.26, 6.80, 3.85,
-                                                 3.40, 4.31, 4.08, 1.13, 2.04, 1.59, 3.17, 2.27, 3.40, 2.04, 1.59, 1.36,
-                                                 0.68, 1.15, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                             ]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

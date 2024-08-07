@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.methane_techno_disc import (
     MethaneTechnoDiscipline,
@@ -42,7 +40,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     # -- add specific techno inputs to this
 
     techno_name = GlossaryEnergy.Methanation
-    lifetime = 15
+
 
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
@@ -74,17 +72,9 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     # from Power-to-Gas: Electrolysis and methanation status review M. Thema,
     # F. Bauer, M. Sterner Technical University of Applied Sciences (OTH)
     # Fig10
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.0, 8.82, 2.05, 0.93, 23.5, 0.0, 52.94, 11.76, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0]})  # to review
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

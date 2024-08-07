@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
     HydrotreatedOilFuel,
@@ -49,7 +47,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     energy_name = HydrotreatedOilFuel.name
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
-    lifetime = 30  # years
+
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -100,18 +98,9 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # Existing: Neste(2014), Total(2015), Eni(2015).
     # Source
     # https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100 * 3 / 6, 0, 0, 0, 100 * 2 / 6, 100 * 1 / 6, 0, 0, 0, 0, 0,
-                                                         0, 0, 0, 0, 0, 0, 0, 0,
-                                                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
     DESC_IN.update(HydrotreatedOilFuelTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
