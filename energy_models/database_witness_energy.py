@@ -102,7 +102,7 @@ class DatabaseWitnessEnergy:
             critical_at_year_start=True,
             column_to_pick="invest"
         )
-        out_df = df
+        out_df = df.loc[df['years'] < year_start]
         if is_available_at_year:
             return construction_delay == 0 or (heavy_collected_data.is_available_at_year(year_start - construction_delay) and heavy_collected_data.is_available_at_year(year_start - 1))
         if construction_delay > 0:

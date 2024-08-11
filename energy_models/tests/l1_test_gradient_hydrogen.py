@@ -55,7 +55,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.override_dump_jacobian = 1
         self.energy_name = GlossaryEnergy.hydrogen
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)

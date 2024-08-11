@@ -86,7 +86,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5  # Mt
 
-    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
