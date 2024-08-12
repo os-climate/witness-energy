@@ -84,7 +84,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5  # Mt
 
-    
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
