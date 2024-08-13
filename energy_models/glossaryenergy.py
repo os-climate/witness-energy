@@ -114,7 +114,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     technologies_list = "technologies_list"
     loss_percentage = "loss_percentage"
 
-    LifetimeName = "lifetime"
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
 
@@ -1353,6 +1352,90 @@ class GlossaryEnergy(GlossaryWitnessCore):
         RenewableSimpleTechno: 3, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
         CHPMediumHeat: 2,
         ElectricBoilerMediumHeat: 2,
+    }
+
+    TechnoLifetimeDict = {
+        ReversedWaterGasShift: 40, # for now constant in time but should increase with time
+        FossilGas: 23, # for now constant in time but should increase with time
+        UpgradingBiogas: 20, # for now constant in time but should increase with time
+        Methanation: 15, # for now constant in time but should increase with time
+        WaterGasShift: 20, # Giuliano2020 amortized on 20 years # for now constant in time but should increase with time
+        ElectrolysisSOEC: 8, # Around 60000hours
+        ElectrolysisPEM: 11, # Around 90000 operating hours with 8000 hours a year
+        ElectrolysisAWE: 25, # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019. Advances in alkaline water electrolyzers: A review. Journal of Energy Storage, 23, pp.392-403. Around 20 and 30 years
+        PlasmaCracking: 25,
+        HydrogenLiquefaction: 39,
+        AnaerobicDigestion: 20,
+        BiomassGasification: 25, # Wang2019 Rosenfeld2020 says 20 # for now constant in time but should increase with time
+        SMR: 25,
+        CoalGasification: 20,
+        Pyrolysis: 20,
+        AutothermalReforming: 15, # for now constant in time but should increase with time
+        CoElectrolysis: 40,
+        Refinery: 35, # should be modified
+        FischerTropsch: 30, # for now constant in time but should increase with time
+        HefaDecarboxylation: 30, # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2 # for now constant in time but should increase with time
+        HefaDeoxygenation: 30,# Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017. Techno-economic and resource analysis of hydroprocessed renewable jet fuel. # Biotechnology for biofuels, 10(1), pp.1-16.# https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
+        Transesterification: 15, # for now constant in time but should increase with time
+        BiomassFermentation: 45, # http://www.ethanolproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
+        CoalExtraction: 35, # should be modified
+        Pelletizing: 25, # Wang2019 Rosenfeld2020 says 20 # for now constant in time but should increase with time
+        WindOffshore: 30, # ATB NREL 2020
+        WindOnshore: 30, # ATB NREL 2020
+        SolarPv: 25, # IRENA, EOLES model
+        SolarThermal: 25, # JRC, IRENA, SolarPACES
+        Hydropower: 50, # should be modified
+        Nuclear: 60,  # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        CombinedCycleGasTurbine: 30, # # Source: U.S. Energy Information Administration 2020, for now constant in time but should increase with time
+        GasTurbine: 30, # Source U.S. Energy Information Administration 2020, # for now constant in time but should increase with time
+        BiogasFired: 20, # Value for CHP units
+        CoalGen: 46, # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.  Quantifying operational lifetimes for coal power plants under the Paris goals. Nature communications, 10(1), pp.1-9.
+        OilGen: 46, # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.  Quantifying operational lifetimes for coal power plants under the Paris goals. Nature communications, 10(1), pp.1-9.
+        BiomassFired: 25, # Value for CHP units
+        f"{direct_air_capture}.{AmineScrubbing}": 35, # should be modified
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": 35, # should be modified
+        f"{flue_gas_capture}.{CalciumLooping}": 25,  # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{CO2Membranes}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{MonoEthanolAmine}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PiperazineProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": 25, # SAEECCT Coal USC plant lifetime
+        BiomassBuryingFossilization: 35, # should be modified
+        DeepOceanInjection: 35, # should be modified
+        DeepSalineFormation: 35, # should be modified
+        DepletedOilGas: 35, # should be modified
+        EnhancedOilRecovery: 35, # should be modified
+        GeologicMineralization: 35, # should be modified
+        PureCarbonSolidStorage: 35, # should be modified
+        ManagedWood: 150, # for now constant in time but should increase with time
+        UnmanagedWood: 150, # for now constant in time but should increase with time
+        CropEnergy: 50, # for now constant in time but should increase with time
+        FossilSimpleTechno: 25,
+        NaturalGasBoilerHighHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        HeatPumpHighHeat: 25, # years # https://www.energy.gov/energysaver/heat-pump-systems
+        GeothermalHighHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPHighHeat: 45, # Heat Producer [Online] # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        NaturalGasBoilerLowHeat: 45, # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp # https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        ElectricBoilerLowHeat: 45,
+        HeatPumpLowHeat: 25,
+        GeothermalLowHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPLowHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        NaturalGasBoilerMediumHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        ElectricBoilerMediumHeat: 45, # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp # https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        HeatPumpMediumHeat: 25, # years # https://www.energy.gov/energysaver/heat-pump-systems
+        GeothermalMediumHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPMediumHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        CO2Hydrogenation: 20,
+        RenewableSimpleTechno: 30, # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.  2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        f"{ElectricBoilerHighHeat}": 45, # Heat Producer [Online] # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        f"{CarbonStorageTechno}": 35,
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": 35,
+        f"{flue_gas_capture}.{FlueGasTechno}": 25,
+        Reforestation: 150,  # for now constant in time but should increase with time,
+        Geothermal: 30, # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.  Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.  Publications Office of the European Union, Luxemburgo.
+        AnimalManure: 25, # for now constant in time but should increase with time
+        WetCropResidues: 25,  # for now constant in time but should increase with time
+        CO2Membranes: 25, # SAEECCT Coal USC plant lifetime
     }
 
     @classmethod

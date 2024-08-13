@@ -49,7 +49,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.CropEnergy
-    lifetime = 50
+
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -87,7 +87,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,  # augmentation of forests ha per year?
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # capex from
                                  # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
                                  # 237.95 euro/ha (717 $/acre)
@@ -111,13 +110,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
                          3.36 * energy_crop_percentage  # in Twh
-    # Age distribution of forests in 2008 (
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
-                                                         0.94, 1.02, 1.1, 1.18, 1.26, 1.33, 1.41, 1.49, 1.57, 1.65,
-                                                         1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
-                                                         2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
-                                                         3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
+    # Age distribution of forests in 2008
     # The increase in land is of 10Mha each year, in CAPEX and OPEX
     land_surface_for_food = pd.DataFrame(
         {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
@@ -125,12 +118,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
                CropEnergy.LAND_SURFACE_FOR_FOOD_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                      'visibility': BiomassDryTechnoDiscipline.SHARED_VISIBILITY,
                                                      'namespace': GlossaryEnergy.NS_WITNESS,
@@ -377,14 +364,11 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
          surcharge of the methode in techno_disc to change historical data with the
          energy part
         '''
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
         land_surface_for_food = self.get_sosdisc_inputs(
             CropEnergy.LAND_SURFACE_FOR_FOOD_DF)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
 

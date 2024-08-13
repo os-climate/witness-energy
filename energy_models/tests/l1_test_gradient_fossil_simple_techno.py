@@ -29,9 +29,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
-    FossilSimpleTechnoDiscipline,
-)
 
 
 class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
@@ -123,8 +120,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        techno_infos_dict = FossilSimpleTechnoDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         invest_before_ystart = pd.DataFrame(
             {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
@@ -133,6 +128,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
@@ -141,7 +137,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
 
@@ -184,16 +179,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = {'maturity': 0, 'Opex_percentage': 0.024, 'WACC': 0.058, 'learning_rate': 0.00,
-                             'lifetime_unit': GlossaryEnergy.Years, 'Capex_init': 100.,
-                             'Capex_init_unit': '$/MWh', 'techno_evo_eff': 'no', 'efficiency': 1.0,
-                             'CO2_from_production': 0.37077040550222284, 'CO2_from_production_unit': 'kg/kg',
-                             GlossaryEnergy.ConstructionDelay: 0, 'resource_price': 75.0,
-                             'resource_price_unit': '$/MWh', 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
-                             'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
-                             'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
-                             'CH4_emission_factor_unit': 'Mt/TWh',
-                             "lifetime": GlossaryEnergy.LifetimeDefaultValueGradientTest}
 
         invest_before_ystart = pd.DataFrame(
             {GlossaryEnergy.Years: [], GlossaryEnergy.InvestValue: []})
@@ -207,11 +192,11 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ConstructionDelay}': 0,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
 

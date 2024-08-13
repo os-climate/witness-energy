@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
@@ -47,7 +45,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.ElectrolysisSOEC
 
-    lifetime = 8  # Around 60000hours
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.03,
                                  'CO2_from_production': 0.0,
@@ -55,7 +53,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  'learning_rate': 0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
-                                 'lifetime': lifetime,
                                  'Capex_init': 2800,
                                  'Capex_init_unit': '$/kW',
                                  'euro_dollar': 1.114,
@@ -71,9 +68,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
 
     initial_production = 0.0
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.ones(lifetime - 1) * 100.0 / (lifetime - 1)})
-
     # Public investment in Europe through FCH JU : 156 MEuro or 190M$
     # We assume half is for SOEC .
     # Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
@@ -82,11 +76,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },}
+               }
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -53,7 +51,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY
     # https://www.fch.europa.eu/news/launch-refhyne-worlds-largest-electrolysis-plant-rhineland-refinery
-    lifetime = 11  # Around 90000 operating hours with 8000 hours a year
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.025,
                                  'CO2_from_production': 0.0,
@@ -61,7 +59,6 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.05,
                                  'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 500.0 / 1012.5,  # 500 euro/kw minimum capex
-                                 'lifetime': lifetime,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 1012.5,  # for a power input of 2MW, decreases for 10 MW
@@ -81,9 +78,6 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     # Around 50MW of nominal power *8000 hours per year
     initial_production = 0.4
     # Industrial plants started to emerge around 2015
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [25, 25, 20, 15, 15] + [0.0] * 5
-                                             })
     # Public investment in Europe through FCH JU : 156 MEuro or 190M$
     # We assume half is for PEM .
     # Worldwide the investment of europe for PEM is 36%   190/2*100/36 = 263.9 M$
@@ -92,11 +86,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },}
+               }
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this
