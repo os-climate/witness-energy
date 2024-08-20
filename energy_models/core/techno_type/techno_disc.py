@@ -310,6 +310,10 @@ class TechnoDiscipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
         self.techno_model.compute(inputs_dict)
+        # if False:
+        #     import pickle
+        #     with open("DACinputict.pkl","wb") as f:
+        #         pickle.dump(inputs_dict, f)
 
         outputs_dict = {GlossaryEnergy.TechnoDetailedPricesValue: self.techno_model.cost_details,
                         GlossaryEnergy.TechnoPricesValue: self.techno_model.cost_details[[GlossaryEnergy.Years, self.techno_name, f'{self.techno_name}_wotaxes']],

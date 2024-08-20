@@ -530,6 +530,63 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
         self.override_dump_jacobian = False
 
+    def test_06_direct_air_capture_techno_discipline_gradient(self):
+        self.override_dump_jacobian = 1
+        self.name = 'Test'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_carbon_capture': self.name,
+                   'ns_resource': self.name}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        import pickle
+        with open("DACinputict.pkl",'rb') as f:
+            inputs_dict = pickle.load(f)
+        inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
+        inputs_dict2[f"{self.name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}"] = inputs_dict[GlossaryEnergy.InvestLevelValue]
+        for key, value in inputs_dict2.items():
+            if isinstance(value, pd.DataFrame):
+                for col in value.columns:
+                    if value[col].dtype == 'complex128':
+                        value[col] = np.real(value[col])
+        self.ee.load_study_from_input_dict(inputs_dict2)
+
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}_2.pkl',
+                            discipline=disc_techno, step=1.0e-9, derr_approx='finite_differences', threshold=1e-5,
+                            local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
+                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
+                                    ],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
+                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+
+        #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
+        #self.override_dump_jacobian = False
+
 
 if '__main__' == __name__:
     cls = CarbonCaptureJacobianTestCase()
