@@ -43,43 +43,31 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_list = [
             GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
             GlossaryEnergy.methane]
 
         self.ccs_list = [
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
-        self.years = np.arange(self.y_s, self.y_e + 1)
-        dict2 = {}
-        dict2[GlossaryEnergy.Years] = self.years
-        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}'] = np.ones(len(self.years)) * 0.1
-        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}'] = np.ones(len(self.years)) * 0.2
-        dict2[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}'] = np.ones(len(self.years)) * 0.3
-        dict2[f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}'] = np.ones(len(self.years)) * 0.4
-        dict2[f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}'] = np.ones(len(self.years)) * 0.5
-        dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}'] = np.ones(
-            len(self.years)) * 0.6
-        dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}'] = np.ones(
-            len(self.years)) * 0.7
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
-            len(self.years)) * 0.8
-        dict2[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
-            len(self.years)) * 0.9
-        dict2[f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation'] = np.ones(
-            len(self.years)) * 1.0
-        dict2[f'{GlossaryEnergy.carbon_storage}.GeologicMineralization'] = np.ones(
-            len(self.years)) * 1.1
+        self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_mix = pd.DataFrame(dict2)
+        self.energy_mix = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}': 0.1,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}': 0.2,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': 0.3,
+            f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}': 0.4,
+            f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}': 0.5,
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': 0.6,
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}': 0.7,
+            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 0.8,
+            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 0.9,
+            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}': 1.0,
+            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}': 1.1, })
 
-        invest_ref = 1.0e3  # G$ means 1 milliard of dollars
-        invest = np.zeros(len(self.years))
-        invest[0] = invest_ref
-        for i in range(1, len(self.years)):
-            invest[i] = 1.02 * invest[i - 1]
+        invest = 1e3 * (1.02 ** np.arange(len(self.years)))
         self.energy_investment = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.EnergyInvestmentsValue: invest})
 
@@ -111,8 +99,8 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.SolarPv, GlossaryEnergy.WindOnshore,

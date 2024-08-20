@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -44,20 +43,8 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                      0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                      0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                      0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                      0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                      0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                      0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                      0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                      0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                      0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                      0.0928246539459331]) * 1.5 * 1e-3
-
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 90.})
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
@@ -65,30 +52,16 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
         # since 2017)
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.InvestValue: np.array([1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0, 1135081003.0, 1135081003.0,
-                                                   1135081003.0]) * 1.0e-9})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+             GlossaryEnergy.InvestValue: 1.13})
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.1})
+            {GlossaryEnergy.Years: years, 'transport': 0.1})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(

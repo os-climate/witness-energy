@@ -20,7 +20,6 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -79,33 +78,16 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years, Water.name: 2.0})
 
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ])[:len(self.years)] * 0.8e-9
-
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                          GlossaryEnergy.InvestValue: invest
+                                          GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))
                                           })
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27, 29.01,
-                     34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 200.0})
+            {GlossaryEnergy.Years: self.years, 'transport': 200.0})
 
         # ---Ratios---
         demand_ratio_dict = dict(
@@ -218,7 +200,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
         })
         techno_name = GlossaryEnergy.CO2Hydrogenation
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,

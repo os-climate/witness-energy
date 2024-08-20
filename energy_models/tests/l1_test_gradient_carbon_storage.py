@@ -20,7 +20,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -92,30 +91,20 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
-
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        co2_taxes_nul = [0, 0, 0,
-                         0, 0, 0, 0, 0]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-        func_nul = sc.interp1d(co2_taxes_year, co2_taxes_nul,
-                               kind='linear', fill_value='extrapolate')
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.0325})
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.co2_taxes_nul = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func_nul(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 0.})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 100.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0})
 
         transport_cost = 0
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': transport_cost})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.SolidCarbon: 50.})
         # ---Ratios---
         demand_ratio_dict = dict(
@@ -642,7 +631,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
         })
         for techno in technos:
             inputs_dict[

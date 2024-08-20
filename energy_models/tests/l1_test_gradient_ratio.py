@@ -623,7 +623,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
         })
         for techno in technos:
             inputs_dict[
