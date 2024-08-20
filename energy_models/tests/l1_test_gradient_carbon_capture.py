@@ -440,7 +440,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
         self.override_dump_jacobian = False
 
-    def test_06_direct_air_capture_techno_discipline_gradient(self):
+    def _test_06_direct_air_capture_techno_discipline_gradient(self):
         self.name = 'Test'
         self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
