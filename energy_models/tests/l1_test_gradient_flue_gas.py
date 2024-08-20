@@ -19,7 +19,6 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -85,38 +84,27 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.electricity: np.ones(len(self.years)) * 80.0,
-             GlossaryEnergy.methane: np.ones(len(self.years)) * 80.0})
+             GlossaryEnergy.electricity: 80.0,
+             GlossaryEnergy.methane: 80.0})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
-                                                                                22000.00, 22000.00, 22000.00, 22000.00,
-                                                                                22000.00, 22000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00])[:len(self.years)] * 1e-3})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 100})
+             GlossaryEnergy.MarginValue: 100})
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
 
-        transport_cost = 0,
+        transport_cost = 0
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
         # ---Ratios---

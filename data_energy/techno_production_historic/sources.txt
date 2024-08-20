@@ -1,3 +1,5 @@
 FossilSimpleTechno : https://ourworldindata.org/grapher/fossil-fuel-production
 CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-transport-and-storage, unit = USD2022
 DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
+SolarPV: https://www.iea.org/energy-system/renewables/solar-pv
+Nuclear: https://world-nuclear.org/nuclear-reactor-database/summary

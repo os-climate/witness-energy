@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -53,22 +52,11 @@ class FGCO2MembranesTestCase(unittest.TestCase):
                  len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
-                                                                                22000.00, 22000.00, 22000.00, 22000.00,
-                                                                                22000.00, 22000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00, 31000.00,
-                                                                                31000.00, 31000.00, 31000.00]) * 1e-3})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(22, 31., len(years))})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
@@ -78,10 +66,10 @@ class FGCO2MembranesTestCase(unittest.TestCase):
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
 
-        transport_cost = 0,
+        transport_cost = 0
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': transport_cost})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         self.scaling_factor_techno_consumption = 1e3

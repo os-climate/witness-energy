@@ -43,7 +43,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         '''
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.renewable]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]

@@ -144,7 +144,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                      GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.InvestValue: np.linspace(22000.00, 31000.00, len(self.years)) * 1e-3})
+             GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14.86, 50.29, len(self.years))})
         self.co2_taxes_nul = pd.DataFrame(
@@ -1104,7 +1104,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
         })
         for techno in technos:
             inputs_dict[

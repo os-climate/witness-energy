@@ -68,13 +68,13 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
              })
 
-        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.SMR: np.ones(len(years)) * 34,
-                                                    # price to be updated for
-                                                    # CO2
-                                                    GlossaryEnergy.CoElectrolysis: np.ones(len(years)) * 60,
-                                                    GlossaryEnergy.BiomassGasification: np.ones(len(years)) * 50
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                    GlossaryEnergy.SMR: 34,
+                                                    GlossaryEnergy.CoElectrolysis: 60,
+                                                    GlossaryEnergy.BiomassGasification: 50
                                                     })
-        self.syngas_ratio_technos = {GlossaryEnergy.SMR: 0.33,
+        self.syngas_ratio_technos = {GlossaryEnergy.Years: years,
+                                     GlossaryEnergy.SMR: 0.33,
                                      GlossaryEnergy.CoElectrolysis: 1.0,
                                      GlossaryEnergy.BiomassGasification: 2.0
                                      }
@@ -369,7 +369,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
         })
         for techno in technos:
             inputs_dict[
