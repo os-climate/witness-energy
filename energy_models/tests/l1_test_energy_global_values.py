@@ -22,6 +22,7 @@ import pandas as pd
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     Study as agri_study_open,
 )
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -134,7 +135,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         modern_biofuels_production = 1043.  # in 2020
         # in 2020
         # https://ourworldindata.org/renewable-energy#solar-energy-generation
-        solar_production = 844.37
+        solar_production = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.SolarPv, year=2020)
         coal_production = 43752. - 952.78
         gas_production = 39893. - 3782.83
 
