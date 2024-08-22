@@ -143,7 +143,8 @@ class CCTechnoDiscipline(TechnoDiscipline):
             dcapex_dfluegas, dprod_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
+            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
             dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),

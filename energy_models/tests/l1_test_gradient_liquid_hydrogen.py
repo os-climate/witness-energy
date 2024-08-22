@@ -233,17 +233,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.{self.energy_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.TechnoProductionValue}'][
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'] *= np.linspace(5.0, 5.0, len(self.years))
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000,
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
+        
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

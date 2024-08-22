@@ -487,7 +487,7 @@ class Study(EnergyStudyManager):
 
         CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
 
-        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
+        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.001, GlossaryEnergy.NonUseCapital: 0.})
 
         agri_values_dict = {
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,

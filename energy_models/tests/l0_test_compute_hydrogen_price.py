@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -87,7 +86,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                      'O2 (Mt)': 1452504570})
 
         self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.ElectrolysisPEM: 0.0})
@@ -96,11 +95,6 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.PlasmaCracking: 0.013})
         self.smr_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.WaterGasShift: 0.1721})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [0.01486, 0.01722, 0.02027,
-                     0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
@@ -113,8 +107,6 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, f'{GlossaryEnergy.PlasmaCracking} ({GlossaryEnergy.surface_unit})': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-        self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
 
     def tearDown(self):
         pass

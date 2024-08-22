@@ -201,6 +201,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: 20000,
+            GlossaryEnergy.NonUseCapital: 1000.,
         })
         techno_name = GlossaryEnergy.CO2Hydrogenation
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,

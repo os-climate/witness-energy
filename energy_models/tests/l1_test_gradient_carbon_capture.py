@@ -170,8 +170,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
     def test_02_CaKOH_jacobian(self):
 
@@ -233,8 +232,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
     def test_03_Calcium_looping_jacobian(self):
 
@@ -296,8 +294,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital']
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',]
                             )
 
     def test_04_carbon_capture_discipline_jacobian(self):
@@ -358,13 +355,13 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: 20000,
+            GlossaryEnergy.NonUseCapital: 1000.,
         })
 
         for techno in technos:
             inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -434,8 +431,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
         os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
         self.override_dump_jacobian = False
@@ -490,8 +486,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
         #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
         #self.override_dump_jacobian = False

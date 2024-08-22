@@ -42,7 +42,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.year_range = self.year_end - self.year_start + 1
         self.energy_list = [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
         self.energy_type_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.001, GlossaryEnergy.NonUseCapital: 0.})
         self.consumption_hydro = pd.DataFrame(
             {f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(5., 7., len(self.years)),
              f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': np.linspace(13., 16., len(self.years)),

@@ -117,7 +117,6 @@ class TechnoType:
         self.is_resource_ratio = False
         self.smooth_type = None
         self.ratio_df = None
-        self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
         self.installed_power = None
@@ -139,7 +138,6 @@ class TechnoType:
         self.carbon_intensity_generic = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.land_use = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.all_streams_demand_ratio = pd.DataFrame({GlossaryEnergy.Years: self.years})
-        self.non_use_capital = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.techno_capital = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.installed_power = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
@@ -366,7 +364,7 @@ class TechnoType:
                                                           f'{self.energy_name} ({self.product_unit})'].values \
                                                       / self.scaling_factor_invest_level
 
-        self.non_use_capital[self.name] = self.techno_capital[GlossaryEnergy.Capital].values * (
+        self.techno_capital[GlossaryEnergy.NonUseCapital] = self.techno_capital[GlossaryEnergy.Capital].values * (
                 1.0 - self.applied_ratio['applied_ratio'].values * self.utilisation_ratio / 100.)
 
     def compute_price(self):
