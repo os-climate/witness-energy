@@ -61,7 +61,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     liquefied_petroleum_gas = "liquefied_petroleum_gas"
     hydrotreated_oil_fuel = "hydrotreated_oil_fuel"
     methane = "methane"
-    renewable = "renewable"
     solid_fuel = "solid_fuel"
     syngas = "syngas"
     ultra_low_sulfur_diesel = "ultra_low_sulfur_diesel"
@@ -95,7 +94,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         liquefied_petroleum_gas,
         hydrotreated_oil_fuel,
         methane,
-        renewable,
+        GlossaryWitnessCore.clean_energy,
         solid_fuel,
         syngas,
         ultra_low_sulfur_diesel,
@@ -585,7 +584,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     Methanation = "Methanation"
     UpgradingBiogas = "UpgradingBiogas"
     CO2Hydrogenation = "CO2Hydrogenation"
-    RenewableSimpleTechno = "RenewableSimpleTechno"
     CoalExtraction = "CoalExtraction"
     Pelletizing = "Pelletizing"
     AutothermalReforming = "AutothermalReforming"
@@ -714,7 +712,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     DEFAULT_COARSE_TECHNO_DICT = {
-        renewable: {stream_type: energy_type, value: [RenewableSimpleTechno]},
+        GlossaryWitnessCore.clean_energy: {stream_type: energy_type, value: [GlossaryWitnessCore.CleanEnergySimpleTechno]},
         fossil: {stream_type: energy_type, value: [FossilSimpleTechno]},
         carbon_capture: {
             stream_type: ccus_type,
@@ -816,7 +814,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     stream_to_type_mapper = {
         fossil: energy_type,
-        renewable: energy_type,
+        GlossaryWitnessCore.clean_energy: energy_type,
         methane: energy_type,
         f'{heat}.{lowtemperatureheat}': energy_type,
         f'{heat}.{mediumtemperatureheat}': energy_type,
@@ -910,7 +908,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     surface_unit = "Gha"
 
     unit_dicts = {
-        renewable: energy_unit,
+        GlossaryWitnessCore.clean_energy: energy_unit,
         fossil: energy_unit,
         biomass_dry: energy_unit,
         methane: energy_unit,
@@ -1044,7 +1042,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GeologicMineralization: [],
         PureCarbonSolidStorage: [],
         SMR: [],
-        RenewableSimpleTechno: [],
+        GlossaryWitnessCore.CleanEnergySimpleTechno: [],
         FossilSimpleTechno: [CO2FromFlueGas, GlossaryWitnessCore.CH4],
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
@@ -1069,12 +1067,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         UnmanagedWood: [electricity], # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
         f"{direct_air_capture}.{AmineScrubbing}": [electricity, methane],   # put heat instead of methane
         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [electricity, methane], # put heat instead of methane
-        f"{direct_air_capture}.{DirectAirCaptureTechno}": [renewable, fossil], # dont touch
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": [GlossaryWitnessCore.clean_energy, fossil], # dont touch
         # in flue gas techno: heat comes directly from plant so just electricity
         f"{flue_gas_capture}.{CalciumLooping}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{ChilledAmmoniaProcess}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{CO2Membranes}": [electricity], # heat and electricity
-        f"{flue_gas_capture}.{FlueGasTechno}": [renewable], # heat and electricity -> not heat because
+        f"{flue_gas_capture}.{FlueGasTechno}": [GlossaryWitnessCore.clean_energy], # heat and electricity -> not heat because
         f"{flue_gas_capture}.{MonoEthanolAmine}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{PiperazineProcess}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{PressureSwingAdsorption}": [electricity], # heat and electricity
@@ -1271,7 +1269,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         NaturalGasBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
         HeatPumpLowHeat: f"{heat}.{lowtemperatureheat}",
         CHPLowHeat: f"{heat}.{lowtemperatureheat}",
-        RenewableSimpleTechno: renewable,
+        GlossaryWitnessCore.CleanEnergySimpleTechno: GlossaryWitnessCore.clean_energy,
         FossilSimpleTechno: fossil,
     }
 
@@ -1351,7 +1349,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         FossilSimpleTechno: 3,
         NaturalGasBoilerMediumHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
         CO2Hydrogenation: 3,
-        RenewableSimpleTechno: 3, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
+        GlossaryWitnessCore.CleanEnergySimpleTechno: 3, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
         CHPMediumHeat: 2,
         ElectricBoilerMediumHeat: 2,
     }
@@ -1428,7 +1426,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GeothermalMediumHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
         CHPMediumHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
         CO2Hydrogenation: 20,
-        RenewableSimpleTechno: 30, # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.  2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        GlossaryWitnessCore.CleanEnergySimpleTechno: 30, # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.  2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
         f"{ElectricBoilerHighHeat}": 45, # Heat Producer [Online] # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
         f"{CarbonStorageTechno}": 35,
         f"{direct_air_capture}.{DirectAirCaptureTechno}": 35,

@@ -78,7 +78,7 @@ class FossilSimpleTechnoTestCase(unittest.TestCase):
 
     def test_03_fossil_simple_techno_discipline(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,

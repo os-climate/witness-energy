@@ -30,8 +30,8 @@ from energy_models.core.stream_type.resources_data_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
-    """RenewableSimpleTechnoJacobianTestCase"""
+class CleanEnergySimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
+    """CleanEnergySimpleTechnoJacobianTestCase"""
 
     def analytic_grad_entry(self):
         return [
@@ -42,7 +42,8 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'RenewableSimpleTechno'
+        self.override_dump_jacobian = 1
+        self.energy_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
@@ -85,16 +86,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': self.name,
+                   'ns_clean_energy': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -159,16 +160,16 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_02_discipline_analytic_grad_construction_delay_0(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': self.name,
+                   'ns_clean_energy': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

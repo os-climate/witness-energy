@@ -24,14 +24,14 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.energy_models.renewable import Renewable
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.renewable]["value"],
+                 technologies_list=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.clean_energy]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -42,28 +42,28 @@ class Study(EnergyMixStudyManager):
         self.bspline = bspline
 
     def get_investments(self):
-        invest_renewable_mix_dict = {}
+        invest_clean_energy_mix_dict = {}
 
-        if GlossaryEnergy.RenewableSimpleTechno in self.technologies_list:
-            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1.
+        if GlossaryEnergy.CleanEnergySimpleTechno in self.technologies_list:
+            invest_clean_energy_mix_dict[GlossaryEnergy.CleanEnergySimpleTechno] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1.
             # set value for first year
-            invest_renewable_mix_dict['RenewableSimpleTechno'][0] = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
+            invest_clean_energy_mix_dict[GlossaryEnergy.CleanEnergySimpleTechno][0] = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
 
         if self.bspline:
-            invest_renewable_mix_dict[GlossaryEnergy.Years] = self.years
+            invest_clean_energy_mix_dict[GlossaryEnergy.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_ren_2020 = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
-                invest_renewable_mix_dict[techno] = np.linspace(invest_ren_2020, invest_ren_2020 * 2, len(self.years))
+                invest_clean_energy_mix_dict[techno] = np.linspace(invest_ren_2020, invest_ren_2020 * 2, len(self.years))
 
-        renewable_mix_invest_df = pd.DataFrame(invest_renewable_mix_dict)
+        renewable_mix_invest_df = pd.DataFrame(invest_clean_energy_mix_dict)
 
         return renewable_mix_invest_df
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Renewable.name
-        renewable_name = f'EnergyMix.{self.energy_name}'
+        self.energy_name = CleanEnergy.name
+        clean_energy_name = f'EnergyMix.{self.energy_name}'
         years = np.arange(self.year_start, self.year_end + 1)
 
         # the value for invest_level is just set as an order of magnitude
@@ -95,11 +95,10 @@ class Study(EnergyMixStudyManager):
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.study_name}.{renewable_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{renewable_name}.RenewableSimpleTechno.{GlossaryEnergy.MarginValue}': margin,
-
-                       f'{self.study_name}.{renewable_name}.{GlossaryEnergy.TransportCostValue}': transport,
-                       f'{self.study_name}.{renewable_name}.{GlossaryEnergy.TransportMarginValue}': margin,
+                       f'{self.study_name}.{clean_energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{clean_energy_name}.{GlossaryEnergy.CleanEnergySimpleTechno}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{clean_energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
+                       f'{self.study_name}.{clean_energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
 
                        }
 
@@ -119,9 +118,9 @@ class Study(EnergyMixStudyManager):
                                                                                     investment_mix[
                                                                                         techno].values / investment_mix_sum})
                     values_dict[
-                        f'{self.study_name}.{renewable_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                        f'{self.study_name}.{clean_energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{renewable_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
+                values_dict[f'{self.study_name}.{clean_energy_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:
             self.update_dv_arrays()
 

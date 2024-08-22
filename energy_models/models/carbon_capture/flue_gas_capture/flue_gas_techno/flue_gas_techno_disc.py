@@ -114,4 +114,4 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
-        self.set_partial_derivatives_flue_gas(GlossaryEnergy.renewable)
+        self.set_partial_derivatives_flue_gas(GlossaryEnergy.clean_energy)

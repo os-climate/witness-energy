@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.renewable import Renewable
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
     CCTechno,
 )
@@ -49,12 +49,12 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
         return elec_need + heat_need
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(
+        self.cost_details[f'{GlossaryEnergy.clean_energy}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
     def compute_streams_consumption(self):
         # Consumption
-        self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.renewable}_needs'] * \
-                                                                              self.production_detailed[
+        self.consumption_detailed[f'{CleanEnergy.name} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.clean_energy}_needs'] * \
+                                                                                self.production_detailed[
                                                                                   f'{CCTechno.energy_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
