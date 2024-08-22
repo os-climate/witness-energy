@@ -42,11 +42,11 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 160., GlossaryEnergy.fossil: 100.
+            {GlossaryEnergy.Years: years, GlossaryEnergy.clean_energy: 160., GlossaryEnergy.fossil: 100.
              })
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.clean_energy: 0.0, GlossaryEnergy.fossil: 0.2})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level = pd.DataFrame(

@@ -34,6 +34,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
@@ -51,7 +52,6 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_models.resource_glossary import (
@@ -91,7 +91,7 @@ class EnergyMix(BaseStream):
                          GlossaryEnergy.syngas: Syngas,
                          BiomassDry.name: BiomassDry,
                          LiquidHydrogen.name: LiquidHydrogen,
-                         Renewable.name: Renewable,
+                         CleanEnergy.name: CleanEnergy,
                          Fossil.name: Fossil,
                          lowtemperatureheat.name: lowtemperatureheat,
                          mediumtemperatureheat.name: mediumtemperatureheat,
@@ -100,7 +100,7 @@ class EnergyMix(BaseStream):
 
     # For simplified energy mix , raw_to_net factor is used to compute net
     # production from raw production
-    raw_tonet_dict = {Renewable.name: Renewable.raw_to_net_production,
+    raw_tonet_dict = {CleanEnergy.name: CleanEnergy.raw_to_net_production,
                       Fossil.name: Fossil.raw_to_net_production}
 
     only_energy_list = list(energy_class_dict.keys())

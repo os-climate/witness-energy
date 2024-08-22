@@ -24,9 +24,9 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class RenewableSimpleTechnoTestCase(unittest.TestCase):
+class CleanEnergySimpleTechnoTestCase(unittest.TestCase):
     """
-    RenewableSimpleTechno prices test class
+    CleanEnergySimpleTechno prices test class
     """
 
     def setUp(self):
@@ -52,7 +52,6 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         self.invest_level[GlossaryEnergy.InvestValue] = 33.0 * \
                                                         1.10 ** (self.invest_level[GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
-        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 
@@ -77,18 +76,19 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_03_renewable_simple_techno_discipline(self):
+    def test_03_clean_energy_simple_techno_discipline(self):
         self.name = 'Test'
-        self.model_name = 'RenewableSimpleTechno'
+        self.model_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': self.name,
+                   'ns_clean_energy': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

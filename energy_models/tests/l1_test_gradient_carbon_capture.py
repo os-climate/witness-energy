@@ -68,14 +68,14 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.electricity: 160.,
-             GlossaryEnergy.renewable: 160.,
+             GlossaryEnergy.clean_energy: 160.,
              GlossaryEnergy.methane: 160.,
              GlossaryEnergy.fossil: 160.
              })
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'amine': 0.0, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2, GlossaryEnergy.fossil: 0.2,
-             GlossaryEnergy.renewable: 0.0})
+             GlossaryEnergy.clean_energy: 0.0})
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.AmineResource: 1300.,

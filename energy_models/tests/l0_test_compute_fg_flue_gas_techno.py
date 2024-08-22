@@ -46,7 +46,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.renewable: np.ones(
+             GlossaryEnergy.clean_energy: np.ones(
                  len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
@@ -62,7 +62,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
                  len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 100})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.clean_energy: 0.0})
 
         transport_cost = 0
 
@@ -84,7 +84,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
     def test_03_flue_gas_techno_discipline(self):
         self.name = 'Test'
-        self.model_name = 'Flue_gas_capture.FlueGasTechno'
+        self.model_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,

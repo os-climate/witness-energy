@@ -42,7 +42,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'FossilSimpleTechno'
+        self.energy_name = GlossaryEnergy.FossilSimpleTechno
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
@@ -84,7 +84,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'FossilSimpleTechno'
+        self.model_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -144,7 +144,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_02_discipline_analytic_grad_construction_delay_0(self):
         self.name = 'Test'
-        self.model_name = 'FossilSimpleTechno'
+        self.model_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,

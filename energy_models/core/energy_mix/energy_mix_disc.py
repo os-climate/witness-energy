@@ -2047,7 +2047,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return new_chart
 
     def get_chart_capital(self):
-        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDf)
+        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCapitalDfValue)
 
         chart_name = 'Capital'
         new_chart = TwoAxesInstanciatedChart(
@@ -2062,5 +2062,4 @@ class Energy_Mix_Discipline(SoSWrapp):
             capital_df[GlossaryEnergy.Years].values.tolist(),
             capital_df[GlossaryEnergy.NonUseCapital].values.tolist(), 'Non used capital (Utilisation ratio or limiting ratio)', 'bar')
         new_chart.series.append(serie)
-        new_chart.to_plotly().show()
         return new_chart

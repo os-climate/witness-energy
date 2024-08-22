@@ -16,25 +16,26 @@ limitations under the License.
 '''
 
 
-from energy_models.core.techno_type.disciplines.renewable_techno_disc import (
-    RenewableTechnoDiscipline,
+from energy_models.core.techno_type.disciplines.clean_energy_disc import (
+    CleanEnergyTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import (
-    RenewableSimpleTechno,
+from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno import (
+    CleanEnergySimpleTechno,
 )
 
 
-class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
+class CleanEnergySimpleTechnoDiscipline(CleanEnergyTechnoDiscipline):
     """
-        Generic Renewable Techno used in the WITNESS Coarse process
+        Generic Clean Techno used in the WITNESS Coarse process
         It has a high price per kWh without CO2 but a low CO2 emissions per kWh
+        Its meant to model technos likes solar, wind, nuclear, biomass, hyropower in Witness COARSE.
         It has properties similar to electricity technologies
     """
 
     # ontology information
     _ontology_data = {
-        'label': 'Renewable Technology Model',
+        'label': 'Clean Energy Technology Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -45,12 +46,12 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
         'icon': 'fas fa-fan fa-fw',
         'version': '',
     }
-    techno_name = GlossaryEnergy.RenewableSimpleTechno
+    techno_name = GlossaryEnergy.CleanEnergySimpleTechno
 
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
-    renewable_energy_capital = 12.414  # trillion dollars
+    clean_energy_capital = 12.414  # trillion dollars
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
@@ -71,13 +72,13 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                       }
     # -- add specific techno outputs to this
-    DESC_IN.update(RenewableTechnoDiscipline.DESC_IN)
+    DESC_IN.update(CleanEnergyTechnoDiscipline.DESC_IN)
 
-    DESC_OUT = RenewableTechnoDiscipline.DESC_OUT
+    DESC_OUT = CleanEnergyTechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = RenewableSimpleTechno(self.techno_name)
+        self.techno_model = CleanEnergySimpleTechno(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

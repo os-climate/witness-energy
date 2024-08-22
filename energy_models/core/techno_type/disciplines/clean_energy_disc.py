@@ -14,15 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.renewable import Renewable
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class RenewableTechnoDiscipline(TechnoDiscipline):
+class CleanEnergyTechnoDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Renewable Technologies Model',
+        'label': 'Clean Energy Technologies Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -35,14 +35,14 @@ class RenewableTechnoDiscipline(TechnoDiscipline):
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/MWh',
                                                    'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                   'namespace': 'ns_renewable',
+                                                   'namespace': 'ns_clean_energy',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
                                                      'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                     'namespace': 'ns_renewable',
+                                                     'namespace': 'ns_clean_energy',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               GlossaryEnergy.MarginValue: (
@@ -50,15 +50,15 @@ class RenewableTechnoDiscipline(TechnoDiscipline):
                                                      'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_renewable',
-                                  'default': Renewable.data_energy_dict,
+                                  'namespace': 'ns_clean_energy',
+                                  'default': CleanEnergy.data_energy_dict,
                                   'unit': 'defined in dict'},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
     _maturity = 'Research'
 
-    energy_name = Renewable.name
+    energy_name = CleanEnergy.name
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
