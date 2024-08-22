@@ -18,7 +18,6 @@ import logging
 
 import numpy as np
 import pandas as pd
-
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )

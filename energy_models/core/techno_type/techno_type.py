@@ -1019,7 +1019,7 @@ class TechnoType:
             f'Capex_{self.name}': capex_year_start
          })
         invests_after_year_start_df = self.cost_details[[GlossaryEnergy.Years, GlossaryEnergy.InvestValue, f'Capex_{self.name}']]
-        prod_from_invests_df = pd.concat([invest_before_year_start_df, invests_after_year_start_df], ignore_index=True)
+        prod_from_invests_df = pd.concat([invest_before_year_start_df, invests_after_year_start_df], ignore_index=True) if len(invest_before_year_start) > 0 else invests_after_year_start_df
         # Need prod_from invest in TWh we have M$ and $/MWh  M$/($/MWh)= TWh
 
         production_from_invests = prod_from_invests_df[GlossaryEnergy.InvestValue].values / \
