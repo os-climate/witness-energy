@@ -150,6 +150,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                   'namespace': GlossaryEnergy.NS_REFERENCE},
+               'ref_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.30, 'unit': '0.30 means after 35 % of capital not used the constraint will explode'},
+               'tol_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.05, 'unit': '0.05 means constraint does not penalize lagrangian when non use capital is less than 5%'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
@@ -211,6 +213,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf,
         GlossaryEnergy.EnergyMeanPriceObjectiveValue: GlossaryEnergy.EnergyMeanPriceObjective,
+        GlossaryEnergy.ConstraintEnergyNonUseCapital: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
     }
 
     energy_name = EnergyMix.name
@@ -433,6 +436,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital,
                         GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
                         GlossaryEnergy.EnergyMeanPriceObjectiveValue: self.energy_model.energy_mean_price_objective,
+                        GlossaryEnergy.ConstraintEnergyNonUseCapital: self.energy_model.non_use_capital_constraint_df,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
@@ -525,12 +529,30 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -------------------------------------------#
         # ---- Production / Consumption gradients----#
         # -------------------------------------------#
+        d_non_use_capital, d_capital = self.energy_model.d_non_use_capital_constraint_d_capital()
         for energy in inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]:
             ns_energy = self.get_ns_energy(energy)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.Capital),
                 (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
                 identity / 1e3
+            )
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.NonUseCapital),
+                (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.NonUseCapital),
+                identity / 1e3
+            )
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ConstraintEnergyNonUseCapital, GlossaryEnergy.ConstraintEnergyNonUseCapital),
+                (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
+                d_capital
+            )
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ConstraintEnergyNonUseCapital, GlossaryEnergy.ConstraintEnergyNonUseCapital),
+                (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.NonUseCapital),
+                d_non_use_capital
             )
 
         for energy in energy_list:
@@ -1289,7 +1311,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                       'production', 'CO2 emissions', 'Carbon intensity', 'CO2 taxes over the years',
                       'Solid energy and electricity production constraint',
                       'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses',
-                      'Target energy production constraint']
+                      'Target energy production constraint', GlossaryEnergy.Capital]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -1345,7 +1367,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                 chart_target_energy_production.add_series(serie_production)
                 instanciated_charts.append(chart_target_energy_production)
 
-
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
 
             new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes()
@@ -1359,9 +1380,13 @@ class Energy_Mix_Discipline(SoSWrapp):
             new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-        if 'Energy mean price' in charts:
 
+        if 'Energy mean price' in charts:
             new_chart = self.get_chart_energy_mean_price_in_dollar_mwh()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+        if GlossaryEnergy.Capital in charts:
+            new_chart = self.get_chart_capital()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -1401,7 +1426,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     instanciated_charts.append(new_chart)
 
         if 'Solid energy and electricity production constraint' in charts and len(
-                list(set(self.energy_constraint_list).intersection(energy_list))) > 0:
+                list(set(self.energy_constraint_list).intersection(energy_list))) > 0 and f'{GlossaryEnergy.fuel}.{GlossaryEnergy.solid_fuel}' in energy_list:
             new_chart = self.get_chart_solid_energy_elec_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -1737,7 +1762,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
         energy_production_detailed = self.get_sosdisc_outputs(
             GlossaryEnergy.EnergyProductionDetailedValue)
-        techno_production = energy_production_detailed[[GlossaryEnergy.Years]]
+        techno_production = pd.DataFrame({GlossaryEnergy.Years: energy_production_detailed[GlossaryEnergy.Years].values})
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -2019,4 +2044,23 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart = InstanciatedTable(
             table_name=chart_name, header=header, cells=cells)
 
+        return new_chart
+
+    def get_chart_capital(self):
+        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDf)
+
+        chart_name = 'Capital'
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+
+        serie = InstanciatedSeries(
+            capital_df[GlossaryEnergy.Years].values.tolist(),
+            capital_df[GlossaryEnergy.Capital].values.tolist(), 'Capital', 'lines')
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            capital_df[GlossaryEnergy.Years].values.tolist(),
+            capital_df[GlossaryEnergy.NonUseCapital].values.tolist(), 'Non used capital (Utilisation ratio or limiting ratio)', 'bar')
+        new_chart.series.append(serie)
+        new_chart.to_plotly().show()
         return new_chart

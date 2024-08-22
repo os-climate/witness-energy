@@ -17,6 +17,7 @@ limitations under the License.
 import logging
 
 import numpy as np
+import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
@@ -310,6 +311,11 @@ class StreamDiscipline(SoSWrapp):
                 (f"{techno}.{GlossaryEnergy.TechnoCapitalValue}", GlossaryEnergy.Capital),
                 identity,
             )
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.NonUseCapital),
+                (f"{techno}.{GlossaryEnergy.TechnoCapitalValue}", GlossaryEnergy.NonUseCapital),
+                identity,
+            )
 
     def get_chart_filter_list(self):
 
@@ -566,7 +572,7 @@ class StreamDiscipline(SoSWrapp):
         techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         energy_production = self.get_sosdisc_outputs(
             GlossaryEnergy.EnergyProductionDetailedValue)
-        techno_production = energy_production[[GlossaryEnergy.Years]]
+        techno_production = pd.DataFrame({GlossaryEnergy.Years: energy_production[GlossaryEnergy.Years].values})
         display_techno_list = []
 
         for techno in techno_list:

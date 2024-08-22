@@ -260,7 +260,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital',
                                      ], )
 
     def _test_02_plasma_cracking_jacobian(self):
@@ -559,6 +558,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: 20000,
+            GlossaryEnergy.NonUseCapital: 1000.,
         })
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
@@ -660,17 +660,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000,
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

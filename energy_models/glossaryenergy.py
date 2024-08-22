@@ -307,6 +307,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
+            GlossaryWitnessCore.NonUseCapital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -357,6 +358,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
+            GlossaryWitnessCore.NonUseCapital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -1446,17 +1448,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name} ({cls.surface_unit})": ("float", None, False),
-            },
-        }
-
-    @classmethod
-    def get_non_use_capital_df(cls, techno_name: str):
-        return {
-            "type": "dataframe",
-            "unit": "G$",
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
-                techno_name: ("float", None, False),
             },
         }
 

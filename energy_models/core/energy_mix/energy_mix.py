@@ -139,6 +139,7 @@ class EnergyMix(BaseStream):
         '''
         super(EnergyMix, self).__init__(name)
 
+        self.non_use_capital_constraint_df = None
         self.target_production_constraint = None
         self.co2_emitted_by_energy = None
         self.CCS_price = None
@@ -192,6 +193,8 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
+        self.tol_constraint_non_use_capital_energy = None
+        self.ref_constraint_non_use_capital_energy = None
         self.losses_percentage_dict = {}
         self.inputs = {}
 
@@ -237,6 +240,8 @@ class EnergyMix(BaseStream):
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
+        self.tol_constraint_non_use_capital_energy = inputs_dict['tol_constraint_non_use_capital_energy']
+        self.ref_constraint_non_use_capital_energy = inputs_dict['ref_constraint_non_use_capital_energy']
 
         if self.subelements_list is not None:
             for energy in self.subelements_list:
@@ -340,9 +345,24 @@ class EnergyMix(BaseStream):
 
         energy_capital = np.sum(energy_type_capitals, axis=0) / 1e3
 
+        energy_type_non_use_capitals = []
+        for energy in self.energy_list:
+            energy_ = energy
+            if energy == BiomassDry.name:
+                energy_ = AgricultureMixDiscipline.name
+            energy_type_non_use_capitals.append(
+                self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values)
+
+        for ccs in self.inputs[GlossaryEnergy.ccs_list]:
+            energy_type_non_use_capitals.append(
+                self.inputs[f"{ccs}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values)
+
+        energy_non_use_capital = np.sum(energy_type_non_use_capitals, axis=0) / 1e3
+
         self.energy_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: energy_capital
+            GlossaryEnergy.Capital: energy_capital,
+            GlossaryEnergy.NonUseCapital: energy_non_use_capital,
         })
 
     def compute_raw_production(self):
@@ -986,6 +1006,7 @@ class EnergyMix(BaseStream):
         self.compute_CO2_emissions_ratio()
         self.aggregate_land_use_required()
         self.compute_energy_capital()
+        self.compute_non_use_energy_capital_constraint()
         self.compute_total_prod_minus_min_prod_constraint()
         self.compute_constraint_solid_fuel_elec()
         self.compute_constraint_h2()
@@ -1009,6 +1030,38 @@ class EnergyMix(BaseStream):
     def d_energy_mean_price_obj_d_energy_mean_price(self, d_energy_mean_price):
         return np.mean(d_energy_mean_price, axis=0) / self.energy_mean_price_objective_ref
 
+    def compute_non_use_energy_capital_constraint(self):
+        """
+        Non use capital <= 5%(tolerance) Capital <=> non use capital / capital - .05 <= 0.
+
+        <=> (non use capital / capital - tol) / ref <= 0
+        ref = 0.30 means after 35 % of capital not used the constraint will explode
+
+        It is not a problem if in the early years, there is a loss of capital, it may be necessary to drift away from current energy mix system,
+        so we increase constraint strenght with time, from 0 % at year start to 100% at year end, just like x^2 between 0 and 1
+        We add also a period tolerance, so
+        """
+        ratio_non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values / self.energy_capital[GlossaryEnergy.Capital].values
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** 2
+        constraint = (ratio_non_use_capital - self.tol_constraint_non_use_capital_energy) / self.ref_constraint_non_use_capital_energy * period_tolerance
+
+        self.non_use_capital_constraint_df = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.ConstraintEnergyNonUseCapital: constraint
+        })
+
+    def d_non_use_capital_constraint_d_capital(self):
+
+        """
+        sum_technos NEC (techno) / sum_technos EC (techno)
+        """
+
+        capital = self.energy_capital[GlossaryEnergy.Capital].values
+        non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** 2
+        d_non_use_capital = np.diag(period_tolerance / capital / self.ref_constraint_non_use_capital_energy / 1e3)
+        d_capital = np.diag(- non_use_capital * period_tolerance / (capital ** 2) / self.ref_constraint_non_use_capital_energy / 1e3)
+        return d_non_use_capital, d_capital
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
     '''

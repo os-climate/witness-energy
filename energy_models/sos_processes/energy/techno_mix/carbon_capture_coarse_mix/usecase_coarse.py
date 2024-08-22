@@ -122,7 +122,7 @@ class Study(EnergyMixStudyManager):
                        #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
-        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
         if self.main_study:
             values_dict.update(
                 {

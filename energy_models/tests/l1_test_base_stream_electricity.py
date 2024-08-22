@@ -68,7 +68,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                     })
 
         self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
 
         self.hydropower_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.Hydropower: 0.0})

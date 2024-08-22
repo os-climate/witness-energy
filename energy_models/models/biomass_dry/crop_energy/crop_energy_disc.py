@@ -197,7 +197,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(

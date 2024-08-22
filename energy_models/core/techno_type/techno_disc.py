@@ -214,7 +214,6 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
-            'non_use_capital': GlossaryEnergy.get_non_use_capital_df(techno_name=self.techno_name),  # todo: not coupled, rename cols and move to DESC_OUT
             'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name), # todo: not coupled, rename cols and move to DESC_OUT
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
@@ -329,7 +328,6 @@ class TechnoDiscipline(SoSWrapp):
                         'CO2_emissions_detailed': self.techno_model.carbon_intensity,
                         GlossaryEnergy.LandUseRequiredValue: self.techno_model.land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
-                        'non_use_capital': self.techno_model.non_use_capital,
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage,
@@ -623,12 +621,12 @@ class TechnoDiscipline(SoSWrapp):
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, self.dprod_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
             (GlossaryEnergy.UtilisationRatioValue, GlossaryEnergy.UtilisationRatioValue),
             self.techno_model.d_non_use_capital_d_utilisation_ratio())
 
@@ -644,7 +642,7 @@ class TechnoDiscipline(SoSWrapp):
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
-                        ('non_use_capital', self.techno_model.name),
+                        (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
                         (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
                         dnon_use_capital_dratio)
             if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
@@ -653,7 +651,7 @@ class TechnoDiscipline(SoSWrapp):
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
-                        ('non_use_capital', self.techno_model.name),
+                        (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
                         ('all_resource_ratio_usable_demand', ratio_name),
                         dnon_use_capital_dratio)
 
@@ -1321,7 +1319,6 @@ class TechnoDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_non_use_capital(self):
-        non_use_capital = self.get_sosdisc_outputs('non_use_capital')
         techno_capital = self.get_sosdisc_outputs(GlossaryEnergy.TechnoCapitalValue)
         chart_name = f'Capital of {self.techno_name}'
 
@@ -1335,8 +1332,8 @@ class TechnoDiscipline(SoSWrapp):
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            non_use_capital[GlossaryEnergy.Years].values.tolist(),
-            non_use_capital[self.techno_name].values.tolist(),
+            techno_capital[GlossaryEnergy.Years].values.tolist(),
+            techno_capital[GlossaryEnergy.NonUseCapital].values.tolist(),
             'Unused capital (utilisation ratio + limitation from energy and resources)', 'bar')
 
         new_chart.series.append(serie)
