@@ -394,11 +394,11 @@ class TechnoType:
         # self.cost_details['OPEX_heat_tech'] = self.cost_details[f'Opex_{self.name}'] * self.crf
         # self.cost_details[GlossaryEnergy.CO2TaxesValue] = self.cost_details[f'Capex_{self.name}'] * self.crf
 
-        self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
+        self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'].values * \
                                                     (self.capital_recovery_factor + self.techno_infos_dict['Opex_percentage'])
 
         if 'decommissioning_percentage' in self.techno_infos_dict:
-            self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'] * \
+            self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'].values * \
                                                                         self.techno_infos_dict[
                                                                             'decommissioning_percentage']
             self.cost_details[f'{self.name}_factory'] += self.cost_details[f'{self.name}_factory_decommissioning']
@@ -406,18 +406,18 @@ class TechnoType:
         # Compute and add transport
         self.cost_details['transport'] = self.compute_transport()
 
-        self.cost_details[self.name] = self.cost_details[f'{self.name}_factory'] + self.cost_details['transport'] + \
-                                       self.cost_details['energy_costs']
+        self.cost_details[self.name] = self.cost_details[f'{self.name}_factory'].values + self.cost_details['transport'].values + \
+                                       self.cost_details['energy_costs'].values
 
         # Add margin in %
         # self.cost_details[GlossaryEnergy.MarginValue] = self.cost_details[self.name] * self.margin.loc[self.margin[GlossaryEnergy.Years]<= self.cost_details[GlossaryEnergy.Years].max()][GlossaryEnergy.MarginValue].values / 100.0
         # self.cost_details[self.name] += self.cost_details[GlossaryEnergy.MarginValue]
 
-        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin[GlossaryEnergy.Years]
+        price_with_margin = self.cost_details[self.name].values * self.margin.loc[self.margin[GlossaryEnergy.Years]
                                                                            <= self.cost_details[
                                                                                GlossaryEnergy.Years].max()][
             GlossaryEnergy.MarginValue].values / 100.0
-        self.cost_details[GlossaryEnergy.MarginValue] = price_with_margin - self.cost_details[self.name]
+        self.cost_details[GlossaryEnergy.MarginValue] = price_with_margin - self.cost_details[self.name].values
         self.cost_details[self.name] = price_with_margin
 
         self.compute_carbon_emissions()
@@ -434,34 +434,34 @@ class TechnoType:
                     np.array(self.cost_details[f'{self.name}_factory'].values / self.nb_years_amort_capex)).T.sum(
                 axis=0)
             # pylint: enable=no-member
-            self.cost_details[f'{self.name}_amort'] = self.cost_details[f'{self.name}_factory_amort'] + \
-                                                      self.cost_details['transport'] + \
-                                                      self.cost_details['energy_costs']
+            self.cost_details[f'{self.name}_amort'] = self.cost_details[f'{self.name}_factory_amort'].values + \
+                                                      self.cost_details['transport'].values + \
+                                                      self.cost_details['energy_costs'].values
             self.cost_details[f'{self.name}_amort'] *= self.margin.loc[self.margin[GlossaryEnergy.Years]
                                                                        <= self.cost_details[
                                                                            GlossaryEnergy.Years].max()][
                                                            GlossaryEnergy.MarginValue].values / 100.0
-            self.cost_details[f'{self.name}_amort'] += self.cost_details['CO2_taxes_factory']
+            self.cost_details[f'{self.name}_amort'] += self.cost_details['CO2_taxes_factory'].values
 
         # Add transport and CO2 taxes
-        self.cost_details[self.name] += self.cost_details['CO2_taxes_factory']
+        self.cost_details[self.name] += self.cost_details['CO2_taxes_factory'].values
 
         if 'CO2_taxes_factory' in self.cost_details:
-            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
-                                                        self.cost_details['CO2_taxes_factory']
+            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name].values - \
+                                                        self.cost_details['CO2_taxes_factory'].values
         else:
-            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
+            self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name].values
 
         # CAPEX in ($/MWh)
-        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.capital_recovery_factor
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'].values * self.capital_recovery_factor
 
         # Running OPEX in ($/MWh)
-        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'].values * \
                                          (self.techno_infos_dict['Opex_percentage']) + \
-                                         self.cost_details['transport'] + self.cost_details['energy_costs']
+                                         self.cost_details['transport'].values + self.cost_details['energy_costs'].values
         # CO2 Tax in ($/MWh)
-        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
-                                           self.cost_details[f'{self.name}_wotaxes']
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name].values - \
+                                           self.cost_details[f'{self.name}_wotaxes'].values
 
         return self.cost_details
 
@@ -807,8 +807,8 @@ class TechnoType:
         '''
 
         # transport_cost = 5.43  # $/kg
-        transport_cost = self.transport_cost['transport'] * \
-                         self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
+        transport_cost = self.transport_cost['transport'].values * \
+                         self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
 
         # Need to multiply by * 1.0e3 to put it in $/MWh$
         if 'calorific_value' in self.data_energy_dict.keys():
@@ -831,7 +831,7 @@ class TechnoType:
         self.compute_scope_1_emissions()
         self.compute_scope_2_emissions()
 
-        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + self.carbon_intensity['Scope 2']
+        self.carbon_intensity[self.name] = self.carbon_intensity['production'].values + self.carbon_intensity['Scope 2'].values
 
     def compute_scope_1_emissions(self):
         if 'CO2_from_production' not in self.techno_infos_dict:
@@ -1140,12 +1140,12 @@ class TechnoType:
     def compute_co2_emissions_from_ressources_usage(self):
         """Computes the co2 emissions due to resources usage"""
         for resource in self.resources_used_for_production:
-            self.carbon_intensity_generic[resource] = self.cost_details[f"{resource}_needs"] * self.resources_CO2_emissions[resource]
+            self.carbon_intensity_generic[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_CO2_emissions[resource].values
 
     def compute_co2_emissions_from_streams_usage(self):
         """Computes the co2 emissions due to streams usage"""
         for stream in self.streams_used_for_production:
-            self.carbon_intensity_generic[stream] = self.cost_details[f"{stream}_needs"] * self.streams_CO2_emissions[stream]
+            self.carbon_intensity_generic[stream] = self.cost_details[f"{stream}_needs"].values * self.streams_CO2_emissions[stream].values
 
     def compute_new_power_production_resource_consumption(self):
         """

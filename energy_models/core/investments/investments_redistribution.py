@@ -79,7 +79,7 @@ class InvestmentsRedistribution:
                 self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
                     GlossaryEnergy.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years.reset_index(drop=True),
+            {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
 
     def compute_investment_per_technology(self):
@@ -89,9 +89,8 @@ class InvestmentsRedistribution:
         # compute part of gdp that is used for investment in energy
         self.total_investments_in_energy = (
                     self.economics_df[GlossaryEnergy.OutputNetOfDamage].values * 1e3 *  # T$ to G$
-                    self.percentage_gdp_energy_invest[
-                        GlossaryEnergy.EnergyInvestPercentageGDPName] / 100.)
-        self.years = self.economics_df[GlossaryEnergy.Years]
+                    self.percentage_gdp_energy_invest[GlossaryEnergy.EnergyInvestPercentageGDPName].values / 100.)
+        self.years = self.economics_df[GlossaryEnergy.Years].values
         investments_dict = {}
         for energy, techno_list in self.techno_list_dict.items():
             # biomassdry technologies does not come in percentages
@@ -106,7 +105,7 @@ class InvestmentsRedistribution:
         # => Reset self.years index so that they are consistent with invests indices and fill out properly the df
         self.investment_per_technology_dict = {
             full_techno_name: pd.DataFrame(
-                {GlossaryEnergy.Years: self.years.reset_index(drop=True), GlossaryEnergy.InvestValue: invests
+                {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invests
                  }) for full_techno_name, invests in investments_dict.items()}
 
     def check_data_integrity(self, inputs_dict):
