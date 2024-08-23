@@ -9,3 +9,4 @@ Hydropower : https://www.statista.com/statistics/273273/world-electricity-genera
 GasTurbine : 25% of Natural gas electricity generation https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
 CombinedGasCycleTurbine : 75% of Natural gas electricity generation https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
 Geothermal : https://geothermal-energy-journal.springeropen.com/articles/10.1186/s40517-024-00290-w
+CropEnergy : 1972, by reading this graph https://www.iea.org/reports/bioenergy-2#overview we get 3966Twh in 2022 (2361 from convetional crop and 1605 from short rotation)
