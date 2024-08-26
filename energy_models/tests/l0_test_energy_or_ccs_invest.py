@@ -42,12 +42,11 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_invest = EnergyOrCCSInvest()
 
-        self.years = np.arange(self.y_s, self.y_e + 1)
+        self.years = np.arange(self.year_start, self.year_end + 1)
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
         self.percentage = 0.1
@@ -61,19 +60,15 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
         dict2[GlossaryEnergy.carbon_storage] = np.ones(len(self.years)) * 0.5
         self.ccs_mix = pd.DataFrame(dict2)
 
-        invest_ref = 1.0e3  # G$ means 1 milliard of dollars
-        invest = np.zeros(len(self.years))
-        invest[0] = invest_ref
-        for i in range(1, len(self.years)):
-            invest[i] = 1.02 * invest[i - 1]
+        invest = 1e3 * (1.02 ** np.arange(len(self.years)))
         self.invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.EnergyInvestmentsValue: invest})
 
         self.input_dict = {GlossaryEnergy.EnergyInvestmentsValue: self.invest_df,
                            'ccs_percentage': self.ccs_percentage,
                            'ccs_investment': self.invest_df,
-                           GlossaryEnergy.YearStart: self.y_s,
-                           GlossaryEnergy.YearEnd: self.y_e,
+                           GlossaryEnergy.YearStart: self.year_start,
+                           GlossaryEnergy.YearEnd: self.year_end,
                            'invest_ccs_mix': self.ccs_mix}
 
     def test_01_compute(self):

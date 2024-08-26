@@ -17,7 +17,6 @@ limitations under the License.
 import logging
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import (
@@ -46,16 +45,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.Transesterification
     energy_name = BioDiesel.name
-    lifetime = 15
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.0, 4.085787594423131, 11.083221775965836, 9.906291833479699,
-                                                         11.264502455357881, 15.372601517593951, 10.940986166952394,
-                                                         6.682284695273031, 3.1012940652355083, 7.711401160086531,
-                                                         5.848393573822739, 2.2088353407762535, 3.162650601721087,
-                                                         8.631749219311956]})  # to review
-
-    
     # use biodiesel calorific value to compute co2 from production
 
     # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
@@ -64,8 +54,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     # 0.11 kgCO2/kWh
     co2_from_production = (6.7 / 1000) * BioDiesel.data_energy_dict['calorific_value']
     techno_infos_dict_default = {'Opex_percentage': 0.04,
-                                 'lifetime': lifetime,
-                                 # for now constant in time but should increase with time
                                  'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
                                  'Capex_init_unit': '$/kg',
                                  'efficiency': 0.99,
@@ -79,10 +67,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                  }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },}
+               }
     DESC_IN.update(BioDieselTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = BioDieselTechnoDiscipline.DESC_OUT

@@ -209,9 +209,15 @@ class BaseStream:
         ]
         sum_technos_capital = np.sum(capitals, axis=0)
 
+        non_use_capitals = [
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.NonUseCapital].values for techno in technos
+        ]
+        sum_technos_non_use_capital = np.sum(non_use_capitals, axis=0)
+
         self.energy_type_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: sum_technos_capital,
+            GlossaryEnergy.NonUseCapital: sum_technos_non_use_capital,
         })
 
     def compute_price(self, exp_min=True):

@@ -32,9 +32,8 @@ class TestIndependentInvest(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_list = [
             GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
         self.energy_list_bis = [
@@ -42,8 +41,8 @@ class TestIndependentInvest(unittest.TestCase):
 
         self.ccs_list = [
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
-        self.years = np.arange(self.y_s, self.y_e + 1)
-        year_range = self.y_e - self.y_s + 1
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        year_range = self.year_end - self.year_start + 1
         energy_mix_invest_dic = {}
         energy_mix_invest_dic[GlossaryEnergy.Years] = self.years
         energy_mix_invest_dic[f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}'] = np.ones(len(self.years)) * 10.0
@@ -59,9 +58,9 @@ class TestIndependentInvest(unittest.TestCase):
             len(self.years)) * 80.0
         energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
             len(self.years)) * 90.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}'] = np.ones(
             len(self.years)) * 100.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.GeologicMineralization'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}'] = np.ones(
             len(self.years)) * 110.0
         self.energy_mix = pd.DataFrame(energy_mix_invest_dic)
 
@@ -111,8 +110,8 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.SolarPv, GlossaryEnergy.WindOnshore, GlossaryEnergy.CoalGen],
@@ -188,8 +187,8 @@ class TestIndependentInvest(unittest.TestCase):
             GlossaryEnergy.MaxBudgetValue: np.linspace(800, 970, len(self.years))
         })
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.MaxBudgetValue}': max_budget,
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list_bis,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,

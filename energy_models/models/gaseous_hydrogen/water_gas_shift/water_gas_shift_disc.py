@@ -53,7 +53,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
     # Giuliano, A., Freda, C. and Catizzone, E., 2020.
     # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections.
     # Bioengineering, 7(3), p.70.
-    lifetime = 20  # Giuliano2020 amortized on 20 years
+
     techno_infos_dict_default = {'maturity': 5,
                                  'reaction': 'syngas(H2+r1CO) + cH20  = dCO2 + e(H2+r2C0)',
                                  # p8 of Giuliano2020 : Maintenance and labor costs were associated to the capital costs and
@@ -66,7 +66,6 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'elec_demand_unit': 'kW',
                                  'WACC': 0.0878,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex initial at year 2020
                                  'Capex_init_vs_CO_conversion': [5.0e6, 9.2e6],
                                  'Capex_init_vs_CO_conversion_unit': 'euro',
@@ -97,24 +96,11 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                          0.98  # in TWh at year_start MT*kWh/kg = TWh
 
     # Fake initial age distrib (not found in the litterature...)
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.array(
-                                                 [3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                  ]) + 0.82141})
     FLUE_GAS_RATIO = np.array([0.175])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               
+                      
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': GaseousHydrogenTechnoDiscipline.SHARED_VISIBILITY,
                                 'namespace': 'ns_syngas'},
@@ -351,7 +337,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             capex_grad, dprodenergy_dsyngas_ratio)
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital), ('syngas_ratio',),
             dnon_use_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
         self.set_partial_derivative_for_other_types(

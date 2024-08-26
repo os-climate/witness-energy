@@ -157,7 +157,7 @@ class Refinery(LiquidFuelTechno):
                               (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
                                     self.construction_delay - i),
-                                techno_dict['lifetime'])
+                                self.lifetime)
             first_len_zeros = min(
                 i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
@@ -207,7 +207,7 @@ class Refinery(LiquidFuelTechno):
                 (nb_years, nb_years), dtype='complex128')
         for i in range(nb_years):
             len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
-                                techno_dict['lifetime'])
+                                self.lifetime)
             first_len_zeros = min(
                 i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years -
@@ -227,7 +227,7 @@ class Refinery(LiquidFuelTechno):
 
         for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
             len_non_zeros = min(
-                techno_dict['lifetime'], nb_years - index)
+                self.lifetime, nb_years - index)
             dprod_list_dcapex_list[:, 0] += np.hstack((np.zeros(index),
                                                        np.ones(
                                                            len_non_zeros) * dpprod_dpcapex0,

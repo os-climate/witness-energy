@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
     SyngasTechnoDiscipline,
@@ -43,7 +42,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     }
 
     techno_name = GlossaryEnergy.CoalGasification
-    lifetime = 20
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.15,
                                  # Source for CO2_from_production: IEA 2022, IEA ETSAP 2010
@@ -61,7 +60,6 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,
                                  'Capex_init': 0.05,
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
@@ -83,24 +81,11 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     # (FT) and Direct Reduced Iron in industry
     # We need 1.19 kWH of coal for 1 KWh of syngas then:
     initial_production = (3333. + 264.72) / 1.19
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.array(
-                                                 [3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                  ]) + 0.82141})
     FLUE_GAS_RATIO = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

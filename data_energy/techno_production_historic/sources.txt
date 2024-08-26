@@ -1,0 +1,12 @@
+FossilSimpleTechno : https://ourworldindata.org/grapher/fossil-fuel-production
+CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-transport-and-storage, unit = USD2022
+DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
+SolarPV: https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
+Nuclear: https://world-nuclear.org/nuclear-reactor-database/summary
+CoalGen : [https://www.statista.com/statistics/1082201/coal-fired-electricity-generation-globally/#:~:text=Coal%20power%20generation%20worldwide%20grew,terawatt%20hours%20the%20previous%20year. ,https://www.iea.org/energy-system/fossil-fuels/coal]
+OilGen : https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
+Hydropower : https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
+GasTurbine : 25% of Natural gas electricity generation https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
+CombinedGasCycleTurbine : 75% of Natural gas electricity generation https://www.statista.com/statistics/273273/world-electricity-generation-by-energy-source/
+Geothermal : https://geothermal-energy-journal.springeropen.com/articles/10.1186/s40517-024-00290-w
+CropEnergy : 1972, by reading this graph https://www.iea.org/reports/bioenergy-2#overview we get 3966Twh in 2022 (2361 from convetional crop and 1605 from short rotation)
