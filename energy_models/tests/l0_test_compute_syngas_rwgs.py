@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -46,7 +45,7 @@ class RWGSPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 110.,
-                                           GlossaryEnergy.syngas: np.ones(len(years)) * 90.,
+                                           GlossaryEnergy.syngas: 90.,
                                            GlossaryEnergy.carbon_capture: 12.4
                                            })
 
@@ -56,20 +55,16 @@ class RWGSPriceTestCase(unittest.TestCase):
                                                      GlossaryEnergy.carbon_capture: 12.4})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.1715})
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 100.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryEnergy.Years: years, 'transport': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 

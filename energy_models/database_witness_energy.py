@@ -102,7 +102,7 @@ class DatabaseWitnessEnergy:
             critical_at_year_start=True,
             column_to_pick="invest"
         )
-        out_df = df
+        out_df = df.loc[df['years'] < year_start]
         if is_available_at_year:
             return construction_delay == 0 or (heavy_collected_data.is_available_at_year(year_start - construction_delay) and heavy_collected_data.is_available_at_year(year_start - 1))
         if construction_delay > 0:
@@ -126,6 +126,30 @@ class DatabaseWitnessEnergy:
             last_update_date=datetime.datetime.today(),
             critical_at_year_start=True,
             column_to_pick="production"
+        )
+        if is_available_at_year:
+            return heavy_collected_data.is_available_at_year(year=year)
+
+        out = heavy_collected_data.get_value_at_year(year=year)
+        return out, heavy_collected_data
+
+
+    techno_age_distrib_folder = join(Path(__file__).parents[1], "data_energy", "techno_factories_age")
+
+    @classmethod
+    def get_techno_age_distrib_factor(cls, techno_name: str, year: int, is_available_at_year: bool = False):
+        name_formatted = techno_name.replace(".", "_")
+        name_formatted = name_formatted.lower()
+        path_to_csv = os.path.join(cls.techno_age_distrib_folder, name_formatted) + ".csv"
+        heavy_collected_data = HeavyCollectedData(
+            value=path_to_csv,
+            description="",
+            unit="-",
+            link="",
+            source="",
+            last_update_date=datetime.datetime.today(),
+            critical_at_year_start=True,
+            column_to_pick="growth_rate"
         )
         if is_available_at_year:
             return heavy_collected_data.is_available_at_year(year=year)

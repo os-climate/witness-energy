@@ -19,7 +19,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -45,18 +44,14 @@ class SolarPvPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.invest_level_2 = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 0.13})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 0.13})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
 
         transport_cost = 11
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -65,7 +60,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 

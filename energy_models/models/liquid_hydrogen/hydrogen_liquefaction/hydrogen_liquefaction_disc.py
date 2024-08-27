@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import (
     LiquidHydrogenTechnoDiscipline,
@@ -46,7 +44,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.HydrogenLiquefaction
-    lifetime = 40
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0127,
                                  'CO2_from_production': 0.0,
@@ -58,7 +56,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  # 'heat_recovery_factor': 0.8,
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 500000000,
@@ -70,20 +67,11 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
 
     initial_production = 70.0 * 33.3 * 0.001
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.asarray(
-                                                 [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1,
-                                                  0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
+               
                }
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 

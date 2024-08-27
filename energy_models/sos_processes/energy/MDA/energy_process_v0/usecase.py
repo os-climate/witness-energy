@@ -39,6 +39,7 @@ from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
@@ -56,7 +57,6 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
@@ -362,7 +362,7 @@ class Study(EnergyStudyManager):
             LiquidHydrogen.name: [0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             HydrotreatedOilFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             Ethanol.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            Renewable.name: np.linspace(1000.0, 15.625, len(years)),
+            CleanEnergy.name: np.linspace(1000.0, 15.625, len(years)),
             Fossil.name: np.linspace(1500.0, 77.5, len(years)),
         }
 
@@ -525,7 +525,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
-                Renewable.name: 90.0,
+                CleanEnergy.name: 90.0,
                 Fossil.name: 110.0,
                 HydrotreatedOilFuel.name: 70.0,
             }
@@ -552,7 +552,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
-                Renewable.name: 0.0,
+                CleanEnergy.name: 0.0,
                 Fossil.name: 0.64 / 4.86,
                 HydrotreatedOilFuel.name: 0.0,
             }
@@ -596,7 +596,7 @@ class Study(EnergyStudyManager):
                 }
             )
             techno_list_fossil = [GlossaryEnergy.FossilSimpleTechno]
-            techno_list_renewable = [GlossaryEnergy.RenewableSimpleTechno]
+            techno_list_renewable = [GlossaryEnergy.CleanEnergySimpleTechno]
             techno_list_carbon_capture = [
                 GlossaryEnergy.DirectAirCapture,
                 GlossaryEnergy.FlueGasCapture,
@@ -749,7 +749,7 @@ class Study(EnergyStudyManager):
 
         land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
         CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
-        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
+        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.001, GlossaryEnergy.NonUseCapital: 0.})
 
         agri_values_dict = {
             f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,

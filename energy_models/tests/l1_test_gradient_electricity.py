@@ -144,7 +144,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                      GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.InvestValue: np.linspace(22000.00, 31000.00, len(self.years)) * 1e-3})
+             GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14.86, 50.29, len(self.years))})
         self.co2_taxes_nul = pd.DataFrame(
@@ -1100,18 +1100,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
-
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

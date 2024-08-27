@@ -20,7 +20,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -62,127 +61,38 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = GlossaryEnergy.carbon_capture
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
-        KOH_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0])[:len(years)] * 500.0
-
-        # KOH price :
-        # https://www.made-in-china.com/price/potassium-hydroxide-price.html
-        amine_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0])[:len(years)] * 1300.0
-
-        CaO_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                              1.0, 1.0, 1.0, 1.0])[:len(years)] * 85.0
 
 
         self.years = years
 
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                   0.159236536471781, 0.15899046935409588,
-                                                                   0.15874840310033885,
-                                                                   0.15875044941298937, 0.15875249600769718,
-                                                                   0.15875454288453355,
-                                                                   0.15875659004356974, 0.1587586374848771,
-                                                                   0.15893789675406477,
-                                                                   0.15911934200930778, 0.15930302260662477,
-                                                                   0.15948898953954933,
-                                                                   0.15967729551117891, 0.15986799501019029,
-                                                                   0.16006114439108429,
-                                                                   0.16025680195894345, 0.16045502805900876,
-                                                                   0.16065588517140537,
-                                                                   0.1608594380113745, 0.16106575363539733,
-                                                                   0.16127490155362818,
-                                                                   0.16148695384909017, 0.1617019853041231,
-                                                                   0.1619200735346165,
-                                                                   0.16214129913260598, 0.16236574581786147,
-                                                                   0.16259350059915213,
-                                                                   0.1628246539459331])[:len(years)] * 1000.0,
-             GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                    0.1628246539459331])[:len(years)] * 1000.0,
-             GlossaryEnergy.methane: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                  0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                  0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                  0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                  0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                  0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                  0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                  0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                  0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                  0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                  0.1628246539459331])[:len(years)] * 1000.0,
-             GlossaryEnergy.fossil: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                 0.159236536471781, 0.15899046935409588,
-                                 0.15874840310033885,
-                                 0.15875044941298937, 0.15875249600769718,
-                                 0.15875454288453355,
-                                 0.15875659004356974, 0.1587586374848771,
-                                 0.15893789675406477,
-                                 0.15911934200930778, 0.15930302260662477,
-                                 0.15948898953954933,
-                                 0.15967729551117891, 0.15986799501019029,
-                                 0.16006114439108429,
-                                 0.16025680195894345, 0.16045502805900876,
-                                 0.16065588517140537,
-                                 0.1608594380113745, 0.16106575363539733,
-                                 0.16127490155362818,
-                                 0.16148695384909017, 0.1617019853041231,
-                                 0.1619200735346165,
-                                 0.16214129913260598, 0.16236574581786147,
-                                 0.16259350059915213,
-                                 0.1628246539459331])[:len(years)] * 1000.0
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.electricity: 160.,
+             GlossaryEnergy.clean_energy: 160.,
+             GlossaryEnergy.methane: 160.,
+             GlossaryEnergy.fossil: 160.
              })
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'amine': 0.0, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2, GlossaryEnergy.fossil: 0.2,
-             GlossaryEnergy.renewable: 0.0})
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ])[:len(years)] * 0.02 / 1000 * 1.0e-9
-
+             GlossaryEnergy.clean_energy: 0.0})
         self.resources_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.AmineResource: amine_price,
-             GlossaryEnergy.PotassiumResource: KOH_price,
-             GlossaryEnergy.CalciumResource: CaO_price,
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.AmineResource: 1300.,
+             GlossaryEnergy.PotassiumResource: 500.,
+             GlossaryEnergy.CalciumResource: 85.,
              })
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: np.linspace(0.1, 0.46, len(years))})
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(years))})
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryEnergy.Years: years, 'transport': 0.0})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.7, 1.0, len(years))))
@@ -260,8 +170,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
     def test_02_CaKOH_jacobian(self):
 
@@ -323,8 +232,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
     def test_03_Calcium_looping_jacobian(self):
 
@@ -386,8 +294,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital']
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',]
                             )
 
     def test_04_carbon_capture_discipline_jacobian(self):
@@ -447,14 +354,14 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
+            GlossaryEnergy.NonUseCapital: 1000.,
         })
 
         for techno in technos:
             inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -524,11 +431,65 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
 
         os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
         self.override_dump_jacobian = False
+
+    def _test_06_direct_air_capture_techno_discipline_gradient(self):
+        self.name = 'Test'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_carbon_capture': self.name,
+                   'ns_resource': self.name}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+        # overload value of lifetime to reduce test duration
+        import pickle
+        with open("DACinputict.pkl",'rb') as f:
+            inputs_dict = pickle.load(f)
+        inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
+        inputs_dict2[f"{self.name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}"] = inputs_dict[GlossaryEnergy.InvestLevelValue]
+        for key, value in inputs_dict2.items():
+            if isinstance(value, pd.DataFrame):
+                for col in value.columns:
+                    if value[col].dtype == 'complex128':
+                        value[col] = np.real(value[col])
+        self.ee.load_study_from_input_dict(inputs_dict2)
+
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}_2.pkl',
+                            discipline=disc_techno, step=1.0e-9, derr_approx='finite_differences', threshold=1e-5,
+                            local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
+                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
+                                    ],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',], )
+
+        #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
+        #self.override_dump_jacobian = False
 
 
 if '__main__' == __name__:

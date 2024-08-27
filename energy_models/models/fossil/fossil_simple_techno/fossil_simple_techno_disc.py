@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.fossil_techno_disc import (
     FossilTechnoDiscipline,
@@ -53,7 +52,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.FossilSimpleTechno
-    lifetime = 25
+
 
     prod_solid_fuel = 45000.  # TWh
     prod_liquid_fuel = 53000.  # TWh
@@ -73,7 +72,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'Opex_percentage': 0.024,
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
-                                 'lifetime': lifetime,
                                  'Capex_init': 100.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
@@ -93,22 +91,11 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     initial_production = 136917.16  # TWh
 
     
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,
-                                                         4.25932906, 3.43007916, 2.56313607, 5.99321523, 4.25932906,
-                                                         1.69619299, 2.56313607, 1.69619299, 3.43007916, 4.25932906,
-                                                         1.69619299, 5.12627214, 2.56313607, 5.12627214, 3.43007916,
-                                                         3.43007916, 2.56313607, 5.12627214, 3.43007916]
-                                             })
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
 
     # -- add specific techno outputs to this
     DESC_IN.update(FossilTechnoDiscipline.DESC_IN)

@@ -77,7 +77,12 @@ class CCUS_Discipline(SoSWrapp):
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                    'carbon_capture from energy mix (Gt)': ('float', None, True), }, }
+                                                                    'carbon_capture from energy mix (Gt)': ('float', None, True), },},
+        'co2_for_food': {
+            'type': 'dataframe', 'unit': 'Mt',
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True), f'{GlossaryEnergy.carbon_capture} for food (Mt)': ('float', None, True), }
+    }
     }
 
     DESC_OUT = {
@@ -134,21 +139,22 @@ class CCUS_Discipline(SoSWrapp):
                         'namespace': GlossaryEnergy.NS_CCS,
                         "dynamic_dataframe_columns": True}
 
-        if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
-            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
-
-            if year_start is not None and year_end is not None:
-                dynamic_inputs['co2_for_food'] = {
-                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(
-                        {GlossaryEnergy.Years: np.arange(year_start, year_end + 1), f'{GlossaryEnergy.carbon_capture} for food (Mt)': 0.0}),
-                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                    'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                             f'{GlossaryEnergy.carbon_capture} for food (Mt)': ('float', None, True), }
-                }
-
+        self.update_default_values()
         self.add_inputs(dynamic_inputs),
         self.add_outputs(dynamic_outputs)
+
+    def update_default_values(self):
+        """
+        Update all default dataframes with years
+        """
+        if self.get_data_in() is not None:
+            if GlossaryEnergy.YearEnd in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'co2_for_food' in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+                if year_start is not None and year_end is not None:
+                    default_co2_for_food = pd.DataFrame({
+                        GlossaryEnergy.Years: np.arange(year_start, year_end + 1),
+                        f'{GlossaryEnergy.carbon_capture} for food (Mt)': 0.0})
+                    self.update_default_value('co2_for_food', 'in', default_co2_for_food)
 
     def run(self):
         # -- get inputs
@@ -168,8 +174,6 @@ class CCUS_Discipline(SoSWrapp):
             'CCS_price': self.ccus_model.CCS_price,
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
         }
-
-        
 
         self.store_sos_outputs_values(outputs_dict)
 

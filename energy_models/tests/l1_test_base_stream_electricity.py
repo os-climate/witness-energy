@@ -64,11 +64,11 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                     })
 
         self.gasturbine_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': [4.192699] * len(years)
+                                                    f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': 4.192699
                                                     })
 
         self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
 
         self.hydropower_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.Hydropower: 0.0})
@@ -87,7 +87,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 
     def tearDown(self):
         pass
@@ -118,20 +118,17 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        low_prod = 1.e-2
-        years_low_prod = 10
         hydropower_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(100, 100, len(self.years)),
-                                              f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": [844.027980] * len(self.years)})
+                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': 100.,
+                                              f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": 844.})
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               f"{GlossaryEnergy.CH4} ({GlossaryEnergy.mass_unit})": 0.,
                                               f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": 0.,
                                               f"{GlossaryEnergy.N2O} ({GlossaryEnergy.mass_unit})": 0.,
                                               f"{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat} ({GlossaryEnergy.energy_unit})": 0.,
-                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': [low_prod] * years_low_prod + [100] * (
-                                                      len(self.years) - years_low_prod),
-                                              'O2 (Mt)': [0.019217] * len(self.years)})
+                                              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(.1, 100., len(self.years)),
+                                              'O2 (Mt)': 0.019217})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

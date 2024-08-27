@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -52,7 +50,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
-    lifetime = 25  # Wang2019 Rosenfeld2020 says 20
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.015,  # Rosenfeld2020
                                  'CO2_from_production': 0.0,
@@ -80,7 +78,6 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Energy Procedia, 101, pp.806-813.
                                  'WACC': 0.07,  # WACC Saraa2016
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex in kEuro in Sara2016 we divide by 2
                                  # for the PPS cost reduction aimed in the
                                  # paper
@@ -117,23 +114,9 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                          Methane.data_energy_dict['density'] * \
                          Methane.data_energy_dict['calorific_value'] / 1e9
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                         3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                         4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                         10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                         5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                         6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                         4.366363995027777, 3.3114883533312236, 1.250690879995941,
-                                                         1.7907619419001841, 4.88748519534807]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               }
+    }
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
