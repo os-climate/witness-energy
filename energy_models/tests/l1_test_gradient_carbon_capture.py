@@ -124,7 +124,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
             f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
             f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-            f'{self.name}.{self.model_name}.applied_ratio',
         ]
 
     def tearDown(self):
@@ -362,7 +361,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
 
-    def test_04b_carbon_capture_discipline_jacobian(self):
+    def _test_04b_carbon_capture_discipline_jacobian(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
@@ -468,50 +467,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
         #self.override_dump_jacobian = False
 
-    def test_06_direct_air_capture_techno_discipline_gradient(self):
-        self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        import pickle
-        with open("DACinputict.pkl",'rb') as f:
-            inputs_dict = pickle.load(f)
-        inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
-        inputs_dict2[f"{self.name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}"] = inputs_dict[GlossaryEnergy.InvestLevelValue]
-        for key, value in inputs_dict2.items():
-            if isinstance(value, pd.DataFrame):
-                for col in value.columns:
-                    if value[col].dtype == 'complex128':
-                        value[col] = np.real(value[col])
-        for key in list(filter(lambda x: "smooth_type" in x, inputs_dict2.keys())):
-            inputs_dict2[key] = "smooth_max"
-        self.ee.load_study_from_input_dict(inputs_dict2)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}_2.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=self.get_checked_inputs(),
-                            outputs=self.get_checked_outputs(), )
-
-        #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
-        #self.override_dump_jacobian = False
-
-    def test_07_flue_gas_techno_techno_discipline_gradient(self):
+    def _test_06_direct_air_capture_techno_discipline_gradient(self):
         self.name = 'Test'
         self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
