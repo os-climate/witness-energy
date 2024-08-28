@@ -5,7 +5,7 @@
 ## The Fischer Tropsch Reaction
 The Fischer-Tropsch process is used to generate high carbon chain up to synthetic fuel and water wi th $n$ the carbon molecular number of the wanted synthetic fuel.
 
-$$(2n + 1) H_2 + n CO --> C_nH_{2n+2} + nH_2O$$ (2)
+$$(2n + 1) H_2 + n CO --> C_nH_{2n+2} + nH_2O$$(2)
 
  These reactions occur in the presence of metal catalysts, typically at temperatures of 150–300 °C (302–572 °F) and pressures of one to several tens of atmospheres. The process was first developed by Franz Fischer and Hans Tropsch in 1925.[^1]
 
@@ -39,7 +39,7 @@ The first PtL (Power to Liquid with Electrolysis) demo plant at industrial scale
 ## Modifying the syngas ratio for the synthesis
 The ratio $\frac{CO}{H_2}$ of the needed syngas (gas composed of carbon monoxyde $CO$ and hydrogen $H_2$) must be equal to : 
 
-$$ r_{syngas} = \frac{n}{2n+1}$$
+$$r_{syngas} = \frac{n}{2n+1}$$
 
 Depending on the syngas production technology, the syngas ratio of $CO$ over $H_2$ can be different. If the ratio of input syngas is lower than $\frac{n}{2n+1}$ we need to enrich the syngas with carbon monoxyde.
 If the syngas ratio is higher, some CO in the syngas must be removed.
@@ -48,19 +48,19 @@ If the syngas ratio is higher, some CO in the syngas must be removed.
 
 The Reverse Water Gas Shift reaction is able to enrich a syngas mixture using carbon dioxyde ($CO_2$) :
 
-$$dCO_2 + e(H_2 +r_1CO)  --> (H_2 +r_2 CO) + cH_20 $$
+$$dCO_2 + e(H_2 +r_1CO)  --> (H_2 +r_2 CO) + cH_20$$
 
 with $r_1<r_2$ the $CO$ over $H_2$ ratio of the input and output syngases respectively : 
 
-$$ r_i = \frac{mol CO}{mol H_2}$$
+$$r_i = \frac{mol CO}{mol H_2}$$
 
 and with $c$,$d$ and $e$ coefficients of the reaction that can be computed with $r_1$ and $r_2$ to satisfy chemical equilibrium : 
 
-$$ c = \frac{r2-r1}{1+r1}$$
+$$c = \frac{r2-r1}{1+r1}$$
 
-$$ d = r2 - \frac{r1(1+r2)}{1+r1}$$
+$$d = r2 - \frac{r1(1+r2)}{1+r1}$$
 
-$$ e = \frac{1+r2}{1+r1}$$
+$$e = \frac{1+r2}{1+r1}$$
 
 
 
@@ -75,11 +75,11 @@ with $r_1>r_2$ syngas ratios before and after the reaction :
 
 and with $c$, $d$ and $e$ coefficients of the reaction that can be computed with $r_1$ and $r_2$ to satisfy chemical equilibrium : 
 
-$$ c = \frac{r1-r2}{1+r2}$$
+$$c = \frac{r1-r2}{1+r2}$$
 
-$$ d = r1 - \frac{r2(1+r1)}{1+r2}$$
+$$d = r1 - \frac{r2(1+r1)}{1+r2}$$
 
-$$ e = \frac{1+r1}{1+r2}$$
+$$e = \frac{1+r1}{1+r2}$$
 
 
 In our context, we know the value of $r_2= \frac{n}{2n+1}$ with $n=12$ which is a valid assumption for kerosene jet fuel (between 10 and 16 carbon atoms by moles).
