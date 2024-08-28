@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from energy_models.core.investments.energy_invest import EnergyInvest
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from energy_models.core.investments.energy_invest import EnergyInvest
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TestEnergyInvest(AbstractJacobianUnittest):
@@ -43,16 +43,15 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_invest = EnergyInvest()
         self.energy_list = [
             GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
             GlossaryEnergy.methane]
         self.energy_invest.set_energy_list(self.energy_list)
 
-        self.years = np.arange(self.y_s, self.y_e + 1)
+        self.years = np.arange(self.year_start, self.year_end + 1)
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
         dict2[GlossaryEnergy.electricity] = np.ones(len(self.years))
@@ -62,15 +61,11 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         dict3 = {}
         dict3[GlossaryEnergy.Years] = self.years
-        dict3['SMR'] = np.ones(len(self.years))
-        dict3['Electrolysis'] = np.ones(len(self.years)) * 0.5
-        dict3['CoalGasification'] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.SMR] = np.ones(len(self.years))
+        dict3[GlossaryEnergy.Electrolysis] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.CoalGasification] = np.ones(len(self.years)) * 0.5
         self.techno_mix = pd.DataFrame(dict3)
-        invest_ref = 1.0e3  # G$ means 1 milliard of dollars
-        invest = np.zeros(len(self.years))
-        invest[0] = invest_ref
-        for i in range(1, len(self.years)):
-            invest[i] = 1.02 * invest[i - 1]
+        invest = 1e3 * (1.02 ** np.arange(len(self.years)))
         self.invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.EnergyInvestmentsValue: invest})
         self.invest_df_techno = pd.DataFrame(
@@ -166,8 +161,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': [GlossaryEnergy.electricity, GlossaryEnergy.methane,
                                                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
@@ -202,10 +197,10 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['SMR', 'Electrolysis',
-                                                                                       'CoalGasification'],
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis,
+                                                                                       GlossaryEnergy.CoalGasification],
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_df_techno}
 
@@ -237,9 +232,9 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        technology_list = ['SMR', 'Electrolysis', 'CoalGasification']
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        technology_list = [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis, GlossaryEnergy.CoalGasification]
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': technology_list,
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_df_techno}
@@ -279,8 +274,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.invest_df}

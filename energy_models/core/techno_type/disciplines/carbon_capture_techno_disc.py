@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.techno_disc import TechnoDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechnoDiscipline(TechnoDiscipline):
@@ -65,7 +65,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = CarbonCapture.name
+    energy_name = GlossaryEnergy.carbon_capture
 
     def set_partial_derivatives_flue_gas(self, energy_name=GlossaryEnergy.electricity):
 
@@ -113,7 +113,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             inputs_dict['techno_infos_dict'], dcapex_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (
+            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
                 GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
             dprod_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
                              np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
@@ -124,7 +124,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             dprod_column_dfluegas = dprod_dfluegas.copy()
             if column != GlossaryEnergy.Years:
                 var_cons = (consumption[column] /
-                            production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
+                            production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(
                     0)
                 for line in range(len(consumption[column].values)):
                     dprod_column_dfluegas[line, :] = dprod_dfluegas[line,
@@ -143,7 +143,8 @@ class CCTechnoDiscipline(TechnoDiscipline):
             dcapex_dfluegas, dprod_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
+            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
             dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
@@ -371,12 +372,9 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_initial_production(self):
 
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = initial_age_distrib.copy(deep=True)
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
                                    100.0 * initial_production
@@ -384,17 +382,16 @@ class CCTechnoDiscipline(TechnoDiscipline):
         initial_prod.sort_values(GlossaryEnergy.Years, inplace=True)
         initial_prod['cum CO2 (Mt)'] = initial_prod['CO2 (Mt)'].cumsum()
 
-        study_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'World CO2 capture via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} (Mt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} ({GlossaryEnergy.mass_unit})',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
             initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
-        study_prod = study_production[f'{self.energy_name} (Mt)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.mass_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

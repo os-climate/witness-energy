@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
@@ -46,11 +44,10 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.ElectrolysisAWE
-    construction_delay = 1  # year
     # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019.
     # Advances in alkaline water electrolyzers: A review.
     # Journal of Energy Storage, 23, pp.392-403.
-    lifetime = 25  # Around 20 and 30 years
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.05,
                                  'CO2_from_production': 0.0,
@@ -58,7 +55,6 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.05,
                                  'learning_rate': 0.05,
                                  'maximum_learning_capex_ratio': 200 / 581.25,
-                                 'lifetime': lifetime,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 581.25,  # for a power input of 2MW, decreases for 10 MW
@@ -72,35 +68,16 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # see doc
     initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [50, 15, 15, 15, 5] + [0.0] * (lifetime - 6)
-                                             })
-
     # We assume no investments
-    invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryEnergy.InvestValue: [0.0]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

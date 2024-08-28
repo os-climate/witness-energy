@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/05/12-2023/11/21 Copyright 2023 Capgemini
+Modifications on 2023/05/12-2024/06/24 Copyright 2023 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class WITNESSSubProcessBuilder(BaseProcessBuilder):
@@ -44,7 +45,7 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
 
     def build_energy_and_ccs_list(self):
         energy_list = [key for key, value in self._techno_dict.items() if value['type'] == 'energy']
-        ccs_list = [key for key, value in self._techno_dict.items() if value['type'] == GlossaryEnergy.CCUS]
+        ccs_list = [key for key, value in self._techno_dict.items() if value['type'] == GlossaryEnergy.ccus_type]
         return energy_list, ccs_list
 
     def setup_process(

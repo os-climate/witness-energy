@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,14 +16,10 @@ limitations under the License.
 '''
 from importlib import import_module
 
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
-ENERGY_TYPE = "energy"
-CCUS_TYPE = GlossaryEnergy.CCUS
-AGRI_TYPE = "agriculture"
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyStudyManager(StudyManager):
@@ -50,11 +46,11 @@ class EnergyStudyManager(StudyManager):
         self.energy_list = [
             key
             for key, value in self.techno_dict.items()
-            if value["type"] in ["energy", "agriculture"]
+            if value[GlossaryEnergy.stream_type] in [GlossaryEnergy.energy_type, GlossaryEnergy.agriculture_type]
         ]
         self.coarse_mode: bool = set(self.techno_dict.keys()) == set(GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys())
         self.ccs_list = [
-            key for key, value in self.techno_dict.items() if value["type"] == GlossaryEnergy.CCUS
+            key for key, value in self.techno_dict.items() if value[GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type
         ]
 
     def get_energy_mix_study_cls(self, energy_name, add_name=None):
@@ -83,7 +79,3 @@ class EnergyStudyManager(StudyManager):
         """
 
         return bspline_method(ctrl_pts, len_years)
-
-    def specific_check_inputs(self):
-        # check all elements of data dict
-        specific_check_years(self.execution_engine.dm)

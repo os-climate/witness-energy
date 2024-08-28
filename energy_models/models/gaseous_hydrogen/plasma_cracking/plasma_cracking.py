@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import (
     GaseousHydrogenTechno,
 )
@@ -43,19 +46,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         return techno_prices[[GlossaryEnergy.Years, self.name, f'{self.name}_wotaxes']]
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
 
-    def compute_production(self):
-        C_per_h2 = self.get_theoretical_graphene_production()
+    def compute_byproducts_production(self):
+        C_per_h2 = self.get_theoretical_solid_carbon_production()
 
-        self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
-                                                                        self.production_detailed[
-                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] = \
+            C_per_h2 * self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
-    def get_theoretical_graphene_production(self):
+    def get_theoretical_solid_carbon_production(self):
         ''' 
         Get methane needs in kg C /kWh H2
         1 mol of C for 2 mol of H2
@@ -115,14 +117,13 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''
         quantity = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                  'carbon_production': self.production_detailed[
-                                                          f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
+                                                          f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'].values * self.scaling_factor_techno_production,
                                  'hydrogen_production': self.production_detailed[
                                                             f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
-                                 'hydrogen_price': self.energy_prices[GaseousHydrogenTechno.energy_name],
-                                 # 'carbon_price': ResourceGlossary.Carbon['price'],
-                                 'carbon_price': self.resources_prices[Carbon.name],
+                                 'hydrogen_price': self.stream_prices[GaseousHydrogenTechno.energy_name],
+                                 'carbon_price': ResourceGlossary.Carbon['price'],
                                  'is_prod_inf_demand': False,
                                  'is_storage_inf_storage_max': False
                                  })
@@ -161,7 +162,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         return a + b
 
     def grad_hydrogen_price_vs_energy_prices(self, energy):
-        energy_prices = self.energy_prices
+        energy_prices = self.stream_prices
         if energy == GaseousHydrogenTechno.energy_name:
             return np.identity(len(energy_prices))
         else:
@@ -185,12 +186,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
             energy)
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         a = hydrogen_production * quantity['A_value'].values
         x = np.array([a, ] * len(self.years)).transpose()
@@ -210,21 +209,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
+        quantity.loc[quantity['is_prod_inf_demand'],
                      'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
+        quantity.loc[~quantity['is_prod_inf_demand'], 'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
         a = hydrogen_price.values * quantity['A_value'].values
@@ -251,20 +247,17 @@ class PlasmaCracking(GaseousHydrogenTechno):
         hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'A_value'] = quantity['carbon_demand_sales_revenues']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'B_value'] = quantity['carbon_price']
+        quantity.loc[quantity['is_prod_inf_demand'], 'B_value'] = quantity['carbon_price']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
             'CO2_credits']
 
@@ -291,21 +284,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         # hydrogen_price = quantity['hydrogen_price']
 
         # if carbon_production < carbon_demand
-        quantity.loc[quantity['is_prod_inf_demand'] == True,
-                     'A_value'] = quantity['carbon_sales_revenues']
+        quantity.loc[quantity['is_prod_inf_demand'], 'A_value'] = quantity['carbon_sales_revenues']
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+        quantity.loc[~quantity['is_prod_inf_demand'],
                      'A_value'] = quantity['carbon_demand_sales_revenues']
 
         # if carbon_production < carbon_demand
-        quantity.loc[(quantity['is_prod_inf_demand'] == True),
-                     'B'] = quantity['carbon_sales']
+        quantity.loc[quantity['is_prod_inf_demand'], 'B'] = quantity['carbon_sales']
 
         # if carbon_production > carbon_demand
         # carbon_storage
-        quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B'] = quantity['carbon_demand']
+        quantity.loc[~quantity['is_prod_inf_demand'], 'B'] = quantity['carbon_demand']
 
         a = quantity['hydrogen_sales_revenues'].values * \
             quantity['B'].values

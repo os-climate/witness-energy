@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,12 +17,6 @@ limitations under the License.
 import logging
 
 import numpy as np
-
-from energy_models.core.investments.base_invest import compute_norm_mix
-from energy_models.core.investments.energy_invest import EnergyInvest
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -32,6 +26,10 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
 )
+
+from energy_models.core.investments.base_invest import compute_norm_mix
+from energy_models.core.investments.energy_invest import EnergyInvest
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class InvestCCSDiscipline(SoSWrapp):
@@ -66,8 +64,8 @@ class InvestCCSDiscipline(SoSWrapp):
                                GlossaryEnergy.carbon_storage: ('float', None, False), },
                            'dataframe_edition_locked': False},
         GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                  'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                                  'default': [CarbonCapture.name, CarbonStorage.name],
+                                  'possible_values': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage],
+                                  'default': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage],
                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                   'editable': False,
                                   'structuring': True}

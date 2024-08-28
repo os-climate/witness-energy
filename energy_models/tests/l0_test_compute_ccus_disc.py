@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/01-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/01-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CCUSDiscTestCase(unittest.TestCase):
@@ -39,7 +39,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
+            GlossaryEnergy.fossil, GlossaryEnergy.clean_energy, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
             f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat',
             GlossaryEnergy.biomass_dry]]
@@ -49,7 +49,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         pkl_file.close()
 
         self.CO2_per_use = {}
-        self.energy_prices = {}
+        self.stream_prices = {}
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
@@ -65,7 +65,7 @@ class CCUSDiscTestCase(unittest.TestCase):
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
+            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
                 'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
                 f'{energy}'][GlossaryEnergy.EnergyConsumptionWithoutRatioValue]['value']
@@ -130,7 +130,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.energy_prices[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = \
                 self.energy_consumption_woratio[energy]

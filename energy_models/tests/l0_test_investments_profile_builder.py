@@ -18,8 +18,9 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TestInvestmentProfileBuilderDisc(unittest.TestCase):
@@ -35,7 +36,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
 
 
-        self.columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
+        self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         self.n_profiles = 4
         self.year_min = 2020
         self.export_profiles_at_poles = False

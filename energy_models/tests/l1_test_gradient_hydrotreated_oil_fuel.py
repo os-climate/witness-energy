@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,23 +20,16 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
-
-from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc import (
-    HefaDecarboxylationDiscipline,
-)
-from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc import (
-    HefaDeoxygenationDiscipline,
-)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 warnings.filterwarnings("ignore")
 
@@ -62,51 +55,34 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         self.energy_name = GlossaryEnergy.hydrotreated_oil_fuel
         # crude oil price : 1.3$/gallon
 
-        self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: np.ones(len(self.years)) * 0.135 * 1000,
-             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.ones(len(self.years)) * 0.1266023955250543 * 1000,
+        self.stream_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 135.,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 126.,
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
              GlossaryEnergy.electricity: 0.0,
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              })
 
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ])[:len(self.years)] * 0.8e-9
-
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                          GlossaryEnergy.InvestValue: invest
+                                          GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))
                                           })
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27, 29.01,
-                     34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 200.0})
+            {GlossaryEnergy.Years: self.years, 'transport': 200.0})
 
     def tearDown(self):
         pass
 
     def test_01_hefa_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'HefaDecarboxylation'
+        self.model_name = GlossaryEnergy.HefaDecarboxylation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -125,25 +101,23 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         self.utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(self.years) * 50.0
+            GlossaryEnergy.UtilisationRatioValue: 50.0
         })
-        techno_infos_dict = HefaDecarboxylationDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}': self.utilisation_ratio,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -164,10 +138,10 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -177,7 +151,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
 
     def test_02_hefa_green_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'HefaDeoxygenation'
+        self.model_name = GlossaryEnergy.HefaDeoxygenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -194,22 +168,20 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = HefaDeoxygenationDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -223,10 +195,10 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',

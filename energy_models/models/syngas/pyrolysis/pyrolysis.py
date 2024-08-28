@@ -17,10 +17,8 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Pyrolysis(SyngasTechno):
@@ -35,23 +33,23 @@ class Pyrolysis(SyngasTechno):
         syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
 
         # wood needs in kg to produce 1kWh of syngas
-        self.cost_details[f"{ResourceGlossary.WoodResource}_needs"] = 1 / syngas_kwh
+        self.cost_details[f"{GlossaryEnergy.WoodResource}_needs"] = 1 / syngas_kwh
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']
 
-        self.production_detailed[f'char ({self.mass_unit})'] = self.production_detailed[
-                                                                   f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'char ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+                                                                   f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
                                                                self.techno_infos_dict['char_yield'] / \
                                                                self.techno_infos_dict['syngas_yield']
 
-        self.production_detailed[f'bio_oil ({self.mass_unit})'] = self.production_detailed[
-                                                                      f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'bio_oil ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+                                                                      f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
                                                                   self.techno_infos_dict['bio_oil_yield'] / \
                                                                   self.techno_infos_dict['syngas_yield']

@@ -18,11 +18,10 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ElectricBoilerTestCase(unittest.TestCase):
@@ -43,41 +42,27 @@ class ElectricBoilerTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           GlossaryEnergy.electricity: np.ones(len(years)) * 181.0,  # $/MWh
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                           GlossaryEnergy.electricity: 181.0,  # $/MWh
                                            # https://tradingeconomics.com/france/electricity-price
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, 'water': 0.0})
+        self.stream_co2_emissions = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, 'water': 0.0})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
         self.resources_CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                   4694500000.0, 4780750000.0, 4867000000.0,
-                                                   4969400000.0, 5071800000.0, 5174200000.0,
-                                                   5276600000.0, 5379000000.0, 5364700000.0,
-                                                   5350400000.0, 5336100000.0, 5321800000.0,
-                                                   5307500000.0, 5293200000.0, 5278900000.0,
-                                                   5264600000.0, 5250300000.0, 5236000000.0,
-                                                   5221700000.0, 5207400000.0, 5193100000.0,
-                                                   5178800000.0, 5164500000.0, 5150200000.0,
-                                                   5135900000.0, 5121600000.0, 5107300000.0,
-                                                   5093000000.0]) / 5.0e9})
+             GlossaryEnergy.InvestValue: np.linspace(.88,1.05, len(years))})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryEnergy.Years: years, 'transport': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -117,9 +102,9 @@ class ElectricBoilerTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

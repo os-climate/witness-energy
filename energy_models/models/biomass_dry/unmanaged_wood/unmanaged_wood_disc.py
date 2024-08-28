@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/03/27 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import (
     BiomassDryTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood import UnmanagedWood
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
@@ -49,8 +49,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # where it comes)
 
     techno_name = GlossaryEnergy.UnmanagedWood
-    lifetime = 150
-    construction_delay = 3  # years, time for wood to dry
+
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
@@ -103,7 +102,6 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                                  # 1USD = 0,87360 euro in 2019
                                  'Capex_init': 10483,
@@ -137,11 +135,9 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'recyle_part': recycle_part,
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # invest: no invest, regenerated naturally forests
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0, 0, 0]})
-    # www.fao.org : 54% of forest under long-term management plans = 2.05 Billion Ha
+        # www.fao.org : 54% of forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
     # 3.36 : calorific value of wood kwh/kg
@@ -153,23 +149,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                           wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in Twh
 
     # distrib computed, for planted forests since 150 years
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51,
-                                                         0.51, 0.51, 0.51, 0.52, 0.51, 0.52, 0.52, 0.52, 0.52, 0.52,
-                                                         0.52, 0.53, 0.53, 0.53, 0.53, 0.53, 0.53, 0.54, 0.54, 0.54,
-                                                         0.54, 0.54, 0.54, 0.54, 0.55, 0.55, 0.55, 0.55, 0.55, 1.52,
-                                                         1.55, 1.56, 1.56, 1.56, 0.56, 0.56, 0.56, 0.56, 0.57, 0.57,
-                                                         1.52, 1.52, 0.57, 0.57, 0.57, 0.57, 0.58, 0.58, 0.58, 0.58,
-                                                         0.58, 0.58, 0.58, 0.59, 0.59, 0.59, 0.59, 0.59, 0.59, 0.59,
-                                                         1.52, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.61, 0.61, 0.61, 0.61,
-                                                         0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.71, 0.7, 0.7, 0.71, 0.71,
-                                                         0.63, 0.63, 0.64, 0.64, 0.64, 0.64, 0.64, 0.65, 0.65, 0.65,
-                                                         0.65, 0.65, 0.65, 0.65, 0.66, 0.66, 0.66, 0.66, 0.66, 0.66,
-                                                         0.66, 0.67, 0.67, 0.67, 0.67, 0.67, 0.67, 0.67, 0.68, 0.68,
-                                                         0.68, 0.68, 0.68, 0.68, 0.68, 0.69, 0.69, 0.69, 0.69, 0.69,
-                                                         0.69, 1.53, 0.69, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.71,
-                                                         0.98, 0.71, 0.71, 0.71, 0.71, 0.71]})
-
+    
     # distrib computed, for planted forests since 1980 (40years)
     #                                              'distrib': [3.25, 3.26, 3.27, 3.27, 3.27, 3.24, 3.21, 3.17, 3.14, 3.1,
     #                                                           3.04, 2.99, 2.94, 2.89, 2.83, 2.77, 2.71, 2.66, 2.57, 2.51,
@@ -187,20 +167,8 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(BiomassDryTechnoDiscipline.DESC_IN)
 
@@ -232,7 +200,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         BiomassDryTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
@@ -254,7 +222,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
             capex, production, production_mix)
 
         for column in production:
-            if column == f'{self.energy_name} ({self.techno_model.product_energy_unit})':
+            if column == f'{self.energy_name} ({self.techno_model.product_unit})':
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoProductionValue, column),
                     (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
@@ -401,12 +369,9 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     def get_chart_initial_production(self):
         # surcharge of the methode in techno_disc to change historical data with the
         # energy part
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
 
@@ -440,7 +405,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
             initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production for energy by 2020 factories',
             'lines')
 
-        study_prod = study_production[f'{self.energy_name} (TWh)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

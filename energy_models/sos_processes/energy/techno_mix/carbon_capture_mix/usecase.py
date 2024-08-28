@@ -29,15 +29,15 @@ from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.CoalGen',
-                         f'{GlossaryEnergy.electricity}.GasTurbine',
-                         f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine',
-                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift',
-                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch',
-                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery',
-                         f'{GlossaryEnergy.methane}.FossilGas',
-                         f'{GlossaryEnergy.solid_fuel}.Pelletizing',
-                         f'{GlossaryEnergy.syngas}.CoalGasification',
+DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}',
+                         f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}',
+                         f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}',
+                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}',
+                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}',
+                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}',
+                         f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}',
+                         f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}',
+                         f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}',
                          f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',
@@ -126,9 +126,9 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = CarbonCapture.name
+        self.energy_name = GlossaryEnergy.carbon_capture
         flue_gas_name = FlueGas.node_name
-        ccs_name = f'{self.prefix_name}.{CarbonCapture.name}'
+        ccs_name = f'{self.prefix_name}.{GlossaryEnergy.carbon_capture}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
@@ -164,29 +164,29 @@ class Study(EnergyMixStudyManager):
              GlossaryEnergy.methane: 0.2})
 
         coal_gen_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                      f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         gas_turbine_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                         f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                         f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         cc_gas_turbine_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                            f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                            f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         wgs_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                 f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                 f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         ft_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         refinery_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                      f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         CAKOH_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                         f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                         f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         aminescrubbing_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                  f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                                  f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         fossil_gas_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                        f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                        f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         pelletizing_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                         f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                         f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         coal_gas_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                      f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
         directaircapturetechno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                                    f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -207,41 +207,41 @@ class Study(EnergyMixStudyManager):
         values_dict.update(techno_margin_dict)
 
         self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
 
         if self.main_study:
             values_dict.update(
                 {
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.CoalGen.flue_gas_co2_ratio': np.array([0.13]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.GasTurbine.flue_gas_co2_ratio': np.array([0.035]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.flue_gas_co2_ratio': np.array(
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.flue_gas_co2_ratio': np.array([0.13]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.flue_gas_co2_ratio': np.array([0.035]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.flue_gas_co2_ratio': np.array(
                         [0.035]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift.flue_gas_co2_ratio': np.array(
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}.flue_gas_co2_ratio': np.array(
                         [0.175]),
-                    f'{self.study_name}.{energy_mix_name}.liquid_fuel.FischerTropsch.flue_gas_co2_ratio': np.array(
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}.flue_gas_co2_ratio': np.array(
                         [0.12]),
-                    f'{self.study_name}.{energy_mix_name}.liquid_fuel.Refinery.flue_gas_co2_ratio': np.array([0.12]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.FossilGas.flue_gas_co2_ratio': np.array([0.085]),
-                    f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.flue_gas_co2_ratio': np.array([0.12]),
-                    f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.flue_gas_co2_ratio': np.array([0.13]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}.flue_gas_co2_ratio': np.array([0.12]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}.flue_gas_co2_ratio': np.array([0.085]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}.flue_gas_co2_ratio': np.array([0.12]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.flue_gas_co2_ratio': np.array(
                         [0.12]),
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}': coal_gen_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.GasTurbine.{GlossaryEnergy.TechnoProductionValue}': gas_turbine_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoProductionValue}': cc_gas_turbine_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': wgs_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}': ft_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery.{GlossaryEnergy.TechnoProductionValue}': refinery_prod,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.FossilGas.{GlossaryEnergy.TechnoProductionValue}': fossil_gas_prod,
-                    f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.{GlossaryEnergy.TechnoProductionValue}': pelletizing_prod,
-                    f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.{GlossaryEnergy.TechnoProductionValue}': coal_gas_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoProductionValue}': coal_gen_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}': gas_turbine_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.TechnoProductionValue}': cc_gas_turbine_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}.{GlossaryEnergy.TechnoProductionValue}': ft_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}.{GlossaryEnergy.TechnoProductionValue}': refinery_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}.{GlossaryEnergy.TechnoProductionValue}': fossil_gas_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}.{GlossaryEnergy.TechnoProductionValue}': pelletizing_prod,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}.{GlossaryEnergy.TechnoProductionValue}': coal_gas_prod,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.TechnoProductionValue}': refinery_prod,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.TechnoProductionValue}': CAKOH_production,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.TechnoProductionValue}': aminescrubbing_production,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_prod,
+                    f'{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.TechnoProductionValue}': CAKOH_production,
+                    f'{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.TechnoProductionValue}': aminescrubbing_production,
+                    f'{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_prod,
                 })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

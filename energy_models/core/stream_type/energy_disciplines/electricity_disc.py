@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@ limitations under the License.
 '''
 import numpy as np
 from plotly import graph_objects as go
-
-from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from energy_models.core.stream_type.energy_disc import EnergyDiscipline
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityDiscipline(EnergyDiscipline):
@@ -70,15 +70,13 @@ class ElectricityDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = Electricity.name
+    energy_name = GlossaryEnergy.electricity
     DESC_OUT = {}
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
-    def setup_sos_disciplines(self):
-        super().setup_sos_disciplines()
-
-        dynamic_outputs = {}
+    def add_additionnal_dynamic_variables(self):
+        dynamic_inputs, dynamic_outputs = EnergyDiscipline.add_additionnal_dynamic_variables(self)
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
@@ -88,7 +86,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                                      'unit': 'TWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': GlossaryEnergy.NS_FUNCTIONS}
-        self.add_outputs(dynamic_outputs)
+        return dynamic_inputs, dynamic_outputs
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -122,7 +120,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         if Electricity.hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
+                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.electricity} ({Electricity.unit})'),
                                                         - inputs_dict['scaling_factor_techno_production'] * np.identity(
                                                             len(years)) / inputs_dict['hydropower_constraint_ref'])
 

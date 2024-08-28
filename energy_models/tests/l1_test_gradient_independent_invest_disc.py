@@ -19,12 +19,12 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 warnings.filterwarnings("ignore")
 
@@ -43,57 +43,48 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefaultValueGradientTest
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.energy_list = [
-            'electricity', 'hydrogen.gaseous_hydrogen', 'methane']
+            GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane]
         self.energy_list_bis = [
-            'electricity', 'hydrogen.gaseous_hydrogen', 'methane', 'biomass_dry']
+            GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane, GlossaryEnergy.biomass_dry]
 
         self.ccs_list = [
-            'carbon_capture', 'carbon_storage']
-        self.years = np.arange(self.y_s, self.y_e + 1)
-        year_range = self.y_e - self.y_s + 1
-        energy_mix_invest_dic = {}
-        energy_mix_invest_dic[GlossaryEnergy.Years] = self.years
-        energy_mix_invest_dic['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
-        energy_mix_invest_dic['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
-        energy_mix_invest_dic['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
-        energy_mix_invest_dic['methane.FossilGas'] = np.ones(len(self.years)) * 40.0
-        energy_mix_invest_dic['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
-        energy_mix_invest_dic['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
-            len(self.years)) * 60.0
-        energy_mix_invest_dic['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
-            len(self.years)) * 70.0
-        energy_mix_invest_dic['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
-            len(self.years)) * 80.0
-        energy_mix_invest_dic['carbon_capture.flue_gas_capture.CalciumLooping'] = np.ones(
-            len(self.years)) * 90.0
-        energy_mix_invest_dic['carbon_storage.DeepSalineFormation'] = np.ones(
-            len(self.years)) * 100.0
-        energy_mix_invest_dic['carbon_storage.GeologicMineralization'] = np.ones(
-            len(self.years)) * 110.0
-        self.energy_mix = pd.DataFrame(energy_mix_invest_dic)
+            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        year_range = self.year_end - self.year_start + 1
+        self.energy_mix = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}': 10.0,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}': 20.0,
+            f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': 30.0,
+            f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}': 40.0,
+            f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}': 50.0,
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': 60.0,
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}': 70.0,
+            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 80.0,
+            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 90.0,
+            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}': 100.0,
+            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}': 110.0})
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-        forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: forest_invest})
-        managed_wood_invest = np.linspace(0.5, 2, year_range)
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: np.linspace(5, 8, year_range)})
+
         self.managed_wood_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": managed_wood_invest})
-        unmanaged_wood_invest = np.linspace(2, 3, year_range)
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 2, year_range)})
+
         self.unmanaged_wood_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": unmanaged_wood_invest})
-        deforestation_invest = np.linspace(1.0, 0.1, year_range)
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(2, 3, year_range)})
+
         self.deforestation_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": deforestation_invest})
-        crop_invest = np.linspace(0.5, 0.25, year_range)
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(1.0, 0.1, year_range)})
+
         self.crop_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": crop_invest})
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 0.25, year_range)})
 
     def tearDown(self):
         pass
@@ -124,26 +115,25 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane',
-                       'hydrogen.gaseous_hydrogen', 'biomass_dry']
+        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
+                       f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.biomass_dry]
         max_budget = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.MaxBudgetValue: np.linspace(800, 970, len(self.years))
         })
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.MaxBudgetValue}': max_budget,
-                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
-                       f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.biomass_dry.technologies_list': [],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
-                                                                                    'Electrolysis.AWE'],
-                       f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
-                                                                         'flue_gas_capture.CalciumLooping'],
-                       f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation',
-                                                                         'GeologicMineralization'],
+                       f'{self.name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.SolarPv, GlossaryEnergy.WindOnshore, GlossaryEnergy.CoalGen],
+                       f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
+                       f'{self.name}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.technologies_list}': [],
+                       f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisAWE],
+                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                                                                         f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
+                       f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
+                                                                         GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,

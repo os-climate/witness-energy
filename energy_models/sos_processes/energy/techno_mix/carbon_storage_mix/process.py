@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 23/11/2023 Copyright 2023 Capgemini
+Modifications on 23/11/2023-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -39,7 +40,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
         ns_study = self.ee.study_name
 
-        carbon_storage_name = CarbonStorage.name
+        carbon_storage_name = GlossaryEnergy.carbon_storage
         carbon_storage = PureCarbonSS.energy_name
         energy_mix = 'EnergyMix'
         func_manager_name = "FunctionManagerDisc"

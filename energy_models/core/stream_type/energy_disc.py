@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@ limitations under the License.
 '''
 
 import numpy as np
-
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyDiscipline(StreamDiscipline):
@@ -57,45 +57,19 @@ class EnergyDiscipline(StreamDiscipline):
     _maturity = 'Research'
     energy_name = 'energy'
 
-    def setup_sos_disciplines(self):
+    def add_additionnal_dynamic_variables(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self.update_default_technology_list()
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
                 for techno in techno_list:
-                    dynamic_inputs[
-                        f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(
-                        GlossaryEnergy.TechnoCapitalDf)
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        "dynamic_dataframe_columns": True}
 
-        self.add_inputs(dynamic_inputs)
-
-    def update_default_technology_list(self):
-        '''
-        Update the default value of technologies list with techno discipline below the energy node and in possible values
-        '''
-
-        found_technos = self.found_technos_under_energy()
-        self.set_dynamic_default_values({GlossaryEnergy.techno_list: found_technos})
+        return dynamic_inputs, dynamic_outputs
 
     def found_technos_under_energy(self):
         '''

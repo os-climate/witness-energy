@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import (
     LiquidFuelTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class RefineryDiscipline(LiquidFuelTechnoDiscipline):
@@ -47,8 +46,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.Refinery
-    lifetime = 35
-    construction_delay = 3
+
     # only energetical valuable product taken into acocun. Wastes are not
     # taken into account
     # mass ratio of product for 1 kg of crude oil refined
@@ -110,7 +108,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # with time 10%/10year according to Fasihi2019
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
-                                 'lifetime': lifetime,  # should be modified
                                  # 22000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
@@ -118,7 +115,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 
@@ -133,38 +129,11 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     # Source for invest: IEA 2022; World Energy Investment,
     # https://www.iea.org/reports/world-energy-investment-2020,
     # License: CC BY 4.0.
-    invest_before_year_start = pd.DataFrame(
-
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 477, 470]})
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [4.7, 4.63, 4.52, 4.85, 4.299999999999999,
-                                                         4.189999999999999, 4.079999999999998, 3.969999999999998,
-                                                         3.8599999999999977, 3.7499999999999973, 3.639999999999997,
-                                                         3.5299999999999967, 3.4199999999999964, 3.309999999999996,
-                                                         3.1999999999999957, 3.0899999999999954, 2.979999999999995,
-                                                         2.8699999999999948, 2.7599999999999945, 2.649999999999994,
-                                                         2.539999999999994, 2.4299999999999935, 2.319999999999993,
-                                                         2.209999999999993, 2.0999999999999925, 1.9899999999999922,
-                                                         1.879999999999992, 1.7699999999999916, 1.6599999999999913,
-                                                         1.609999999999991, 1.8399999999999906, 1.7299999999999903,
-                                                         1.61999999999999]
-                                             })
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 
@@ -180,7 +149,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
@@ -200,14 +169,14 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                           len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / \
                          100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
                 grad_total)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), grad_total)
+                (GlossaryEnergy.StreamPricesValue, energy), grad_total)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 value)
 
             grad_on_co2_tax = value * \
@@ -216,7 +185,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                   GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
                 0, np.sign(carbon_emissions[self.techno_name])).values
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 grad_on_co2_tax)
             
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
@@ -360,7 +329,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         for products in techno_production.columns:
             if products != GlossaryEnergy.Years and products.endswith(
-                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} (TWh)':
+                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} ({GlossaryEnergy.energy_unit})':
                 energy_twh = techno_production[products].values
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")

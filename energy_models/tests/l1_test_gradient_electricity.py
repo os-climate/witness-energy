@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/21-2024/03/27 Copyright 2023 Capgemini
+Modifications on 2023/09/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,15 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -57,10 +61,6 @@ from energy_models.models.electricity.wind_offshore.wind_offshore_disc import (
 )
 from energy_models.models.electricity.wind_onshore.wind_onshore_disc import (
     WindOnshoreDiscipline,
-)
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
 )
 
 
@@ -97,7 +97,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         # --- energy prices ---
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GlossaryEnergy.electricity: 90,
                                            GlossaryEnergy.solid_fuel: 5.7,
                                            f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 91,
@@ -106,7 +106,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                            GlossaryEnergy.biomass_dry: 11.0,
                                            GlossaryEnergy.mediumtemperatureheat_energyname: 4.5
              })
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biogas: 0.123 / 15.4,
              GlossaryEnergy.solid_fuel: 0.64 / 4.86, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
              GlossaryEnergy.electricity: 0.0, GlossaryEnergy.mediumtemperatureheat_energyname: 6.2})
@@ -144,7 +144,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                      GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.InvestValue: np.linspace(22000.00, 31000.00, len(self.years)) * 1e-3})
+             GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14.86, 50.29, len(self.years))})
         self.co2_taxes_nul = pd.DataFrame(
@@ -177,7 +177,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}']
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(50.0, 50.0, len(self.years))))
@@ -189,6 +189,26 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
+
+    def get_checked_inputs(self):
+        return [
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+            f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+            f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
+            f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
+            f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
+        ]
+
+    def get_checked_outputs(self):
+        return [
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
+        ]
 
     def tearDown(self):
         pass
@@ -219,9 +239,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -229,8 +249,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict, }
@@ -245,19 +265,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
             local_data=disc_techno.local_data,
-            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                    ],
-            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                     ], )
+            inputs=self.get_checked_inputs(),
+            outputs=self.get_checked_outputs(), )
 
     def test_02_geothermal_discipline_analytic_grad(self):
         self.name = 'Test'
@@ -283,9 +292,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_geothermal,
@@ -293,8 +302,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -310,19 +319,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_zz.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
             local_data=disc_techno.local_data,
-            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                    ],
-            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                     ], )
+            inputs=self.get_checked_inputs(),
+            outputs=self.get_checked_outputs(), )
 
     def test_03_hydropower_discipline_analytic_grad(self):
 
@@ -349,9 +347,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_hydropower,
@@ -359,8 +357,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -371,24 +369,12 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
         self.check_jacobian(
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
             local_data=disc_techno.local_data,
-            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                    ],
-            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-            ], )
+            inputs=self.get_checked_inputs(),
+            outputs=self.get_checked_outputs(), )
 
     def test_04_coal_gen_discipline_analytic_grad(self):
 
@@ -417,9 +403,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_coal,
@@ -427,8 +413,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -444,19 +430,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
             local_data=disc_techno.local_data,
-            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                    ],
-            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                     ], )
+            inputs=self.get_checked_inputs(),
+            outputs=self.get_checked_outputs(), )
 
     def test_05_gas_turbine_discipline_analytic_grad(self):
 
@@ -483,9 +458,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -493,8 +468,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio[
                            [GlossaryEnergy.Years, GlossaryEnergy.methane]],
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -509,19 +484,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
-                                    ],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_06_wind_on_shore_discipline_analytic_grad(self):
 
@@ -548,9 +512,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_windonshore,
@@ -558,8 +522,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -573,19 +537,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_07_wind_off_shore_discipline_analytic_grad(self):
 
@@ -612,9 +565,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        # same invest on and off shore
@@ -623,8 +576,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -639,19 +592,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_08_solar_thermal_discipline_analytic_grad(self):
 
@@ -678,9 +620,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_solar_thermal,
@@ -688,8 +630,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -704,21 +646,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.LandUseRequiredValue}'
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_09_solar_pv_discipline_analytic_grad(self):
 
@@ -745,9 +674,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_solar_pv,
@@ -755,8 +684,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -772,21 +701,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
             local_data=disc_techno.local_data,
-            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                    ],
-            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-
-                # f'{self.name}.{self.model_name}.{GlossaryEnergy.LandUseRequiredValue}'
-            ])
+            inputs=self.get_checked_inputs(),
+            outputs=self.get_checked_outputs())
 
     def test_10_nuclear_discipline_analytic_grad(self):
 
@@ -813,9 +729,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_nuclear,
@@ -823,8 +739,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -838,19 +754,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-15,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}'
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_11_biogas_fired_discipline_analytic_grad(self):
 
@@ -877,9 +782,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_ccgast,
@@ -887,8 +792,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -899,23 +804,12 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
+
 
     def test_12_biomass_fired_discipline_analytic_grad(self):
 
@@ -942,9 +836,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_biomass_fired,
@@ -952,8 +846,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -968,19 +862,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_13_oil_gen_discipline_analytic_grad(self):
 
@@ -1007,9 +890,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_oil,
@@ -1017,8 +900,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                            keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
@@ -1033,19 +916,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    # f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
-                                    # f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    # f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[  # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                # f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                            ], )
+                            inputs=self.get_checked_inputs(),
+                            outputs=self.get_checked_outputs(), )
 
     def test_14_electricity_discipline_jacobian(self):
 
@@ -1100,18 +972,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
-
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

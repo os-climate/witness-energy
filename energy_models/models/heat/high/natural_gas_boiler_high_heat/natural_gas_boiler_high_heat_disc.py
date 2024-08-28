@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
@@ -24,10 +26,6 @@ from energy_models.core.techno_type.disciplines.heat_techno_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.high.natural_gas_boiler_high_heat.natural_gas_boiler_high_heat import (
     NaturalGasBoilerHighHeat,
-)
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
 )
 
 
@@ -56,11 +54,10 @@ class NaturalGasBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     # Heat Producer [Online]
     # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
-    lifetime = 45  # years
+
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
@@ -68,10 +65,6 @@ class NaturalGasBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'Opex_init': 10.565,
         'Opex_init_unit': '$/kW',
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.8,  # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
         'natural_gas_calorific_val_unit': 'kJ/kg',
@@ -110,37 +103,11 @@ class NaturalGasBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     initial_production = 561  # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
     # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
 
-    distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
-               8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
-               3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0,
-               2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0,
-               1.0, 1.0, 1.0, 1.0,
-               ]
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
-
     # Renewable Methane Association [online]
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: 199.8 / (16 * 8760) * np.array([0, 561])})
     flux_input_dict = {'land_rate': 20000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
-               'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
+               
+                      'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

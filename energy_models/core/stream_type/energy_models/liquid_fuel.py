@@ -21,7 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class LiquidFuel(EnergyType):
     name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'
     short_name = GlossaryEnergy.liquid_fuel
-    default_techno_list = ['Refinery', 'FischerTropsch']
+    default_techno_list = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # ICAO, Carbon Calculator, 2017, CO2 per kg combustion = 3.16
@@ -94,7 +94,7 @@ class LiquidFuel(EnergyType):
         #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
-        if ghg_type == 'CO2':
+        if ghg_type == GlossaryEnergy.CO2:
             co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
                                 self.data_energy_dict_input['construction_use_part'])

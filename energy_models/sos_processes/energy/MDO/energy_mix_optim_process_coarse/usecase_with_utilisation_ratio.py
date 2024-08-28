@@ -14,7 +14,9 @@ limitations under the License.
 
 '''
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import (
+    Study as subStudy,
+)
 
 
 class Study(subStudy):
@@ -31,6 +33,7 @@ class Study(subStudy):
             use_utilisation_ratio=True
         )
         self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        self.test_post_procs = False
 
 
 if "__main__" == __name__:

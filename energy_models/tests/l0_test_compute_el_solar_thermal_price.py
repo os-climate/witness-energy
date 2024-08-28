@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/05/02-2024/03/27 Copyright 2023 Capgemini
+Modifications on 2023/05/02-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,19 +19,20 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
-
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
 )
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.solar_thermal.solar_thermal_disc import (
     SolarThermalDiscipline,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class SolarThermalPriceTestCase(unittest.TestCase):
@@ -43,7 +44,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
@@ -53,18 +54,14 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.invest_level_2 = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 15.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 15.0})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
 
         transport_cost = 11
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -73,53 +70,51 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.SolarThermal']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarThermal}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         utilisation_ratio = pd.DataFrame({
-            GlossaryEnergy.Years: years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.UtilisationRatioValue: 100.
         })
         self.inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
                             GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
                             GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                             'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
                             GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                            GlossaryEnergy.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
                             GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
                             GlossaryEnergy.MarginValue: self.margin,
                             GlossaryEnergy.TransportCostValue: self.transport,
                             GlossaryEnergy.TransportMarginValue: self.margin,
                             GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                            GlossaryEnergy.EnergyPricesValue: self.energy_prices,
+                            GlossaryEnergy.StreamPricesValue: self.stream_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
-                            'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
-                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_default_resources_CO2_emissions(
                                 np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
-                            GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
+                            GlossaryEnergy.StreamsCO2EmissionsValue: pd.DataFrame(),
                             'scaling_factor_invest_level': 1e3,
                             'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                             'scaling_factor_techno_production': self.scaling_factor_techno_production,
                             ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                             GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                            'is_stream_demand': self.is_stream_demand,
-                            'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                            GlossaryEnergy.BoolApplyStreamRatio: self.is_stream_demand,
+                            GlossaryEnergy.BoolApplyResourceRatio: self.is_apply_resource_ratio,
                             'smooth_type': 'smooth_max',
                             'data_fuel_dict': Electricity.data_energy_dict,
                             }
@@ -146,8 +141,8 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         self.ee.configure()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -166,10 +161,10 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()

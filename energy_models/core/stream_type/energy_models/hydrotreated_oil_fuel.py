@@ -30,7 +30,7 @@ class HydrotreatedOilFuel(EnergyType):
     """
     name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}'
     short_name = GlossaryEnergy.hydrotreated_oil_fuel
-    default_techno_list = ['HefaDecarboxylation', 'HefaDeoxygenation']
+    default_techno_list = [GlossaryEnergy.HefaDecarboxylation, GlossaryEnergy.HefaDeoxygenation]
     data_energy_dict = {'maturity': 5,
                         # Ref: The swedish knowledge centre for renewable transportation fuels (f3)
                         # https://f3centre.se/en/fact-sheets/hefa-hvo-hydroprocessed-esters-and-fatty-acids/

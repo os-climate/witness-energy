@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,24 +20,17 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
-
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import (
-    CoalExtractionDiscipline,
-)
-from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import (
-    PelletizingDiscipline,
-)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_data_disc import (
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
@@ -61,92 +54,46 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         # crude oil price : 1.5$/gallon /43.9
-        self.energy_prices = pd.DataFrame(
+        self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                   0.159236536471781, 0.15899046935409588,
-                                                   0.15874840310033885,
-                                                   0.15875044941298937, 0.15875249600769718,
-                                                   0.15875454288453355,
-                                                   0.15875659004356974, 0.1587586374848771,
-                                                   0.15893789675406477,
-                                                   0.15911934200930778, 0.15930302260662477,
-                                                   0.15948898953954933,
-                                                   0.15967729551117891, 0.15986799501019029,
-                                                   0.16006114439108429,
-                                                   0.16025680195894345, 0.16045502805900876,
-                                                   0.16065588517140537,
-                                                   0.1608594380113745, 0.16106575363539733,
-                                                   0.16127490155362818,
-                                                   0.16148695384909017, 0.1617019853041231,
-                                                   0.1619200735346165,
-                                                   0.16214129913260598, 0.16236574581786147,
-                                                   0.16259350059915213,
-                                                   0.1628246539459331])[:len(self.years)] * 1000.0,
-             GlossaryEnergy.biomass_dry: np.ones(len(self.years)) * 68.12 / 3.36
+             GlossaryEnergy.electricity: 160.,
+             GlossaryEnergy.biomass_dry: 68.12 / 3.36,
 
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0,
              GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ])[:len(self.years)] / 40 * 1e-9
-
         self.invest_level_pellet = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.InvestValue: np.array([12009047700.0, 13746756900.0, 15735912630.0,
-                                                   18012899180.0, 20619365690.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0, 23602987910.0, 23602987910.0,
-                                                   23602987910.0])[:len(self.years)] * 1e-9})
+             GlossaryEnergy.InvestValue: np.linspace(12, 23, len(self.years))})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invest})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))})
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 7.6})
+            {GlossaryEnergy.Years: self.years, 'transport': 7.6})
 
         self.transport_pellet = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 0.0097187})
+            {GlossaryEnergy.Years: self.years, 'transport': 0.0097187})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.solid_fuel}.CoalExtraction']
+                                                == f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.CoalExtraction}']
 
-        self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
-        self.resources_price[GlossaryEnergy.Years] = self.years
-        self.resources_price['CO2'] = np.array(
-            [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
-             0.0542,
-             0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
-             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119])[:len(self.years)] * 1000.0
+        self.resources_price = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.CO2: np.linspace(40, 47.8, len(self.years)),
+            'water': np.linspace(40, 47.8, len(self.years)),
+        })
+
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
@@ -181,16 +128,14 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = CoalExtractionDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -198,7 +143,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -211,8 +156,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}', ],
@@ -241,14 +186,12 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = PelletizingDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_pellet,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -257,7 +200,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -271,8 +214,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -334,16 +277,9 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
-        })
         for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

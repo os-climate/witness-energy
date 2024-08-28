@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+
 from energy_models.core.stream_type.energy_models.heat import (
     hightemperatureheat,
     lowtemperatureheat,
@@ -20,7 +22,6 @@ from energy_models.core.stream_type.energy_models.heat import (
 )
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 
 class LowHeatTechnoDiscipline(TechnoDiscipline):
@@ -66,7 +67,7 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
@@ -126,7 +127,7 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
@@ -188,7 +189,7 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 

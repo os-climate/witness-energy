@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,11 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class PureCarbonSSPriceTestCase(unittest.TestCase):
@@ -34,7 +33,7 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
+        self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
@@ -42,29 +41,22 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2: 0, GlossaryEnergy.carbon_capture: 12.})
         self.invest_level_2 = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 0.0325})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        # co2_taxes = [0.01486, 0.01722, 0.02027,
-        #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
-        co2_taxes = [0, 0, 0,
-                     0, 0, 0, 0, 0]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 100.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 100.0})
 
         transport_cost = 0
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.SolidCarbon: 34.23})
 
         self.carbon_quantity_to_be_stored = pd.DataFrame(
             {GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_storage: 10.})
@@ -73,8 +65,8 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryEnergy.Years] = years
+            zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
+        demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -104,33 +96,24 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
-        import traceback
-        try:
-            self.ee.configure()
-        except:
-            traceback.print_exc()
+        self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        carbon = [0.0, 0.8651783141413611, 1.7845680696378616, 2.70525797662332, 3.6258387241643946, 4.545445236338747,
-                  5.463461182612219, 6.3793970326745875, 7.293107469201024, 8.200999856054061, 9.100399893483209,
-                  9.98929061188071, 10.866138061016379, 11.729770619165382, 12.57929297278459, 13.414023343767314,
-                  14.233446783229535, 15.037179855774266, 15.824946381059533, 16.596567148338323, 17.351944905009482,
-                  18.091049892900365, 18.81390807653675, 19.52059149020655, 20.21121027018144, 20.88590603982225,
-                  20.629668075861527, 20.353652183454564, 20.060976034308823, 19.75326948534016, 19.431629541578427]
         carbon_to_be_stored = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-             GlossaryEnergy.carbon_storage: np.array(carbon) / 2})
+             GlossaryEnergy.carbon_storage: np.linspace(0., 10., len(self.years))})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_capture: 12.}),
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': self.resources_price,
                        f'{self.name}.carbon_quantity_to_be_stored': carbon_to_be_stored}
 
         self.ee.load_study_from_input_dict(inputs_dict)

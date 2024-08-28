@@ -1,0 +1,32 @@
+{
+    "hydrogen.gaseous_hydrogen": {
+        "type": "energy",
+        "value": [
+            "Electrolysis.AWE"
+        ]
+    },
+    "fuel.hydrotreated_oil_fuel": {
+        "type": "energy",
+        "value": [
+            "HefaDecarboxylation"
+        ]
+    },
+    "electricity": {
+        "type": "energy",
+        "value": [
+            "WindOffshore"
+        ]
+    },
+    "carbon_capture": {
+        "type": "CCUS",
+        "value": [
+            "flue_gas_capture.PiperazineProcess"
+        ]
+    },
+    "carbon_storage": {
+        "type": "CCUS",
+        "value": [
+            "CarbonStorageTechno"
+        ]
+    }
+}

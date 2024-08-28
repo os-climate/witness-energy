@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/18-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/18-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,23 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.biomass_fired.biomass_fired import BiomassFired
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
@@ -49,8 +44,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     }
 
     techno_name = GlossaryEnergy.BiomassFired
-    lifetime = 25  # Value for CHP units
-    construction_delay = 2  # years
+
 
     # Source for Initial prod in TWh (2019):
     # IEA 2022, Data Tables
@@ -78,7 +72,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'Opex_percentage': 0.04,
                                  'WACC': 0.075,
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,
                                  # IRENA (value from Figure 7.1, page 111)
                                  'Capex_init': 3000,
                                  'Capex_init_unit': '$/kW',
@@ -87,9 +80,8 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'biomass_needs': biomass_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9 #No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW,
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -97,37 +89,15 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # https://public.tableau.com/views/IRENARETimeSeries/Charts?:embed=y&:showVizHome=no&publish=yes&:toolbar=no
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: [1.1632 * 3000 / 1000, 1.1632 * 3000 / 1000]})
-    # In G$
 
     # From IRENA Data
     # https://public.tableau.com/views/IRENARETimeSeries/Charts?:embed=y&:showVizHome=no&publish=yes&:toolbar=no
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
     # 1.1632 / 15.414 ~= 7.5% added production each year (linear approximation)
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100 - 12 * 7.5, 7.5, 7.5, 7.5, 7.5,
-                                                         7.5, 7.5, 7.5, 7.5, 7.5,
-                                                         7.5, 7.5, 7.5, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -146,13 +116,13 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
@@ -178,10 +148,10 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         dprod_name_dinvest = (
                                          self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
         consumption_gradient = self.techno_consumption_derivative[
-            f'{BiomassDry.name} ({self.techno_model.product_energy_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+            f'{BiomassDry.name} ({self.techno_model.product_unit})']
+        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'),
+             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             (consumption_gradient - dprod_name_dinvest))

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@ limitations under the License.
 import logging
 
 import numpy as np
-
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from energy_models.core.demand.energy_demand import EnergyDemand
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from energy_models.core.demand.energy_demand import EnergyDemand
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyDemandDiscipline(SoSWrapp):
@@ -82,7 +81,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
-    energy_constraint_list = [Electricity.name] + \
+    energy_constraint_list = [GlossaryEnergy.electricity] + \
                              EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 

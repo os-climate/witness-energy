@@ -42,24 +42,24 @@ class Study(EnergyMixStudyManager):
         invest_medium_heat_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'NaturalGasBoilerMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['NaturalGasBoilerMediumHeat'] = [
+        if GlossaryEnergy.NaturalGasBoilerMediumHeat in self.technologies_list:
+            invest_medium_heat_mix_dict[GlossaryEnergy.NaturalGasBoilerMediumHeat] = [
                 0.02, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 
-        if 'ElectricBoilerMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['ElectricBoilerMediumHeat'] = [
+        if GlossaryEnergy.ElectricBoilerMediumHeat in self.technologies_list:
+            invest_medium_heat_mix_dict[GlossaryEnergy.ElectricBoilerMediumHeat] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
-        if 'HeatPumpMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['HeatPumpMediumHeat'] = list(np.ones(
+        if GlossaryEnergy.HeatPumpMediumHeat in self.technologies_list:
+            invest_medium_heat_mix_dict[GlossaryEnergy.HeatPumpMediumHeat] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'GeothermalMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['GeothermalMediumHeat'] = list(np.ones(
+        if GlossaryEnergy.GeothermalMediumHeat in self.technologies_list:
+            invest_medium_heat_mix_dict[GlossaryEnergy.GeothermalMediumHeat] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'CHPMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
+        if GlossaryEnergy.CHPMediumHeat in self.technologies_list:
+            invest_medium_heat_mix_dict[GlossaryEnergy.CHPMediumHeat] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
@@ -103,9 +103,9 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0})
 
-        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water'])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.0,
@@ -117,18 +117,18 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
-                       # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.Geothermal.flux_input_dict': land_rate,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
+                       # f'{self.study_name}.{energy_name}.{GlossaryEnergy.ElectricBoiler}.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.{GlossaryEnergy.NaturalGasBoiler}.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.{GlossaryEnergy.HeatPump}.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.{GlossaryEnergy.Geothermal}.flux_input_dict': land_rate,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

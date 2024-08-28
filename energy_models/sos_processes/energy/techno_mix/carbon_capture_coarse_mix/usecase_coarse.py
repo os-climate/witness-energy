@@ -70,14 +70,14 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = CarbonCapture.name
+        self.energy_name = GlossaryEnergy.carbon_capture
         flue_gas_name = FlueGas.node_name
-        ccs_name = f'{self.prefix_name}.{CarbonCapture.name}'
+        ccs_name = f'{self.prefix_name}.{GlossaryEnergy.carbon_capture}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.renewable: 10.0,
+                                      GlossaryEnergy.clean_energy: 10.0,
                                       GlossaryEnergy.fossil: 2.0,
                                       })
 
@@ -102,11 +102,11 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.0})
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, GlossaryEnergy.electricity: 0.0, 'calcium': 0.0,
-             GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 5.0})
+             GlossaryEnergy.clean_energy: 0.0, GlossaryEnergy.fossil: 5.0})
 
         flue_gas_list = [f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}', f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}']
         fossil_simple_techno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                  f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+                                                  f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -115,21 +115,21 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': flue_gas_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': flue_gas_mean,
-                       f'{self.study_name}.{ccs_name}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
-        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
         if self.main_study:
             values_dict.update(
                 {
 
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.flue_gas_co2_ratio': np.array(
                         [0.13]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.TechnoProductionValue}': fossil_simple_techno_prod,

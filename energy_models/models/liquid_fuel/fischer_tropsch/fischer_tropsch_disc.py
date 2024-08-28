@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
@@ -45,10 +49,6 @@ from energy_models.models.syngas.coal_gasification.coal_gasification_disc import
 )
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
@@ -67,8 +67,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.FischerTropsch
-    lifetime = 30
-    construction_delay = 3
+
     # 'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',
     #          'reaction2': '(2n+1)H2 + nCO --> CnH_2n+1 + nH20 ',
 
@@ -86,7 +85,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 0.5,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
                                  # 'medium_heat_production_unit': 'TWh/kg',
@@ -97,14 +95,11 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  # N/2N+1 with N number of carbon mol in
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.0, 2.0, 2.0]})
-
+    
     # FischerTropsch Wikipedia :
     # 140000+34000 BPD in Qatar GtL
     # 12000 BPD in Malaysia GtL
@@ -114,29 +109,12 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     initial_production = (140000 + 34000 + 12000 + 112000 + 165000 +
                           36000) * 1700 / 1e9 * 365  # in TWh at year_start
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.95238095, 0.95238095, 0.95238095, 0.95238095, 0.95238095,
-                                                         3.15981426, 6.64297934, 4.1268588, 3.0951441, 1.43778317,
-                                                         1.67390446, 4.00804617, 2.60936589, 4.97960258, 9.57870397,
-                                                         0., 2.20329743, 5.97672626, 5.34205629, 6.07448349,
-                                                         8.28981257, 5.90002444, 3.60348166, 1.6724005, 4.1584419,
-                                                         3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+                      
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
 
@@ -145,7 +123,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                             'namespace': 'ns_energy',
                                                             'default': GaseousHydrogen.data_energy_dict,
                                                             'unit': 'defined in dict'},
-               f'{GlossaryEnergy.syngas}.data_fuel_dict': {'type': 'dict',
+               f'{GlossaryEnergy.syngas}.{GlossaryEnergy.data_fuel_dict}': {'type': 'dict',
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
                                          'default': Syngas.data_energy_dict,
@@ -169,7 +147,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
         # Grad of price vs energyprice
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         grad_dict_resources_co2 = self.techno_model.grad_co2_emission_vs_resources_co2_emissions()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
@@ -244,17 +222,17 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             self.grad_total[energy] = value * \
                                       self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
                 self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
+                (GlossaryEnergy.StreamPricesValue, energy), self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), value)
 
                 # to manage gradient when carbon_emissions is null:
                 # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
@@ -273,7 +251,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
@@ -340,7 +318,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             if techno != GlossaryEnergy.Years:
                 techno_model = FischerTropsch(self.techno_name)
                 # Update init values syngas price and syngas_ratio
-                inputs_dict[GlossaryEnergy.EnergyPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
+                inputs_dict[GlossaryEnergy.StreamPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
                     techno]
                 inputs_dict['syngas_ratio'] = np.ones(
                     len(years)) * inputs_dict['syngas_ratio_technos'][techno]
@@ -434,7 +412,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedPricesValue)
-        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfStreamsUsageValue)
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
@@ -518,7 +496,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     def get_chart_detailed_price_in_dollar_kg(self):
 
         techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
-        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfEnergiesUsageValue)
+        cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfStreamsUsageValue)
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
             'calorific_value']

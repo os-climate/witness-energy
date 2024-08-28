@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,10 +17,19 @@ limitations under the License.
 import logging
 
 import numpy as np
-
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
+
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -58,15 +67,6 @@ from energy_models.models.syngas.coal_gasification.coal_gasification_disc import
     CoalGasificationDiscipline,
 )
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.tables.instanciated_table import (
-    InstanciatedTable,
-)
 
 
 class FlueGasDiscipline(SoSWrapp):
@@ -83,16 +83,16 @@ class FlueGasDiscipline(SoSWrapp):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
+    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.Pyrolysis}': PyrolysisDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
@@ -164,7 +164,7 @@ class FlueGasDiscipline(SoSWrapp):
                         'namespace': ns_variable,
                         'dataframe_descriptor': {
                             GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                            'CO2 from Flue Gas (Mt)': ('float', None, False),
+                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
                             }
                     }
 
@@ -215,12 +215,12 @@ class FlueGasDiscipline(SoSWrapp):
 
             grad_prod = (
                                 total_prod - self.energy_model.production[
-                            f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
+                            f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values) / total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_prod_ratio', techno),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_prod)
 
             grad_fluegas_prod = flue_gas_co2_ratio * grad_prod
@@ -230,30 +230,30 @@ class FlueGasDiscipline(SoSWrapp):
                         f'{techno_other}.flue_gas_co2_ratio')[0]
 
                     grad_flue_gas_prod_ratio = -self.energy_model.production[
-                        f'{self.energy_model.name} {techno} (Mt)'].values / \
+                        f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values / \
                                                total_prod ** 2
                     self.set_partial_derivative_for_other_types(
                         ('flue_gas_prod_ratio', techno),
                         (f'{techno_other}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{self.energy_model.name} (Mt)'),
+                         f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(
                             len_matrix) * grad_flue_gas_prod_ratio)
 
                     grad_fluegas_prod -= \
                         flue_gas_co2_ratio_other * self.energy_model.production[
-                            f'{self.energy_model.name} {techno_other} (Mt)'].values / \
+                            f'{self.energy_model.name} {techno_other} ({GlossaryEnergy.mass_unit})'].values / \
                         total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_fluegas_prod)
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_production', self.energy_model.name),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix))
 
     def get_chart_filter_list(self):

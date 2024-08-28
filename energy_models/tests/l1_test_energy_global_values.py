@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    Study as agri_study_open,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as Study_open,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
@@ -140,7 +142,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Oil production
         '''
 
-        computed_oil_production = energy_production[f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'].loc[
+        computed_oil_production = energy_production[f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})'].loc[
             energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0]
 
         # we compare in TWh and must be near 10% of error
@@ -153,8 +155,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Gas production
         '''
         fossil_gas_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.methane}.FossilGas.{GlossaryEnergy.TechnoProductionValue}')
-        computed_gas_production = fossil_gas_prod[f'{GlossaryEnergy.methane} (TWh)'].loc[
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}.{GlossaryEnergy.TechnoProductionValue}')
+        computed_gas_production = fossil_gas_prod[f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'].loc[
                                       fossil_gas_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                       0] * 1000.0
 
@@ -169,7 +171,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         coal_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.solid_fuel.CoalExtraction.{GlossaryEnergy.TechnoProductionValue}')
-        computed_coal_production = coal_prod[f'{GlossaryEnergy.solid_fuel} (TWh)'].loc[
+        computed_coal_production = coal_prod[f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'].loc[
                                        coal_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                        0] * 1000.0
 
@@ -184,7 +186,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Waiting for a specific value to compare
         '''
         #
-        #         computed_biomass_production = energy_production[f'production {GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         computed_biomass_production = energy_production[f'production {GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0]
         #
         #         # we compare in TWh and must be near 10% of error
@@ -197,10 +199,10 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Biofuel production
         '''
 
-        computed_biodiesel_production = energy_production[f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)'].loc[
+        computed_biodiesel_production = energy_production[f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})'].loc[
             energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0]
 
-        computed_biogas_production = energy_production[f'production {GlossaryEnergy.biogas} (TWh)'].loc[
+        computed_biogas_production = energy_production[f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})'].loc[
             energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0]
 
         computed_biofuel_production = computed_biodiesel_production + \
@@ -217,16 +219,16 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Solar production
         '''
         elec_solar_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarPv.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}.{GlossaryEnergy.TechnoProductionValue}')
 
         elec_solarth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarThermal}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_solar_production = elec_solar_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_solar_production = elec_solar_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                         elec_solar_prod[
                                             GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                         0] * 1000.0 + \
-                                    elec_solarth_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+                                    elec_solarth_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                         elec_solarth_prod[
                                             GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                         0] * 1000.0
@@ -241,15 +243,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Wind production
         '''
         elec_windonshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOnshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}.{GlossaryEnergy.TechnoProductionValue}')
         elec_windoffshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windonshore_prod[
                                            GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                        0] * 1000.0 + \
-                                   elec_windoffshore_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+                                   elec_windoffshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windoffshore_prod[
                                            GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
 
@@ -263,9 +265,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Nuclear production
         '''
         elec_nuclear_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Nuclear}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_nuclear_prod[
                                               GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                           0] * 1000.0
@@ -280,9 +282,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Hydropower production
         '''
         elec_hydropower_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Hydropower.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_hydropower_production = elec_hydropower_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_hydropower_production = elec_hydropower_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                              elec_hydropower_prod[
                                                  GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                              0] * 1000
@@ -317,27 +319,27 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Methane CO2 emissions are emissions from methane energy + gasturbine from electricity
         '''
         elec_gt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.GasTurbine.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         elec_cgt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         h2_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_methane_co2_emissions = \
             co2_emissions_by_energy[GlossaryEnergy.methane].loc[
                 co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] + \
-            elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
+            elec_gt_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_gt_prod[GlossaryEnergy.Years]
                                                        == GlossaryEnergy.YearStartDefault].values[0] + \
-            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod[GlossaryEnergy.Years]
+            elec_cgt_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_cgt_prod[GlossaryEnergy.Years]
                                                         == GlossaryEnergy.YearStartDefault].values[0] + \
-            h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod[GlossaryEnergy.Years]
+            h2_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[h2_prod[GlossaryEnergy.Years]
                                                   == GlossaryEnergy.YearStartDefault].values[0] * 0.75
         print('values', co2_emissions_by_energy[GlossaryEnergy.methane].loc[
             co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0],
-              elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
+              elec_gt_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_gt_prod[GlossaryEnergy.Years]
                                                          == GlossaryEnergy.YearStartDefault].values[0],
-              elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod[GlossaryEnergy.Years]
+              elec_cgt_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_cgt_prod[GlossaryEnergy.Years]
                                                           == GlossaryEnergy.YearStartDefault].values[0],
-              h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod[GlossaryEnergy.Years]
+              h2_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[h2_prod[GlossaryEnergy.Years]
                                                     == GlossaryEnergy.YearStartDefault].values[0] * 0.75)
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
@@ -351,14 +353,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Coal CO2 emissions are emissions from coal energy + CoalGeneration from electricity
         '''
         elec_coal_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoDetailedProductionValue}')
 
         computed_coal_co2_emissions = \
             co2_emissions_by_energy[GlossaryEnergy.solid_fuel].loc[
                 co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] + \
-            elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod[GlossaryEnergy.Years]
+            elec_coal_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_coal_prod[GlossaryEnergy.Years]
                                                          == GlossaryEnergy.YearStartDefault].values[0] + \
-            h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
+            h2_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_gt_prod[GlossaryEnergy.Years]
                                                   == GlossaryEnergy.YearStartDefault].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
@@ -372,11 +374,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Oil CO2 emissions are emissions from oil energy 
         '''
         elec_oil_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.OilGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.OilGen}.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_oil_co2_emissions = co2_emissions_by_energy[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'].loc[
                                          co2_emissions_by_energy[
                                              GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] + \
-                                     elec_oil_prod['CO2 from Flue Gas (Mt)'].loc[elec_oil_prod[GlossaryEnergy.Years]
+                                     elec_oil_prod[f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})"].loc[elec_oil_prod[GlossaryEnergy.Years]
                                                                                  == GlossaryEnergy.YearStartDefault].values[
                                          0]
         # we compare in Mt and must be near 10% of error
@@ -392,8 +394,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         # sources = self.ee.dm.get_value(
         #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
-        # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
-        #     'CO2_resource removed by energy mix (Gt)'].values[0]
         # sources_sum = sources.loc[sources[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault][[
         #     col for col in sources.columns if col != GlossaryEnergy.Years]].sum(axis=1)[0]
         # computed_total_co2_emissions = (sources_sum - sinks) * 1000
@@ -437,7 +437,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print(
             f'Energy own use for coal production is {coal_energy_own_use} TWh and now taken into account into raw production')
         energy_production_raw_coal_iea = 46666 - coal_energy_own_use  # TWH
-        coal_raw_prod = energy_production[f'production {GlossaryEnergy.solid_fuel} (TWh)'][0]
+        coal_raw_prod = energy_production[f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0]
         error_coalraw_prod = np.abs(
             energy_production_raw_coal_iea - coal_raw_prod) / energy_production_raw_coal_iea * 100.0
         # we compare in TWh and must be near 10% of error
@@ -450,7 +450,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # elec plants needs
         elec_plants = \
         self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.EnergyConsumptionValue}')[
-            f'{GlossaryEnergy.solid_fuel} (TWh)'][0] * 1000.0
+            f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_coal_IEA = 20194.44  # TWh
 
@@ -466,7 +466,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # syngas plants needs
         syngas_plants = \
         self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.EnergyConsumptionValue}')[
-            f'{GlossaryEnergy.solid_fuel} (TWh)'][0] * 1000.0
+            f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_coal_IEA = 264.72  # TWh
 
@@ -480,8 +480,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{liquefaction_plants_coal_IEA} TWh vs WITNESS :{syngas_plants} TWh')
 
         coal_used_by_energy = energy_production[
-                                  f'production {GlossaryEnergy.solid_fuel} (TWh)'][0] - net_energy_production[
-                                  f'production {GlossaryEnergy.solid_fuel} (TWh)'][0]
+                                  f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] - net_energy_production[
+                                  f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0]
         # chphighheat plants and heat plantstechnology not implemented
         chp_plants = 8222.22 + 289  # TWh
 
@@ -493,7 +493,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Coal to gas plants not implemented corresponds to ',
               gas_works / coal_used_by_energy * 100.0, ' % of coal used by energy')
         coal_total_final_consumption = net_energy_production[
-            f'production {GlossaryEnergy.solid_fuel} (TWh)'][0]
+            f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0]
         coal_total_final_consumption_iea = 11055  # TWH
 
         error_coalnet_prod = np.abs(
@@ -519,7 +519,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'Energy own use for methane production is {energy_own_use} TWh and now taken into account into raw production')
 
         energy_production_raw_gas_iea = 40000 - energy_own_use  # TWH
-        gas_raw_prod = energy_production[f'production {GlossaryEnergy.methane} (TWh)'][0]
+        gas_raw_prod = energy_production[f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0]
         error_gasraw_prod = np.abs(
             energy_production_raw_gas_iea - gas_raw_prod) / energy_production_raw_gas_iea * 100.0
         # we compare in TWh and must be near 10% of error
@@ -532,7 +532,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # elec plants needs
         elec_plants = \
         self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.EnergyConsumptionValue}')[
-            f'{GlossaryEnergy.methane} (TWh)'][0] * 1000.0
+            f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_gas_IEA = 10833.33  # TWh
         chp_plants_iea = 3887.05 + 709  # TWh
@@ -547,15 +547,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{elec_plants_gas_IEA} TWh vs WITNESS :{elec_plants} TWh')
 
         methane_used_by_energy = energy_production[
-                                     f'production {GlossaryEnergy.methane} (TWh)'][0] - net_energy_production[
-                                     f'production {GlossaryEnergy.methane} (TWh)'][0]
+                                     f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] - net_energy_production[
+                                     f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0]
         print('CHP and heat plants not implemented corresponds to ',
               chp_plants_iea / methane_used_by_energy * 100.0, ' % of methane used by energy : ', chp_plants_iea,
               ' TWh')
         # syngas plants needs
         syngas_plants = \
         self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.EnergyConsumptionValue}')[
-            f'{GlossaryEnergy.methane} (TWh)'][0] * 1000.0
+            f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_methane_IEA = 202.74  # TWh
         other_transformation = 277.5  # TWH
@@ -573,7 +573,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{liquefaction_plants_methane_IEA + other_transformation} TWh vs WITNESS :{syngas_plants} TWh')
 
         methane_total_final_consumption = net_energy_production[
-            f'production {GlossaryEnergy.methane} (TWh)'][0]
+            f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0]
         methane_total_final_consumption_iea = 19001  # TWH
 
         error_methanenet_prod = np.abs(
@@ -590,7 +590,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('----------  Electricity balances -------------')
 
         net_elec_prod = net_energy_production[
-            f'production {GlossaryEnergy.electricity} (TWh)'][0]
+            f'production {GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'][0]
 
         net_elec_prod_iea = 22847.66  # TWh
 
@@ -605,9 +605,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         energy_production_raw_hydro_iea = 4222.22  # TWH
         elec_hydropower_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Hydropower.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_hydropower_production = elec_hydropower_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_hydropower_production = elec_hydropower_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                              elec_hydropower_prod[
                                                  GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                              0] * 1000
@@ -624,15 +624,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
         energy_production_raw_wind_iea = 1427.41  # TWH
 
         elec_windonshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOnshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOnshore}.{GlossaryEnergy.TechnoProductionValue}')
         elec_windoffshore_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.WindOffshore}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_wind_production = elec_windonshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windonshore_prod[
                                            GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                        0] * 1000.0 + \
-                                   elec_windoffshore_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+                                   elec_windoffshore_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                        elec_windoffshore_prod[
                                            GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
 
@@ -646,9 +646,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_raw_wind_iea} TWh vs WITNESS :{computed_wind_production} TWh')
 
         elec_solar_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarPv.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarPv}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_solarpv_production = elec_solar_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_solarpv_production = elec_solar_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_solar_prod[
                                               GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                           0] * 1000
@@ -663,9 +663,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_solarpv_iea} TWh vs WITNESS :{computed_solarpv_production} TWh')
 
         elec_solarth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.SolarThermal}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_solarth_production = elec_solarth_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_solarth_production = elec_solarth_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_solarth_prod[
                                               GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                           0] * 1000
@@ -681,9 +681,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         '''
         elec_geoth_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Geothermal.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Geothermal}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_geoth_production = elec_geoth_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_geoth_production = elec_geoth_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                         elec_geoth_prod[
                                             GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                         0] * 1000.0
@@ -699,9 +699,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_geoth_iea} TWh vs WITNESS :{computed_geoth_production} TWh')
         '''
         elec_coalgen_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CoalGen.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_coalgen_production = elec_coalgen_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_coalgen_production = elec_coalgen_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_coalgen_prod[
                                               GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                           0] * 1000.0
@@ -717,14 +717,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_coalgen_iea} TWh vs WITNESS :{computed_coalgen_production} TWh')
 
         elec_gt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.GasTurbine.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}')
         elec_cgt_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_gasgen_production = elec_gt_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_gasgen_production = elec_gt_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                          elec_gt_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                          0] * 1000.0 + \
-                                     elec_cgt_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+                                     elec_cgt_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                          elec_cgt_prod[
                                              GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                          0] * 1000.0
@@ -740,9 +740,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{energy_production_gasgen_iea} TWh vs WITNESS :{computed_gasgen_production} TWh')
 
         elec_nuclear_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.Nuclear}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} (TWh)'].loc[
+        computed_nuclear_production = elec_nuclear_prod[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].loc[
                                           elec_nuclear_prod[
                                               GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[
                                           0] * 1000.0
@@ -775,23 +775,23 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #         managed_wood_prod = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.ManagedWood.{GlossaryEnergy.TechnoProductionValue}')
         #
-        #         computed_managed_wood_prod = managed_wood_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         computed_managed_wood_prod = managed_wood_prod[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             managed_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
         #
         #         unmanaged_wood_prod = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.UnmanagedWood.{GlossaryEnergy.TechnoProductionValue}')
         #
-        #         computed_unmanaged_wood_prod = unmanaged_wood_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         computed_unmanaged_wood_prod = unmanaged_wood_prod[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             unmanaged_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
         #
         #         crop_energy_prod = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.CropEnergy.{GlossaryEnergy.TechnoProductionValue}')
         #
-        #         computed_crop_energy_prod = crop_energy_prod[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         computed_crop_energy_prod = crop_energy_prod[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             crop_energy_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
         #
         #         biomass_dry_net_prod = net_energy_production[
-        #             f'production {GlossaryEnergy.biomass_dry} (TWh)'][0] - computed_crop_energy_prod
+        #             f'production {GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'][0] - computed_crop_energy_prod
         #
         #         biomass_dry_raw_prod = computed_managed_wood_prod + computed_unmanaged_wood_prod
         #
@@ -819,19 +819,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #         biogas_cons = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biogas}.{GlossaryEnergy.EnergyConsumptionValue}')
         #
-        #         biomass_by_biogas_cons = biogas_cons[f'{GlossaryEnergy.wet_biomass} (Mt)'].loc[
+        #         biomass_by_biogas_cons = biogas_cons[f'{GlossaryEnergy.wet_biomass} ({GlossaryEnergy.mass_unit})'].loc[
         #             biogas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
         #
         #         syngas_cons = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
         #
-        #         biomass_by_syngas_cons = syngas_cons[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         biomass_by_syngas_cons = syngas_cons[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             syngas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000
         #
         #         solid_fuel_cons = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
         #
-        #         biomass_by_solid_fuel_cons = solid_fuel_cons[f'{GlossaryEnergy.biomass_dry} (TWh)'].loc[
+        #         biomass_by_solid_fuel_cons = solid_fuel_cons[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             solid_fuel_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000
         #
         #         biomass_dry_otherrtransf_witness = biomass_by_solid_fuel_cons + biomass_by_syngas_cons
@@ -859,14 +859,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
             'and biodiesel (a methyl-ester produced from vegetable or animal oil, of diesel quality), biodimethylether (dimethylether produced from biomass), Fischer Tropsch (Fischer Tropsch produced from biomass), cold pressed bio-oil (oil produced from oil seed through mechanical processing only) ')
 
         raw_biodiesel_prod = energy_production[
-            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)'][0]
+            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})'][0]
         raw_hydrotreated_oil_fuel_prod = energy_production[
-            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)'][0]
+            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})'][0]
 
         raw_fischertropsch_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.{GlossaryEnergy.FischerTropsch}.{GlossaryEnergy.TechnoProductionValue}')
 
-        computed_ft_production = raw_fischertropsch_prod[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'].loc[
+        computed_ft_production = raw_fischertropsch_prod[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})'].loc[
                                      raw_fischertropsch_prod[
                                          GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
 
@@ -888,7 +888,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('WITNESS model considers only anaerobic digestion')
 
         raw_biogas_prod = energy_production[
-            f'production {GlossaryEnergy.biogas} (TWh)'][0]
+            f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})'][0]
         biogas_raw_prod_iea = 1434008 / 3600
 
         error_biogas_raw_prod = np.abs(
@@ -902,7 +902,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('These technologies are not yet implemented in WITNESS models, then :')
         biogas_net_prod_iea = 521188 / 3600
         net_biogas_prod = net_energy_production[
-            f'production {GlossaryEnergy.biogas} (TWh)'][0]
+            f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})'][0]
         error_biogas_net_prod = np.abs(
             biogas_net_prod_iea - net_biogas_prod) / biogas_net_prod_iea * 100.0
 
@@ -926,7 +926,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
                         }
 
         raw_refinery_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.Refinery.{GlossaryEnergy.TechnoProductionValue}')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.{GlossaryEnergy.Refinery}.{GlossaryEnergy.TechnoProductionValue}')
 
         raw_refinery_prod_2020 = raw_refinery_prod.loc[
                                      raw_refinery_prod[
@@ -934,7 +934,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         for oil_name, oil_prod in iea_data_oil.items():
             oil_prod_witness = raw_refinery_prod_2020[
-                f'{oil_name} (TWh)'].values[0]
+                f'{oil_name} ({GlossaryEnergy.energy_unit})'].values[0]
             error_oil_prod = np.abs(
                 oil_prod - oil_prod_witness) / oil_prod * 100.0
 
@@ -945,7 +945,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             'WITNESS model only takes for now raw liquid_fuel production which is correct')
 
         net_liquid_fuel_prod = net_energy_production[
-            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'][0]
+            f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})'][0]
         liquid_fuel_net_prod_iea = 168375005 / 3600
 
         error_liquid_fuel_net_prod = np.abs(
@@ -956,7 +956,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         liquid_fuel_own_use = 2485.89  # TWH
         liquid_fuel_raw_prod = raw_refinery_prod_2020[
-            f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)'].values[0]
+            f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})'].values[0]
         energy_production_raw_liquidfuel_iea = 52900 - liquid_fuel_own_use
         print(
             f'Energy own use for liquid fuel production is {liquid_fuel_own_use} TWh')
@@ -1001,7 +1001,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # These emissions are in Gt
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.StreamPricesValue}')
 
         '''
         Energy prices
@@ -1047,7 +1047,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # between 1.9 and 2.5 $/kg mean : 2.2 $/kg
         coal_gas_price_iea = 2.5 / 33.3 * 1000
         wgs_price = hydrogen_prices[
-            'WaterGasShift'][0]
+            GlossaryEnergy.WaterGasShift][0]
         wgs_price_iea = 0.75 * smr_price_iea + 0.25 * coal_gas_price_iea
         error_wgs_price = np.abs(
             wgs_price_iea - wgs_price) / wgs_price_iea * 100.0
@@ -1058,7 +1058,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         electrolysis_price_iea = 7.7 / 33.3 * 1000  # between 3.2 and 7.7 $/kg
 
         electrolysis_price = hydrogen_prices[
-            'Electrolysis.SOEC'][0]
+            GlossaryEnergy.ElectrolysisSOEC][0]
         error_electrolysis_price = np.abs(
             electrolysis_price_iea - electrolysis_price) / electrolysis_price_iea * 100.0
 
