@@ -42,7 +42,6 @@ class CleanEnergySimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.override_dump_jacobian = 1
         self.energy_name = GlossaryEnergy.CleanEnergySimpleTechno
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
@@ -148,6 +147,7 @@ class CleanEnergySimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
                                     ],
