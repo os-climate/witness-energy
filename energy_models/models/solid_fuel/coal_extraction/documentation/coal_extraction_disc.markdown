@@ -35,11 +35,11 @@ The emission of methane is a big issue for coal extraction mines. A lot of metha
 
 The Model for Calculating Coal Mine Methane (MC2M) developed by [^4] and used by IPCC models computed the annual CH4 emissions from coal mines with the equation : 
 
-$$CH4\_emissions (m^3) = coal\_production (t) *gas\_content(mine\_depth,coal\_type)*ef\_coefficient$$ 
+$$CH4\_emissions (m^3) = coal\_production (t) *gas\_content(mine\_depth,coal\_type)*ef\_coefficient$$
 
 with $ef\_coefficient$ the emission factor coefficient equals to 1.7 in [^4] ans 1.6 in the Global Coal Mine Tracker [^6] and gas\_content(mine\_depth,coal\_type) the equivalent of CH4 emissions per ton of coal mined in $m^3/t$ :
 
-$$ gas\_content(mine\_depth,coal\_type) = \frac{VL_{coal} depth}{PL_{coal}+depth}$$
+$$gas\_content(mine\_depth,coal\_type) = \frac{VL_{coal} depth}{PL_{coal}+depth}$$
 
 with $VL_{coal}$ and $PL_{coal}$ the Langmuir volume and pressure of the coal type (different for anthracite or subbituminous).
 

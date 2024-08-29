@@ -507,7 +507,7 @@ class TechnoDiscipline(SoSWrapp):
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
-                            production_woratio = self.techno_model.production_woratio[column]
+                            production_woratio = self.techno_model.production_woratio[column].values
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
                                 production_woratio,
                                 ratio_name=ratio_name,
@@ -592,7 +592,7 @@ class TechnoDiscipline(SoSWrapp):
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
-                                consumption_woratio = self.techno_model.consumption_woratio[column]
+                                consumption_woratio = self.techno_model.consumption_woratio[column].values
                                 dprod_dratio = self.techno_model.compute_dprod_dratio(
                                     consumption_woratio,
                                     ratio_name=ratio_name,

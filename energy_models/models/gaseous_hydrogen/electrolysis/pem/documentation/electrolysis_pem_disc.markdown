@@ -32,7 +32,7 @@ PEM electrolysers need expensive noble metals (platinum, iridium) which makes th
 PEM electrolysers are not yet fully developped but Buttler [^6] reported around 6MW of PEM electrolysers nominal power around the world in 2017. With new project emerging, the nominal power of PEM is around 50MW in 2021 (a new 10MW hydrogen electrolysis plant, the largest of its kind in Europe operates in 2020[^7] and another 20 MW, the largest of its kind in the world, will start operating in 2021 in Quebec (Canada) [^10] ) leading to a global hydrogen production of 0.4TWh per year. 
 Public investment in Europe for electrolysers is handled by the Fuel Cell and Hydrogen Joint Undertaking (FCH-JU) organism [^8].In 2019, european investments was around 156 MEUR or around 190 MDollars. We assume half of it is dedicated tor PEM. Around 36% of PEM electrolysers is financed by European union worldwide [^9]. Consequently the hypothesis investment in 2019 for PEM is around :
 
-$$\frac{190*100}{2*36}= 263.88 \ MDollars$$ 
+$$\frac{190*100}{2*36}= 263.88 \ MDollars$$
 
 ## Heat
 In Electrolysis, heat production assumed the net difference between total electricity consumption and total hydrogen production.

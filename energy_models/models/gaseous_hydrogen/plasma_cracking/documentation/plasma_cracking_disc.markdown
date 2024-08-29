@@ -23,39 +23,39 @@ PC_cost : Plasma Cracking cost
 
 ### Formula:
 
-$$H2_{price}= PC_{cost} * Margin * X $$
+$$H2_{price}= PC_{cost} * Margin * X$$
 
-$$H2_{price}= PC_{cost}(invest, energy\_prices,energy\_CO2\_emission) * Margin$$ 
-$$ * X(invest, energy\_prices, all\_stream\_demand\_ratio, resources\_price) $$
+$$H2_{price}= PC_{cost}(invest, energy\_prices,energy\_CO2\_emission) * Margin$$
+$$* X(invest, energy\_prices, all\_stream\_demand\_ratio, resources\_price)$$
 
 
 
 ### Gradients to compute:
 
-  $$\dfrac {\partial H2_{price}}{\partial invest}= Margin * X * \dfrac {\partial PC_{cost}}{\partial invest} 
-    + PC_{cost} * Margin * \dfrac {\partial X}{\partial invest} $$
+  $$\dfrac {\partial H2_{price}}{\partial invest}= Margin * X * \dfrac {\partial PC_{cost}}{\partial invest}
+  + PC_{cost} * Margin * \dfrac {\partial X}{\partial invest}$$
 
- $$\dfrac {\partial H2_{price}}{\partial energy\_prices}= Margin * X * \dfrac {\partial PC_{cost}}{\partial energy\_prices} 
-    +  PC_{cost} * Margin * \dfrac {\partial X}{\partial energy\_prices} $$
+ $$\dfrac {\partial H2_{price}}{\partial energy\_prices}= Margin * X * \dfrac {\partial PC_{cost}}{\partial energy\_prices}
+ + PC_{cost} * Margin * \dfrac {\partial X}{\partial energy\_prices}$$
 
- $$\dfrac {\partial H2_{price}}{\partial energy\_CO2\_emission}= Margin * X * \dfrac {\partial PC_{cost}}{\partial energy\_CO2\_emission} 
-    + 0 $$
+ $$\dfrac {\partial H2_{price}}{\partial energy\_CO2\_emission}= Margin * X * \dfrac {\partial PC_{cost}}{\partial energy\_CO2\_emission}
+ + 0$$
 
+$$\dfrac {\partial H2_{price}}{\partial all\_stream\_demand\_ratio}= PC_{cost} * Margin * \dfrac {\partial X}{\partial all\_stream\_demand\_ratio}$$
 
-  $$\dfrac {\partial H2_{price}}{\partial all\_stream\_demand\_ratio}= PC_{cost} * Margin * \dfrac {\partial X}{\partial all\_stream\_demand\_ratio} $$
-
-$$\dfrac {\partial H2_{price}}{\partial resources\_price}= PC_{cost} * Margin * \dfrac {\partial X}{\partial resources\_price} $$
+$$\dfrac {\partial H2_{price}}{\partial resources\_price}= PC_{cost} * Margin * \dfrac {\partial X}{\partial resources\_price}$$
 
 ### X computation:
-$$ X = \dfrac {H2\_revenue}{H2\_revenue 
-	+  A
+
+$$X = \dfrac {H2\_revenue}{H2\_revenue
++  A
 }$$
 
 with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
-$$ A = Carbon\_sold\_revenue $$
+$$A = Carbon\_sold\_revenue$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
@@ -69,7 +69,7 @@ $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}
 
 ### energy_prices gradient computation:
 
-$$ \dfrac {\partial X}{\partial energy\_prices} =
+$$\dfrac {\partial X}{\partial energy\_prices} =
 \dfrac {
     \dfrac {\partial H2\_price}{\partial energy\_prices} * H2\_prod * 
     A
@@ -82,7 +82,7 @@ with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
-$$ A = Carbon\_sold\_revenue$$
+$$A = Carbon\_sold\_revenue$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
@@ -95,7 +95,7 @@ $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}
 
 ### invest gradient computation:
 
-$$ \dfrac {\partial X}{\partial invest} =
+$$\dfrac {\partial X}{\partial invest} =
 \dfrac {
     [ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * A ]
     -
@@ -109,9 +109,9 @@ with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
-$$ A = Carbon\_sold\_revenue$$
+$$A = Carbon\_sold\_revenue$$
 
-$$ B = Carbon\_price $$
+$$B = Carbon\_price$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
@@ -120,14 +120,14 @@ if  Carbon\_prod > Carbon\_demand :
 $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price
     - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
 
-$$ B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol} $$
+$$B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol}$$
 \
 
 
 
 ### all stream demand ratio computation:
 
-$$ {\footnotesize\dfrac {\partial X}{\partial all\_stream\_demand\_ratio} =
+$${\footnotesize\dfrac {\partial X}{\partial all\_stream\_demand\_ratio} =
 \dfrac {
     [ \dfrac {\partial H2\_prod}{\partial all\_stream\_demand\_ratio} * H2\_price * A ]
     -
@@ -141,9 +141,9 @@ with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
-$$ A = Carbon\_sold\_revenue$$
+$$A = Carbon\_sold\_revenue$$
 
-$$ B = Carbon\_price $$
+$$B = Carbon\_price$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
@@ -152,12 +152,12 @@ if  Carbon\_prod > Carbon\_demand :
 $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price
     - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
 
-$$ B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol} $$
+$$B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol}$$
 
 
 ### resources price computation:
 
-$$ {\footnotesize\dfrac {\partial X}{\partial resources\_price} =
+$${\footnotesize\dfrac {\partial X}{\partial resources\_price} =
 \dfrac {
     -
     [\dfrac {\partial Carbon\_price} {\partial resources\_price} * B *
@@ -170,9 +170,9 @@ with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
-$$ A = Carbon\_sold\_revenue$$
+$$A = Carbon\_sold\_revenue$$
 
-$$ B = Carbon\_sold\_revenue$$
+$$B = Carbon\_sold\_revenue$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
@@ -181,7 +181,7 @@ if  Carbon\_prod > Carbon\_demand :
 $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price
     - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
 
-$$ B = Carbon\_demand $$
+$$B = Carbon\_demand$$
 
 
 ## Gradient computation - More details
@@ -259,9 +259,9 @@ $$=\dfrac {[ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * Carbon\_s
 
 if  Carbon\_prod > Carbon\_demand : 
 
-$$ {\scriptsize X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ] 	+  [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]} }$$
+$${\scriptsize X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]    +  [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]} }$$
 
-$$ = \dfrac {H2\_prod * H2\_price}{H2\_revenue 	+  A}$$
+$$= \dfrac {H2\_prod * H2\_price}{H2\_revenue + A}$$
 
 with:
 
@@ -290,4 +290,4 @@ $$=\dfrac {[ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * A ]    - 
 
 with:
 
-$$ {\small A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
+$${\small A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
