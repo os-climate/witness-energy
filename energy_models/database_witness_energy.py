@@ -87,6 +87,12 @@ class DatabaseWitnessEnergy:
     invest_before_year_start_folder = join(Path(__file__).parents[1], "data_energy", "techno_invests")
 
     @classmethod
+    def get_non_mainstream_techno_invest_bfore_ystart(cls, year_start: int, construction_delay: int):
+        return pd.DataFrame({
+                        "years": list(range(year_start - construction_delay, year_start)),
+                        "invest": 1e-3,
+                    })
+    @classmethod
     def get_techno_invest_before_year_start(cls, techno_name: str, year_start: int, construction_delay: int, is_available_at_year: bool = False):
         name_formatted = techno_name.replace(".", "_")
         name_formatted = name_formatted.lower()
@@ -103,6 +109,8 @@ class DatabaseWitnessEnergy:
             column_to_pick="invest"
         )
         out_df = df.loc[df['years'] < year_start]
+        if out_df["years"].astype(int).max() != year_start -1 :
+            raise ValueError(f'Missing values for invest for techno {techno_name} between {year_start - construction_delay} and {year_start - 1}')
         if is_available_at_year:
             return construction_delay == 0 or (heavy_collected_data.is_available_at_year(year_start - construction_delay) and heavy_collected_data.is_available_at_year(year_start - 1))
         if construction_delay > 0:
@@ -130,7 +138,10 @@ class DatabaseWitnessEnergy:
         if is_available_at_year:
             return heavy_collected_data.is_available_at_year(year=year)
 
-        out = heavy_collected_data.get_value_at_year(year=year)
+        try:
+            out = heavy_collected_data.get_value_at_year(year=year)
+        except:
+            raise ValueError(f'Missing production data for techno {techno_name} at year {year}')
         return out, heavy_collected_data
 
 

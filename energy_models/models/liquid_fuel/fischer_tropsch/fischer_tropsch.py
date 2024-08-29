@@ -384,8 +384,8 @@ class FischerTropsch(LiquidFuelTechno):
                        # Tropsch will decrease the price of WGS ?
                        GlossaryEnergy.InvestLevelValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
-                       GlossaryEnergy.InvestmentBeforeYearStartValue: DatabaseWitnessEnergy.get_techno_invest_before_year_start(
-                           techno_name=RWGSDiscipline.techno_name, year_start=self.year_start, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[RWGSDiscipline.techno_name])[0],
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: DatabaseWitnessEnergy.get_non_mainstream_techno_invest_bfore_ystart(
+                           year_start=self.year_start, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[RWGSDiscipline.techno_name]),
                        GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
                        GlossaryEnergy.MarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
@@ -445,10 +445,8 @@ class FischerTropsch(LiquidFuelTechno):
                        # the hypothesis looks fine
                        GlossaryEnergy.InvestLevelValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
-                       GlossaryEnergy.InvestmentBeforeYearStartValue:
-                           DatabaseWitnessEnergy.get_techno_invest_before_year_start(
-                               techno_name=WaterGasShiftDiscipline.techno_name, year_start=self.year_start,
-                               construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[WaterGasShiftDiscipline.techno_name])[0],
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: DatabaseWitnessEnergy.get_non_mainstream_techno_invest_bfore_ystart(
+                           year_start=self.year_start, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[WaterGasShiftDiscipline.techno_name]),
                        GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
                        GlossaryEnergy.MarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),

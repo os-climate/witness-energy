@@ -91,6 +91,7 @@ class TechnoDiscipline(SoSWrapp):
         'initial_production': {'type': 'float', 'unit': 'TWh'},
         GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "description": "lifetime of a plant of the techno"},
         GlossaryEnergy.InitialPlantsAgeDistribFactor: {'type': 'float', 'unit': 'years', "description": "lifetime of a plant of the techno"},
+        GlossaryEnergy.IsTechnoMainstream: {'type': 'bool'},
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -230,6 +231,13 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years
         '''
+        is_mainstream = None
+        if GlossaryEnergy.IsTechnoMainstream in self.get_data_in():
+            is_mainstream = self.get_sosdisc_inputs(GlossaryEnergy.IsTechnoMainstream)
+            if is_mainstream is None:
+                is_mainstream = GlossaryEnergy.TechnoMainstreamDict[self.techno_name]
+                self.update_default_value(GlossaryEnergy.IsTechnoMainstream, 'in', is_mainstream)
+
         if GlossaryEnergy.LifetimeName in self.get_data_in():
             lifetime = self.get_sosdisc_inputs(GlossaryEnergy.LifetimeName)
             if lifetime is None:
@@ -239,16 +247,22 @@ class TechnoDiscipline(SoSWrapp):
         if GlossaryEnergy.InitialPlantsAgeDistribFactor in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             initial_plant_age_distrib_factor = self.get_sosdisc_inputs(GlossaryEnergy.InitialPlantsAgeDistribFactor)
-            if initial_plant_age_distrib_factor is None and year_start is not None:
-                initial_plant_age_distrib_factor, _ = DatabaseWitnessEnergy.get_techno_age_distrib_factor(self.techno_name, year=year_start)
-                self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', initial_plant_age_distrib_factor)
+            if initial_plant_age_distrib_factor is None and year_start is not None and is_mainstream is not None:
+                if is_mainstream:
+                    initial_plant_age_distrib_factor, _ = DatabaseWitnessEnergy.get_techno_age_distrib_factor(self.techno_name, year=year_start)
+                    self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', initial_plant_age_distrib_factor)
+                else:
+                    self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', 1.)
 
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             initial_production = self.get_sosdisc_inputs('initial_production')
-            if initial_production is None and year_start is not None:
-                initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
-                self.update_default_value('initial_production', 'in', initial_production)
+            if initial_production is None and year_start is not None and is_mainstream is not None:
+                if is_mainstream:
+                    initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
+                    self.update_default_value('initial_production', 'in', initial_production)
+                else:
+                    self.update_default_value('initial_production', 'in', 1e-3)
 
         construction_delay = None
         if GlossaryEnergy.ConstructionDelay in self.get_data_in():
@@ -260,10 +274,14 @@ class TechnoDiscipline(SoSWrapp):
         if GlossaryEnergy.InvestmentBeforeYearStartValue in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'techno_infos_dict' in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             invest_before_year_start_val = self.get_sosdisc_inputs(GlossaryEnergy.InvestmentBeforeYearStartValue)
-            if year_start is not None and construction_delay is not None and invest_before_year_start_val is None:
-                default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
-                    techno_name=self.techno_name, year_start=year_start, construction_delay=construction_delay)
-                self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
+            if year_start is not None and construction_delay is not None and invest_before_year_start_val is None and is_mainstream is not None:
+                if is_mainstream:
+                    default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
+                        techno_name=self.techno_name, year_start=year_start, construction_delay=construction_delay)
+                    self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
+                else:
+                    default_val = DatabaseWitnessEnergy.get_non_mainstream_techno_invest_bfore_ystart(year_start=year_start, construction_delay=construction_delay)
+                    self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
 
         if GlossaryEnergy.ResourcesUsedForProductionValue in self.get_data_in():
             resource_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesUsedForProductionValue)
