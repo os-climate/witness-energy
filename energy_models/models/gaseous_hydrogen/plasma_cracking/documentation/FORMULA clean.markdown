@@ -89,7 +89,7 @@ $$A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_dem
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if  Carbon\_storage > Carbon\_storage\_max :
 
-$$ A = [Carbon\_demand * Carbon\_price]+ [\dfrac {(Carbon\_storage\_max)* Carbon\_mol * CO2\_credit}{CO2\_mol}]$$
+$$A = [Carbon\_demand * Carbon\_price]+ [\dfrac {(Carbon\_storage\_max)* Carbon\_mol * CO2\_credit}{CO2\_mol}]$$
 
 #### energy_prices:
 
@@ -114,7 +114,7 @@ $$A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_dem
 $$\dfrac {\partial X}{\partial invest} =\dfrac {[ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * A ]}{[H2\_revenue	+ A ]^2}$$
 
 with:
-$$ A = [Carbon\_demand * Carbon\_price]+ [\dfrac {(Carbon\_storage\_max)* Carbon\_mol * CO2\_credit}{CO2\_mol}]$$
+$$A = [Carbon\_demand * Carbon\_price]+ [\dfrac {(Carbon\_storage\_max)* Carbon\_mol * CO2\_credit}{CO2\_mol}]$$
 \
 \
 \

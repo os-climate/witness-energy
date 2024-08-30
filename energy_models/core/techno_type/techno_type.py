@@ -1199,7 +1199,7 @@ class TechnoType:
     def d_non_use_capital_d_utilisation_ratio(self):
         techno_capital = self.techno_capital[GlossaryEnergy.Capital].values
         d_non_use_capital_d_utilisation_ratio = np.diag(
-            - techno_capital * self.applied_ratio['applied_ratio'] / 100.
+            - techno_capital * self.applied_ratio['applied_ratio'].values / 100.
         )
         return d_non_use_capital_d_utilisation_ratio
 
@@ -1263,7 +1263,7 @@ class TechnoType:
                 else:
                     raise Exception('Unknown smooth_type')
                 for i, element in enumerate(self.ratio_df[elements].columns):
-                    dsmooth_dvariable[element] = dsmooth_matrix.T[i]
+                    dsmooth_dvariable[element] = np.diag(dsmooth_matrix.T[i] / 100.)
 
         return dsmooth_dvariable
 
@@ -1394,7 +1394,7 @@ class TechnoType:
 
         return self.dpower_list_dinvest_list
 
-    def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
+    def compute_dprod_dratio(self, prod: np.ndarray, ratio_name: str, dapplied_ratio_dratio):
         '''! Select the most constraining ratio and apply it to production and consumption.
         To avoid clipping effects, the applied ratio is not the minimum value between all the ratios,
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
@@ -1413,10 +1413,9 @@ class TechnoType:
             # Check that the ratio corresponds to something consumed
             for col in self.consumption_detailed.columns:
                 if ratio_name in col and ratio_name != GlossaryEnergy.Years:
-                    dprod_dratio = (np.identity(len(self.years)) * prod.values) * \
+                    dprod_dratio = (np.identity(len(self.years)) * prod) * \
                                    dapplied_ratio_dratio[ratio_name]
-        return dprod_dratio / 100.
-
+        return dprod_dratio
 
     def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
         '''
@@ -1445,8 +1444,8 @@ class TechnoType:
         '''
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
                     self.production_woratio[f'{self.energy_name} ({self.product_unit})'].values
-        dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return np.diag(dnon_use_capital_dratio / 100.)
+        dnon_use_capital_dratio = -dapplied_ratio_dratio * np.diag(mult_vect)
+        return dnon_use_capital_dratio
 
     def compute_dcapex_dinvest(self, invest_list, data_config):
         """

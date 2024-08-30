@@ -12,7 +12,7 @@ There are many amine chemicals that dissolve into water as a solvent for biogas 
 
 The reaction between MEA and CO2 is an exothermic reaction; for each mole of CO2 absorbed in MEA solution, 72kJ of thermal energy is released.
 
-$$ 2(OH - 2CH_2 - NH_2) + CO_2 <--> (OH) - (CH_2)_2 - NHCOO- + OH - (CH_2)_2 - NH_3$$
+$$2(OH - 2CH_2 - NH_2) + CO_2 <--> (OH) - (CH_2)_2 - NHCOO- + OH - (CH_2)_2 - NH_3$$
 $$2(OH - (CH_2)_2 - NH_2) + H_2S <--> (HOCH_2CH_2NH_3)_2S$$
 $$(HOCH_2CH_2NH_3)_2S + H_2S <-->2HOCH_2CH_2NH_3HS$$
 

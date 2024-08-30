@@ -23,15 +23,15 @@ $$(H_2 +r_1 CO) + cH_20 --> dCO_2 + e(H_2 +r_2CO)$$
 
 with $r_1$ and $r_2$ syngas ratios before and after the reaction :
 
-$$ r_i = \frac{mol CO}{mol H2}$$
+$$r_i = \frac{mol CO}{mol H2}$$
 
 and with $c$,$d$ and $e$ coefficients of the reaction that can be computed with $r_1$ and $r_2$ to satisfy chemical equilibrium : 
 
-$$ c = \frac{r1-r2}{1+r2}$$
+$$c = \frac{r1-r2}{1+r2}$$
 
-$$ d = r1 - \frac{r2(1+r1)}{1+r2}$$
+$$d = r1 - \frac{r2(1+r1)}{1+r2}$$
 
-$$ e = \frac{1+r1}{1+r2}$$
+$$e = \frac{1+r1}{1+r2}$$
 
 
 ## Data 
