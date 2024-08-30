@@ -35,7 +35,7 @@ The resources needed to produce pellets are raw biomass and electricity (for chi
 
 The quantity of raw biomass depends on the moisture content of the biomass and the produced pellets following this formula:
 
-$$ Q_{ty biomass}=\frac{(1+m_{biomass})}{(1+m_{pellets})}Q_{ty pellets}$$
+$$Q_{ty biomass}=\frac{(1+m_{biomass})}{(1+m_{pellets})}Q_{ty pellets}$$
 
 An average value of the moisture content has been taken at 30% for the biomass and 8% for the pellets.
 
