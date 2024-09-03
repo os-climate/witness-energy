@@ -83,39 +83,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                        'namespace': 'ns_energy',
-                                                       'dataframe_descriptor': {
-                                                           GlossaryEnergy.Years: ('float', None, True),
-                                                           f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})': (
-                                                               'float', None, True),
-                                                           'Total production': ('float', None, True),
-                                                           'Total production (uncut)': ('float', None, True),
-                                                       },
+                                                       "dynamic_dataframe_columns": True,
                                                        },
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
                                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,

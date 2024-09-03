@@ -395,7 +395,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             [(1. - alpha) * self.energy_model.production[GlossaryEnergy.TotalProductionValue][0] * delta_years
              / self.energy_model.production[GlossaryEnergy.TotalProductionValue].sum(), ])
 
-        
+
         if EnergyMix.PRODUCTION in self.energy_model.stream_prices:
             self.energy_model.stream_prices.drop(
                 columns=[EnergyMix.PRODUCTION], inplace=True)
@@ -781,7 +781,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      f'production {energy} ({stream_class_dict[energy].unit})'),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    np.identity(len(years)) * scaling_factor_energy_production)
+                    np.identity(len(years)) * scaling_factor_energy_production * 0.)
                 # ---- Loop on energy again to differentiate production and consumption ----#
                 for energy_input in energy_list:
                     ns_energy_input = self.get_ns_energy(energy_input)
