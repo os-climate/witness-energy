@@ -1419,8 +1419,7 @@ class TechnoType:
             # Check that the ratio corresponds to something consumed
             for col in self.consumption_detailed.columns:
                 if ratio_name in col and ratio_name != GlossaryEnergy.Years:
-                    dprod_dratio = (np.identity(len(self.years)) * prod) * \
-                                   dapplied_ratio_dratio[ratio_name]
+                    dprod_dratio = np.diag(prod * self.utilisation_ratio / 100) * dapplied_ratio_dratio[ratio_name]
         return dprod_dratio
 
     def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
@@ -1450,7 +1449,7 @@ class TechnoType:
         '''
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
                     self.production_woratio[f'{self.energy_name} ({self.product_unit})'].values
-        dnon_use_capital_dratio = -dapplied_ratio_dratio * np.diag(mult_vect)
+        dnon_use_capital_dratio = -dapplied_ratio_dratio * np.diag(mult_vect * self.utilisation_ratio / 100.)
         return dnon_use_capital_dratio
 
     def compute_dcapex_dinvest(self, invest_list, data_config):
