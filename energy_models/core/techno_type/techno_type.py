@@ -1203,6 +1203,12 @@ class TechnoType:
         )
         return d_non_use_capital_d_utilisation_ratio
 
+    def d_non_use_capital_d_invest_level(self, d_capital_d_invest_level):
+        applied_ratio = self.applied_ratio['applied_ratio'].values / 100.
+        utilisation_ratio = self.utilisation_ratio
+        return np.diag(applied_ratio * utilisation_ratio / 100.) * d_capital_d_invest_level
+
+
     def compute_dlanduse_dinvest(self):
         """
         compute grad d_land_use / d_invest
@@ -1430,8 +1436,8 @@ class TechnoType:
                                   dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape(
                     (len(self.years), 1)))
 
-        dnon_usecapital_dinvest = dtechnocapital_dinvest * (
-                1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+        dnon_usecapital_dinvest = np.diag(
+                1.0 - self.applied_ratio['applied_ratio'].values * self.utilisation_ratio / 100.) @ dtechnocapital_dinvest
 
         # we do not divide by / self.scaling_factor_invest_level because invest
         # and non_use_capital are in G$
