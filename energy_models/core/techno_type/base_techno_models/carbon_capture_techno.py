@@ -201,7 +201,7 @@ class CCTechno(TechnoType):
                     (len(self.years), 1)))
 
         dnon_usecapital_dfluegas = dtechnocapital_dfluegas * (
-                1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+                1.0 - self.applied_ratio['applied_ratio'].values * self.utilisation_ratio/ 100.).reshape((len(self.years), 1))
 
         # we do not divide by / self.scaling_factor_invest_level because invest
         # and non_use_capital are in G$
