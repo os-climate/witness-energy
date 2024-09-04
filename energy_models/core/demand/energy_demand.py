@@ -96,7 +96,7 @@ class EnergyDemand(object):
         '''
         Update parameters at each execution
         '''
-        self.energy_production_detailed = inputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.energy_production_detailed = inputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
         self.population_df = inputs_dict[GlossaryEnergy.PopulationDfValue]
 
     def compute(self):

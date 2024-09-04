@@ -234,8 +234,8 @@ def launch_data_pickle_generation(directory=''):
                 mda_energy_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
     energy_production_detailed = Energy_Mix_disc.get_sosdisc_outputs(
-        GlossaryEnergy.EnergyProductionDetailedValue)
-    mda_energy_data_streams_output_dict[GlossaryEnergy.EnergyProductionDetailedValue] = energy_production_detailed
+        GlossaryEnergy.StreamProductionDetailedValue)
+    mda_energy_data_streams_output_dict[GlossaryEnergy.StreamProductionDetailedValue] = energy_production_detailed
 
     if directory == '':
         prefix = '.'

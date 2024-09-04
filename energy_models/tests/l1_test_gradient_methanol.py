@@ -235,7 +235,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2PerUse}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}'], )
 
 
