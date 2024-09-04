@@ -101,11 +101,11 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             self.energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              self.energy_list if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         inputs_names.extend(
