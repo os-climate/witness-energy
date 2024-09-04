@@ -79,7 +79,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years] <=
                 inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.InvestValue].values,
             inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
-
+        utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][GlossaryEnergy.UtilisationRatioValue].values
         crf = self.techno_model.compute_capital_recovery_factor(inputs_dict['techno_infos_dict'])
         dfactory_dfluegas = dcapex_dfluegas * \
                             (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
@@ -115,7 +115,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
                 GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-            dprod_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
+            dprod_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
                              np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
 
         production, consumption = self.get_sosdisc_outputs(
@@ -132,7 +132,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionValue, column),
                     (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                    dprod_column_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
+                    dprod_column_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
                                             np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionWithoutRatioValue,
