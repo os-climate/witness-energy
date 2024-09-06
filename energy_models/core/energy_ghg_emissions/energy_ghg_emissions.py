@@ -106,7 +106,7 @@ class EnergyGHGEmissions(BaseStream):
                                                        f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                    self.scaling_factor_energy_production
                 self.sub_consumption_dict[energy] = inputs_dict[
-                                                        f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+                                                        f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                     self.scaling_factor_energy_consumption
             else:
                 for ghg in self.GHG_TYPE_LIST:
@@ -115,14 +115,14 @@ class EnergyGHGEmissions(BaseStream):
 
                 self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                    self.scaling_factor_energy_production
-                self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+                self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                     self.scaling_factor_energy_consumption
 
         for energy in self.ccs_list:
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
 
-        self.energy_production_detailed = inputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.energy_production_detailed = inputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
 

@@ -95,14 +95,14 @@ class ConsumptionCO2Emissions(BaseStream):
             self.co2_per_use[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse]
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
 
         for energy in self.ccs_list:
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
 
-        self.energy_production_detailed = inputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.energy_production_detailed = inputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
 
     def compute_CO2_emissions(self):
         '''

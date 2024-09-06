@@ -101,7 +101,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         list_columns_energyprod = list(
             outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
         list_columns_consumption = list(
-            outputs_dict[GlossaryEnergy.EnergyConsumptionValue].columns)
+            outputs_dict[GlossaryEnergy.StreamConsumptionValue].columns)
         technologies_list = inputs_dict[GlossaryEnergy.techno_list]
         carbon_captured_type = outputs_dict['carbon_captured_type']
         carbon_captured_type_woratio = outputs_dict['carbon_captured_type_woratio']
@@ -231,7 +231,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                             for col_technoprod in list_columnstechnocons:
                                 if column_name == col_technoprod:
                                     self.set_partial_derivative_for_other_types(
-                                        (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+                                        (GlossaryEnergy.StreamConsumptionValue, column_name), (
                                             f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}', col_technoprod),
                                         inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
                                         inputs_dict[
@@ -292,7 +292,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                             for col_technoprod in list_columnstechnocons:
                                 if column_name == col_technoprod:
                                     self.set_partial_derivative_for_other_types(
-                                        (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+                                        (GlossaryEnergy.StreamConsumptionWithoutRatioValue, column_name), (
                                             f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                             col_technoprod),
                                         inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
@@ -376,13 +376,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             for column_name in list_columns_consumption:
                 if column_name != GlossaryEnergy.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+                        (GlossaryEnergy.StreamConsumptionValue, column_name), (
                             'flue_gas_production', CarbonCapture.flue_gas_name),
                         np.identity(len_matrix) * grad_vs_flue_gas_prod[column_name] * dfluegas)
                     for techno_cons in technologies_list:
                         if techno_cons.startswith('flue_gas_capture'):
                             self.set_partial_derivative_for_other_types(
-                                (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+                                (GlossaryEnergy.StreamConsumptionValue, column_name), (
                                     f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}',
                                     techno_prod_name_with_unit),
                                 -np.identity(len_matrix) *
@@ -393,13 +393,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             for column_name in list_columns_consumption:
                 if column_name != GlossaryEnergy.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+                        (GlossaryEnergy.StreamConsumptionWithoutRatioValue, column_name), (
                             'flue_gas_production', CarbonCapture.flue_gas_name),
                         np.identity(len_matrix) * grad_vs_flue_gas_prod_woratio[column_name] * dfluegas_woratio)
                     for techno_cons in technologies_list:
                         if techno_cons.startswith('flue_gas_capture'):
                             self.set_partial_derivative_for_other_types(
-                                (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+                                (GlossaryEnergy.StreamConsumptionWithoutRatioValue, column_name), (
                                     f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}',
                                     techno_prod_name_with_unit),
                                 -np.identity(len_matrix) *
@@ -548,7 +548,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_charts_consumption_and_production_mass_CO2(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         chart_name = 'CO2 captured<br>with input investments'
@@ -577,7 +577,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_charts_consumption_and_production_mass_resources(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         chart_name = 'resources used for CO2 capture <br>with input investments'
@@ -609,7 +609,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_charts_consumption_and_production_energy(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')

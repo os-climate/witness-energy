@@ -88,9 +88,9 @@ class HeatDiscipline(SoSWrapp):
 
     DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
-                GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
+                GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+                GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
                 }
 
     def __init__(self, sos_name, logger: logging.Logger):
@@ -120,7 +120,7 @@ class HeatDiscipline(SoSWrapp):
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {'type': 'dataframe',
                                                                                            'unit': 'PWh',
                                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                            'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -130,7 +130,7 @@ class HeatDiscipline(SoSWrapp):
                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                           'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                           }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}'] = {'type': 'dataframe',
                                                                                                   'unit': 'TWh',
                                                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                                   'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -167,11 +167,11 @@ class HeatDiscipline(SoSWrapp):
             energy_techno_prices = self.get_sosdisc_inputs(
                 f'{energy}.energy_detailed_techno_prices')
             energy_cons = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}')
+                f'{energy}.{GlossaryEnergy.StreamConsumptionValue}')
             energy_prod = self.get_sosdisc_inputs(
                 f'{energy}.{GlossaryEnergy.EnergyProductionValue}')
             energy_techno_prod = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}')
+                f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}')
             # energy_heat_flux = self.get_sosdisc_inputs(
             #     f'{energy}.energy_heat_flux_detailed')
 
@@ -207,8 +207,8 @@ class HeatDiscipline(SoSWrapp):
         outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         GlossaryEnergy.EnergyProductionValue: energy_production,
-                        GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
-                        GlossaryEnergy.EnergyProductionDetailedValue: energy_production_detailed,
+                        GlossaryEnergy.StreamConsumptionValue: energy_consumption,
+                        GlossaryEnergy.StreamProductionDetailedValue: energy_production_detailed,
                         # 'energy_heat_flux_detailed': energy_heat_flux_detailed,
                         }
 
@@ -320,7 +320,7 @@ class HeatDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
@@ -458,7 +458,7 @@ class HeatDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
 
         chart_name = f'Technology production for {self.energy_name}'
 
@@ -485,7 +485,7 @@ class HeatDiscipline(SoSWrapp):
         instanciated_charts = []
 
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         techno_list = [
             techno for techno in energy_production if techno != GlossaryEnergy.Years]
         display_techno_list = []
