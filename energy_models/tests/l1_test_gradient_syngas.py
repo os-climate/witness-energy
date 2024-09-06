@@ -2811,7 +2811,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2PerUse}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}'], )
 
     def test_09_generic_syngas_discipline_jacobian(self):

@@ -773,8 +773,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 output, 'coupling')]
 
         coupled_inputs = [
-            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = ['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.model_name}.pkl',
@@ -857,12 +857,12 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for energy in energy_list:
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamProductionWithoutRatioValue}', ]
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
         # coupled_inputs = [
-        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
@@ -949,9 +949,9 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         #                         ])
 
         coupled_inputs = [
-            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',
             # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
-            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.EnergyConsumptionValue}']
+            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.StreamConsumptionValue}']
         coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]
 
         # coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]

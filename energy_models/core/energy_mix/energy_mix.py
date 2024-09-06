@@ -269,10 +269,10 @@ class EnergyMix(BaseStream):
             self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamPricesValue}'][energy]
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
             self.sub_consumption_woratio_dict[energy] = inputs_dict[
-                                                            f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
+                                                            f'{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
             self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}']
 
@@ -300,12 +300,12 @@ class EnergyMix(BaseStream):
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
                     self.resources_demand[resource] = self.resources_demand[resource] + \
-                                                      inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'][
+                                                      inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'][
                                                           f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                       self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
                                                               inputs_dict[
-                                                                  f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
+                                                                  f'{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'][
                                                                   f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                               self.scaling_factor_energy_consumption
 
@@ -370,8 +370,7 @@ class EnergyMix(BaseStream):
 
         for energy in self.subelements_list:
             column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
-            self.production_raw[column_name] = pd.Series(
-                self.sub_production_dict[energy][energy].values)
+            self.production_raw[column_name] = self.sub_production_dict[energy][energy].values
 
         columns_to_sum = [column for column in self.production_raw if column.endswith(f"({GlossaryEnergy.energy_unit})")]
         self.production_raw[GlossaryEnergy.TotalProductionValue] = self.production_raw[columns_to_sum].sum(axis=1)
@@ -470,8 +469,6 @@ class EnergyMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
                                                                     GlossaryEnergy.TotalProductionValue] * \
                                                                 self.heat_losses_percentage / 100.0
-
-
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -1012,7 +1009,6 @@ class EnergyMix(BaseStream):
         self.compute_constraint_h2()
         self.compute_syngas_prod_objective()
         self.compute_syngas_prod_constraint()
-
 
         self.compute_all_streams_demand_ratio()
         self.compute_net_positive_consumable_energy_production()

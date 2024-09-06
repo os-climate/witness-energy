@@ -411,7 +411,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             outputs=[
                                 f"{self.name}.{self.energy_name}.{GlossaryEnergy.StreamPricesValue}",
                                 f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyProductionValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyConsumptionValue}",
+                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.StreamConsumptionValue}",
                             ], )
 
     def test_05_direct_air_capture_techno_discipline_gradient(self):
