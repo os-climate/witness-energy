@@ -214,6 +214,11 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
+        if 'Non-Use Capital' in charts:
+            new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_detailed_price_in_dollar_tCO2(self):
