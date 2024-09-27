@@ -138,7 +138,7 @@ class EnergyMix(BaseStream):
         Constructor 
         '''
         super(EnergyMix, self).__init__(name)
-
+        self.period_tol_power_non_use_capital_constraint = None
         self.non_use_capital_constraint_df = None
         self.target_production_constraint = None
         self.co2_emitted_by_energy = None
@@ -242,7 +242,7 @@ class EnergyMix(BaseStream):
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
         self.tol_constraint_non_use_capital_energy = inputs_dict['tol_constraint_non_use_capital_energy']
         self.ref_constraint_non_use_capital_energy = inputs_dict['ref_constraint_non_use_capital_energy']
-
+        self.period_tol_power_non_use_capital_constraint = inputs_dict['period_tol_power_non_use_capital_constraint']
         if self.subelements_list is not None:
             for energy in self.subelements_list:
                 if f'{energy}.losses_percentage' in inputs_dict:
@@ -1038,7 +1038,7 @@ class EnergyMix(BaseStream):
         We add also a period tolerance, so
         """
         ratio_non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values / self.energy_capital[GlossaryEnergy.Capital].values
-        period_tolerance = np.linspace(0, 1, len(self.years)) ** 2
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** self.period_tol_power_non_use_capital_constraint
         constraint = (ratio_non_use_capital - self.tol_constraint_non_use_capital_energy) / self.ref_constraint_non_use_capital_energy * period_tolerance
 
         self.non_use_capital_constraint_df = pd.DataFrame({
@@ -1054,7 +1054,7 @@ class EnergyMix(BaseStream):
 
         capital = self.energy_capital[GlossaryEnergy.Capital].values
         non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values
-        period_tolerance = np.linspace(0, 1, len(self.years)) ** 2
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** self.period_tol_power_non_use_capital_constraint
         d_non_use_capital = np.diag(period_tolerance / capital / self.ref_constraint_non_use_capital_energy / 1e3)
         d_capital = np.diag(- non_use_capital * period_tolerance / (capital ** 2) / self.ref_constraint_non_use_capital_energy / 1e3)
         return d_non_use_capital, d_capital
