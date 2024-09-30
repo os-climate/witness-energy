@@ -101,7 +101,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
              GlossaryEnergy.CO2Tax: 20.0}, index=np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))
 
         usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=GlossaryEnergy.YearStartDefault,
-                                       year_end=GlossaryEnergy.YearEndDefault, time_step=1)
+                                       year_end=GlossaryEnergy.YearEndDefault)
         usecase_agri.study_name = cls.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()

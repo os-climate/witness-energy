@@ -89,7 +89,6 @@ class Study(EnergyStudyManager):
         )
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.dict_technos = {}
         self.coupling_name = "MDA"

@@ -78,7 +78,6 @@ class Study(EnergyStudyManager):
             self,
             year_start=GlossaryEnergy.YearStartDefault,
             year_end=GlossaryEnergy.YearEndDefault,
-            time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
@@ -90,7 +89,6 @@ class Study(EnergyStudyManager):
     ):
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.dict_technos = {}
 
