@@ -39,7 +39,6 @@ class Study(StudyManager):
             self,
             year_start=GlossaryEnergy.YearStartDefault,
             year_end=GlossaryEnergy.YearEndDefault,
-            time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
@@ -52,7 +51,6 @@ class Study(StudyManager):
         self.main_study = main_study
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.energy_list = None
         self.ccs_list = None
         self.dict_technos = None
@@ -69,7 +67,6 @@ class Study(StudyManager):
         self.study_v0 = Study_v0(
             year_start=self.year_start,
             year_end=self.year_end,
-            time_step=self.time_step,
             main_study=self.main_study,
             bspline=self.bspline,
             execution_engine=execution_engine,
