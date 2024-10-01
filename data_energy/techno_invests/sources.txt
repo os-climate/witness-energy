@@ -1,5 +1,5 @@
 FossilSimpleTechno : https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings
-RenewableSimpleTechno : https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings
+RenewableSimpleTechno : https://www.iea.org/data-and-statistics/charts/global-investment-in-clean-energy-and-fossil-fuels-2015-2024
 CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-capture-and-utilisation
 DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
 SolarPV: [https://www.iea.org/energy-system/renewables/solar-pv,]
