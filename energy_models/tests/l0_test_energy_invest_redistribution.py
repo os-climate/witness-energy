@@ -43,9 +43,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         '''
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.renewable]
+        self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.clean_energy]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         self.economics_df = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.GrossOutput,
                                                   GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption])
@@ -53,16 +52,16 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.economics_df[GlossaryEnergy.GrossOutput] = np.linspace(140., 200., len(self.years))
         self.economics_df[GlossaryEnergy.OutputNetOfDamage] = np.linspace(130., 190., len(self.years))
         self.economics_df[GlossaryEnergy.PerCapitaConsumption] = 0.
-        self.techno_list_fossil = ['FossilSimpleTechno']
-        self.techno_list_renewable = ['RenewableSimpleTechno']
+        self.techno_list_fossil = [GlossaryEnergy.FossilSimpleTechno]
+        self.techno_list_clean_energy = [GlossaryEnergy.CleanEnergySimpleTechno]
         self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
                                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
-        self.techno_list_carbon_storage = ['CarbonStorageTechno']
+        self.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
 
         data_invest = {
             GlossaryEnergy.Years: self.years
         }
-        all_techno_list = [self.techno_list_fossil, self.techno_list_renewable, self.techno_list_carbon_capture,
+        all_techno_list = [self.techno_list_fossil, self.techno_list_clean_energy, self.techno_list_carbon_capture,
                            self.techno_list_carbon_storage]
         data_invest.update({techno: 100. / 5 for sublist in all_techno_list for techno in sublist})
 
@@ -114,9 +113,9 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
-                       f'{self.name}.{GlossaryEnergy.renewable}.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
+                       f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
@@ -139,8 +138,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = \
-            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
-                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
+                                 f'.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]
@@ -188,7 +187,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
-                       f'{self.name}.{GlossaryEnergy.renewable}.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
+                       f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
                        f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
@@ -248,7 +247,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list + [GlossaryEnergy.biomass_dry],
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
-                       f'{self.name}.{GlossaryEnergy.renewable}.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
+                       f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
                        f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.TechnoListName}': [],

@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,7 +45,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.HeatPumpLowHeat
     energy_name = lowtemperatureheat.name
 
-    lifetime = 25  # years
+
     # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
@@ -57,7 +55,6 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 1  # years
 
     techno_infos_dict_default = {
 
@@ -66,10 +63,6 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04,
         ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -90,30 +83,10 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     # in TWh
     initial_production = 1 * 8760 / 3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
-    distrib = [9.677419355, 7.52688172, 0,
-               5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355, 7.52688172, 1.075268817,
-               2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 0 * np.array([1 * 8760 * 0.5 * 0.5 / 3])})  # Invest before year start is 0
     flux_input_dict = {'land_rate': 19000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+                      
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

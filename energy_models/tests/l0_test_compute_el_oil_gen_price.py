@@ -22,9 +22,6 @@ import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -38,8 +35,6 @@ class OilGenPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        liquid_fuel_price = np.array(
-            [40] * 31)
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -48,42 +43,23 @@ class OilGenPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                   0.089236536471781, 0.08899046935409588,
-                                                                   0.08874840310033885,
-                                                                   0.08875044941298937, 0.08875249600769718,
-                                                                   0.08875454288453355,
-                                                                   0.08875659004356974, 0.0887586374848771,
-                                                                   0.08893789675406477,
-                                                                   0.08911934200930778, 0.08930302260662477,
-                                                                   0.08948898953954933,
-                                                                   0.08967729551117891, 0.08986799501019029,
-                                                                   0.09006114439108429,
-                                                                   0.09025680195894345, 0.09045502805900876,
-                                                                   0.09065588517140537,
-                                                                   0.0908594380113745, 0.09106575363539733,
-                                                                   0.09127490155362818,
-                                                                   0.09148695384909017, 0.0917019853041231,
-                                                                   0.0919200735346165,
-                                                                   0.09214129913260598, 0.09236574581786147,
-                                                                   0.09259350059915213,
-                                                                   0.0928246539459331]) * 1000.0,
-             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': liquid_fuel_price
+        self.stream_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 90.,
+             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 40.
              })
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 50.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 50.0})
 
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 0.0})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
 
         transport_cost = 0
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -92,20 +68,20 @@ class OilGenPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': transport_cost})
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, ResourceGlossary.WaterResource])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.WaterResource])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price[ResourceGlossary.WaterResource
+        self.resources_price[GlossaryEnergy.WaterResource
         ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == f'{GlossaryEnergy.electricity}.OilGen']
+                                                == f'{GlossaryEnergy.electricity}.{GlossaryEnergy.OilGen}']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -137,16 +113,12 @@ class OilGenPriceTestCase(unittest.TestCase):
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
-        import traceback
-        try:
-            self.ee.configure()
-        except:
-            traceback.print_exc()
+        self.ee.configure()
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -165,10 +137,10 @@ class OilGenPriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()

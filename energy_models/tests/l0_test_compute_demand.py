@@ -70,7 +70,7 @@ class DemandTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+                       f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
                        f'{self.name}.{GlossaryEnergy.PopulationDfValue}': self.population,
                        f'{self.name}.Demand.{GlossaryEnergy.TransportDemandValue}': self.transport_demand
                        }

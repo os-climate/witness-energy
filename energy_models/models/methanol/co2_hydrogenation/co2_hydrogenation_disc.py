@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.core.techno_type.disciplines.methanol_techno_disc import (
@@ -50,18 +48,13 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     methanol_density = Methanol.data_energy_dict['density']
     methanol_calorific_value = Methanol.data_energy_dict['calorific_value']
 
-    lifetime = 20  # years
-    construction_delay = 3  # years
+
 
     techno_infos_dict_default = {
         'Capex_init': 35.58 / (20 * 50) / 5.54,
         # Total capital [M$] / (annual production * lifetime) [kt] / conversion factor [kWh/kg] = [$/kWh]
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.06,
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -83,27 +76,8 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
 
     initial_production = 543  # 543 TWh
 
-    distrib = np.linspace(20.0, 0.0, lifetime)
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime + 1),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
-
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.03, 0.04]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     DESC_IN.update(MethanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT

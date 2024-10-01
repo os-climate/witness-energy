@@ -63,17 +63,16 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = CarbonStorage.name
+    energy_name = GlossaryEnergy.carbon_storage
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
-
-        self.set_partial_derivatives_techno(
-            grad_dict, None)
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
+        self.set_partial_derivatives_techno(grad_dict, carbon_emissions)
 
     def get_post_processing_list(self, filters=None):
 
@@ -246,12 +245,9 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_initial_production(self):
 
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
@@ -270,7 +266,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
             initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
-        study_prod = study_production[f'{self.energy_name} (Mt)'].values
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.mass_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

@@ -17,9 +17,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
     MethaneTechno,
 )
@@ -27,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilGas(MethaneTechno):
-    NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGasResource
+    NATURAL_GAS_RESOURCE_NAME = GlossaryEnergy.NaturalGasResource
 
     def get_fuel_needs(self):
         """
@@ -45,21 +42,21 @@ class FossilGas(MethaneTechno):
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{MethaneTechno.energy_name} ({self.product_unit})']
         self.compute_ghg_emissions(Methane.emission_name)
-        # self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-        #      self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
+        # self.production[f'{hightemperatureheat.name}] ({self.product_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        #      self.production[f'{Methane.name} ({self.product_unit})']) / \
         #       self.techno_infos_dict['efficiency']

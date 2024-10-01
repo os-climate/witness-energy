@@ -15,15 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class PotassiumHydroxide(BaseStream):
     """Potassium hydroxide is an inorganic compound with the formula KOH, and is commonly called caustic potash.
     It is used as a catalyst in the transesterifiction process to produce biodiesel"""
-    name = ResourceGlossary.PotassiumHydroxideResource
+    name = GlossaryEnergy.PotassiumHydroxideResource
     data_energy_dict = {'reference': 'https://en.wikipedia.org/wiki/Potassium_hydroxide',
                         'chemical_formula': 'KOH',
                         'maturity': 5,

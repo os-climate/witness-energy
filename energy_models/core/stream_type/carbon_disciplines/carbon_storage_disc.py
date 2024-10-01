@@ -53,7 +53,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
     DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
-    energy_name = CarbonStorage.name
+    energy_name = GlossaryEnergy.carbon_storage
 
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()  # -- add specific techno outputs to this
 
@@ -128,7 +128,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         return instanciated_charts
 
     def get_chart_CO2_storage_price_in_dollar_ton(self):
-        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/ton]', chart_name=chart_name)
@@ -154,7 +154,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')

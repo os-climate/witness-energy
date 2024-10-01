@@ -20,22 +20,19 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
 from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.core.stream_type.resources_data_disc import (
-    get_static_CO2_emissions,
-    get_static_prices,
+    get_default_resources_CO2_emissions,
+    get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -65,50 +62,32 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.energy_name = 'methanol'
-        self.product_energy_unit = 'TWh'
-        self.mass_unit = 'Mt'
+        self.product_unit = 'TWh'
         self.land_use_unit = 'Gha'
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GaseousHydrogen.name: 300.0,
-                                           CarbonCapture.name: 150.0,
-                                           Electricity.name: 10,
+                                           GlossaryEnergy.carbon_capture: 150.0,
+                                           GlossaryEnergy.electricity: 10,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years,
+        self.stream_co2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                      GaseousHydrogen.name: 10.0,
-                                                     CarbonCapture.name: 0.0,
-                                                     Electricity.name: 0.0,
+                                                     GlossaryEnergy.carbon_capture: 0.0,
+                                                     GlossaryEnergy.electricity: 0.0,
                                                      })
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years, Water.name: 2.0})
 
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ])[:len(self.years)] * 0.8e-9
-
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                          GlossaryEnergy.InvestValue: invest
+                                          GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))
                                           })
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27, 29.01,
-                     34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 200.0})
+            {GlossaryEnergy.Years: self.years, 'transport': 200.0})
 
         # ---Ratios---
         demand_ratio_dict = dict(
@@ -127,7 +106,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
     def test_01_co2_hydrogenation_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'CO2Hydrogenation'
+        self.model_name = GlossaryEnergy.CO2Hydrogenation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -144,22 +123,18 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = CO2HydrogenationDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           self.years),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(self.years),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(self.years),
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -173,10 +148,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
@@ -186,13 +161,13 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
     def test_02_methanol_discipline_jacobian(self):
         self.co2_hydrogenation_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                           f'{CarbonCapture.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{GaseousHydrogen.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{Electricity.name} ({self.product_energy_unit})': 1.0,
-                                                           f'{Water.name} ({self.mass_unit})': 1.0,
+                                                           f'{GlossaryEnergy.carbon_capture} ({self.product_unit})': 1.0,
+                                                           f'{GaseousHydrogen.name} ({self.product_unit})': 1.0,
+                                                           f'{GlossaryEnergy.electricity} ({self.product_unit})': 1.0,
+                                                           f'{Water.name} ({GlossaryEnergy.mass_unit})': 1.0,
                                                            })
         self.co2_hydrogenation_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                          f'{Methanol.name} ({self.product_energy_unit})': 1.0
+                                                          f'{Methanol.name} ({self.product_unit})': 1.0
                                                           })
         self.co2_hydrogenation_techno_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                              f'{CO2HydrogenationDiscipline.techno_name}': 100.0,
@@ -225,9 +200,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         techno_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
+            GlossaryEnergy.Capital: 20000,
+            GlossaryEnergy.NonUseCapital: 1000.,
         })
-        techno_name = 'CO2Hydrogenation'
+        techno_name = GlossaryEnergy.CO2Hydrogenation
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YearStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -258,8 +234,8 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                 f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2PerUse}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}'], )
 
 

@@ -31,7 +31,6 @@ from sostrades_core.tools.base_functions.exp_min import (
     compute_dfunc_with_exp_min,
     compute_func_with_exp_min,
 )
-from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -46,13 +45,13 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 from sostrades_core.tools.post_processing.tables.instanciated_table import (
     InstanciatedTable,
 )
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
+    get_dsmooth_dvariable,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -64,7 +63,6 @@ from energy_models.core.stream_type.energy_models.heat import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
@@ -152,6 +150,9 @@ class Energy_Mix_Discipline(SoSWrapp):
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                   'namespace': GlossaryEnergy.NS_REFERENCE},
+               'ref_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.30, 'unit':'-','description': '0.30 means after 35 % of capital not used the constraint will explode'},
+               'tol_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.05, 'unit':'-','description': '0.05 means constraint does not penalize lagrangian when non use capital is less than 5%'},
+               'period_tol_power_non_use_capital_constraint': {'type': 'float', 'default': 1.0, 'unit':'-','description': '0.05 means constraint does not penalize lagrangian when non use capital is less than 5%'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
@@ -164,13 +165,13 @@ class Energy_Mix_Discipline(SoSWrapp):
                                           'range': [0., 100.]}, }
 
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+        GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         GlossaryEnergy.TargetProductionConstraintValue: GlossaryEnergy.TargetProductionConstraint,
-        GlossaryEnergy.EnergyCO2EmissionsValue: GlossaryEnergy.EnergyCO2Emissions,
+        GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.StreamsCO2Emissions,
         'energy_CO2_emissions_after_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+        GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
         'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh'},
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
@@ -213,18 +214,19 @@ class Energy_Mix_Discipline(SoSWrapp):
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf,
         GlossaryEnergy.EnergyMeanPriceObjectiveValue: GlossaryEnergy.EnergyMeanPriceObjective,
+        GlossaryEnergy.ConstraintEnergyNonUseCapital: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
     }
 
     energy_name = EnergyMix.name
     energy_class_dict = EnergyMix.energy_class_dict
     stream_class_dict = EnergyMix.stream_class_dict
-    SYNGAS_NAME = Syngas.name
+    SYNGAS_NAME = GlossaryEnergy.syngas
     BIOMASS_DRY_NAME = BiomassDry.name
     LIQUID_FUEL_NAME = LiquidFuel.name
     HYDROGEN_NAME = GaseousHydrogen.name
     LIQUID_HYDROGEN_NAME = LiquidHydrogen.name
     SOLIDFUEL_NAME = SolidFuel.name
-    ELECTRICITY_NAME = Electricity.name
+    ELECTRICITY_NAME = GlossaryEnergy.electricity
     GASEOUS_HYDROGEN_NAME = GaseousHydrogen.name
     LowTemperatureHeat_name = lowtemperatureheat.name
     MediumTemperatureHeat_name = mediumtemperatureheat.name
@@ -249,8 +251,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         dynamic_outputs = {}
         inputs_dict = self.get_sosdisc_inputs()
         if GlossaryEnergy.YearStart in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs(
-                [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
             years = np.arange(year_start, year_end + 1)
             default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                              GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
@@ -259,20 +260,19 @@ class Energy_Mix_Discipline(SoSWrapp):
                 {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
-            #self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     # Biomass energy is computed by the agriculture model
-                    ns_energy = self.get_ns_energy(energy)
+                    ns_energy = self.get_ns_stream(energy)
 
-                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}'] = {
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.StreamPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh', "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', "dynamic_dataframe_columns": True}
@@ -282,10 +282,10 @@ class Energy_Mix_Discipline(SoSWrapp):
                     # If the name is different than the energy then the namespace is also different
                     # Valid for biomass which is in agriculture node
                     if ns_energy != energy:
-                        for new_var in [f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                        f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+                        for new_var in [f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}',
+                                        f'{ns_energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',
                                         f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}',
-                                        f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}',
+                                        f'{ns_energy}.{GlossaryEnergy.StreamPricesValue}',
                                         f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}']:
                             dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY})
@@ -329,11 +329,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                                      "visibility": "Shared"})
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}'] = etcp
 
-                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
+                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dynamic_dataframe_columns': True,}
-                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
+                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dynamic_dataframe_columns': True,}
@@ -342,7 +342,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dynamic_dataframe_columns': True,}
 
-                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
+                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dynamic_dataframe_columns': True,}
@@ -376,30 +376,6 @@ class Energy_Mix_Discipline(SoSWrapp):
             self.set_dynamic_default_values(
                 {'liquid_hydrogen_percentage': lh_perc_default})
 
-    def update_default_energy_list(self):
-        '''
-        Update the default value of technologies list with techno discipline below the energy node and in possible values
-        '''
-
-        found_energies = self.found_energy_under_energymix()
-        self.set_dynamic_default_values({GlossaryEnergy.energy_list: found_energies})
-
-    def found_energy_under_energymix(self):
-        '''
-        Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
-        '''
-        my_name = self.get_disc_full_name()
-        possible_energy = EnergyMix.energy_list
-        found_energy_list = self.dm.get_discipline_names_with_starting_name(
-            my_name)
-        short_energy_list = [name.split(
-            f'{my_name}.')[-1] for name in found_energy_list if f'{my_name}.' in name]
-
-        possible_short_energy_list = [
-            techno for techno in short_energy_list if techno in possible_energy]
-
-        return possible_short_energy_list
-
     def run(self):
         # -- get inputs
         inputs_dict_orig = self.get_sosdisc_inputs()
@@ -419,9 +395,9 @@ class Energy_Mix_Discipline(SoSWrapp):
             [(1. - alpha) * self.energy_model.production[GlossaryEnergy.TotalProductionValue][0] * delta_years
              / self.energy_model.production[GlossaryEnergy.TotalProductionValue].sum(), ])
 
-        
-        if EnergyMix.PRODUCTION in self.energy_model.energy_prices:
-            self.energy_model.energy_prices.drop(
+
+        if EnergyMix.PRODUCTION in self.energy_model.stream_prices:
+            self.energy_model.stream_prices.drop(
                 columns=[EnergyMix.PRODUCTION], inplace=True)
         # energy_production stored in PetaWh for coupling variables scaling
         scaled_energy_production = pd.DataFrame(
@@ -431,12 +407,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                   inputs_dict[
                                                       'scaling_factor_energy_production']})
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: self.energy_model.energy_prices,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: self.energy_model.stream_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
-                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
+                        GlossaryEnergy.StreamsCO2EmissionsValue: self.energy_model.total_carbon_emissions,
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         GlossaryEnergy.EnergyProductionValue: scaled_energy_production,
-                        GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production,
+                        GlossaryEnergy.StreamProductionDetailedValue: self.energy_model.production,
                         'energy_production_brut': self.energy_model.production_raw[
                             [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue]],
                         'energy_production_brut_detailed': self.energy_model.production_raw,
@@ -460,16 +436,17 @@ class Energy_Mix_Discipline(SoSWrapp):
                         GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital,
                         GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
                         GlossaryEnergy.EnergyMeanPriceObjectiveValue: self.energy_model.energy_mean_price_objective,
+                        GlossaryEnergy.ConstraintEnergyNonUseCapital: self.energy_model.non_use_capital_constraint_df,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
 
-        if f'production {self.LIQUID_FUEL_NAME} (TWh)' in self.energy_model.production and \
-                f'production {self.HYDROGEN_NAME} (TWh)' in self.energy_model.production and\
-                f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)' in self.energy_model.production:
-            production_liquid_fuel = self.energy_model.production[f'production {self.LIQUID_FUEL_NAME} (TWh)']
-            production_hydrogen = self.energy_model.production[f'production {self.HYDROGEN_NAME} (TWh)']
-            production_liquid_hydrogen = self.energy_model.production[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)']
+        if f'production {self.LIQUID_FUEL_NAME} ({GlossaryEnergy.energy_unit})' in self.energy_model.production and \
+                f'production {self.HYDROGEN_NAME} ({GlossaryEnergy.energy_unit})' in self.energy_model.production and\
+                f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})' in self.energy_model.production:
+            production_liquid_fuel = self.energy_model.production[f'production {self.LIQUID_FUEL_NAME} ({GlossaryEnergy.energy_unit})']
+            production_hydrogen = self.energy_model.production[f'production {self.HYDROGEN_NAME} ({GlossaryEnergy.energy_unit})']
+            production_liquid_hydrogen = self.energy_model.production[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})']
             sum_energies_production = production_liquid_fuel + production_hydrogen + production_liquid_hydrogen
 
             energies_production_constraint = sum_energies_production - \
@@ -479,8 +456,6 @@ class Energy_Mix_Discipline(SoSWrapp):
             outputs_dict['primary_energies_production'] = energies_production_constraint.to_frame('primary_energies')
         else:
             outputs_dict['primary_energies_production'] = pd.DataFrame()
-
-        
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -492,15 +467,15 @@ class Energy_Mix_Discipline(SoSWrapp):
         energy_list = inputs_dict_orig[GlossaryEnergy.energy_list]
         agri_name = AgricultureMixDiscipline.name
         if GlossaryEnergy.biomass_dry in energy_list:
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyConsumptionValue}')
+            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.StreamConsumptionValue}'] = inputs_dict_orig.pop(
+                f'{agri_name}.{GlossaryEnergy.StreamConsumptionValue}')
             inputs_dict[
-                f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}')
+                f'{BiomassDry.name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
+                f'{agri_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}')
             inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.EnergyProductionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyPricesValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyPricesValue}')
+            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.StreamPricesValue}'] = inputs_dict_orig.pop(
+                f'{agri_name}.{GlossaryEnergy.StreamPricesValue}')
             inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.LandUseRequiredValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.LandUseRequiredValue}')
             inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
@@ -516,7 +491,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        energy_list = inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]
+        stream_list = inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]
         self.update_biomass_dry_name(inputs_dict_orig, inputs_dict)
         outputs_dict = self.get_sosdisc_outputs()
         stream_class_dict = EnergyMix.stream_class_dict
@@ -526,13 +501,13 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         heat_losses_percentage = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
-        production_detailed_df = outputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        production_detailed_df = outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
         minimum_energy_production = inputs_dict['minimum_energy_production']
         production_threshold = inputs_dict['production_threshold']
         total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         production_energy_net_pos = outputs_dict['production_energy_net_positive']
-        energies = [j for j in energy_list if j not in [
+        energies = [j for j in stream_list if j not in [
             GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_capture]]
         mix_weight = outputs_dict['energy_mix']
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
@@ -545,32 +520,50 @@ class Energy_Mix_Discipline(SoSWrapp):
         syngas_prod_ref = inputs_dict['syngas_prod_ref']
         sub_production_dict, sub_consumption_dict = {}, {}
         sub_consumption_woratio_dict = self.energy_model.sub_consumption_woratio_dict
-        for energy in energy_list:
-            sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
+        for stream in stream_list:
+            sub_production_dict[stream] = inputs_dict[f'{stream}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                           scaling_factor_energy_production
-            sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+            sub_consumption_dict[stream] = inputs_dict[f'{stream}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                            scaling_factor_energy_consumption
 
         # -------------------------------------------#
         # ---- Production / Consumption gradients----#
         # -------------------------------------------#
-        for energy in inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]:
-            ns_energy = self.get_ns_energy(energy)
+        d_non_use_capital, d_capital = self.energy_model.d_non_use_capital_constraint_d_capital()
+        for stream in inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]:
+            ns_stream = self.get_ns_stream(stream)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.Capital),
-                (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
+                identity / 1e3
+            )
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.NonUseCapital),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.NonUseCapital),
                 identity / 1e3
             )
 
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ConstraintEnergyNonUseCapital, GlossaryEnergy.ConstraintEnergyNonUseCapital),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
+                d_capital
+            )
 
-            if energy in energies:
-                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ConstraintEnergyNonUseCapital, GlossaryEnergy.ConstraintEnergyNonUseCapital),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.NonUseCapital),
+                d_non_use_capital
+            )
+
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
+
+            if stream in energies:
+                loss_percentage = inputs_dict[f'{ns_stream}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
-                if energy in self.energy_model.raw_tonet_dict:
+                if stream in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
-                                        self.energy_model.raw_tonet_dict[energy])
+                                        self.energy_model.raw_tonet_dict[stream])
                 loss_percent = heat_losses_percentage + loss_percentage
 
                 # ---- Production gradients----#
@@ -582,99 +575,99 @@ class Energy_Mix_Discipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionValue,
                      GlossaryEnergy.TotalProductionValue),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     dtotal_prod_denergy_prod)
                 target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TargetProductionConstraintValue,),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     - dtotal_prod_denergy_prod * 1e3 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionDetailedValue,
+                    (GlossaryEnergy.StreamProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     dtotal_prod_denergy_prod * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionDetailedValue, 'Total production (uncut)'),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (GlossaryEnergy.StreamProductionDetailedValue, 'Total production (uncut)'),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     np.identity(len(years)) * scaling_factor_energy_production * (1.0 - loss_percent))
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionDetailedValue,
-                     f'production {energy} ({stream_class_dict[energy].unit})'),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (GlossaryEnergy.StreamProductionDetailedValue,
+                     f'production {stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     np.identity(len(years)) * scaling_factor_energy_production * (1.0 - loss_percentage))
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_brut',
                      GlossaryEnergy.TotalProductionValue),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     scaling_factor_energy_production * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_objective',), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    ('energy_production_objective',), (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     dprod_objective_dprod)
-                if f'production {self.LIQUID_FUEL_NAME} (TWh)' in production_detailed_df.columns and\
-                        f'production {self.HYDROGEN_NAME} (TWh)' in production_detailed_df.columns and\
-                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)' in production_detailed_df.columns:
-                    if energy in [self.HYDROGEN_NAME, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}', self.LIQUID_FUEL_NAME]:
+                if f'production {self.LIQUID_FUEL_NAME} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns and\
+                        f'production {self.HYDROGEN_NAME} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns and\
+                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns:
+                    if stream in [self.HYDROGEN_NAME, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}', self.LIQUID_FUEL_NAME]:
                         self.set_partial_derivative_for_other_types(
                             ('primary_energies_production', 'primary_energies'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                            (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                             (np.identity(len(years)) * (1 - loss_percentage) - primary_energy_percentage * dtotal_prod_denergy_prod) * scaling_factor_energy_production)
                     else:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'),
                                                                     (
-                                                                        f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}',
-                                                                        energy),
+                                                                        f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}',
+                                                                        stream),
                                                                     -scaling_factor_energy_production * primary_energy_percentage * dtotal_prod_denergy_prod)
 
                 # constraint solid_fuel + elec gradient
-                if energy in self.energy_model.energy_constraint_list:
+                if stream in self.energy_model.energy_constraint_list:
                     self.set_partial_derivative_for_other_types(
                         (f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                            f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                         (- scaling_factor_energy_production * ((
                                                                        1 - loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(
                             len(years)))
                 else:
                     self.set_partial_derivative_for_other_types(
                         (f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                            f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                         scaling_factor_energy_production * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(
                             len(years)))
 
-                if energy == self.SYNGAS_NAME:
+                if stream == self.SYNGAS_NAME:
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.SYNGAS_PROD_OBJECTIVE,
-                         ), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                         ), (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                         scaling_factor_energy_production * np.sign(
-                            production_detailed_df[f'production {GlossaryEnergy.syngas} (TWh)'].values) * np.identity(
+                            production_detailed_df[f'production {GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})'].values) * np.identity(
                             len(years)) / syngas_prod_ref)
 
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.SYNGAS_PROD_CONSTRAINT,
-                         ), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                         ), (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                         - scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
 
                 # constraint liquid hydrogen
 
-                if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
+                if stream == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
                     self.set_partial_derivative_for_other_types(
                         (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                            f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                         (- scaling_factor_energy_production * (
                                 liquid_hydrogen_percentage - 1) / liquid_hydrogen_constraint_ref) * np.identity(
                             len(years)))
-                elif energy == self.GASEOUS_HYDROGEN_NAME:
+                elif stream == self.GASEOUS_HYDROGEN_NAME:
                     self.set_partial_derivative_for_other_types(
                         (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy), (
+                            f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream), (
                                                                                                     - scaling_factor_energy_production * liquid_hydrogen_percentage / liquid_hydrogen_constraint_ref) * np.identity(
                             len(years)))
                 # ---- Loop on energy again to differentiate production and consumption ----#
-                for energy_input in energy_list:
-                    ns_energy_input = self.get_ns_energy(energy_input)
+                for stream_input in stream_list:
+                    ns_stream_input = self.get_ns_stream(stream_input)
                     list_columns_energy_consumption = list(
-                        inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
+                        inputs_dict[f'{stream_input}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                    if f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' in list_columns_energy_consumption:
                         # ---- Consumption gradients----#
                         dtotal_prod_denergy_cons = - \
                             self.compute_dtotal_production_denergy_production(
@@ -684,145 +677,157 @@ class Energy_Mix_Discipline(SoSWrapp):
                             outputs_dict[GlossaryEnergy.EnergyProductionValue], years)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.TotalProductionValue), (
-                                f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                f'{energy} ({stream_class_dict[energy].unit})'),
+                                f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.TargetProductionConstraintValue,), (
-                                f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                f'{energy} ({stream_class_dict[energy].unit})'),
+                                f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e3 / target_production_constraint_ref)
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
-                            (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
+                            (GlossaryEnergy.StreamProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                             f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyProductionDetailedValue,
+                            (GlossaryEnergy.StreamProductionDetailedValue,
                              'Total production (uncut)'),
-                            (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                             f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             -scaling_factor_energy_consumption * np.identity(
                                 len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyProductionDetailedValue,
-                             f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
+                            (GlossaryEnergy.StreamProductionDetailedValue,
+                             f'production {stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                             f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             -scaling_factor_energy_consumption * np.identity(
                                 len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
 
                         self.set_partial_derivative_for_other_types(
                             ('energy_production_objective',),
-                            (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                             f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             scaling_factor_energy_consumption * dprod_objective_dcons / scaling_factor_energy_production)
-                        if f'production {self.LIQUID_FUEL_NAME} (TWh)' in production_detailed_df.columns and\
-                                f'production {self.HYDROGEN_NAME} (TWh)' in production_detailed_df.columns and\
-                                f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)' in production_detailed_df.columns:
-                            if energy in [self.HYDROGEN_NAME, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}', self.LIQUID_FUEL_NAME]:
+                        if f'production {self.LIQUID_FUEL_NAME} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns and\
+                                f'production {self.HYDROGEN_NAME} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns and\
+                                f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})' in production_detailed_df.columns:
+                            if stream in [self.HYDROGEN_NAME, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}', self.LIQUID_FUEL_NAME]:
                                 self.set_partial_derivative_for_other_types(
                                     ('primary_energies_production', 'primary_energies'),
-                                    (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({stream_class_dict[energy].unit})'),
+                                    (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}', f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                     -scaling_factor_energy_consumption * (
                                             primary_energy_percentage * dtotal_prod_denergy_cons + np.identity(
                                         len(years))))
                             else:
                                 self.set_partial_derivative_for_other_types(
                                     ('primary_energies_production', 'primary_energies'), (
-                                        f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                        f'{energy} ({stream_class_dict[energy].unit})'),
+                                        f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                        f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                     -scaling_factor_energy_consumption * primary_energy_percentage * dtotal_prod_denergy_cons)
                         # constraint solid_fuel + elec gradient
 
-                        if energy in self.energy_model.energy_constraint_list:
+                        if stream in self.energy_model.energy_constraint_list:
                             self.set_partial_derivative_for_other_types(
                                 (f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'), (
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'), (
                                                                                              scaling_factor_energy_consumption * (
                                                                                              1 + solid_fuel_elec_percentage * dtotal_prod_denergy_cons) / solid_fuel_elec_constraint_ref) * np.identity(
                                     len(years)))
                         else:
                             self.set_partial_derivative_for_other_types(
                                 (f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'),
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                 scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_cons / solid_fuel_elec_constraint_ref * np.identity(
                                     len(years)))
 
-                        if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
+                        if stream == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
                             self.set_partial_derivative_for_other_types(
                                 (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'), (
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'), (
                                                                                              scaling_factor_energy_production * (
                                                                                              liquid_hydrogen_percentage - 1) / liquid_hydrogen_constraint_ref) * np.identity(
                                     len(years)))
-                        elif energy == self.GASEOUS_HYDROGEN_NAME:
+                        elif stream == self.GASEOUS_HYDROGEN_NAME:
                             self.set_partial_derivative_for_other_types(
                                 (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'), (
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'), (
                                                                                              scaling_factor_energy_production * liquid_hydrogen_percentage / liquid_hydrogen_constraint_ref) * np.identity(
                                     len(years)))
 
-                        if energy == self.SYNGAS_NAME:
+                        if stream == self.SYNGAS_NAME:
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'),
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                 - scaling_factor_energy_production * np.sign(
-                                    production_detailed_df[f'production {GlossaryEnergy.syngas} (TWh)'].values) * np.identity(
+                                    production_detailed_df[f'production {GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})'].values) * np.identity(
                                     len(years)) / syngas_prod_ref)
 
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.SYNGAS_PROD_CONSTRAINT,), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'),
+                                    f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                    f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                 scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
 
             else:
                 # CCUS
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionDetailedValue,
-                     f'production {energy} ({stream_class_dict[energy].unit})'),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    np.identity(len(years)) * scaling_factor_energy_production)
+                    (GlossaryEnergy.StreamProductionDetailedValue, f'production {stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
+                    np.identity(len(years)) * scaling_factor_energy_production * 00)
                 # ---- Loop on energy again to differentiate production and consumption ----#
-                for energy_input in energy_list:
-                    ns_energy_input = self.get_ns_energy(energy_input)
-                    list_columns_energy_consumption = list(
-                        inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
+                for stream_input in stream_list:
+                    ns_stream_input = self.get_ns_stream(stream_input)
+                    list_columns_energy_consumption = list(inputs_dict[f'{stream_input}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                    if f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' in list_columns_energy_consumption:#F or stream_input == GlossaryEnergy.carbon_storage:
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyProductionDetailedValue,
-                             f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
+                            (GlossaryEnergy.StreamProductionDetailedValue, f'production {stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}', f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                             -scaling_factor_energy_consumption * np.identity(
-                                len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
+                                len(years)) / scaling_factor_energy_production * scaling_factor_energy_production* 0)
+
+                    if f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' in list_columns_energy_consumption:# or stream_input == GlossaryEnergy.carbon_capture:
+                        self.set_partial_derivative_for_other_types(
+                            (GlossaryEnergy.StreamProductionDetailedValue, f'production {stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                            (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}', f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                            -scaling_factor_energy_consumption * np.identity(
+                                len(years)) / scaling_factor_energy_production * scaling_factor_energy_production * 0)
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.StreamProductionDetailedValue, f'production {GlossaryEnergy.carbon_storage} ({GlossaryEnergy.unit_dicts[GlossaryEnergy.carbon_storage]})'),
+                (f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamConsumptionValue}', f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.unit_dicts[GlossaryEnergy.carbon_capture]})'),
+                -scaling_factor_energy_consumption * np.identity(
+                    len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
+
         # -------------------------#
         # ---- Prices gradients----#
         # -------------------------#
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
-            if energy in energies:
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
+            if stream in energies:
                 self.set_partial_derivative_for_other_types(
-                    ('energy_prices_after_tax',
-                     energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                    ('energy_prices_after_tax', stream),
+                    (f'{ns_stream}.{GlossaryEnergy.StreamPricesValue}', stream),
                     np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    ('energy_prices_after_tax', energy), (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
-                    inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values *
+                    ('energy_prices_after_tax', stream),
+                    (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
+                    inputs_dict[f'{stream}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values *
                     np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    ('energy_prices_after_tax',
-                     energy), (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
+                    ('energy_prices_after_tax', stream),
+                    (f'{ns_stream}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values *
                     np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                (GlossaryEnergy.StreamPricesValue, stream),
+                (f'{ns_stream}.{GlossaryEnergy.StreamPricesValue}', stream),
                 np.identity(len(years)))
 
         # -------------------------------#
@@ -830,20 +835,19 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -------------------------------#
 
         resource_list = EnergyMix.RESOURCE_LIST
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
-            for resource in inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}']:
-                resource_wo_unit = resource.replace(
-                    f" ({ResourceGlossary.UNITS['consumption']})", '')
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
+            for resource in inputs_dict[f'{stream}.{GlossaryEnergy.StreamConsumptionValue}']:
+                resource_wo_unit = resource.replace(f" ({ResourceGlossary.UNITS['consumption']})", '')
                 if resource_wo_unit in resource_list:
-                    self.set_partial_derivative_for_other_types(('resources_demand', resource_wo_unit), (
-                        f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', resource),
-                                                                scaling_factor_energy_consumption * np.identity(
-                                                                    len(years)))
-                    self.set_partial_derivative_for_other_types(('resources_demand_woratio', resource_wo_unit), (
-                        f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', resource),
-                                                                scaling_factor_energy_consumption * np.identity(
-                                                                    len(years)))
+                    self.set_partial_derivative_for_other_types(
+                        ('resources_demand', resource_wo_unit),
+                        (f'{ns_stream}.{GlossaryEnergy.StreamConsumptionValue}', resource),
+                        scaling_factor_energy_consumption * np.identity(len(years)))
+                    self.set_partial_derivative_for_other_types(
+                        ('resources_demand_woratio', resource_wo_unit),
+                        (f'{ns_stream}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', resource),
+                        scaling_factor_energy_consumption * np.identity(len(years)))
         # -----------------------------#
         # ---- Mean Price gradients----#
         # -----------------------------#
@@ -852,75 +856,75 @@ class Energy_Mix_Discipline(SoSWrapp):
             deepcopy(production_energy_net_pos), element_dict, exp_min=inputs_dict['exp_min'],
             min_prod=production_threshold)
         dmean_price_dco2_tax = np.zeros((len(years), len(years)))
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
-            if energy in energies:
-                mix_weight_energy = mix_weight[energy].values
-                dmean_price_dco2_tax += inputs_dict[f'{energy}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values * \
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
+            if stream in energies:
+                mix_weight_energy = mix_weight[stream].values
+                dmean_price_dco2_tax += inputs_dict[f'{stream}.{GlossaryEnergy.CO2PerUse}'][GlossaryEnergy.CO2PerUse].values * \
                                         mix_weight_energy
                 d_emp = mix_weight_energy * np.identity(len(years))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.StreamPricesValue}', stream),
                     d_emp)
                 d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.StreamPricesValue}', stream),
                     d_emp_obj)
                 d_emp = inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values * mix_weight_energy * np.identity(len(years))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
-                    (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
+                    (f'{ns_stream}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     d_emp)
                 d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
-                    (f'{ns_energy}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
+                    (f'{ns_stream}.{GlossaryEnergy.CO2PerUse}', GlossaryEnergy.CO2PerUse),
                     d_emp_obj)
                 dmean_price_dprod = self.compute_dmean_price_dprod(
-                    energy, energies,
+                    stream, energies,
                     mix_weight, energy_price_after_tax,
                     production_energy_net_pos, production_detailed_df)
 
-                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
+                loss_percentage = inputs_dict[f'{ns_stream}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
-                if energy in self.energy_model.raw_tonet_dict:
+                if stream in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
-                                        self.energy_model.raw_tonet_dict[energy])
+                                        self.energy_model.raw_tonet_dict[stream])
                 d_emp = scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     d_emp)
                 d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceObjectiveValue,),
-                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     d_emp_obj)
 
-            for energy_input in energy_list:
-                if energy_input in energies:
-                    ns_energy_input = self.get_ns_energy(energy_input)
+            for stream_input in stream_list:
+                if stream_input in energies:
+                    ns_stream_input = self.get_ns_stream(stream_input)
                     list_columns_energy_consumption = list(
-                        inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
-                        if energy in energies:
-                            dmean_price_dcons = self.compute_dmean_price_dprod(energy, energies, mix_weight,
+                        inputs_dict[f'{stream_input}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                    if f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' in list_columns_energy_consumption:
+                        if stream in energies:
+                            dmean_price_dcons = self.compute_dmean_price_dprod(stream, energies, mix_weight,
                                                                                energy_price_after_tax,
                                                                                production_energy_net_pos,
                                                                                production_detailed_df, cons=True)
                             d_emp = scaling_factor_energy_consumption * dmean_price_dcons
                             self.set_partial_derivative_for_other_types(
                                 (GlossaryEnergy.EnergyMeanPriceValue, GlossaryEnergy.EnergyPriceValue),
-                                (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                 f'{energy} ({stream_class_dict[energy].unit})'),
+                                (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                 f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                 d_emp)
                             d_emp_obj = self.energy_model.d_energy_mean_price_obj_d_energy_mean_price(d_emp)
                             self.set_partial_derivative_for_other_types(
                                 (GlossaryEnergy.EnergyMeanPriceObjectiveValue, ),
-                                (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                 f'{energy} ({stream_class_dict[energy].unit})'),
+                                (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
+                                 f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
                                 d_emp_obj)
         d_emp = dmean_price_dco2_tax * np.identity(len(years))
         self.set_partial_derivative_for_other_types(
@@ -945,48 +949,48 @@ class Energy_Mix_Discipline(SoSWrapp):
         for key, value in dtot_co2_emissions.items():
             co2_emission_column = key.split(' vs ')[0]
             energy_prod_info = key.split(' vs ')[1]
-            energy = energy_prod_info.split('#')[0]
+            stream = energy_prod_info.split('#')[0]
             last_part_key = energy_prod_info.split('#')[1]
-            if energy in energy_list:
+            if stream in stream_list:
                 self.set_gradient_for_co2_emissions('co2_emissions_needed_by_energy_mix',
-                                                    co2_emissions_needed_by_energy_mix, co2_emission_column, energy,
+                                                    co2_emissions_needed_by_energy_mix, co2_emission_column, stream,
                                                     energy_prod_info, last_part_key, value, inputs_dict, years)
                 self.set_gradient_for_co2_emissions('carbon_capture_from_energy_mix',
-                                                    carbon_capture_from_energy_mix, co2_emission_column, energy,
+                                                    carbon_capture_from_energy_mix, co2_emission_column, stream,
                                                     energy_prod_info, last_part_key, value, inputs_dict, years)
         # -----------------------------------#
         # ---- Demand Violation gradients----#
         # -----------------------------------#
-        for energy in energies:
-            ns_energy = self.get_ns_energy(energy)
-            if energy in outputs_dict[GlossaryEnergy.EnergyCO2EmissionsValue].keys():
+        for stream in energies:
+            ns_stream = self.get_ns_stream(stream)
+            if stream in outputs_dict[GlossaryEnergy.StreamsCO2EmissionsValue].keys():
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy),
-                    (f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}', energy), np.identity(len(years)))
-            for energy_input in energy_list:
-                ns_energy_input = self.get_ns_energy(energy_input)
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, stream),
+                    (f'{ns_stream}.{GlossaryEnergy.CO2EmissionsValue}', stream), np.identity(len(years)))
+            for stream_input in stream_list:
+                ns_stream_input = self.get_ns_stream(stream_input)
                 list_columnsenergyprod = list(
-                    inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyProductionValue}'].columns)
+                    inputs_dict[f'{stream_input}.{GlossaryEnergy.EnergyProductionValue}'].columns)
                 list_columns_energy_consumption = list(
-                    inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                list_index_prod = [j == energy for j in list_columnsenergyprod]
+                    inputs_dict[f'{stream_input}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                list_index_prod = [j == stream for j in list_columnsenergyprod]
                 list_index_conso = [
-                    j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columns_energy_consumption]
+                    j == f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' for j in list_columns_energy_consumption]
 
                 if True in list_index_prod:
-                    loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
+                    loss_percentage = inputs_dict[f'{ns_stream}.losses_percentage'] / 100.0
                     # To model raw to net percentage for witness coarse
                     # energies
-                    if energy in self.energy_model.raw_tonet_dict:
+                    if stream in self.energy_model.raw_tonet_dict:
                         loss_percentage += (1.0 -
-                                            self.energy_model.raw_tonet_dict[energy])
+                                            self.energy_model.raw_tonet_dict[stream])
                     loss_percent = heat_losses_percentage + loss_percentage
 
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (
-                                                                f'{ns_energy_input}.{GlossaryEnergy.EnergyProductionValue}',
-                                                                energy),
+                                                                f'{ns_stream_input}.{GlossaryEnergy.EnergyProductionValue}',
+                                                                stream),
                                                                 scaling_factor_energy_production * np.identity(
                                                                     len(years)) / total_prod_minus_min_prod_constraint_ref * (
                                                                         1.0 - loss_percent))
@@ -995,7 +999,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (
-                                                                f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
+                                                                f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionValue}',
                                                                 list_columns_energy_consumption[
                                                                     list_index_conso.index(True)]),
                                                                 -scaling_factor_energy_consumption * np.identity(
@@ -1009,61 +1013,60 @@ class Energy_Mix_Discipline(SoSWrapp):
         ratio_ref = inputs_dict['ratio_ref']
         # Loop on streams
         dobjective_dratio = self.compute_dratio_objective(
-            all_streams_demand_ratio, ratio_ref, energy_list)
+            all_streams_demand_ratio, ratio_ref, stream_list)
         ienergy = 0
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
             ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons = self.compute_ddemand_ratio_denergy_production(
-                energy, sub_production_dict, sub_consumption_woratio_dict,
+                stream, sub_production_dict, sub_consumption_woratio_dict,
                 scaling_factor_energy_production, years, energy_production_brut_detailed)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.AllStreamsDemandRatioValue,
-                 f'{energy}'), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                 f'{stream}'), (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                 ddemand_ratio_denergy_prod)
             dobjective_dratio_energy = np.array([dobjective_dratio[ienergy + iyear * len(
-                energy_list)] for iyear in range(len(years))]).reshape((1, len(years)))
+                stream_list)] for iyear in range(len(years))]).reshape((1, len(years)))
             dobjective_dprod = np.matmul(
                 dobjective_dratio_energy, ddemand_ratio_denergy_prod)
 
             self.set_partial_derivative_for_other_types(
-                ('ratio_objective',), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy), dobjective_dprod)
+                ('ratio_objective',),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
+                dobjective_dprod)
             # ---- Loop on energy again to differentiate production and consumption ----#
-            for energy_input in energy_list:
-                ns_energy_input = self.get_ns_energy(energy_input)
-                list_columns_energy_consumption = list(
-                    inputs_dict[f'{energy_input}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
+            for stream_input in stream_list:
+                ns_stream_input = self.get_ns_stream(stream_input)
+                list_columns_energy_consumption = list(inputs_dict[f'{stream_input}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                if f'{stream} ({GlossaryEnergy.unit_dicts[stream]})' in list_columns_energy_consumption:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.AllStreamsDemandRatioValue, f'{energy}'), (
-                            f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
-                            f'{energy} ({stream_class_dict[energy].unit})'), ddemand_ratio_denergy_cons)
-                    dobjective_dcons = np.matmul(
-                        dobjective_dratio_energy, ddemand_ratio_denergy_cons)
+                        (GlossaryEnergy.AllStreamsDemandRatioValue, f'{stream}'),
+                        (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                        ddemand_ratio_denergy_cons)
+                    dobjective_dcons = np.matmul(dobjective_dratio_energy, ddemand_ratio_denergy_cons)
                     self.set_partial_derivative_for_other_types(
-                        ('ratio_objective',), (
-                            f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
-                            f'{energy} ({stream_class_dict[energy].unit})'), dobjective_dcons)
+                        ('ratio_objective',),
+                        (f'{ns_stream_input}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', f'{stream} ({GlossaryEnergy.unit_dicts[stream]})'),
+                        dobjective_dcons)
             ienergy += 1
         # --------------------------------------#
         # ---- Land use constraint gradients----#
         # --------------------------------------#
 
-        for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
+        for stream in stream_list:
+            ns_stream = self.get_ns_stream(stream)
             for key in outputs_dict['land_demand_df']:
-                if key in inputs_dict[
-                    f'{energy}.{GlossaryEnergy.LandUseRequiredValue}'] and key != GlossaryEnergy.Years:
-                    self.set_partial_derivative_for_other_types(('land_demand_df', key),
-                                                                (f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}',
-                                                                 key),
-                                                                np.identity(len(years)))
+                if key in inputs_dict[f'{stream}.{GlossaryEnergy.LandUseRequiredValue}'] and key != GlossaryEnergy.Years:
+                    self.set_partial_derivative_for_other_types(
+                        ('land_demand_df', key),
+                        (f'{ns_stream}.{GlossaryEnergy.LandUseRequiredValue}', key),
+                        np.identity(len(years)))
 
     def set_gradient_for_co2_emissions(self, co2_variable, co2_emissions, co2_emission_column, energy, energy_prod_info,
                                        last_part_key, value, inputs_dict, years):
 
         if co2_emission_column in co2_emissions.columns:
 
-            ns_energy = self.get_ns_energy(energy)
+            ns_energy = self.get_ns_stream(energy)
 
             '''
             Needed by energy mix gradient
@@ -1076,14 +1079,14 @@ class Energy_Mix_Discipline(SoSWrapp):
                     np.identity(len(years)) * inputs_dict['scaling_factor_energy_production'] * value / 1.0e3)
             elif last_part_key == 'cons':
                 for energy_df in inputs_dict[GlossaryEnergy.energy_list]:
-                    ns_energy_df = self.get_ns_energy(energy_df)
+                    ns_energy_df = self.get_ns_stream(energy_df)
                     list_columnsenergycons = list(
-                        inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
-                    if f'{energy} (TWh)' in list_columnsenergycons:
+                        inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                    if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                         self.set_partial_derivative_for_other_types(
                             (co2_variable, co2_emission_column),
-                            (f'{ns_energy_df}.{GlossaryEnergy.EnergyConsumptionValue}',
-                             f'{energy} (TWh)'),
+                            (f'{ns_energy_df}.{GlossaryEnergy.StreamConsumptionValue}',
+                             f'{energy} ({GlossaryEnergy.energy_unit})'),
                             np.identity(len(years)) * inputs_dict['scaling_factor_energy_consumption'] * value / 1.0e3)
             elif last_part_key == 'co2_per_use':
                 self.set_partial_derivative_for_other_types(
@@ -1101,7 +1104,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                 elif very_last_part_key == 'cons':
                     self.set_partial_derivative_for_other_types(
                         (co2_variable, co2_emission_column), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
+                            f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
                         np.identity(len(years)) * inputs_dict['scaling_factor_energy_production'] * value / 1.0e3)
 
     def compute_dratio_objective(self, stream_ratios, ratio_ref, energy_list):
@@ -1153,7 +1156,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                     1e6 * (production_df[GlossaryEnergy.TotalProductionValue]) ** 2)
 
         # derivative of negative prod is 0
-        index_l = production_df[production_df[f'production {energy} (TWh)']
+        index_l = production_df[production_df[f'production {energy} ({GlossaryEnergy.energy_unit})']
                                 == 0].index
         denergy_mean_prod.loc[index_l] = 0
         return denergy_mean_prod
@@ -1283,7 +1286,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         # then we check the sign of prod but if zero the gradient
         # should not be zero
         gradient_sign = np.sign(production_energy_net_pos_consumable[energy].values) + (
-                production_detailed_df[f'production {energy} (TWh)'].values == 0.0)
+                production_detailed_df[f'production {energy} ({GlossaryEnergy.energy_unit})'].values == 0.0)
         years = production_detailed_df[GlossaryEnergy.Years].values
 
         dmean_price_dprod = grad_price_vs_prod * \
@@ -1297,19 +1300,19 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     #
 
-    def get_ns_energy(self, energy):
+    def get_ns_stream(self, stream):
         '''
         Returns the namespace of the energy
         In case  of biomass , it is computed in agriculture model
 
         '''
 
-        if energy == BiomassDry.name:
-            ns_energy = AgricultureMixDiscipline.name
+        if stream == BiomassDry.name:
+            ns_stream = AgricultureMixDiscipline.name
         else:
-            ns_energy = energy
+            ns_stream = stream
 
-        return ns_energy
+        return ns_stream
 
     def get_chart_filter_list(self):
 
@@ -1318,7 +1321,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                       'production', 'CO2 emissions', 'Carbon intensity', 'CO2 taxes over the years',
                       'Solid energy and electricity production constraint',
                       'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses',
-                      'Target energy production constraint']
+                      'Target energy production constraint', GlossaryEnergy.Capital]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -1367,13 +1370,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                       'dash_lines')
                 chart_target_energy_production.add_series(serie_target_energy_production)
 
-                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionDetailedValue)[
+                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionDetailedValue)[
                                      GlossaryEnergy.TotalProductionValue].values
                 serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
                                                    'bar')
                 chart_target_energy_production.add_series(serie_production)
                 instanciated_charts.append(chart_target_energy_production)
-
 
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
 
@@ -1388,9 +1390,13 @@ class Energy_Mix_Discipline(SoSWrapp):
             new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-        if 'Energy mean price' in charts:
 
+        if 'Energy mean price' in charts:
             new_chart = self.get_chart_energy_mean_price_in_dollar_mwh()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+        if GlossaryEnergy.Capital in charts:
+            new_chart = self.get_chart_capital()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -1430,7 +1436,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     instanciated_charts.append(new_chart)
 
         if 'Solid energy and electricity production constraint' in charts and len(
-                list(set(self.energy_constraint_list).intersection(energy_list))) > 0:
+                list(set(self.energy_constraint_list).intersection(energy_list))) > 0 and f'{GlossaryEnergy.fuel}.{GlossaryEnergy.solid_fuel}' in energy_list:
             new_chart = self.get_chart_solid_energy_elec_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -1460,15 +1466,15 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_solid_energy_elec_constraint(self):
         energy_production_detailed = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         solid_fuel_elec_percentage = self.get_sosdisc_inputs(
             'solid_fuel_elec_percentage')
         chart_name = 'Solid energy and electricity production constraint'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
-        sum_solid_fuel_elec = energy_production_detailed[f'production {GlossaryEnergy.solid_fuel} (TWh)'].values + \
-                              energy_production_detailed[f'production {GlossaryEnergy.electricity} (TWh)'].values
+        sum_solid_fuel_elec = energy_production_detailed[f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'].values + \
+                              energy_production_detailed[f'production {GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values),
                                        list(sum_solid_fuel_elec),
                                        'Sum of solid fuel and electricity productions', 'lines')
@@ -1483,7 +1489,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_liquid_hydrogen_constraint(self):
         energy_production_detailed = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         liquid_hydrogen_percentage = self.get_sosdisc_inputs(
             'liquid_hydrogen_percentage')
         chart_name = 'Liquid hydrogen production constraint'
@@ -1491,17 +1497,17 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(
-            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values),
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'].values),
                                        'Liquid hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(
-            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'].values +
-            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values),
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})'].values +
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'].values),
                                        'Total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         constraint = liquid_hydrogen_percentage * \
-                     (energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'].values +
-                      energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values)
+                     (energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})'].values +
+                      energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'].values)
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(constraint),
                                        'percentage of total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
@@ -1509,7 +1515,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_comparison_carbon_intensity(self):
         new_charts = []
-        energy_co2_emissions = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCO2EmissionsValue)
+        energy_co2_emissions = self.get_sosdisc_outputs(GlossaryEnergy.StreamsCO2EmissionsValue)
         chart_name = 'Comparison of carbon intensity for production of all energies'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
@@ -1546,7 +1552,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return new_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
 
         chart_name = 'Detailed prices of energy mix with CO2 taxes<br>from production (used for technology prices)'
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
@@ -1560,10 +1566,10 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.Years, 'Prices [$/MWh]', primary_ordinate_axis_range=[0, max_value], chart_name=chart_name)
 
         for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
+            ns_energy = self.get_ns_stream(energy)
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_price = self.get_sosdisc_inputs(
-                    f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}')
+                    f'{ns_energy}.{GlossaryEnergy.StreamPricesValue}')
                 serie = InstanciatedSeries(
                     energy_prices[GlossaryEnergy.Years].values.tolist(),
                     techno_price[energy].values.tolist(), energy, 'lines')
@@ -1572,7 +1578,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return new_chart
 
     def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = 'Detailed prices of energy mix without CO2 taxes from production'
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
         max_value = 0
@@ -1585,10 +1591,10 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.Years, 'Prices [$/MWh]', primary_ordinate_axis_range=[0, max_value], chart_name=chart_name)
 
         for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
+            ns_energy = self.get_ns_stream(energy)
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_price = self.get_sosdisc_inputs(
-                    f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}')
+                    f'{ns_energy}.{GlossaryEnergy.StreamPricesValue}')
                 serie = InstanciatedSeries(
                     energy_prices[GlossaryEnergy.Years].values.tolist(),
                     techno_price[f'{energy}_wotaxes'].values.tolist(), energy, 'lines')
@@ -1623,7 +1629,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return new_chart
 
     def get_chart_energy_price_in_dollar_t(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
 
         chart_name = 'Detailed prices of Carbon Capture and Storage'
         new_chart = TwoAxesInstanciatedChart(
@@ -1633,7 +1639,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         for ccs_name in ccs_list:
             techno_price = self.get_sosdisc_inputs(
-                f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}')
+                f'{ccs_name}.{GlossaryEnergy.StreamPricesValue}')
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years].values.tolist(),
                 techno_price[ccs_name].values.tolist(), ccs_name, 'lines')
@@ -1678,7 +1684,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_energies_net_production(self):
         energy_production_detailed = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         chart_name = 'Net Energies production/consumption'
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Net Energy [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -1700,7 +1706,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_energies_net_raw_production_and_limit(self):
         energy_production_detailed = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         minimum_energy_production = self.get_sosdisc_inputs(
             'minimum_energy_production')
         chart_name = 'Energy Total Production and Minimum Net Energy Limit'
@@ -1765,13 +1771,13 @@ class Energy_Mix_Discipline(SoSWrapp):
         instanciated_charts = []
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
         energy_production_detailed = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
-        techno_production = energy_production_detailed[[GlossaryEnergy.Years]]
+            GlossaryEnergy.StreamProductionDetailedValue)
+        techno_production = pd.DataFrame({GlossaryEnergy.Years: energy_production_detailed[GlossaryEnergy.Years].values})
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_title = [
-                    col for col in energy_production_detailed if col.endswith(f'{energy} (TWh)')]
+                    col for col in energy_production_detailed if col.endswith(f'{energy} ({GlossaryEnergy.energy_unit})')]
                 techno_production.loc[:,
                 energy] = energy_production_detailed[techno_title[0]]
 
@@ -1828,24 +1834,24 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values / 1.0e3).tolist(),
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit}) from CC technos'].values / 1.0e3).tolist(),
             'CO2 captured from CC technos', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(),
-            f'{CarbonCapture.name} used by energy mix', 'bar')
+            (-co2_emissions[f'{GlossaryEnergy.carbon_capture} needed by energy mix (Mt)'].values / 1.0e3).tolist(),
+            f'{GlossaryEnergy.carbon_capture} used by energy mix', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food', 'bar')
+            (-co2_emissions[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values / 1.0e3).tolist(), f'{GlossaryEnergy.carbon_capture} used for food', 'bar')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1862,17 +1868,17 @@ class Energy_Mix_Discipline(SoSWrapp):
         x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), 'CO2 storage capacity')
+            (co2_emissions[f'{GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})'].values / 1.0e3).tolist(), 'CO2 storage capacity')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
+            (co2_emissions[f'{GlossaryEnergy.carbon_storage} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             'CO2 captured and stored')
         new_chart.add_series(serie)
 
@@ -1896,19 +1902,19 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'].values / 1.0e3).tolist(),
+            (co2_emissions[f'Total {CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'].values / 1.0e3).tolist(),
             'Flue gas from plants')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1, (
-                    co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+                    co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
             'Carbon capture from energy mix (FT or Sabatier)')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CO2.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+            (co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
             'CO2 from energy mix (machinery fuels)')
         new_chart.add_series(serie)
 
@@ -1932,8 +1938,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
 
         serie = InstanciatedSeries(
-            x_serie_1, (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Gt)'].values).tolist(),
-            f'{CarbonCapture.name} needed by energy mix')
+            x_serie_1, (-co2_emissions[f'{GlossaryEnergy.carbon_capture} needed by energy mix (Gt)'].values).tolist(),
+            f'{GlossaryEnergy.carbon_capture} needed by energy mix')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1994,7 +2000,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                 percentage = inputs_dict[percentage_loss_name]
                 if percentage != 0.0:
                     losses = percentage / 100.0 * \
-                             raw_prod_detailed[f'production {energy} (TWh)'].values
+                             raw_prod_detailed[f'production {energy} ({GlossaryEnergy.energy_unit})'].values
                     serie = InstanciatedSeries(
                         years, losses.tolist(), f'Distribution Transmission and Transport losses for {energy}')
                     new_chart.add_series(serie)
@@ -2048,4 +2054,22 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart = InstanciatedTable(
             table_name=chart_name, header=header, cells=cells)
 
+        return new_chart
+
+    def get_chart_capital(self):
+        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCapitalDfValue)
+
+        chart_name = 'Capital'
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+
+        serie = InstanciatedSeries(
+            capital_df[GlossaryEnergy.Years].values.tolist(),
+            capital_df[GlossaryEnergy.Capital].values.tolist(), 'Capital', 'lines')
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            capital_df[GlossaryEnergy.Years].values.tolist(),
+            capital_df[GlossaryEnergy.NonUseCapital].values.tolist(), 'Non used capital (Utilisation ratio or limiting ratio)', 'bar')
+        new_chart.series.append(serie)
         return new_chart

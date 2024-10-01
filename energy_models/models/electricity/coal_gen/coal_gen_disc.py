@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -24,9 +23,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -52,11 +48,10 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.CoalGen
-    lifetime = 46
+
     # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.
     # Quantifying operational lifetimes for coal power plants under the Paris
     # goals. Nature communications, 10(1), pp.1-9.
-    construction_delay = 5  # For 1000MW hypercritical in Korea
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
                                  # Lorenczik, S., Kim, S., Wanner, B., Bermudez Menendez, J.M., Remme, U., Hasegawa,
@@ -100,7 +95,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # Energy Policy, 86, pp.198-218.
                                  # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
                                  'learning_rate': 0.083,
-                                 'lifetime': lifetime,
                                  # IEA 2022, World Energy Outlook 2014,
                                  # https://www.iea.org/reports/world-energy-outlook-2014
                                  # License: CC BY 4.0.
@@ -120,8 +114,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 0.41,
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 1150,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1150 /1e9 #According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -131,31 +124,11 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 87.0, 76.5, 90.0, 67.5]})
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [2.6, 2.6, 2.6, 2.6, 2.6, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
-                                                         1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
-                                                         1.1, 1.1, 1.1, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25,
-                                                         3.25, 3.25, 3.25,
-                                                         3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25,
-
-                                                         ]})
+    
     FLUE_GAS_RATIO = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -176,13 +149,13 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
@@ -208,10 +181,10 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         dprod_name_dinvest = (
                                          self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
         consumption_gradient = self.techno_consumption_derivative[
-            f'{SolidFuel.name} ({self.techno_model.product_energy_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+            f'{SolidFuel.name} ({self.techno_model.product_unit})']
+        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'),
+             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             (consumption_gradient - dprod_name_dinvest))

@@ -131,6 +131,8 @@ class BaseStream:
                                                                      inputs_dict['scaling_factor_techno_consumption']
             self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
 
+        #print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}'].columns) for element in self.subelements_list])
+
     def compute(self, inputs, exp_min=True):
         '''
         Compute all energy variables with its own technologies 
@@ -148,6 +150,7 @@ class BaseStream:
 
         self.compute_energy_type_capital(inputs)
 
+        #print(self.name, list(self.production.columns))
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 
     def compute_production(self, sub_production_dict, sub_consumption_dict):
@@ -170,16 +173,16 @@ class BaseStream:
             production[
                 f'{self.name}'] += production_by_techno[f'{self.name} {element} ({self.unit})'].values
 
-            production, consumption = self.compute_other_consumption_production(
+            production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption)
 
+        #print(self.name, "&&#", self.unit)
+        #print(self.name, list(production_by_techno.columns))
         return production, consumption, production_by_techno
 
-    def compute_other_consumption_production(self, element, sub_production_dict, sub_consumption_dict, production,
-                                             consumption, factor=1.0):
-        '''
-        Compute other consumption and production
-        '''
+    def compute_byproducts_consumption_and_production(self, element, sub_production_dict, sub_consumption_dict, production,
+                                                      consumption, factor=1.0):
+        """Compute byproducts consumptions and productions"""
 
         for elem, prod in sub_production_dict[element].items():
             # DO not count major energy production in this function (already
@@ -206,9 +209,15 @@ class BaseStream:
         ]
         sum_technos_capital = np.sum(capitals, axis=0)
 
+        non_use_capitals = [
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.NonUseCapital].values for techno in technos
+        ]
+        sum_technos_non_use_capital = np.sum(non_use_capitals, axis=0)
+
         self.energy_type_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.Capital: sum_technos_capital,
+            GlossaryEnergy.NonUseCapital: sum_technos_non_use_capital,
         })
 
     def compute_price(self, exp_min=True):

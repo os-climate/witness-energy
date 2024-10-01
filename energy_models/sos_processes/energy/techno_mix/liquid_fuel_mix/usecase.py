@@ -18,9 +18,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import (
@@ -30,8 +27,8 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
-TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
+TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
 
 
 class Study(EnergyMixStudyManager):
@@ -52,12 +49,12 @@ class Study(EnergyMixStudyManager):
         invest_liquid_fuel_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'Refinery' in self.technologies_list:
-            invest_liquid_fuel_mix_dict['Refinery'] = [
+        if GlossaryEnergy.Refinery in self.technologies_list:
+            invest_liquid_fuel_mix_dict[GlossaryEnergy.Refinery] = [
                 max(10.0, 100.0 - 5.0 * i) for i in l_ctrl]
 
-        if 'FischerTropsch' in self.technologies_list:
-            invest_liquid_fuel_mix_dict['FischerTropsch'] = [
+        if GlossaryEnergy.FischerTropsch in self.technologies_list:
+            invest_liquid_fuel_mix_dict[GlossaryEnergy.FischerTropsch] = [
                 min(100.0, 0.1 + 10 * i) for i in l_ctrl]
 
         if self.bspline:
@@ -79,15 +76,16 @@ class Study(EnergyMixStudyManager):
 
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 16.0,
-                                      'CO2': 0.0,
+                                      GlossaryEnergy.CO2: 0.0,
                                       'crude oil': 38.0,
+                                      GlossaryEnergy.carbon_capture: 70.,
                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
                                       GlossaryEnergy.syngas: 50.0})
 
-        self.syngas_detailed_prices = pd.DataFrame({'CoalGasification': np.ones(len(years)) * 50.0,
-                                                    'CoElectrolysis': 2.0 * 50.0,
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.CoalGasification: np.ones(len(years)) * 50.0,
+                                                    GlossaryEnergy.CoElectrolysis: 2.0 * 50.0,
                                                     'ATR': 1.5 * 50.0,
-                                                    'SMR': 50.0})
+                                                    GlossaryEnergy.SMR: 50.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -107,7 +105,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4,
-             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533})
+             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533, GlossaryEnergy.carbon_capture: 0.})
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -115,18 +113,18 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.Refinery.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.FischerTropsch.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.Refinery}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.FischerTropsch}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
         if self.main_study:
             values_dict.update({
                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.33,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}': np.ones(len(years)) * 0.33,
             })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
@@ -148,14 +146,4 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-        if disc.name == 'EnergyMix.fuel.liquid_fuel.Refinery':
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-            for graph in graph_list:
-                graph.to_plotly().show()
+    uc_cls.test()

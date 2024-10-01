@@ -80,7 +80,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices_nr = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
 
         ####################
         self.name = 'Test2'
@@ -103,7 +103,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee2.display_treeview_nodes()
         self.ee2.execute()
         energy_prices_jac = self.ee2.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
 
         diff = energy_prices_jac - energy_prices_nr
 

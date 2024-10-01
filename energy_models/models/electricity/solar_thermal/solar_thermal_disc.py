@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -52,8 +47,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.SolarThermal
-    lifetime = 25  # JRC, IRENA, SolarPACES
-    construction_delay = 3  # JRC, ATB NREL, database https://solarpaces.nrel.gov/
+
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
                                  # OPEX : lmean of lazard / JRC / ATB NREL
@@ -61,7 +55,6 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  # WACC : mean of Frauhofer / IRENA / ATB NREL
                                  'WACC': 0.062,
                                  'learning_rate': 0.07,  # JRC
-                                 'lifetime': lifetime,
                                  # Capex : mean of JRC / IRENA /ATB NREL / ...
                                  'Capex_init': 5000,
                                  'Capex_init_unit': '$/kW',
@@ -78,8 +71,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'density_per_ha_unit': 'kWh/ha',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -88,33 +80,13 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     # Invest before year start
     # from
     # https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [1.41, 14.0, 14.0]})
-
+    
     # from database https://solarpaces.nrel.gov/
     # Nb plants 'Operational' and not pilot/demo/proto
     # only commercial or production
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [9.677419355, 7.52688172, 0,
-                                                         5.376344086, 4.301075269, 5.376344086, 11.82795699,
-                                                         21.50537634,
-                                                         13.97849462, 9.677419355, 7.52688172, 1.075268817,
-                                                         2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -137,13 +109,13 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc

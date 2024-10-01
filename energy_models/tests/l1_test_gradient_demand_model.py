@@ -49,18 +49,18 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
-                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': np.linspace(20000,
+                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(20000,
                                                                                                                  19000,
                                                                                                                  len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': np.linspace(10000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})': np.linspace(10000, 12000,
                                                                                                          len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)': np.linspace(11000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})': np.linspace(11000, 12000,
                                                                                                        len(self.years)),
-                                                        f'production {GlossaryEnergy.methane} (TWh)': np.linspace(5000., 6000.,
+                                                        f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': np.linspace(5000., 6000.,
                                                                                                 len(self.years)),
-                                                        f'production {GlossaryEnergy.biogas} (TWh)': np.linspace(1000., 1500.,
+                                                        f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': np.linspace(1000., 1500.,
                                                                                                len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': np.linspace(
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -94,7 +94,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+                       f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
                        f'{self.name}.{GlossaryEnergy.PopulationDfValue}': self.population,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TransportDemandValue}': self.transport_demand
                        }
@@ -106,7 +106,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}',
+                            inputs=[f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}',
                                     f'{self.name}.{GlossaryEnergy.PopulationDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'

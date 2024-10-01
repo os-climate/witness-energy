@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -45,8 +44,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         'version': '',
     }
     techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'
-    lifetime = 35
-    construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
                                  'reaction': 'RNH2(Amine) + CO2 <--> (RNHCOO-) + (H+)',
                                  # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
@@ -67,7 +64,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
-                                 'lifetime': lifetime,  # should be modified
                                  # 0.6577,  # 730 euro/tCO2 in Fashi2019 Capex
                                  # initial at year 2020 1.11 euro/$
                                  'Capex_init': 0.88,  # average for solid techno, Fashi2019
@@ -91,7 +87,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -110,39 +105,13 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5.0e-3  # in Mt at year_start
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0]
-                                             })
     # use the same flue gas ratio as gas turbine one
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 
@@ -160,7 +129,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
 
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         self.set_partial_derivatives_techno(

@@ -91,11 +91,11 @@ class FuelDiscipline(SoSWrapp):
                                             'editable': False, 'structuring': True},
                }
 
-    DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+    DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
-                GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
+                GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+                GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
                 }
 
     def __init__(self, sos_name, logger: logging.Logger):
@@ -115,7 +115,7 @@ class FuelDiscipline(SoSWrapp):
                 self.energy_list = list(
                     set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe',
                                                                                       'unit': '$/MWh',
                                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                       'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -125,7 +125,7 @@ class FuelDiscipline(SoSWrapp):
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {'type': 'dataframe',
                                                                                            'unit': 'PWh',
                                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                            'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -135,7 +135,7 @@ class FuelDiscipline(SoSWrapp):
                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                           'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                           }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}'] = {'type': 'dataframe',
                                                                                                   'unit': 'TWh',
                                                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                                   'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -163,15 +163,15 @@ class FuelDiscipline(SoSWrapp):
 
         # loop over fuel energies
         for energy in self.energy_list:
-            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.EnergyPricesValue}')
+            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.StreamPricesValue}')
             energy_techno_prices = self.get_sosdisc_inputs(
                 f'{energy}.energy_detailed_techno_prices')
             energy_cons = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}')
+                f'{energy}.{GlossaryEnergy.StreamConsumptionValue}')
             energy_prod = self.get_sosdisc_inputs(
                 f'{energy}.{GlossaryEnergy.EnergyProductionValue}')
             energy_techno_prod = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}')
+                f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}')
 
             energy_prices = pd.concat(
                 [energy_prices, energy_price.drop(GlossaryEnergy.Years, axis=1)], axis=1)
@@ -199,11 +199,11 @@ class FuelDiscipline(SoSWrapp):
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: energy_prices,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         GlossaryEnergy.EnergyProductionValue: energy_production,
-                        GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
-                        GlossaryEnergy.EnergyProductionDetailedValue: energy_production_detailed,
+                        GlossaryEnergy.StreamConsumptionValue: energy_consumption,
+                        GlossaryEnergy.StreamProductionDetailedValue: energy_production_detailed,
                         }
 
         self.store_sos_outputs_values(outputs_dict)
@@ -277,7 +277,7 @@ class FuelDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_mwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -314,7 +314,7 @@ class FuelDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
@@ -452,7 +452,7 @@ class FuelDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
 
         chart_name = f'Technology production for {self.energy_name}'
 
@@ -479,7 +479,7 @@ class FuelDiscipline(SoSWrapp):
         instanciated_charts = []
 
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         techno_list = [
             techno for techno in energy_production if techno != GlossaryEnergy.Years]
         display_techno_list = []

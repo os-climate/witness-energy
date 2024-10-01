@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.methane_techno_disc import (
     MethaneTechnoDiscipline,
@@ -42,16 +40,10 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     # -- add specific techno inputs to this
 
     techno_name = GlossaryEnergy.Methanation
-    lifetime = 15
-    # Thema, M., Bauer, F. and Sterner, M., 2019.
-    # Power-to-Gas: Electrolysis and methanation status review.
-    # Renewable and Sustainable Energy Reviews, 112, pp.775-787.
-    # the average time needed for planning and constructing was about 1.5years
-    # from Thema2019
-    construction_delay = 2
+
+
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.
                                  # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
                                  # A techno-economic and environmental study.
@@ -66,8 +58,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     # Methanation is mostly used in PtG plants
@@ -81,25 +72,9 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     # from Power-to-Gas: Electrolysis and methanation status review M. Thema,
     # F. Bauer, M. Sterner Technical University of Applied Sciences (OTH)
     # Fig10
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.0, 8.82, 2.05, 0.93, 23.5, 0.0, 52.94, 11.76, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0]})  # to review
-
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+    }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

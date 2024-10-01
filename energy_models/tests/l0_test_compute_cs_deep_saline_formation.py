@@ -18,7 +18,6 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -42,28 +41,21 @@ class DeepSalineFormationPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'CO2': 0})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.carbon_capture: 12.})
         self.invest_level_2 = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0325})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.0325})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        # co2_taxes = [0.01486, 0.01722, 0.02027,
-        #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
-        co2_taxes = [0, 0, 0,
-                     0, 0, 0, 0, 0]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
+        
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 100.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0})
 
         transport_cost = 0
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': transport_cost})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
@@ -80,7 +72,7 @@ class DeepSalineFormationPriceTestCase(unittest.TestCase):
     def test_03_deep_saline_formation_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'DeepSalineFormation'
+        self.model_name = GlossaryEnergy.DeepSalineFormation
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -96,17 +88,13 @@ class DeepSalineFormationPriceTestCase(unittest.TestCase):
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
-        import traceback
-        try:
-            self.ee.configure()
-        except:
-            traceback.print_exc()
+        self.ee.configure()
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)}),
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_capture: 12.}),
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

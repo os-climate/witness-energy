@@ -15,15 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -47,8 +43,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     }
 
     techno_name = GlossaryEnergy.GasTurbine
-    lifetime = 30  # Source U.S. Energy Information Administration 2020
-    construction_delay = 2  # years #Lazard
+
     # Taud, R., Karg, J. and O'Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
@@ -65,7 +60,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  # ENERGY TECHNOLOGIES, June 2021
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # 0.1025 kt/PJ (mean) at gas power plants in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
                                  'CH4_emission_factor': 0.1025e-3 / 0.277,
@@ -83,43 +77,25 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'kwh_methane/kwh': methane_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9# According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     # Major hypo: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 51.0 * (1 - share)]})
-    # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
+        # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
     # Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
     # In US according to U.S. Energy Information Administration  53% of capa
     # from CCGT and 47 for GT in 2017
     share_ccgt = 0.75
     # Initial prod in TWh
     initial_production = (1 - share_ccgt) * 6346
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [2.83, 1.76, 2.3, 2.58, 2.26, 0.9, 0.82, 3.37, 7.77,
-                                                         13.53, 12.39, 4.53, 3.42, 3.17, 2.52, 2.1, 3.3,
-                                                         2.15, 3.35, 2.89, 2.52, 2.13, 2.11, 2.65, 3.32,
-                                                         2.99, 2.65, 2.49, 1.2]})
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}
+                      
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -139,13 +115,13 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc

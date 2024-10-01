@@ -82,7 +82,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
 
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
-        self.energy_list = [GlossaryEnergy.renewable, GlossaryEnergy.fossil]
+        self.energy_list = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil]
 
     def TearDown(self):
         '''
@@ -93,7 +93,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = []
 
         inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in self.energy_list
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in self.energy_list
             if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
@@ -101,18 +101,18 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             self.energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              self.energy_list if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         inputs_names.extend(
-            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
+            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
-            f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
+            f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in
             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list
