@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2024/01/31 Copyright 2024 Capgemini
+Modifications on 2024/01/31-2024/06/24 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -15,22 +15,16 @@ limitations under the License.
 
 '''
 import json
-
-import pandas as pd
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-'''
-
-from sostrades_core.study_manager.base_study_manager import BaseStudyManager
-from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
-from importlib import import_module
-from os.path import dirname
-from os import listdir
-import numpy as np
-
 from copy import deepcopy
+from importlib import import_module
+from os import listdir
+from os.path import dirname
 from tempfile import gettempdir
+
+import numpy as np
+import pandas as pd
+from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
+from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 
 NUMERICAL_KEYS = ['<study_ph>.sub_mda_class', '<study_ph>.max_mda_iter', '<study_ph>.n_processes',
                   '<study_ph>.chain_linearize',

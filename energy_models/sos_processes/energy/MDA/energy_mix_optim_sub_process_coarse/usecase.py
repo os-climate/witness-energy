@@ -13,8 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import Study as StudyEnergyMixFull
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
+    Study as StudyEnergyMixFull,
+)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -29,8 +31,9 @@ class Study(StudyEnergyMixFull):
             file_path=__file__,
             main_study=main_study,
             execution_engine=execution_engine,
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
         )
+        self.test_post_procs = False
 
 if "__main__" == __name__:
     uc_cls = Study()

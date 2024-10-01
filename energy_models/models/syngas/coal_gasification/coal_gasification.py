@@ -15,26 +15,39 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CoalGasification(SyngasTechno):
     syngas_COH2_ratio = 47.0 / 22.0 * 100.0  # in %
 
-    def compute_other_energies_needs(self):
+    def get_fuel_needs(self):
+        """
+        Get the fuel needs for 1 kwh of the energy producted by the technology
+        """
+        if self.techno_infos_dict['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
+                                                      self.techno_infos_dict['fuel_demand'])
+
+        else:
+            fuel_need = 0.0
+
+        return fuel_need
+
+    def compute_other_streams_needs(self):
         # in kwh of fuel by kwh of syngas
         self.cost_details[f'{SolidFuel.name}_needs'] = self.get_fuel_needs()
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
                                                                                             'CO2_from_production'] / \
                                                                                         self.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']

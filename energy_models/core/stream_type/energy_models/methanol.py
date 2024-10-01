@@ -25,9 +25,9 @@ class Methanol(EnergyType):
     # It can also be used as an alternative fuel through combustion reaction
     # Source: J.M.K.C. Donev et al. (2018). Energy Education - Methanol [Online].
     # Available: https://energyeducation.ca/encyclopedia/Methanol. [Accessed: June 20, 2022].
-    name = f'{GlossaryEnergy.fuel}.methanol'
+    name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.methanol}'
     short_name = 'methanol'
-    default_techno_list = ['CO2Hydrogenation']
+    default_techno_list = [GlossaryEnergy.CO2Hydrogenation]
     data_energy_dict = {'maturity': 5,
 
                         # Engineering ToolBox, (2009).Combustion of Fuels - Carbon Dioxide Emission.[online]

@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
+from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import (
+    GaseousHydrogenTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -31,9 +30,9 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
     """
     def compute_resources_needs(self):
-        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_water_needs()
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
@@ -71,16 +70,16 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
         return water_needs
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         o2_needs = self.get_oxygen_produced()
-        self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
+        self.production_detailed[f'O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
                                                              self.data_energy_dict['calorific_value'] * \
                                                              self.production_detailed[
-                                                                 f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+                                                                 f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
+        #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] \
+        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})'] # in TWH
 
 

@@ -13,8 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import (
+    Study as subStudy,
+)
 
 
 class Study(subStudy):
@@ -29,7 +31,8 @@ class Study(subStudy):
             execution_engine=execution_engine,
             run_usecase=run_usecase,
         )
-        self.techno_dict = DEFAULT_COARSE_TECHNO_DICT
+        self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        self.test_post_procs = False
 
 
 if "__main__" == __name__:

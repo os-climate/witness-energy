@@ -20,9 +20,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import BioDieselTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import (
+    BioDieselTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biodiesel.transesterification.transesterification import Transesterification
+from energy_models.models.biodiesel.transesterification.transesterification import (
+    Transesterification,
+)
 
 
 class TransesterificationDiscipline(BioDieselTechnoDiscipline):
@@ -43,7 +47,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     techno_name = GlossaryEnergy.Transesterification
     energy_name = BioDiesel.name
     lifetime = 15
-    construction_delay = 3  # years
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.0, 4.085787594423131, 11.083221775965836, 9.906291833479699,
@@ -52,9 +55,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                                          5.848393573822739, 2.2088353407762535, 3.162650601721087,
                                                          8.631749219311956]})  # to review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 3.0, 2.0]})
-
+    
     # use biodiesel calorific value to compute co2 from production
 
     # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
@@ -65,7 +66,6 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     techno_infos_dict_default = {'Opex_percentage': 0.04,
                                  'lifetime': lifetime,
                                  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
                                  'Capex_init_unit': '$/kg',
                                  'efficiency': 0.99,
@@ -75,22 +75,14 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'full_load_hours': 7920.0,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay
+                                     'techno_evo_eff': 'no',
                                  }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                                       },}
     DESC_IN.update(BioDieselTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = BioDieselTechnoDiscipline.DESC_OUT
@@ -139,17 +131,17 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
             self.grad_total[energy] = value * \
                                       self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
                 self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
+                (GlossaryEnergy.StreamPricesValue, energy), self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), value)
 
                 # to manage gradient when carbon_emissions is null:
                 # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
@@ -168,7 +160,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
+                    (GlossaryEnergy.StreamsCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
@@ -219,7 +211,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
 
         BioDieselTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()

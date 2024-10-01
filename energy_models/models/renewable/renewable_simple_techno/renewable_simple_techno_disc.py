@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.renewable_techno_disc import RenewableTechnoDiscipline
+from energy_models.core.techno_type.disciplines.renewable_techno_disc import (
+    RenewableTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import RenewableSimpleTechno
+from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import (
+    RenewableSimpleTechno,
+)
 
 
 class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
@@ -45,7 +49,6 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.RenewableSimpleTechno
     lifetime = 30
-    construction_delay = 3
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
@@ -56,21 +59,16 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 230.0,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'resource_price': 70.0,
                                  'resource_price_unit': '$/MWh'}
 
     techno_info_dict = techno_infos_dict_default
-
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 635.0, 638.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [4.14634146, 6.2195122, 2.77439024, 6.92073171, 6.92073171,
@@ -81,16 +79,12 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                                          6.2195122, 4.14634140, 2.77439024, 2.5304878],
                                              })
 
-    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
-    invest_before_year_start_var['default'] = invest_before_year_start
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: invest_before_year_start_var
                }
     # -- add specific techno outputs to this
     DESC_IN.update(RenewableTechnoDiscipline.DESC_IN)

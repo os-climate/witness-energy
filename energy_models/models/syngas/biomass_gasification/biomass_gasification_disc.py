@@ -20,9 +20,13 @@ import pandas as pd
 
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
+    SyngasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.biomass_gasification.biomass_gasification import BiomassGasification
+from energy_models.models.syngas.biomass_gasification.biomass_gasification import (
+    BiomassGasification,
+)
 
 
 class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
@@ -49,7 +53,6 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
     lifetime = 25  # Wang2019 Rosenfeld2020 says 20
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.015,  # Rosenfeld2020
                                  'CO2_from_production': 0.0,
@@ -78,7 +81,6 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.07,  # WACC Saraa2016
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex in kEuro in Sara2016 we divide by 2
                                  # for the PPS cost reduction aimed in the
                                  # paper
@@ -100,11 +102,9 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Wang2019 + ratio water + ratio masse syngas
                                  # / masse H2
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # We do not invest on biomass gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0, 0.0]})
-
+    
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
     # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas
@@ -129,18 +129,11 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

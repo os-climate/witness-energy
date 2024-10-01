@@ -18,7 +18,9 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.core.techno_type.disciplines.heat_techno_disc import (
+    MediumHeatTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.medium.chpmediumheat.chpmediumheat import CHPMediumHeat
 
@@ -52,7 +54,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
         'Capex_init': 1300,
@@ -60,8 +61,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.52,  # consumptions and productions already have efficiency included
         # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,
@@ -104,25 +103,14 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})
 
     # Renewable Methane Association [online]
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: 2.145 / (16 * 8760) * np.array([0, 0.2608])})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT

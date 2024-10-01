@@ -20,17 +20,16 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-
-DEFAULT_TECHNOLOGIES_LIST = ['CarbonStorageTechno']
-TECHNOLOGIES_LIST = ['CarbonStorageTechno']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.carbon_storage]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -49,8 +48,8 @@ class Study(EnergyMixStudyManager):
 
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_COARSE)
 
-        if 'CarbonStorageTechno' in self.technologies_list:
-            invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [
+        if GlossaryEnergy.CarbonStorageTechno in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.CarbonStorageTechno] = [
                 10 * (1 + 0.03) ** i for i in l_ctrl]
 
         if self.bspline:
@@ -67,12 +66,12 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = CarbonStorage.name
+        self.energy_name = GlossaryEnergy.carbon_storage
         ccs_name = f'{self.prefix_name}.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, })
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_capture: 70.})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -92,13 +91,13 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, })
+            {GlossaryEnergy.Years: years, GlossaryEnergy.carbon_capture: -12.})
         investment_mix = self.get_investments()
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{ccs_name}.CarbonStorageTechno.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryEnergy.CarbonStorageTechno}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
@@ -107,8 +106,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -132,6 +131,5 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.test()

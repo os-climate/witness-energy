@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestEnergyInvest(AbstractJacobianUnittest):
@@ -47,18 +48,16 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.renewable]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         self.economics_df = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.GrossOutput,
-                                                  GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption,
-                                                  GlossaryEnergy.EnergyWasted])
+                                                  GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption])
         self.economics_df[GlossaryEnergy.Years] = self.years
         self.economics_df[GlossaryEnergy.GrossOutput] = np.linspace(140., 200., len(self.years))
         self.economics_df[GlossaryEnergy.OutputNetOfDamage] = np.linspace(130., 190., len(self.years))
         self.economics_df[GlossaryEnergy.PerCapitaConsumption] = 0.
-        self.economics_df[GlossaryEnergy.EnergyWasted] = 0.
         self.techno_list_fossil = ['FossilSimpleTechno']
         self.techno_list_renewable = ['RenewableSimpleTechno']
-        self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
-                                           f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno']
-        self.techno_list_carbon_storage = ['CarbonStorageTechno']
+        self.techno_list_carbon_capture = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
+        self.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
 
         data_invest = {
             GlossaryEnergy.Years: self.years
@@ -116,8 +115,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.{GlossaryEnergy.renewable}.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
-                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
+                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
@@ -131,7 +130,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         # assert that for fossil techno and direct air capture, investment is 10% * 130 * 20% at 2020 and 20% * 190 * 20%
         fossil_invest_level = \
             self.ee.dm.get_value(
-                f'{self.name}.{GlossaryEnergy.fossil}.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[
+                f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]
@@ -140,8 +139,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = \
-            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
-                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
+                                 f'.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]
@@ -206,7 +205,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_wo_biomass.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_redistribution_invest_disc_wo_biomass.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
@@ -270,7 +269,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_redistribution_invest_disc_w_biomass.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_redistribution_invest_disc_w_biomass.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',

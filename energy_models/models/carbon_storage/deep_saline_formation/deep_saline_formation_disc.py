@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import (
+    CSTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.deep_saline_formation.deep_saline_formation import DeepSalineFormation
+from energy_models.models.carbon_storage.deep_saline_formation.deep_saline_formation import (
+    DeepSalineFormation,
+)
 
 
 class DeepSalineFormationDiscipline(CSTechnoDiscipline):
@@ -42,13 +46,11 @@ class DeepSalineFormationDiscipline(CSTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.DeepSalineFormation
     lifetime = 35
-    construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -65,16 +67,13 @@ class DeepSalineFormationDiscipline(CSTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 1,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
 
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0  # in kg at year_start
-    invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryEnergy.InvestValue: []})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -91,17 +90,11 @@ class DeepSalineFormationDiscipline(CSTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 

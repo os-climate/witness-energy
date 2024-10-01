@@ -18,7 +18,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
+from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import (
+    SolidFuelTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 
@@ -47,7 +49,6 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     # A techno-economic and environmental study. Renewable energy, 147,
     # pp.1511-1524.
     lifetime = 25  # Wang2019 Rosenfeld2020 says 20
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0625,
                                  # production of CO2 in kg per kg of pellets
@@ -63,7 +64,6 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'WACC': 0.01,
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex in $
                                  'Capex_init': 29287037.04,
                                  'Capex_init_unit': 'euro',
@@ -73,11 +73,9 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'available_power_unit': 'kg/year',
                                  'efficiency': 0.85,  # boiler efficiency
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
     # We do not invest on biomass gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [7.6745661, 8.9729523, 104.91]})
-    # initial production : 45,21 million tonnes => x calorific value and
+        # initial production : 45,21 million tonnes => x calorific value and
     # conversion in TWh
     initial_production = 217.04
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -90,18 +88,11 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

@@ -20,18 +20,22 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['HefaDecarboxylation', 'HefaDeoxygenation']
-TECHNOLOGIES_LIST = ['HefaDecarboxylation', 'HefaDeoxygenation']
-TECHNOLOGIES_LIST_DEV = ['HefaDecarboxylation', 'HefaDeoxygenation']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.HefaDecarboxylation, GlossaryEnergy.HefaDeoxygenation]
+TECHNOLOGIES_LIST = [GlossaryEnergy.HefaDecarboxylation, GlossaryEnergy.HefaDeoxygenation]
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}']["value"], bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -46,11 +50,11 @@ class Study(EnergyMixStudyManager):
         invest_hefa_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'HefaDecarboxylation' in self.technologies_list:
-            invest_hefa_mix_dict['HefaDecarboxylation'] = np.ones(
+        if GlossaryEnergy.HefaDecarboxylation in self.technologies_list:
+            invest_hefa_mix_dict[GlossaryEnergy.HefaDecarboxylation] = np.ones(
                 len(l_ctrl))
-        if 'HefaDeoxygenation' in self.technologies_list:
-            invest_hefa_mix_dict['HefaDeoxygenation'] = np.ones(
+        if GlossaryEnergy.HefaDeoxygenation in self.technologies_list:
+            invest_hefa_mix_dict[GlossaryEnergy.HefaDeoxygenation] = np.ones(
                 len(l_ctrl))
         if self.bspline:
             invest_hefa_mix_dict[GlossaryEnergy.Years] = self.years
@@ -95,9 +99,9 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
         resources_price = pd.DataFrame(
-            columns=[GlossaryEnergy.Years, 'CO2', 'water', 'natural_oil'])
+            columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water', 'natural_oil'])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
         resources_price['natural_oil'] = np.ones(len(years)) * 0.5 * 1000
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
@@ -111,18 +115,18 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.HefaDecarboxylation.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.HefaDeoxygenation.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.HefaDecarboxylation}.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.HefaDeoxygenation}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

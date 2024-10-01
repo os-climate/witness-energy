@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,34 +17,56 @@ limitations under the License.
 import logging
 
 import numpy as np
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.tables.instanciated_table import (
+    InstanciatedTable,
+)
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
-    AmineScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import \
-    CalciumPotassiumScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
-    DirectAirCaptureTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
+    AmineScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
+    CalciumPotassiumScrubbingDiscipline,
+)
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
+    DirectAirCaptureTechnoDiscipline,
+)
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
-from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
-    CombinedCycleGasTurbineDiscipline
-from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import (
+    CombinedCycleGasTurbineDiscipline,
+)
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
+    GasTurbineDiscipline,
+)
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
+    FossilSimpleTechnoDiscipline,
+)
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import (
+    WaterGasShiftDiscipline,
+)
+from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import (
+    FischerTropschDiscipline,
+)
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import PelletizingDiscipline
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import (
+    PelletizingDiscipline,
+)
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import (
+    CoalGasificationDiscipline,
+)
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
-from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 
 
 class FlueGasDiscipline(SoSWrapp):
@@ -61,20 +83,20 @@ class FlueGasDiscipline(SoSWrapp):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.fossil}.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.{GlossaryEnergy.Pyrolysis}': PyrolysisDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -142,7 +164,7 @@ class FlueGasDiscipline(SoSWrapp):
                         'namespace': ns_variable,
                         'dataframe_descriptor': {
                             GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                            'CO2 from Flue Gas (Mt)': ('float', None, False),
+                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
                             }
                     }
 
@@ -193,12 +215,12 @@ class FlueGasDiscipline(SoSWrapp):
 
             grad_prod = (
                                 total_prod - self.energy_model.production[
-                            f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
+                            f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values) / total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_prod_ratio', techno),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_prod)
 
             grad_fluegas_prod = flue_gas_co2_ratio * grad_prod
@@ -208,30 +230,30 @@ class FlueGasDiscipline(SoSWrapp):
                         f'{techno_other}.flue_gas_co2_ratio')[0]
 
                     grad_flue_gas_prod_ratio = -self.energy_model.production[
-                        f'{self.energy_model.name} {techno} (Mt)'].values / \
+                        f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values / \
                                                total_prod ** 2
                     self.set_partial_derivative_for_other_types(
                         ('flue_gas_prod_ratio', techno),
                         (f'{techno_other}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{self.energy_model.name} (Mt)'),
+                         f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(
                             len_matrix) * grad_flue_gas_prod_ratio)
 
                     grad_fluegas_prod -= \
                         flue_gas_co2_ratio_other * self.energy_model.production[
-                            f'{self.energy_model.name} {techno_other} (Mt)'].values / \
+                            f'{self.energy_model.name} {techno_other} ({GlossaryEnergy.mass_unit})'].values / \
                         total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_fluegas_prod)
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_production', self.energy_model.name),
                 (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} (Mt)'),
+                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix))
 
     def get_chart_filter_list(self):
@@ -281,7 +303,7 @@ class FlueGasDiscipline(SoSWrapp):
         flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
         technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         years = flue_gas_prod_ratio[GlossaryEnergy.Years].values
-        chart_name = f'Flue gas emissions by technology'
+        chart_name = 'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Flue gas emissions [Mt]', chart_name=chart_name, stacked_bar=True)
 
@@ -302,13 +324,13 @@ class FlueGasDiscipline(SoSWrapp):
     def get_chart_average_co2_concentration(self):
         flue_gas_co2_concentration = self.get_sosdisc_outputs(GlossaryEnergy.FlueGasMean)
 
-        chart_name = f'Average CO2 concentration in Flue gases'
+        chart_name = 'Average CO2 concentration in Flue gases'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 concentration [%]', chart_name=chart_name)
 
         serie = InstanciatedSeries(
             flue_gas_co2_concentration[GlossaryEnergy.Years].values.tolist(),
-            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), f'CO2 concentration',
+            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), 'CO2 concentration',
             'lines')
 
         new_chart.series.append(serie)

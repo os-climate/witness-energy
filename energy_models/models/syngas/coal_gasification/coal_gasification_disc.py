@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
+    SyngasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.syngas.coal_gasification.coal_gasification import CoalGasification
+from energy_models.models.syngas.coal_gasification.coal_gasification import (
+    CoalGasification,
+)
 
 
 class CoalGasificationDiscipline(SyngasTechnoDiscipline):
@@ -40,7 +44,6 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.CoalGasification
     lifetime = 20
-    construction_delay = 4  # years
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.15,
                                  # Source for CO2_from_production: IEA 2022, IEA ETSAP 2010
@@ -59,17 +62,13 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.07,
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 0.05,
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
                                  'efficiency': 1.0,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                     'techno_evo_eff': 'no',}
     # We do not invest on coal gasification yet
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.636, 2.636, 2.636, 2.636]})
-
+    
     syngas_ratio = CoalGasification.syngas_COH2_ratio
 
     # From Future of hydrogen : Around 70 Mt of dedicated hydrogen are produced today, 76% from natural gas and
@@ -97,18 +96,11 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

@@ -17,9 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import FlueGasTechno
+from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import (
+    FlueGasTechno,
+)
 
 
 class FlueGasTechnoDiscipline(CCTechnoDiscipline):
@@ -41,9 +45,8 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
     lifetime = 25
-    construction_delay = 1
 
     heat_to_power_lost = 0.243
     heat_duty = 18
@@ -53,7 +56,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     carbon_capture_efficiency = 0.90
 
     techno_infos_dict_default = {'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'capacity_factor': 0.85,
                                  'maturity': 0,
                                  'Opex_percentage': 0,
@@ -79,15 +81,13 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
+                                 }
 
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5  # Mt
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.2]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -100,7 +100,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
@@ -111,12 +110,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
                                                                      GlossaryEnergy.FlueGasMean: (
                                                                      'float', None, True), }
                                             },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 
@@ -133,7 +127,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         # Grad of price vs energyprice
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, None)

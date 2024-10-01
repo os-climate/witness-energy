@@ -15,11 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.biogas_techno import BioGasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -32,5 +29,5 @@ class AnaerobicDigestion(BioGasTechno):
                                                  self.data_energy_dict['density'] / \
                                                  self.data_energy_dict['calorific_value']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()

@@ -18,12 +18,18 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.fossil_techno_disc import FossilTechnoDiscipline
+from energy_models.core.techno_type.disciplines.fossil_techno_disc import (
+    FossilTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import FossilSimpleTechno
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import (
+    FossilSimpleTechno,
+)
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
+from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import (
+    CoalExtractionDiscipline,
+)
 
 
 class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
@@ -48,7 +54,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.FossilSimpleTechno
     lifetime = 25
-    construction_delay = 3
 
     prod_solid_fuel = 45000.  # TWh
     prod_liquid_fuel = 53000.  # TWh
@@ -69,14 +74,12 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 100.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
                                  'CO2_from_production': co2_from_prod,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'resource_price': 75.0,
                                  'resource_price_unit': '$/MWh',
                                  'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
@@ -89,9 +92,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     # net production = 90717.76   TWh
     initial_production = 136917.16  # TWh
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,
                                                          4.25932906, 3.43007916, 2.56313607, 5.99321523, 4.25932906,
@@ -101,17 +102,12 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                              })
     FLUE_GAS_RATIO = np.array([0.12])
 
-    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
-    invest_before_year_start_var['default'] = invest_before_year_start
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: invest_before_year_start_var,
                }
 
     # -- add specific techno outputs to this

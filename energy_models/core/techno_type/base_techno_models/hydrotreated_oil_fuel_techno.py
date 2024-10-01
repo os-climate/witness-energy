@@ -15,7 +15,9 @@ limitations under the License.
 
 '''
 
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.techno_type.techno_type import TechnoType
 
 

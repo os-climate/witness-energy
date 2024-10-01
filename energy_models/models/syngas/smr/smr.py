@@ -15,9 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
@@ -31,7 +29,7 @@ class SMR(SyngasTechno):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # need in kg to produce 1kwh of syngas
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
@@ -69,8 +67,8 @@ class SMR(SyngasTechno):
 
         return water_needs
 
-    def compute_production(self):
-        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+    def compute_byproducts_production(self):
+        # self.production[f'{highheattechno.energy_name} ({self.product_unit})'] = \
         #     self.techno_infos_dict['high_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_unit})']
         pass

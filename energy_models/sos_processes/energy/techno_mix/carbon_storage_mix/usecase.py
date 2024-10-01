@@ -20,25 +20,17 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
-
-DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                             'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                     'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                     'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                         'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                         'PureCarbonSolidStorage']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.carbon_storage]["value"],
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -57,38 +49,42 @@ class Study(EnergyMixStudyManager):
 
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'BiomassBuryingFossilization' in self.technologies_list:
-            invest_carbon_storage_mix_dict['BiomassBuryingFossilization'] = [
+        if GlossaryEnergy.BiomassBuryingFossilization in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.BiomassBuryingFossilization] = [
                 5 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'DeepOceanInjection' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DeepOceanInjection'] = [
+        if GlossaryEnergy.DeepOceanInjection in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DeepOceanInjection] = [
                 10 * (1 + 0.03) ** i for i in l_ctrl]
 
-        if 'DeepSalineFormation' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DeepSalineFormation'] = [
+        if GlossaryEnergy.DeepSalineFormation in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DeepSalineFormation] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'DepletedOilGas' in self.technologies_list:
-            invest_carbon_storage_mix_dict['DepletedOilGas'] = [
+        if GlossaryEnergy.DepletedOilGas in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.DepletedOilGas] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
-        if 'EnhancedOilRecovery' in self.technologies_list:
-            invest_carbon_storage_mix_dict['EnhancedOilRecovery'] = [
+        if GlossaryEnergy.EnhancedOilRecovery in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.EnhancedOilRecovery] = [
                 1 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'GeologicMineralization' in self.technologies_list:
-            invest_carbon_storage_mix_dict['GeologicMineralization'] = [
+        if GlossaryEnergy.GeologicMineralization in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.GeologicMineralization] = [
                 2 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'PureCarbonSolidStorage' in self.technologies_list:
-            invest_carbon_storage_mix_dict['PureCarbonSolidStorage'] = [
+        if GlossaryEnergy.PureCarbonSolidStorage in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.PureCarbonSolidStorage] = [
                 5 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'CarbonStorageTechno' in self.technologies_list:
-            invest_carbon_storage_mix_dict['CarbonStorageTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+        if GlossaryEnergy.CarbonStorageTechno in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.CarbonStorageTechno] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
             invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
-            invest_carbon_storage_mix_dict['CarbonStorageTechno'][0] = invest_2020_ccus / 3.
+            invest_carbon_storage_mix_dict[GlossaryEnergy.CarbonStorageTechno][0] = invest_2020_ccus / 3.
+
+        if GlossaryEnergy.Reforestation in self.technologies_list:
+            invest_carbon_storage_mix_dict[GlossaryEnergy.Reforestation] = [
+                5 * (1 + 0.0) ** i for i in l_ctrl]
 
         if self.bspline:
             invest_carbon_storage_mix_dict[GlossaryEnergy.Years] = self.years
@@ -104,13 +100,15 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = CarbonStorage.name
+        self.energy_name = GlossaryEnergy.carbon_storage
         ccs_name = f'{self.prefix_name}.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.electricity: 10.0
+                                      GlossaryEnergy.electricity: 10.,
+                                      GlossaryEnergy.biomass_dry: 11.,
+                                      GlossaryEnergy.carbon_capture: 70.,
                                       })
 
         # the value for invest_level is just set as an order of magnitude
@@ -131,7 +129,8 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, })
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.carbon_capture: 0.})
         investment_mix = self.get_investments()
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -148,8 +147,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -173,16 +172,6 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()

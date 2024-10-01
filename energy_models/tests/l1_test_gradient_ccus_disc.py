@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,16 +16,20 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.tests.data_tests.mda_energy_data_generator import (
+    launch_data_pickle_generation,
+)
 
 
 class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
@@ -64,7 +68,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         pkl_file.close()
 
         self.CO2_per_use = {}
-        self.energy_prices = {}
+        self.stream_prices = {}
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
@@ -82,7 +86,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                     'value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
+            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
                 'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
                 f'{energy}'][GlossaryEnergy.EnergyConsumptionWithoutRatioValue]['value']
@@ -151,7 +155,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.energy_prices[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = \
                 self.energy_consumption_woratio[energy]
@@ -171,11 +175,11 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.co2_emissions_needed_by_energy_mix',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyConsumptionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyPricesValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.LandUseRequiredValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyConsumptionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyPricesValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.LandUseRequiredValue}',
         ]
         coupled_outputs = [f'{self.name}.co2_emissions_ccus_Gt',

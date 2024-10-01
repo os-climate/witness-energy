@@ -17,16 +17,23 @@ limitations under the License.
 
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import (
+    EnergyGHGEmissionsDiscipline,
+)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import AGRI_TYPE
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    INVEST_DISC_NAME,
+)
+from energy_models.sos_processes.witness_sub_process_builder import (
+    WITNESSSubProcessBuilder,
+)
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -37,6 +44,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+
+    def __init__(self, ee):
+        super(ProcessBuilder, self).__init__(ee)
+        self.techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT
 
     def get_builders(self):
 
@@ -52,7 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
-            if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
+            if self.techno_dict[energy_name]['type'] != GlossaryEnergy.agriculture_type:
                 energy_builder_list = self.ee.factory.get_builder_from_process(
                     'energy_models.sos_processes.energy.techno_mix',
                     f'{short_name}_mix',
@@ -105,7 +116,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy_study': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                 'ns_energy': f'{ns_study}.{energy_mix}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.ccus_type}',
             }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
@@ -148,7 +159,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix'
             )
-            proc_builder.prefix_name = GlossaryEnergy.CCUS
+            proc_builder.prefix_name = GlossaryEnergy.ccus_type
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'],
@@ -174,34 +185,34 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
         for energy in self.energy_list:
             if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_hydrogen', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_hydrogen', post_proc_mod)
             if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_liquid_hydrogen', post_proc_mod
+                    'ns_liquid_hydrogen', post_proc_mod
                 )
 
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_liquid_fuel', post_proc_mod
+                    'ns_liquid_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_hydrotreated_oil_fuel', post_proc_mod
+                    'ns_hydrotreated_oil_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_biodiesel', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_biodiesel', post_proc_mod)
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_ethanol', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_ethanol', post_proc_mod)
 
             if energy == f'{GlossaryEnergy.heat}.hightemperatureheat':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_heat_high', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_heat_high', post_proc_mod)
 
             if energy == f'{GlossaryEnergy.heat}.lowtemperatureheat':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_heat_low', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_heat_low', post_proc_mod)
 
             if energy == f'{GlossaryEnergy.heat}.mediumtemperatureheat':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_heat_medium', post_proc_mod
+                    'ns_heat_medium', post_proc_mod
                 )
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_{energy}', post_proc_mod)
@@ -209,31 +220,31 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_capex_opex'
         for energy in self.energy_list:
             if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_hydrogen', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_hydrogen', post_proc_mod)
             if energy == f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_liquid_hydrogen', post_proc_mod
+                    'ns_liquid_hydrogen', post_proc_mod
                 )
 
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_liquid_fuel', post_proc_mod
+                    'ns_liquid_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_hydrotreated_oil_fuel', post_proc_mod
+                    'ns_hydrotreated_oil_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_biodiesel', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_biodiesel', post_proc_mod)
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_ethanol', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_ethanol', post_proc_mod)
             if energy == f'{GlossaryEnergy.heat}.hightemperatureheat':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_heat_high', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_heat_high', post_proc_mod)
             if energy == f'{GlossaryEnergy.heat}.lowtemperatureheat':
-                self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_heat_low', post_proc_mod)
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_heat_low', post_proc_mod)
             if energy == f'{GlossaryEnergy.heat}.mediumtemperatureheat':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                    f'ns_heat_medium', post_proc_mod
+                    'ns_heat_medium', post_proc_mod
                 )
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_{energy}', post_proc_mod)

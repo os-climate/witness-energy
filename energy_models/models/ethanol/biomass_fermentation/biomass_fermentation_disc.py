@@ -19,9 +19,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
-from energy_models.core.techno_type.disciplines.ethanol_techno_disc import EthanolTechnoDiscipline
+from energy_models.core.techno_type.disciplines.ethanol_techno_disc import (
+    EthanolTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import BiomassFermentation
+from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import (
+    BiomassFermentation,
+)
 
 
 class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
@@ -58,7 +62,6 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # 06-04 April 2006
     # Agricultural Economics Department Purdue University
-    construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
@@ -71,8 +74,6 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'Opex_percentage': 0.02,
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -110,22 +111,11 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
 
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     DESC_IN.update(EthanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = EthanolTechnoDiscipline.DESC_OUT

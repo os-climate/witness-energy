@@ -18,9 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import LiquidHydrogenTechnoDiscipline
+from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import (
+    LiquidHydrogenTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
+from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import (
+    HydrogenLiquefaction,
+)
 
 
 class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
@@ -42,7 +46,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.HydrogenLiquefaction
-    construction_delay = 2  # year
     lifetime = 40
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.0127,
@@ -56,7 +59,6 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  # 'heat_recovery_factor': 0.8,
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 500000000,
@@ -64,7 +66,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'available_power': 73000000,
                                  'available_power_unit': 'kg/year',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 70.0 * 33.3 * 0.001
 
@@ -73,27 +75,16 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                                  [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1,
                                                   0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
 
-    invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryEnergy.InvestValue: [0.0443575, 0.0443575]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   GlossaryEnergy.Years: ('float', None, True),
-                                                                   'past years': ('float', None, True),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)}
-                                                               }}
+               }
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this
@@ -118,8 +109,8 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     #     'applied_ratio')['applied_ratio'].values
     #
     # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
+    # production_gradient = self.techno_consumption_derivative[f'{GlossaryEnergy.electricity} ({self.techno_model.product_unit})']
     # m = self.set_partial_derivative_for_other_types(
     #     (GlossaryEnergy.TechnoProductionValue,
-    #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
+    #      f'{lowtemperatureheat.name} ({self.techno_model.product_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
     #     (production_gradient - dprod_name_dinvest))

@@ -14,14 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import HydrotreatedOilFuelTechno
+from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
+    HydrotreatedOilFuelTechno,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HefaDeoxygenation(HydrotreatedOilFuelTechno):
@@ -43,17 +48,17 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs(
         ) / naturaloil_data['calorific_value']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.cost_details['efficiency']
-        self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
+        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
 
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']
         water_prod_factor = self.get_theoretical_water_prod()
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = water_prod_factor * self.production_detailed[
-            f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / water_calorific_value
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = water_prod_factor * self.production_detailed[
+            f'{HydrotreatedOilFuel.name} ({self.product_unit})'] / water_calorific_value
 
     def get_theoretical_natural_oil_needs(self):
         """

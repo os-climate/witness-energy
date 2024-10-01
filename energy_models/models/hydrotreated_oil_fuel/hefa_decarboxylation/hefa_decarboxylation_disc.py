@@ -18,12 +18,16 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
-from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_disc import \
-    HydrotreatedOilFuelTechnoDiscipline
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
+    HydrotreatedOilFuel,
+)
+from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_disc import (
+    HydrotreatedOilFuelTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation import \
-    HefaDecarboxylation
+from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation import (
+    HefaDecarboxylation,
+)
 
 
 class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
@@ -46,7 +50,6 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
     lifetime = 30  # years
-    construction_delay = 3  # years
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -60,9 +63,6 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
-
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
@@ -107,24 +107,13 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                                          0, 0, 0, 0, 0, 0, 0, 0,
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(HydrotreatedOilFuelTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT

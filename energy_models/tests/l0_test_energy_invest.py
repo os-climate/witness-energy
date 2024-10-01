@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.investments.energy_invest import EnergyInvest
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestEnergyInvest(AbstractJacobianUnittest):
@@ -61,9 +62,9 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         dict3 = {}
         dict3[GlossaryEnergy.Years] = self.years
-        dict3['SMR'] = np.ones(len(self.years))
-        dict3['Electrolysis'] = np.ones(len(self.years)) * 0.5
-        dict3['CoalGasification'] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.SMR] = np.ones(len(self.years))
+        dict3[GlossaryEnergy.Electrolysis] = np.ones(len(self.years)) * 0.5
+        dict3[GlossaryEnergy.CoalGasification] = np.ones(len(self.years)) * 0.5
         self.techno_mix = pd.DataFrame(dict3)
         invest_ref = 1.0e3  # G$ means 1 milliard of dollars
         invest = np.zeros(len(self.years))
@@ -203,8 +204,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['SMR', 'Electrolysis',
-                                                                                       'CoalGasification'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis,
+                                                                                       GlossaryEnergy.CoalGasification],
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_df_techno}
 
@@ -236,7 +237,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        technology_list = ['SMR', 'Electrolysis', 'CoalGasification']
+        technology_list = [GlossaryEnergy.SMR, GlossaryEnergy.Electrolysis, GlossaryEnergy.CoalGasification]
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': technology_list,
@@ -248,7 +249,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_techno_invest_disc.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_techno_invest_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
@@ -288,7 +289,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_invest_disc.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_energy_invest_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',

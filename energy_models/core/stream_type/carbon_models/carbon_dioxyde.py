@@ -16,11 +16,11 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CO2(BaseStream):
-    name = ResourceGlossary.CO2Resource
+    name = GlossaryEnergy.CO2Resource
 
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,

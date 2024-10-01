@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,13 +17,19 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
-from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import (
+    CSTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
 
 
 class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
@@ -45,13 +51,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.PureCarbonSolidStorage
     lifetime = 35
-    construction_delay = 0
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -68,16 +72,14 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 1,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
+                                 f"{GlossaryEnergy.CarbonResource}_needs": 1. / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse],
                                  'techno_evo_eff': 'no',
                                  }
 
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0
-    invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryEnergy.InvestValue: []})
-
+    
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -97,17 +99,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,
@@ -201,7 +197,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         consumption_wo_ratio = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionWithoutRatioValue)
         applied_ratio = self.get_sosdisc_outputs('applied_ratio')['applied_ratio'].values
         d_constraint_d_utillisation_ratio = np.diag(
-            consumption_wo_ratio[f'{Carbon.name} ({self.techno_model.mass_unit})'].values *
+            consumption_wo_ratio[f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'].values *
             applied_ratio / 100.
         )
 
@@ -300,11 +296,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             type = 'bar'
             if var == GlossaryEnergy.carbon_storage:
                 title = 'Plasmacracking_carbon_to_be_stored'
-            if var == 'carbon (Mt)':
+            elif var == 'carbon (Mt)':
                 title = 'Consumption'
-            if var == 'carbon_to_be_stored_constraint':
+            elif var == 'carbon_to_be_stored_constraint':
                 title = 'Constraint: Consumption - Plasmacracking_carbon_to_be_stored'
                 type = 'lines'
+            else:
+                title = 'Plasmacracking_carbon_to_be_stored'
 
             serie = InstanciatedSeries(
                 all_var[GlossaryEnergy.Years].values.tolist(),

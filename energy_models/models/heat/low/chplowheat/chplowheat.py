@@ -14,19 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
-from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
+from energy_models.core.techno_type.base_techno_models.electricity_techno import (
+    ElectricityTechno,
+)
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import (
+    lowheattechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CHPLowHeat(lowheattechno):
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
         # methane_needs
@@ -36,19 +39,19 @@ class CHPLowHeat(lowheattechno):
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
                                                                                         self.consumption_detailed[
-                                                                                            f'{Methane.name} ({self.product_energy_unit})']
+                                                                                            f'{Methane.name} ({self.product_unit})']
 
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
-            (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] /
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})'] = \
+            (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_unit})'] /
              (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[
-                f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+                f'{lowtemperatureheat.name} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

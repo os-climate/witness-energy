@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/06-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/06-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@ limitations under the License.
 '''
 
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class CSTechnoDiscipline(TechnoDiscipline):
@@ -61,17 +63,16 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = CarbonStorage.name
+    energy_name = GlossaryEnergy.carbon_storage
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
         TechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
-
-        self.set_partial_derivatives_techno(
-            grad_dict, None)
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
+        self.set_partial_derivatives_techno(grad_dict, carbon_emissions)
 
     def get_post_processing_list(self, filters=None):
 
@@ -192,7 +193,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
         # Chart for input investments
         input_investments = self.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)
 
-        chart_name = f'Input investments over the years'
+        chart_name = 'Input investments over the years'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Investments [G$]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -267,14 +268,14 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod[f'cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
-        study_prod = study_production[f'{self.energy_name} (Mt)'].values
+            initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
+        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.mass_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(
-            0, initial_prod[f'cum CO2 (Mt)'].values.tolist()[-1])
+            0, initial_prod['cum CO2 (Mt)'].values.tolist()[-1])
         serie = InstanciatedSeries(
             years_study,
             study_prod_l, 'Predicted carbon capture', 'lines')

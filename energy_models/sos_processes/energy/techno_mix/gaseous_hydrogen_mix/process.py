@@ -16,11 +16,16 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
+from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import (
+    TECHNOLOGIES_LIST,
+)
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -46,7 +51,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_syngas': f'{ns_study}.{energy_mix}.{Syngas.name}',
+                   'ns_syngas': f'{ns_study}.{energy_mix}.{GlossaryEnergy.syngas}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}'}

@@ -14,13 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
+from energy_models.core.techno_type.base_techno_models.methane_techno import (
+    MethaneTechno,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Methanation(MethaneTechno):
@@ -28,19 +31,19 @@ class Methanation(MethaneTechno):
 
     def compute_resources_needs(self):
         # in kg of CO2 for kWh of CH4
-        self.cost_details[f'{CO2.name}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         # in kWh of H2 for kWh of CH4
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         # kg of H2O produced with 1kWh of CH4
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
-                                                                           f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+                                                                           f'{MethaneTechno.energy_name} ({self.product_unit})'] * \
                                                                        H2Oprod
 
     def get_h2o_production(self):
@@ -98,5 +101,6 @@ class Methanation(MethaneTechno):
             co2_prod = -co2_needs
         elif unit == 'kg/kg':
             co2_prod = -co2_needs * self.data_energy_dict['calorific_value']
-
+        else:
+            raise Exception("unit not handled")
         return co2_prod

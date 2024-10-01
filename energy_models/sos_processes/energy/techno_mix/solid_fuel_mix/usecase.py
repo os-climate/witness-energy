@@ -19,18 +19,17 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
-
-DEFAULT_TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
-TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
-TECHNOLOGIES_LIST_DEV = ['CoalExtraction', 'Pelletizing']
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[GlossaryEnergy.solid_fuel]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -43,16 +42,16 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_solid_fuel_mix_dict = {}
 
-        if 'CoalExtraction' in self.technologies_list:
-            #             invest_solid_fuel_mix_dict['CoalExtraction'] = [
+        if GlossaryEnergy.CoalExtraction in self.technologies_list:
+            #             invest_solid_fuel_mix_dict[GlossaryEnergy.CoalExtraction] = [
             #                 99.9, 50.0] + [0.02] * (len(l_ctrl) - 2)
-            invest_solid_fuel_mix_dict['CoalExtraction'] = np.array(
+            invest_solid_fuel_mix_dict[GlossaryEnergy.CoalExtraction] = np.array(
                 [99, 50, 20, 50, 20, 50, 20, 50])
 
-        if 'Pelletizing' in self.technologies_list:
-            #             invest_solid_fuel_mix_dict['Pelletizing'] = [
+        if GlossaryEnergy.Pelletizing in self.technologies_list:
+            #             invest_solid_fuel_mix_dict[GlossaryEnergy.Pelletizing] = [
             #                 1, 50.0] + [99.9] * (len(l_ctrl) - 2)
-            invest_solid_fuel_mix_dict['Pelletizing'] = np.array(
+            invest_solid_fuel_mix_dict[GlossaryEnergy.Pelletizing] = np.array(
                 [1, 50, 80, 80, 80, 80, 80, 80])
 
         if self.bspline:
@@ -97,9 +96,9 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': 7.6})
 
-        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2'])
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2])
         resources_price[GlossaryEnergy.Years] = years
-        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price[GlossaryEnergy.CO2] = np.linspace(50.0, 100.0, len(years))
 
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0,
@@ -111,16 +110,16 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{solid_fuel_name}.CoalExtraction.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{solid_fuel_name}.Pelletizing.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.Pelletizing}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
@@ -141,8 +140,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
 #     ppf = PostProcessingFactory()

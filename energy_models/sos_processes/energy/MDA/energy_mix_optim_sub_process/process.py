@@ -13,16 +13,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
+
+from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import (
+    EnergyGHGEmissionsDiscipline,
+)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import AGRI_TYPE
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    INVEST_DISC_NAME,
+)
+from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
+from energy_models.sos_processes.witness_sub_process_builder import (
+    WITNESSSubProcessBuilder,
+)
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -37,6 +47,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.techno_dict = techno_dict_midway
 
     def get_builders(self):
         coupling_name = "MDA"
@@ -52,7 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
-            if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
+            if self.techno_dict[energy_name]['type'] != GlossaryEnergy.agriculture_type:
                 energy_builder_list = self.ee.factory.get_builder_from_process(
                     'energy_models.sos_processes.energy.techno_mix',
                     f'{short_name}_mix',
@@ -70,7 +81,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix'
             )
-            proc_builder.prefix_name = GlossaryEnergy.CCUS
+            proc_builder.prefix_name = GlossaryEnergy.ccus_type
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'],
@@ -88,14 +99,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # ---------------------------------------------
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-            GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+            GlossaryEnergy.ccus_type: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
         }
 
         ns_dict = {
             GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
-            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}.{carbon_storage}.PureCarbonSolidStorage',
+            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
             GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
@@ -109,7 +120,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
-            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}.{carbon_storage}.PureCarbonSolidStorage',
+            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
             GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
@@ -130,7 +141,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy_study': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
                 'ns_energy': f'{ns_study}.{energy_mix}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}',
             }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
@@ -146,7 +157,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_emissions': f'{ns_study}',
                 'ns_energy': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}',
                 GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                 GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                 'ns_forest': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
@@ -194,13 +205,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # ---------------------------------------------
         # design variables builder
-        design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
+        design_var_path = 'sostrades_optimization_plugins.models.design_var.design_var_disc.DesignVarDiscipline'
         design_var_builder = self.ee.factory.get_builder_from_module(
             f'{designvariable_name}', design_var_path)
         builder_list.append(design_var_builder)
 
         # function manager builder
-        fmanager_path = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        fmanager_path = 'sostrades_optimization_plugins.models.func_manager.func_manager_disc.FunctionManagerDisc'
         fmanager_builder = self.ee.factory.get_builder_from_module(
             f'{func_manager_name}', fmanager_path)
         builder_list.append(fmanager_builder)

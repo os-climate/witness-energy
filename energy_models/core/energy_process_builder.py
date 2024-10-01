@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 23/11/2023 Copyright 2023 Capgemini
+Modifications on 23/11/2023-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ class EnergyProcessBuilder(BaseProcessBuilder):
         self.techno_list = None
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
         self.associate_namespace = False
+        #self.energy_name = filename.split('\\')[-2].replace("_mix", '')
+        #self.techno_list = current_techno_dict[self.energy_name]
 
     def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT, associate_namespace=False):
         self.techno_list = techno_list
@@ -42,19 +44,19 @@ class EnergyProcessBuilder(BaseProcessBuilder):
 
     def get_stream_disc_path(self, stream, substream_name):
         list_name = re.findall('[A-Z][^A-Z]*', substream_name)
-        mod_name = "_".join(l.lower() for l in list_name)
+        mod_name = "_".join(element.lower() for element in list_name)
         disc_name = f'{mod_name}_disc'
         energy_path = f'energy_models.core.stream_type.{stream}.{disc_name}.{substream_name}Discipline'
         return energy_path
 
     def get_techno_disc_path(self, energy_name, techno_name, sub_dir=None):
         list_name = re.findall('[A-Z][^A-Z]*', techno_name)
-        test = [len(l) for l in list_name]
+        test = [len(element) for element in list_name]
         # -- in case only one letter is capital, support all are capital and don't add _
         if 1 in test:
-            mod_name = "".join(l.lower() for l in list_name)
+            mod_name = "".join(element.lower() for element in list_name)
         else:
-            mod_name = "_".join(l.lower() for l in list_name)
+            mod_name = "_".join(element.lower() for element in list_name)
         # --case of CO2... to be generalized
         if '2' in mod_name:
             mod_name = "2_".join(mod_name.split('2'))

@@ -13,7 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import (
+    Study as subStudy,
+)
 
 
 class Study(subStudy):
@@ -29,6 +31,7 @@ class Study(subStudy):
             run_usecase=run_usecase,
             use_utilisation_ratio=True
         )
+        self.test_post_procs = True
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)

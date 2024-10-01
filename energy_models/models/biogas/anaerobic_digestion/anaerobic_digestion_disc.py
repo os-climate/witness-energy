@@ -19,9 +19,13 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
-from energy_models.core.techno_type.disciplines.biogas_techno_disc import BiogasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.biogas_techno_disc import (
+    BiogasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import AnaerobicDigestion
+from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import (
+    AnaerobicDigestion,
+)
 
 
 class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
@@ -41,11 +45,9 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.AnaerobicDigestion
     lifetime = 20
-    construction_delay = 3  # years Not Found
     techno_infos_dict_default = {'maturity': 3,
                                  'Opex_percentage': 0.85,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # Rajendran, K., Gallachóir, B.ó. and Murphy, J.D., 2019.
@@ -76,7 +78,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'efficiency': 0.4,
                                  'WACC': 0.06,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay
                                  }
 
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
@@ -97,22 +98,13 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
     # License: CC BY 4.0.
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.015, 0.017, 0.009]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(BiogasTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this
@@ -128,7 +120,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
 
         super().compute_sos_jacobian()
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 

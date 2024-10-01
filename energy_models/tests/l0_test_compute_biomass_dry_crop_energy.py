@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@ import unittest
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import CropEnergyDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import (
+    CropEnergyDiscipline,
+)
 
 
 class CropEnergyPriceTestCase(unittest.TestCase):
@@ -55,11 +57,11 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
+        self.stream_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price, GlossaryEnergy.carbon_capture: 70.})
 
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.carbon_capture: -2.})
         # invest: 1Mha of crop land each year
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -110,8 +112,8 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.land_surface_for_food_df': CropEnergyDiscipline.land_surface_for_food,

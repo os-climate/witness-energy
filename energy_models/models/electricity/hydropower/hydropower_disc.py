@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
+from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
+    ElectricityTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.hydropower.hydropower import Hydropower
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
 
 
 class HydropowerDiscipline(ElectricityTechnoDiscipline):
@@ -45,7 +48,6 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.Hydropower
     lifetime = 50
-    construction_delay = 3
     techno_infos_dict_default = {'type': 'electricity_creation',
                                  'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
@@ -58,26 +60,20 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
                                  GlossaryEnergy.electricity: 'hydropower',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 1704,  # IRENA
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,
                                  'capacity_factor': 0.46,  # IRENA
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
-                                 'copper_needs': 1100,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     techno_info_dict = techno_infos_dict_default
 
     initial_production = 4222.0  # in TWh at year_start source IEA 2019
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.5, 2.5, 2.5
-                                                                                       ]})
-
     # Global power plant database 2018, https://github.com/wri/global-power-plant-database
     # Also in
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime + 1),
@@ -89,17 +85,11 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -121,14 +111,14 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.CopperResource in product:
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
+                if GlossaryEnergy.CopperResource in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if ResourceGlossary.CopperResource in reactant:
+            if GlossaryEnergy.CopperResource in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc

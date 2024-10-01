@@ -17,8 +17,12 @@ limitations under the License.
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
+    PureCarbonSS,
+)
+from energy_models.sos_processes.witness_sub_process_builder import (
+    WITNESSSubProcessBuilder,
+)
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -34,7 +38,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
         carbon_storage = PureCarbonSS.energy_name
-        ccs_mix = GlossaryEnergy.CCUS
+        ccs_mix = GlossaryEnergy.ccus_type
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):

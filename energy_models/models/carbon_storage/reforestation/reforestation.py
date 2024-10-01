@@ -16,7 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
+    CSTechno,
+)
 
 
 class Reforestation(CSTechno):
@@ -28,7 +30,7 @@ class Reforestation(CSTechno):
         '''
 
         self.land_use[f'{self.name} (Gha)'] = self.production_detailed[
-                                                  f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                  f'{CSTechno.energy_name} ({self.product_unit})'] / \
                                               0.0067621 / 1.0e9
 
     def compute_dlanduse_dinvest(self):

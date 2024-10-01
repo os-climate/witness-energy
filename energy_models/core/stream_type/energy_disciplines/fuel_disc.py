@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/27-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/09/27-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,19 +18,33 @@ import logging
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import BioDieselDiscipline
-from energy_models.core.stream_type.energy_disciplines.ethanol_disc import EthanolDiscipline
-from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import HydrotreatedOilFuelDiscipline
-from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import LiquidFuelDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import (
+    BioDieselDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.ethanol_disc import (
+    EthanolDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import (
+    HydrotreatedOilFuelDiscipline,
+)
+from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import (
+    LiquidFuelDiscipline,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FuelDiscipline(SoSWrapp):
@@ -77,7 +91,7 @@ class FuelDiscipline(SoSWrapp):
                                             'editable': False, 'structuring': True},
                }
 
-    DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+    DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
@@ -101,7 +115,7 @@ class FuelDiscipline(SoSWrapp):
                 self.energy_list = list(
                     set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe',
                                                                                       'unit': '$/MWh',
                                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                       'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -149,7 +163,7 @@ class FuelDiscipline(SoSWrapp):
 
         # loop over fuel energies
         for energy in self.energy_list:
-            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.EnergyPricesValue}')
+            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.StreamPricesValue}')
             energy_techno_prices = self.get_sosdisc_inputs(
                 f'{energy}.energy_detailed_techno_prices')
             energy_cons = self.get_sosdisc_inputs(
@@ -185,7 +199,7 @@ class FuelDiscipline(SoSWrapp):
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: energy_prices,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         GlossaryEnergy.EnergyProductionValue: energy_production,
                         GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
@@ -263,7 +277,7 @@ class FuelDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_mwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -442,7 +456,7 @@ class FuelDiscipline(SoSWrapp):
 
         chart_name = f'Technology production for {self.energy_name}'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production (TWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)
 
         techno_list = [

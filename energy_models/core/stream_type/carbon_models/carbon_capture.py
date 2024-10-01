@@ -24,14 +24,14 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CarbonCapture(BaseStream):
     name = GlossaryEnergy.carbon_capture
-    flue_gas_name = 'CO2 from Flue Gas'
+    flue_gas_name = GlossaryEnergy.CO2FromFlueGas
     unit = 'Mt'
-    default_techno_list = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
-                           f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
-                           f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping', f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess',
-                           f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes', f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine',
-                           f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess', f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption',
-                           f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno']
+    default_techno_list = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}', f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',
+                           f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}', f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}',
+                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}', f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}',
+                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}', f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}',
+                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']
     # Data dict from CO2 dioxyde
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,
@@ -147,7 +147,7 @@ class CarbonCapture(BaseStream):
             production_by_techno[f'{self.name} {element} ({self.unit})'] = sub_production_dict[
                                                                                element][
                                                                                f'{self.name} ({self.unit})'].values * factor
-            production, consumption = self.compute_other_consumption_production(
+            production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
 

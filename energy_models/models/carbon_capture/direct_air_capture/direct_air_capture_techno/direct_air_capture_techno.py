@@ -15,28 +15,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
-from energy_models.core.stream_type.energy_models.renewable import Renewable
-from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
+from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
+    CCTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class DirectAirCaptureTechno(CCTechno):
 
+    def get_heat_needs(self):
+        """
+        Get the heat needs for 1 kwh of the energy producted by the technology
+        """
 
-    def compute_other_energies_needs(self):
+        if 'heat_demand' in self.techno_infos_dict:
+            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
+                                                      self.techno_infos_dict['heat_demand'])
+
+        else:
+            heat_need = 0.0
+
+        return heat_need
+
+    def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.renewable}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{Fossil.name}_needs'] = self.get_heat_needs()
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[
                                                                                             f'{Fossil.name}_needs'] * \
                                                                                         self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                            f'{CCTechno.energy_name} ({self.product_unit})'] * \
                                                                                         Fossil.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Fossil.data_energy_dict[

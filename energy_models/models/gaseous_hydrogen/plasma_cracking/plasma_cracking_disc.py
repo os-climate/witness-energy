@@ -18,10 +18,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
+    GaseousHydrogenTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
+from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import (
+    PlasmaCracking,
+)
 
 
 class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -44,7 +47,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.PlasmaCracking
     lifetime = 25
-    construction_delay = 2
     techno_infos_dict_default = {'reaction': 'CH4 = C + 2H2',
                                  'maturity': 5,
                                  'Opex_percentage': 0.2,
@@ -56,7 +58,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.25,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 12440000.0,
                                  'Capex_init_unit': 'pounds',
                                  'pounds_dollar': 1.32,
@@ -68,7 +69,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.15,
                                  'efficiency_max': 0.6,
                                  'nb_years_amort_capex': 10.,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 1e-12
     initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),
@@ -86,9 +87,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                                          1.7560205289962763,
                                                          4.366363995027777, 3.3114883533312236, 1.250690879995941,
                                                          1.7907619419001841, 4.88748519534807, 0.0]})
-    invest_before_year_start = pd.DataFrame({
-        'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
-
     CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
                                 'CO2_credits': 50.})
 
@@ -102,24 +100,15 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
                'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True,
                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                         'CO2_credits': ('float', None, True), }
                                },
                'market_demand': {'type': 'dataframe', 'default': market_demand, 'unit': 'Mt/year', 'structuring': True,
                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                          'carbon_demand': ('float', None, True),
-                                                          'distrib': ('float', None, True)}
+                                                          'carbon_demand': ('float', None, True),}
                                  }
                }
 
@@ -190,7 +179,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             'percentage_resource')
         percentage_resource = percentage_resource_df[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values / 100
 
-        energy_CO2_emission = self.get_sosdisc_inputs(GlossaryEnergy.EnergyCO2EmissionsValue)
+        energy_CO2_emission = self.get_sosdisc_inputs(GlossaryEnergy.StreamsCO2EmissionsValue)
         for energy in energy_CO2_emission:
             if energy != GlossaryEnergy.Years:
                 if (energy == GlossaryEnergy.methane) | (energy == GlossaryEnergy.electricity):
@@ -205,7 +194,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                     value = percentage_resource * dtechno_price_denergy_CO2_emission
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                        (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
+                        (GlossaryEnergy.StreamsCO2EmissionsValue, energy), value)
 
         '''
    GRADIENT H2 VS ENERGY_PRICES
@@ -217,7 +206,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         CO2_credits = inputs_dict['CO2_credits']
         carbon_market_demand = inputs_dict['market_demand']
 
-        energy_prices = self.get_sosdisc_inputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_inputs(GlossaryEnergy.StreamPricesValue)
         techno_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoPricesValue)[self.techno_name].values
         techno_prices_wotaxes = self.get_sosdisc_outputs(
@@ -251,13 +240,13 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
                     self.set_partial_derivative_for_other_types(
                         ('percentage_resource', f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'),
-                        (GlossaryEnergy.EnergyPricesValue, energy), dpercentage_resources_denergy_prices * 100)
+                        (GlossaryEnergy.StreamPricesValue, energy), dpercentage_resources_denergy_prices * 100)
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                        (GlossaryEnergy.EnergyPricesValue, energy), value)
+                        (GlossaryEnergy.StreamPricesValue, energy), value)
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                        (GlossaryEnergy.EnergyPricesValue, energy), value_wotaxes)
+                        (GlossaryEnergy.StreamPricesValue, energy), value_wotaxes)
 
         '''
    GRADIENT H2 VS INVEST_LEVEL
@@ -271,7 +260,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         dhydro_prod_dinvest = self.dprod_dinvest * \
                               scaling_factor_invest_level  # / scaling_factor_techno_production
-        dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{ResourceGlossary.CarbonResource} (Mt)"] * \
+        dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})"] * \
                                scaling_factor_invest_level  # / scaling_factor_techno_production
 
         if (dhydro_prod_dinvest is not None) & (dcarbon_prod_dinvest is not None):
@@ -340,15 +329,15 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             dhydro_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
                 0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
 
-        if GlossaryEnergy.electricity in self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"].keys():
-            dcarbon_prod_dratio_elec = self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"][
+        if GlossaryEnergy.electricity in self.dprod_column_dratio[f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})"].keys():
+            dcarbon_prod_dratio_elec = self.dprod_column_dratio[f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})"][
                                            GlossaryEnergy.electricity] * \
                                        scaling_factor_invest_level  # / scaling_factor_techno_production
         else:
             dcarbon_prod_dratio_elec = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
                 0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
-        if GlossaryEnergy.methane in self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"].keys():
-            dcarbon_prod_dratio_meth = self.dprod_column_dratio[f"{ResourceGlossary.CarbonResource} (Mt)"][GlossaryEnergy.methane] * \
+        if GlossaryEnergy.methane in self.dprod_column_dratio[f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})"].keys():
+            dcarbon_prod_dratio_meth = self.dprod_column_dratio[f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})"][GlossaryEnergy.methane] * \
                                        scaling_factor_invest_level  # / scaling_factor_techno_production
         else:
             dcarbon_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[

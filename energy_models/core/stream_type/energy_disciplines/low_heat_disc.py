@@ -36,7 +36,7 @@ class LowHeatDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': lowtemperatureheat.default_techno_list,
-                                            'default': lowtemperatureheat.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_heat_low',
                                             'structuring': True, 'unit': '-'

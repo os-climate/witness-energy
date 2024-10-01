@@ -16,7 +16,7 @@ limitations under the License.
 
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class NaturalOil(BaseStream):
@@ -26,7 +26,7 @@ class NaturalOil(BaseStream):
     that are liquid at room temperature (triglycerides that are solid
     at room temperature are fats – whether derived from animal or
     plants)"""
-    name = ResourceGlossary.NaturalOilResource
+    name = GlossaryEnergy.NaturalOilResource
     data_energy_dict = {
         'reference': 'https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane ',
         'maturity': 5,

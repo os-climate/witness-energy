@@ -62,7 +62,7 @@ limitations under the License.
 #         self.year_range = self.year_end - self.year_start + 1
 #         self.energy_list = [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
 #         self.consumption_hydro = pd.DataFrame(
-#             {f'{GlossaryEnergy.electricity} (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
+#             {f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
 #                                             6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
 #                                             7.19662898e+09, 7.38146567e+09, 7.56347051e+09, 7.58525158e+09,
 #                                             7.60184181e+09, 7.61413788e+09, 7.62282699e+09, 7.62844682e+09,
@@ -70,7 +70,7 @@ limitations under the License.
 #                                             7.62303081e+09, 7.61658967e+09, 7.60887892e+09, 7.60002116e+09,
 #                                             7.59012249e+09, 7.57927528e+09, 7.56756653e+09, 7.55506132e+09,
 #                                             7.54182260e+09, 7.52790631e+09, 7.51336234e+09]) / 1.0e9,
-#              f'{GlossaryEnergy.methane} (TWh)': np.array([1.30334018e+10, 1.34223892e+10, 1.38004046e+10, 1.41698563e+10,
+#              f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': np.array([1.30334018e+10, 1.34223892e+10, 1.38004046e+10, 1.41698563e+10,
 #                                         1.45324790e+10, 1.48895591e+10, 1.53353598e+10, 1.57687446e+10,
 #                                         1.61924152e+10, 1.66082977e+10, 1.70178086e+10, 1.70668161e+10,
 #                                         1.71041441e+10, 1.71318102e+10, 1.71513607e+10, 1.71640053e+10,
@@ -149,7 +149,7 @@ limitations under the License.
 #                                    9.00230650e+11, 9.35836743e+11, 9.68739031e+11, 9.99135391e+11,
 #                                    1.02697781e+12, 1.05232158e+12, 1.07519492e+12, 1.09560777e+12,
 #                                    1.11355731e+12, 1.13049193e+12, 1.14650986e+12]) / 1.0e9,
-#              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.array(
+#              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': np.array(
 #                  [7.83846196e+09, 7.56713887e+09, 7.37764337e+09, 1.52193327e+11,
 #                   3.35589060e+11, 5.49036255e+11, 7.87657231e+11, 1.04899505e+12,
 #                   1.33149645e+12, 1.63588179e+12, 1.96129539e+12, 2.30708521e+12,
@@ -158,7 +158,7 @@ limitations under the License.
 #                   5.49251596e+12, 5.70975699e+12, 5.91050148e+12, 6.09595672e+12,
 #                   6.26582979e+12, 6.42045801e+12, 6.56001356e+12, 6.68455710e+12,
 #                   6.79407140e+12, 6.89739345e+12, 6.99512256e+12]) / 1.0e9,
-#              f'{GlossaryEnergy.electricity} (TWh)': np.array([1.24834354e+10, 2.26888500e+10, 3.13224798e+10, 4.16183686e+10,
+#              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.array([1.24834354e+10, 2.26888500e+10, 3.13224798e+10, 4.16183686e+10,
 #                                             5.33137316e+10, 6.65015094e+10, 8.07396503e+10, 9.59308386e+10,
 #                                             1.12076605e+11, 1.29500242e+11, 1.48068984e+11, 1.67664859e+11,
 #                                             1.88614872e+11, 2.10307763e+11, 2.32534190e+11, 2.55258218e+11,
@@ -166,7 +166,7 @@ limitations under the License.
 #                                             3.66620834e+11, 3.81434383e+11, 3.98191584e+11, 4.13453346e+11,
 #                                             4.27540649e+11, 4.40613006e+11, 4.52762555e+11, 4.64046630e+11,
 #                                             4.74445226e+11, 4.83975687e+11, 4.92647562e+11]) / 1.0e9,
-#              f'{GlossaryEnergy.biogas} (TWh)': np.array([1.49773000e+11, 2.72214901e+11, 3.75798938e+11, 4.99326325e+11,
+#              f'{GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': np.array([1.49773000e+11, 2.72214901e+11, 3.75798938e+11, 4.99326325e+11,
 #                                        6.39644238e+11, 7.97867754e+11, 9.68693252e+11, 1.15095316e+12,
 #                                        1.34466585e+12, 1.55371011e+12, 1.77649302e+12, 2.01159922e+12,
 #                                        2.26295200e+12, 2.52321765e+12, 2.78988452e+12, 3.06252149e+12,
@@ -249,9 +249,9 @@ limitations under the License.
 #             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 #
 #         self.land_use_required_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'biomass_dry (Gha)': 0.0})
+#             {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.biomass_dry} (Gha)': 0.0})
 #         self.land_use_required_methane = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'mathane (Gha)': 0.0})
+#             {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.mathane} (Gha)': 0.0})
 #         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 #         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
 #         co2_taxes = [14.86, 17.22, 20.27,
@@ -277,7 +277,7 @@ limitations under the License.
 #
 #         energy_prices_biomass = np.linspace(9, 9, self.year_range)
 #         energy_prices_wotaxes_biomass = np.linspace(9, 9, self.year_range)
-#         self.energy_prices_biomass = pd.DataFrame(
+#         self.stream_prices_biomass = pd.DataFrame(
 #             {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: energy_prices_biomass,
 #              'biomass_dry_wotaxes': energy_prices_wotaxes_biomass})
 #
@@ -354,7 +354,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -420,7 +420,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CO2TaxesValue}'])
 #
@@ -483,7 +483,7 @@ limitations under the License.
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
 #              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
 #                             local_data=disc.local_data,
@@ -538,7 +538,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         outputs_names = [f'{name}.{model_name}.energy_mean_price']
 #         self.check_jacobian(location=dirname(__file__),
 #                             filename=f'jacobian_energy_mean_price_energy_prices_production.pkl',
@@ -594,7 +594,7 @@ limitations under the License.
 #         inputs_names.extend([
 #             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -751,7 +751,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -896,7 +896,7 @@ limitations under the License.
 #         inputs_names.extend(
 #             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.{model_name}.syngas.syngas_ratio'])
+#             [f'{name}.{model_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
 #                              f'{name}.{model_name}.co2_emissions_Gt',
 #                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -1174,7 +1174,7 @@ limitations under the License.
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
-#                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices_biomass,
+#                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2PerUse}': self.CO2_per_use_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_biomass,
@@ -1190,7 +1190,7 @@ limitations under the License.
 #                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_methane,
 #                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
 #                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.loss_percentage': 1.0,
-#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.loss_percentage': 2.0,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.loss_percentage}': 2.0,
 #                        }
 #
 #         self.ee.load_study_from_input_dict(inputs_dict)

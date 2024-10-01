@@ -17,10 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
+    CCTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno import \
-    DirectAirCaptureTechno
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno import (
+    DirectAirCaptureTechno,
+)
 
 
 class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
@@ -42,9 +45,8 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
+    techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
     lifetime = 35
-    construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.25,
                                  'CO2_per_energy': 0.65,
@@ -57,7 +59,6 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 0.88,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 0.9,
@@ -69,7 +70,6 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -78,10 +78,6 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5.0e-3  # in Mt at year_start
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0),
-         GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
-
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
                                                          10.0, 10.0, 10.0,
@@ -101,17 +97,11 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 
@@ -129,7 +119,7 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
 
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict = self.techno_model.grad_price_vs_stream_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(

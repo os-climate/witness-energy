@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import (
+    UltraLowSulfurDiesel,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -36,7 +38,7 @@ class UltraLowSulfurDieselDiscipline(EnergyDiscipline):
 
     DESC_IN = {
         GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['Refinery'],
+                                     'possible_values': [GlossaryEnergy.Refinery],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_kerosene',
                                      'structuring': True,

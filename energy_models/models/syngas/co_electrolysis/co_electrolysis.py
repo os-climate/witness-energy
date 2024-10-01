@@ -14,13 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -30,13 +26,14 @@ class CoElectrolysis(SyngasTechno):
     syngas_COH2_ratio = 100.0  # in %
 
     def compute_resources_needs(self):
-        # need in kg to produce 1kwh of syngas
-        self.cost_details[f"{ResourceGlossary.CO2Resource}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
 
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f"{ResourceGlossary.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
+        # need in kg to produce 1kwh of syngas
+        self.cost_details[f"{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
@@ -86,13 +83,13 @@ class CoElectrolysis(SyngasTechno):
 
         return oxygen_production
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         o2_production = self.get_oxygen_production()
 
-        self.production_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = o2_production / \
+        self.production_detailed[f'{Dioxygen.name} ({GlossaryEnergy.mass_unit})'] = o2_production / \
                                                                           self.data_energy_dict['calorific_value'] * \
                                                                           self.production_detailed[
-                                                                              f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                              f'{SyngasTechno.energy_name} ({self.product_unit})']
 
     def get_h2o_production(self):
         """

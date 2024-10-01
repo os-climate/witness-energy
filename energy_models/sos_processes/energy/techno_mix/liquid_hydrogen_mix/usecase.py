@@ -19,18 +19,20 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_DEFAULT,
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
-TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
-TECHNOLOGIES_LIST_DEV = ['HydrogenLiquefaction']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.HydrogenLiquefaction]
+TECHNOLOGIES_LIST = [GlossaryEnergy.HydrogenLiquefaction]
 
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
-                 technologies_list=TECHNOLOGIES_LIST,
+                 technologies_list=GlossaryEnergy.DEFAULT_TECHNO_DICT[f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}"]["value"],
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -44,8 +46,8 @@ class Study(EnergyMixStudyManager):
         invest_liquid_hydrogen_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'HydrogenLiquefaction' in self.technologies_list:
-            invest_liquid_hydrogen_mix_dict['HydrogenLiquefaction'] = [
+        if GlossaryEnergy.HydrogenLiquefaction in self.technologies_list:
+            invest_liquid_hydrogen_mix_dict[GlossaryEnergy.HydrogenLiquefaction] = [
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
         if self.bspline:
@@ -95,7 +97,7 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{lh_name}.HydrogenLiquefaction.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{lh_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        }
@@ -103,8 +105,8 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -127,8 +129,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=TECHNOLOGIES_LIST)
+    uc_cls = Study(main_study=True)
     uc_cls.load_data()
     uc_cls.run()
 #     ppf = PostProcessingFactory()

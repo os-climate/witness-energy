@@ -33,7 +33,7 @@ class SolidFuel(EnergyType):
     '''
     name = GlossaryEnergy.solid_fuel
     ironsteel_use_part = 627 * 11.63 / (44000 - 24000)
-    default_techno_list = ['CoalExtraction', 'Pelletizing']
+    default_techno_list = [GlossaryEnergy.CoalExtraction, GlossaryEnergy.Pelletizing]
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Engineering ToolBox, (2009).
@@ -94,7 +94,7 @@ class SolidFuel(EnergyType):
         #
         #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
         #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
-        if ghg_type == 'CO2':
+        if ghg_type == GlossaryEnergy.CO2:
             co2_per_use_kgkg = self.data_energy_dict_input[GlossaryEnergy.CO2PerUse] * \
                                (1.0 - self.data_energy_dict_input['ironsteel_use_part'] -
                                 self.data_energy_dict_input['cement_use_part'] - self.data_energy_dict_input[

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/29-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/03/29-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,13 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class CarbonStorageDiscipline(StreamDiscipline):
@@ -51,7 +53,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
     DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
-    energy_name = CarbonStorage.name
+    energy_name = GlossaryEnergy.carbon_storage
 
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()  # -- add specific techno outputs to this
 
@@ -126,7 +128,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         return instanciated_charts
 
     def get_chart_CO2_storage_price_in_dollar_ton(self):
-        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/ton]', chart_name=chart_name)

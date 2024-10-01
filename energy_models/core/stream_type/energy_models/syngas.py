@@ -19,15 +19,17 @@ from copy import deepcopy
 import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
+    GaseousHydrogen,
+)
 from energy_models.core.stream_type.energy_type import EnergyType
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Syngas(EnergyType):
     name = GlossaryEnergy.syngas
-    default_techno_list = ['Pyrolysis', 'SMR', 'AutothermalReforming',
-                           'CoElectrolysis', 'BiomassGasification', 'CoalGasification']
+    default_techno_list = [GlossaryEnergy.Pyrolysis, GlossaryEnergy.SMR, GlossaryEnergy.AutothermalReforming,
+                           GlossaryEnergy.CoElectrolysis, GlossaryEnergy.BiomassGasification, GlossaryEnergy.CoalGasification]
     data_energy_dict = {
         'maturity': 10,
         'WACC': 0.1,
@@ -72,7 +74,7 @@ class Syngas(EnergyType):
         """
         self.syngas_ratio_mean = np.zeros(len(self.years))
         for techno in self.subelements_list:
-            #             self.mix_weights[techno] = self.production_by_techno[f'{self.name} {techno} (TWh)'] / \
+            #             self.mix_weights[techno] = self.production_by_techno[f'{self.name} {techno} ({GlossaryEnergy.energy_unit})'] / \
             #                 self.production[f'{self.name}']
             self.syngas_ratio_mean = np.add(self.syngas_ratio_mean, self.syngas_ratio[techno] *
                                             self.mix_weights[techno].values / 100.0)

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/15-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/15-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,14 +18,21 @@ limitations under the License.
 from copy import deepcopy
 
 import numpy as np
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.syngas import Syngas, \
-    compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
+from energy_models.core.stream_type.energy_models.syngas import (
+    Syngas,
+    compute_calorific_value,
+    compute_dcal_val_dsyngas_ratio,
+    compute_high_calorific_value,
+    compute_molar_mass,
+)
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class SyngasDiscipline(EnergyDiscipline):
@@ -45,7 +52,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': Syngas.default_techno_list,
-                                            'default': Syngas.default_techno_list,
+
                                             'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_syngas', 'structuring': True,
                                             'unit': '-'},
@@ -58,7 +65,7 @@ class SyngasDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = Syngas.name
+    energy_name = GlossaryEnergy.syngas
 
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%',
                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
@@ -74,38 +81,17 @@ class SyngasDiscipline(EnergyDiscipline):
         self.energy_model = Syngas(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
-        dynamic_inputs = {}
+    def add_additionnal_dynamic_variables(self):
+        dynamic_inputs, dynamic_outputs = EnergyDiscipline.add_additionnal_dynamic_variables(self)
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                        'type': 'dataframe', 'unit': 'kg/kWh',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.syngas_ratio'] = {
-                        'type': 'array', 'unit': '%'}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
-                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%'}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
 
-        self.add_inputs(dynamic_inputs)
+        return dynamic_inputs, dynamic_outputs
 
     def run(self):
         '''
@@ -180,7 +166,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('syngas_ratio',),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_syngas_prod)
             self.set_partial_derivative(
                 'syngas_ratio',
@@ -207,7 +193,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2PerUse, GlossaryEnergy.CO2PerUse),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{self.energy_name} ({GlossaryEnergy.energy_unit})'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_carbon_tax_vs_prod)
 
             if co2_per_use != 0:
@@ -234,7 +220,7 @@ class SyngasDiscipline(EnergyDiscipline):
             'syngas_ratio')
         syngas_ratio_technos = self.get_sosdisc_outputs(
             'syngas_ratio_technos')
-        chart_name = f'Molar syngas CO over H2 ratio for the global mix'
+        chart_name = 'Molar syngas CO over H2 ratio for the global mix'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO over H2 molar ratio', [], [],
                                              chart_name=chart_name)

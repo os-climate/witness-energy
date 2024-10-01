@@ -16,10 +16,11 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import DEFAULT_TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import (
+    DEFAULT_TECHNOLOGIES_LIST,
+)
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -39,7 +40,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
         ns_study = self.ee.study_name
 
-        electricity_name = Electricity.name
+        electricity_name = GlossaryEnergy.electricity
         solid_fuel_name = SolidFuel.name
         energy_mix = 'EnergyMix'
         ns_dict = {'ns_electricity': f'{ns_study}.{energy_mix}.{electricity_name}',

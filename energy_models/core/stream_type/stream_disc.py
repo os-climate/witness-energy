@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/03/27-2024/06/26 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,15 +17,20 @@ limitations under the License.
 import logging
 
 import numpy as np
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class StreamDiscipline(SoSWrapp):
@@ -61,7 +66,6 @@ class StreamDiscipline(SoSWrapp):
 
     # -- Here are the results of concatenation of each techno prices,consumption and production
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         # energy_production and energy_consumption stored in PetaWh for
         # coupling variables scaling
@@ -84,98 +88,35 @@ class StreamDiscipline(SoSWrapp):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
 
         if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
-                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True), }}
+                        'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{ResourceGlossary.AmineResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
-                                                 f'{ResourceGlossary.CalciumResource} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.PotassiumResource} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 f'{ResourceGlossary.CarbonResource} (Mt)': ('float', None, True),
-                                                 }}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
-                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
-                                                 }}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
-                        'type': 'dataframe', 'unit': '$/MWh',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess_wotaxes': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption_wotaxes': ('float', None, True),
-                                                 'BiomassBuryingFossilization': ('float', None, True),
-                                                 'BiomassBuryingFossilization_wotaxes': ('float', None, True),
-                                                 'DeepOceanInjection': ('float', None, True),
-                                                 'DeepOceanInjection_wotaxes': ('float', None, True),
-                                                 'DeepSalineFormation': ('float', None, True),
-                                                 'DeepSalineFormation_wotaxes': ('float', None, True),
-                                                 'DepletedOilGas': ('float', None, True),
-                                                 'DepletedOilGas_wotaxes': ('float', None, True),
-                                                 'EnhancedOilRecovery': ('float', None, True),
-                                                 'EnhancedOilRecovery_wotaxes': ('float', None, True),
-                                                 'GeologicMineralization': ('float', None, True),
-                                                 'GeologicMineralization_wotaxes': ('float', None, True),
-                                                 'PureCarbonSolidStorage': ('float', None, True),
-                                                 'PureCarbonSolidStorage_wotaxes': ('float', None, True),
-                                                 }}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                        'type': 'dataframe', 'unit': 'Gha',
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.CO2Membranes (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess (Gha)': ('float', None, True),
-                                                 f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption (Gha)': ('float', None, True),
-                                                 'BiomassBuryingFossilization (Gha)': ('float', None, True),
-                                                 'DeepOceanInjection (Gha)': ('float', None, True),
-                                                 'DeepSalineFormation (Gha)': ('float', None, True),
-                                                 'DepletedOilGas (Gha)': ('float', None, True),
-                                                 'EnhancedOilRecovery (Gha)': ('float', None, True),
-                                                 'GeologicMineralization (Gha)': ('float', None, True),
-                                                 'PureCarbonSolidStorage (Gha)': ('float', None, True),
-                                                 }}
+                        'dynamic_dataframe_columns': True}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name, byproducts_list=GlossaryEnergy.techno_byproducts[techno])
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
 
+        dynamic_outputs.update({
+            GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_one_stream_price_df(stream_name=self.energy_name)
+        })
+        add_di, add_do = self.add_additionnal_dynamic_variables()
+        dynamic_inputs.update(add_di)
+        dynamic_outputs.update(add_do)
         self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
+
+    def add_additionnal_dynamic_variables(self):
+        """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
+        return {}, {}
 
     def run(self):
         '''
@@ -202,7 +143,7 @@ class StreamDiscipline(SoSWrapp):
                 consumption[column] /= inputs_dict['scaling_factor_energy_consumption']
                 consumption_woratio[column] /= inputs_dict['scaling_factor_energy_consumption']
 
-        outputs_dict = {GlossaryEnergy.EnergyPricesValue: cost_details,
+        outputs_dict = {GlossaryEnergy.StreamPricesValue: cost_details,
                         'energy_detailed_techno_prices': cost_details_technos,
                         GlossaryEnergy.EnergyConsumptionValue: consumption,
                         GlossaryEnergy.EnergyConsumptionWithoutRatioValue: consumption_woratio,
@@ -339,23 +280,23 @@ class StreamDiscipline(SoSWrapp):
                                     len(years)) * 100.0 * grad_techno_mix_vs_prod)
 
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyPricesValue, self.energy_name),
+                        (GlossaryEnergy.StreamPricesValue, self.energy_name),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', column_name),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_price_vs_prod)
 
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'),
+                        (GlossaryEnergy.StreamPricesValue, f'{self.energy_name}_wotaxes'),
                         (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', column_name),
                         inputs_dict['scaling_factor_techno_production'] * np.identity(
                             len(years)) * grad_price_wotaxes_vs_prod)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, self.energy_name),
+                (GlossaryEnergy.StreamPricesValue, self.energy_name),
                 (f'{techno}.{GlossaryEnergy.TechnoPricesValue}', techno),
                 np.diag(outputs_dict['techno_mix'][techno] / 100.0))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'),
+                (GlossaryEnergy.StreamPricesValue, f'{self.energy_name}_wotaxes'),
                 (f'{techno}.{GlossaryEnergy.TechnoPricesValue}', f'{techno}_wotaxes'),
                 np.diag(outputs_dict['techno_mix'][techno] / 100.0))
 
@@ -441,7 +382,7 @@ class StreamDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -465,7 +406,7 @@ class StreamDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_energy_price_in_dollar_kg(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)

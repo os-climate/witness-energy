@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class DemandModelJacobianTestCase(AbstractJacobianUnittest):
@@ -47,18 +49,18 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
-                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': np.linspace(20000,
+                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})': np.linspace(20000,
                                                                                                                  19000,
                                                                                                                  len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': np.linspace(10000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})': np.linspace(10000, 12000,
                                                                                                          len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)': np.linspace(11000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})': np.linspace(11000, 12000,
                                                                                                        len(self.years)),
-                                                        f'production {GlossaryEnergy.methane} (TWh)': np.linspace(5000., 6000.,
+                                                        f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': np.linspace(5000., 6000.,
                                                                                                 len(self.years)),
-                                                        f'production {GlossaryEnergy.biogas} (TWh)': np.linspace(1000., 1500.,
+                                                        f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': np.linspace(1000., 1500.,
                                                                                                len(self.years)),
-                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': np.linspace(
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,

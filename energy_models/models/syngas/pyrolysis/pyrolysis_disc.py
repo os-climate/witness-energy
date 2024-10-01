@@ -18,7 +18,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
+    SyngasTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 
@@ -44,7 +46,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Pyrolysis
     lifetime = 20
-    construction_delay = 2
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
@@ -52,7 +53,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # 1600T/day of wood capacity, 180M$ of Capital
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,
@@ -62,7 +62,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood
@@ -75,9 +74,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
-    # From Future of hydrogen : accounting for around three quarters of the
+        # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 1e-12  # in TWh at year_start MT*kWh/kg = TWh
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -89,17 +86,11 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}
+               
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

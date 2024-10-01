@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,21 +16,22 @@ limitations under the License.
 '''
 import logging
 
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
+    InstanciatedPieChart,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 
 class InvestEnergyDiscipline(SoSWrapp):
@@ -61,12 +62,7 @@ class InvestEnergyDiscipline(SoSWrapp):
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         'invest_energy_mix': {'type': 'dataframe',
-                              'dataframe_descriptor': {
-                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                  GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True),
-                                  GlossaryEnergy.methane: ('float', None, True),
-                                  GlossaryEnergy.electricity: ('float', None, True),
-                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True)},
+                              'dynamic_dataframe_columns': True,
                               'dataframe_edition_locked': False},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
@@ -208,7 +204,7 @@ class InvestEnergyDiscipline(SoSWrapp):
                 'energy_invest_df')
             energy_list = self.get_sosdisc_inputs(
                 GlossaryEnergy.energy_list)
-            chart_name = f'Distribution of Investments '
+            chart_name = 'Distribution of Investments '
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                  chart_name=chart_name, stacked_bar=True)

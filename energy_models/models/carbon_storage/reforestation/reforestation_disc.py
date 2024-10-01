@@ -17,12 +17,18 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
-from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import (
+    CSTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.reforestation.reforestation import Reforestation
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from energy_models.models.carbon_storage.reforestation.reforestation import (
+    Reforestation,
+)
 
 
 class ReforestationDiscipline(CSTechnoDiscipline):
@@ -46,7 +52,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Reforestation
     lifetime = 150
-    construction_delay = 3  # years
     techno_infos_dict_default = {'maturity': 0,
                                  #
                                  'Opex_percentage': 0.0,
@@ -60,7 +65,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                                  # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                                  # 76.553 ans is computed on the forests distribution of those 150 last years
@@ -84,12 +88,10 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     # invest: 0.1 Mha are planted each year at 13047.328euro/ha
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0, 0, 0]})
-    #
+        #
     initial_storage = 0  # in MtCO2
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -113,20 +115,13 @@ class ReforestationDiscipline(CSTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno inputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 

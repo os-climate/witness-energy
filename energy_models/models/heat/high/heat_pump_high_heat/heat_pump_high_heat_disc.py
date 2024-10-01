@@ -16,13 +16,19 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
+from energy_models.core.techno_type.disciplines.heat_techno_disc import (
+    HighHeatTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.heat.high.heat_pump_high_heat.heat_pump_high_heat import HeatPump
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from energy_models.models.heat.high.heat_pump_high_heat.heat_pump_high_heat import (
+    HeatPump,
+)
 
 
 class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
@@ -52,7 +58,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 1  # years
     # COP = 3.5
 
     techno_infos_dict_default = {
@@ -63,8 +68,6 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
-        GlossaryEnergy.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1.0,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -105,27 +108,16 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # Expected Globally Heat Generated in 2030 is 2592 GW
     # Yearly Heat Generation increment will be 170 GW
     # invest_before_year_start = pd.DataFrame(
-    #     {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([1*8760*0.5*0.5/3])})
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay),
-         GlossaryEnergy.InvestValue: 0 * np.array([1 * 8760 * 0.5 * 0.5 / 3])})  # Invest before year start is 0
-    # invest_before_year_start = pd.DataFrame(
     #     {'past years': np.arange(-construction_delay, 0),
     #      GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([0, 1*8760*0.5/3])})
     flux_input_dict = {'land_rate': 24000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
@@ -211,7 +203,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
             x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
-            title = f'Detailed heat_flux over the years'
+            title = 'Detailed heat_flux over the years'
             new_chart = self.get_charts(title, x_data, y_data, x_label, y_label, series_name, True)
             instanciated_charts.append(new_chart)
 

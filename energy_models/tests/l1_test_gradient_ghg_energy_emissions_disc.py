@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/07-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/07-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,19 +16,23 @@ limitations under the License.
 '''
 
 import pickle
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
-    AgricultureMixDiscipline
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
+    AgricultureMixDiscipline,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.tests.data_tests.mda_energy_data_generator import (
+    launch_data_pickle_generation,
+)
 
 
 class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
@@ -73,7 +77,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
                 # not to delete the test, we do not care about the biomass dry values (they are not anymore in the generator data dict
                 self.CO2_per_use[f'{energy}'] = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.CO2PerUse]['value']
                 self.CH4_per_use[f'{energy}'] = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.CH4PerUse]['value']
@@ -85,7 +89,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 self.energy_production[f'{energy}'] = biomass_energy_prod
                 biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.EnergyConsumptionValue][
                     'value'].copy()
-                biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{ResourceGlossary.WetBiomassResource} (Mt)'])
+                biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{GlossaryEnergy.WetBiomassResource} ({GlossaryEnergy.mass_unit})'])
 
                 self.energy_consumption[f'{energy}'] = biomass_cons_prod
 

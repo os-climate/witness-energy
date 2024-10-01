@@ -18,7 +18,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
+from energy_models.core.techno_type.disciplines.methane_techno_disc import (
+    MethaneTechnoDiscipline,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
 
@@ -41,7 +43,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.FossilGas
     lifetime = 23
-    construction_delay = 3  # years
     techno_infos_dict_default = {'available_power': 15000000,
                                  'available_power_unit': 'm^3',
                                  'capacity_factor': 0.4,
@@ -58,7 +59,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'elec_demand': 0.00735,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 3641780,  # Capex initial
                                  # Sarhosis, V., Jaya, A.A., Hosking, L., Koj, A. and Thomas, H.R., 2015.
                                  # Techno-economics for coalbed methane production in the South Wales coalfield.
@@ -70,7 +70,6 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'WACC': 0.0878,
                                  'efficiency': 0.4,
                                  # https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,  # in kWh/kg
                                  'maturity': 5
                                  }
     energy_own_use = 3732.83  # TWh
@@ -89,24 +88,15 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': distrib_our_world_indata * 100.0 / distrib_our_world_indata.sum()})  # to do
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 31.2, 31.2]})
     FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'age': ('float', None, True),
+                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

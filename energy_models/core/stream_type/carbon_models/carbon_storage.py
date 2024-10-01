@@ -22,10 +22,10 @@ class CarbonStorage(BaseStream):
     name = GlossaryEnergy.carbon_storage
     unit = 'Mt'
     default_techno_list = ['BiomassBuryingFossilization', 'DeepOceanInjection',
-                           'DeepSalineFormation', 'DepletedOilGas',
-                           'EnhancedOilRecovery', 'GeologicMineralization',
+                           GlossaryEnergy.DeepSalineFormation, 'DepletedOilGas',
+                           'EnhancedOilRecovery', GlossaryEnergy.GeologicMineralization,
                            'PureCarbonSolidStorage', 'Reforestation',
-                           'CarbonStorageTechno']
+                           GlossaryEnergy.CarbonStorageTechno]
     # Data dict from CO2 dioxyde
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,

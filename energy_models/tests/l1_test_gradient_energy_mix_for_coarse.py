@@ -18,14 +18,17 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
+    DEFAULT_COARSE_TECHNO_DICT,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
-    DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
@@ -90,7 +93,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = []
 
         inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in self.energy_list
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in self.energy_list
             if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
@@ -102,21 +105,21 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
              self.energy_list if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         inputs_names.extend(
-            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
+            [f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
-            f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
+            f'{self.name}.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in
             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list
              if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_coarse_energymix_co2_emissions.pkl',
                             discipline=self.disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=self.disc.local_data,
                             inputs=inputs_names,
@@ -146,7 +149,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                  f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
                                  f'{self.name}.{self.model_name}.energy_prices_after_tax']
             self.override_dump_jacobian = True
-            self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energy_mix_co2_tax.pkl',
+            self.check_jacobian(location=dirname(__file__), filename='jacobian_coarse_energy_mix_co2_tax.pkl',
                                 discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                                 local_data=self.disc.local_data,
                                 inputs=inputs_names, outputs=energy_mix_output)

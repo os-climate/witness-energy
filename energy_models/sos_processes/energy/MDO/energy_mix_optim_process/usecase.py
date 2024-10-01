@@ -13,10 +13,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import Study as subStudy
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import (
+    Study as subStudy,
+)
+from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
 
 INVEST_DISC_NAME = 'InvestmentDistribution'
 
@@ -35,8 +40,9 @@ class Study(StudyManager):
             run_usecase=run_usecase
         )
         self.optim_name = 'MDO'
-        self.techno_dict = DEFAULT_TECHNO_DICT
+        self.techno_dict = techno_dict_midway
         self.use_utilisation_ratio = use_utilisation_ratio
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         data_usecase = subStudy(techno_dict=self.techno_dict, use_utilisation_ratio=self.use_utilisation_ratio)
@@ -49,7 +55,6 @@ class Study(StudyManager):
             f'{self.study_name}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
             f'{self.study_name}.{self.optim_name}.max_iter': 200,
             f'{self.study_name}.{self.optim_name}.differentiation_method': 'user',
-            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
         }
         data.append(values_mdo)
         return data
@@ -57,5 +62,5 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
-# uc_cls.run()
+    uc_cls.load_data()
+    uc_cls.run()

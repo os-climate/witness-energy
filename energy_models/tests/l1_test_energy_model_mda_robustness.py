@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ from time import sleep
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestMDARobustness(AbstractJacobianUnittest):
@@ -79,7 +81,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
 
         self.ee2 = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.MDA'
@@ -93,7 +95,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
         values_dict = usecase.setup_usecase()
         years = np.arange(self.year_start, self.year_end + 1)
 
-        values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'] = pd.DataFrame(
+        values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}'] = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
@@ -132,7 +134,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee2.execute()
 
-        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
         tolerance = full_values_dict[f'{self.name}.tolerance']
         for column in energy_prices0:
             for value1, value2 in zip(list(energy_prices0[column].values), list(energy_prices1[column].values)):

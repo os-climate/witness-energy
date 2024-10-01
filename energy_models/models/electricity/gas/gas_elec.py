@@ -14,48 +14,33 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.core.techno_type.base_techno_models.electricity_techno import (
+    ElectricityTechno,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class GasElec(ElectricityTechno):
-    COPPER_RESOURCE_NAME = ResourceGlossary.CopperResource
-
-
-    def compute_other_energies_needs(self):
+    def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict['kwh_methane/kwh']
 
-    def compute_production(self):
+    def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.production_detailed[
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
-            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.consumption_detailed[f'{Methane.name} ({self.product_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
-
-    def compute_consumption_and_installed_power(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-
-        # FOR ALL_RESOURCES DISCIPLINE
-
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
-                                                                                       self.installed_power[
-                                                                                           'new_power_production']  # in Mt
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         '''
@@ -83,16 +68,6 @@ class GasElec(ElectricityTechno):
         ghg_type = Methane.emission_name
         emission_factor = self.techno_infos_dict[f'{ghg_type}_emission_factor']
 
-        self.production_detailed[f'{ghg_type} ({self.mass_unit})'] = emission_factor * \
+        self.production_detailed[f'{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
                                                                      self.consumption_detailed[
-                                                                         f'{Methane.name} ({self.product_energy_unit})']
-
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
-
-        return copper_need
+                                                                         f'{Methane.name} ({self.product_unit})']
