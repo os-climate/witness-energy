@@ -252,12 +252,13 @@ class Energy_Mix_Discipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         if GlossaryEnergy.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                             GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
-                                                                 years)})
-            self.set_dynamic_default_values(
-                {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                                 GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
+                                                                     years)})
+                self.set_dynamic_default_values(
+                    {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
             if energy_list is not None:
@@ -369,12 +370,14 @@ class Energy_Mix_Discipline(SoSWrapp):
         '''
         Update default variables knowing the year start and the year end 
         '''
-        if GlossaryEnergy.YearStart in inputs_dict:
-            years = np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)
-            lh_perc_default = np.concatenate(
-                (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
-            self.set_dynamic_default_values(
-                {'liquid_hydrogen_percentage': lh_perc_default})
+        if GlossaryEnergy.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                lh_perc_default = np.concatenate(
+                    (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+                self.set_dynamic_default_values(
+                    {'liquid_hydrogen_percentage': lh_perc_default})
 
     def run(self):
         # -- get inputs
