@@ -125,6 +125,12 @@ class CSTechnoDiscipline(TechnoDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'Power plants initial age distribution' in charts:
+            new_chart = self.get_chart_initial_age_distrib()
+            if new_chart is not None:
+                new_chart.to_plotly().show()
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_detailed_price_in_dollar_ton(self):
