@@ -1370,7 +1370,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_chart_initial_age_distrib(self):
         age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
-        chart_name = f'Age distribution of initial power plants / factories'
+        chart_name = 'Age distribution of initial power plants / factories'
 
         new_chart = TwoAxesInstanciatedChart('Age', '%', chart_name=chart_name)
 
