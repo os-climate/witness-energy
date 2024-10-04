@@ -46,7 +46,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
 
         self.techno_capital = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
 
     def tearDown(self):
         pass

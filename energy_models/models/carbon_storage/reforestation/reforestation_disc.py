@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -51,7 +49,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     # protected areas
 
     techno_name = GlossaryEnergy.Reforestation
-    lifetime = 150
+
     techno_infos_dict_default = {'maturity': 0,
                                  #
                                  'Opex_percentage': 0.0,
@@ -64,7 +62,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.0,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                                  # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                                  # 76.553 ans is computed on the forests distribution of those 150 last years
@@ -94,33 +91,12 @@ class ReforestationDiscipline(CSTechnoDiscipline):
         #
     initial_storage = 0  # in MtCO2
     # distrib computed, for planted forests since 150 years
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51,
-                                                         0.51, 0.51, 0.51, 0.52, 0.51, 0.52, 0.52, 0.52, 0.52, 0.52,
-                                                         0.52, 0.53, 0.53, 0.53, 0.53, 0.53, 0.53, 0.54, 0.54, 0.54,
-                                                         0.54, 0.54, 0.54, 0.54, 0.55, 0.55, 0.55, 0.55, 0.55, 1.52,
-                                                         0.55, 0.56, 0.56, 0.56, 0.56, 0.56, 0.56, 0.56, 0.57, 0.57,
-                                                         1.52, 1.52, 0.57, 0.57, 0.57, 0.57, 0.58, 0.58, 0.58, 0.58,
-                                                         0.58, 0.58, 0.58, 0.59, 0.59, 0.59, 0.59, 0.59, 0.59, 0.59,
-                                                         1.52, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.61, 0.61, 0.61, 0.61,
-                                                         0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.71, 0.7, 0.7, 0.71, 0.71,
-                                                         0.63, 0.63, 0.64, 0.64, 0.64, 0.64, 0.64, 0.65, 0.65, 0.65,
-                                                         0.65, 0.65, 0.65, 0.65, 0.66, 0.66, 0.66, 0.66, 0.66, 0.66,
-                                                         0.66, 0.67, 0.67, 0.67, 0.67, 0.67, 0.67, 0.67, 0.68, 0.68,
-                                                         0.68, 0.68, 0.68, 0.68, 0.68, 0.69, 0.69, 0.69, 0.69, 0.69,
-                                                         0.69, 1.53, 0.69, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.71,
-                                                         4.98, 0.71, 0.71, 0.71, 0.71, 0.71]})
 
     #
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
+               
                }
     # -- add specific techno inputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)

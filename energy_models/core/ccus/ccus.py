@@ -104,9 +104,9 @@ class CCUS(BaseStream):
             self.sub_prices[element] = inputs_dict[f'{element}.{GlossaryEnergy.StreamPricesValue}'][element]
             self.sub_production_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
-            self.sub_consumption_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+            self.sub_consumption_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
-            self.sub_consumption_woratio_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
+            self.sub_consumption_woratio_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
 
         self.stream_prices = self.sub_prices.copy(deep=True)
@@ -123,7 +123,7 @@ class CCUS(BaseStream):
                 if elements in self.resource_list:
                     self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
                                                          inputs_dict[
-                                                             f'{element}.{GlossaryEnergy.EnergyConsumptionValue}'][
+                                                             f'{element}.{GlossaryEnergy.StreamConsumptionValue}'][
                                                              elements].values * \
                                                          self.scaling_factor_energy_consumption
 

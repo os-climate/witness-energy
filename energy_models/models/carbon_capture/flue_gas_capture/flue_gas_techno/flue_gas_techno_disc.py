@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -46,7 +44,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'version': '',
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
-    lifetime = 25
+
 
     heat_to_power_lost = 0.243
     heat_duty = 18
@@ -55,8 +53,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     c02_capacity_year = 790.2 * 0.85 * 8760 * 550
     carbon_capture_efficiency = 0.90
 
-    techno_infos_dict_default = {'lifetime': lifetime,
-                                 'capacity_factor': 0.85,
+    techno_infos_dict_default = {'capacity_factor': 0.85,
                                  'maturity': 0,
                                  'Opex_percentage': 0,
                                  'learning_rate': 0,
@@ -87,23 +84,8 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5  # Mt
 
-    
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
                                             'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
                                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -128,8 +110,8 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_stream_price()
-
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         self.set_partial_derivatives_techno(
-            grad_dict, None)
+            grad_dict, carbon_emissions)
 
-        self.set_partial_derivatives_flue_gas(GlossaryEnergy.renewable)
+        self.set_partial_derivatives_flue_gas(GlossaryEnergy.clean_energy)

@@ -79,7 +79,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years] <=
                 inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.InvestValue].values,
             inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
-
+        utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][GlossaryEnergy.UtilisationRatioValue].values
         crf = self.techno_model.compute_capital_recovery_factor(inputs_dict['techno_infos_dict'])
         dfactory_dfluegas = dcapex_dfluegas * \
                             (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
@@ -115,7 +115,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
                 GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-            dprod_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
+            dprod_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
                              np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
 
         production, consumption = self.get_sosdisc_outputs(
@@ -132,7 +132,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionValue, column),
                     (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                    dprod_column_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:,
+                    dprod_column_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
                                             np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionWithoutRatioValue,
@@ -143,7 +143,8 @@ class CCTechnoDiscipline(TechnoDiscipline):
             dcapex_dfluegas, dprod_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
+            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
             dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
@@ -212,6 +213,11 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 new_chart = self.get_chart_initial_production()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if 'Non-Use Capital' in charts:
+            new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
@@ -371,12 +377,9 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_initial_production(self):
 
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = initial_age_distrib.copy(deep=True)
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
                                    100.0 * initial_production
@@ -384,8 +387,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         initial_prod.sort_values(GlossaryEnergy.Years, inplace=True)
         initial_prod['cum CO2 (Mt)'] = initial_prod['CO2 (Mt)'].cumsum()
 
-        study_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'World CO2 capture via {self.techno_name}<br>with 2020 factories distribution'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} ({GlossaryEnergy.mass_unit})',

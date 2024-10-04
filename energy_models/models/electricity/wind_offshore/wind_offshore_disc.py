@@ -16,8 +16,6 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -48,12 +46,11 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.WindOffshore
-    lifetime = 30  # ATB NREL 2020
+
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.022,  # ATB NREL 2020, average value
                                  'WACC': 0.052,  # Weighted averaged cost of capital / ATB NREL 2020
                                  'learning_rate': 0.07,  # Cost development of low carbon energy technologies
-                                 'lifetime': lifetime,
                                  'Capex_init': 4353,  # Irena Future of wind 2019
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,  # Full year hours
@@ -76,21 +73,9 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     # Invest in 2019 => 29.6 bn
     
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [
-                                                 21.1073, 15.2249, 15.5709, 7.61246, 11.7647, 5.53633, 5.19031, 4.15225,
-                                                 3.11419, 3.11419, 2.07612, 1.38408, 1.03806, 0.34602, 0.34602,
-                                                 0.34602, 1.03806, 0.69204, 0.34602, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                                             ]
-                                             })
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
     # Add specific transport cost for Offshore technology

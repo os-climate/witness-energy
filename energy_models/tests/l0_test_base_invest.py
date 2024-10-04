@@ -34,9 +34,9 @@ class TestBaseInvest(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.base_invest = BaseInvest('Test')
-        self.y_s = GlossaryEnergy.YearStartDefault
-        self.y_e = GlossaryEnergy.YearEndDefault
-        self.y_step = 1
+        self.year_start = GlossaryEnergy.YearStartDefault
+        self.year_end = GlossaryEnergy.YearEndDefault
+        self.year_starttep = 1
 
     def test_01_set_invest_unit_failure(self):
         try:
@@ -54,7 +54,7 @@ class TestBaseInvest(unittest.TestCase):
 
     def test_03_invest_dataframe(self):
         invest_ref = 1.e9  # $
-        years = np.arange(self.y_s, self.y_e + 1, step=self.y_step)
+        years = np.arange(self.year_start, self.year_end + 1, step=self.year_starttep)
         invest = np.zeros(len(years))
         invest[0] = invest_ref
         for i in range(1, len(years)):
@@ -77,7 +77,7 @@ class TestBaseInvest(unittest.TestCase):
 
     def test_04_change_invest_unit(self):
         invest_ref = 10.e12  # $
-        years = np.arange(self.y_s, self.y_e + 1, step=self.y_step)
+        years = np.arange(self.year_start, self.year_end + 1, step=self.year_starttep)
         invest = np.zeros(len(years))
         invest[0] = invest_ref
         for i in range(1, len(years)):
@@ -106,7 +106,7 @@ class TestBaseInvest(unittest.TestCase):
                                0., 4)
 
         invest_ref = 3000.  # M$
-        years = np.arange(self.y_s, self.y_e + 1, step=self.y_step)
+        years = np.arange(self.year_start, self.year_end + 1, step=self.year_starttep)
         invest = np.zeros(len(years))
         invest[0] = invest_ref
         for i in range(1, len(years)):

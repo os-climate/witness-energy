@@ -2,8 +2,8 @@
 
 The CO2 mineralization process is proposed by carbfix [^1] amongst others. The process consists of the dissolution of CO2 into water and inject the CO2- heavy water to react with basalt rocks. The CO2-heavy water reacts with Calcium (Ca) and Magnesium (Mg) contained in basalt for long term storage.
 
-$$ CaO + CO_2 --> CaCO_3$$
-$$ MgO + CO_2 --> MgCO_3$$
+$$CaO + CO_2 --> CaCO_3$$
+$$MgO + CO_2 --> MgCO_3$$
 
 ![](Geologic_Mineralization.PNG)[^1]
 

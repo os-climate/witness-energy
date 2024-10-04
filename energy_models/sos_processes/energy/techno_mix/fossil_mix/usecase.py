@@ -45,8 +45,8 @@ class Study(EnergyMixStudyManager):
         invest_fossil_mix_dict = {}
 
         if GlossaryEnergy.FossilSimpleTechno in self.technologies_list:
-            invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 300.
-            invest_fossil_mix_dict['FossilSimpleTechno'][0] = DatabaseWitnessEnergy.InvestFossil2020.value
+            invest_fossil_mix_dict[GlossaryEnergy.FossilSimpleTechno] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 300.
+            invest_fossil_mix_dict[GlossaryEnergy.FossilSimpleTechno][0] = DatabaseWitnessEnergy.InvestFossil2020.value
 
         if self.bspline:
             invest_fossil_mix_dict[GlossaryEnergy.Years] = self.years

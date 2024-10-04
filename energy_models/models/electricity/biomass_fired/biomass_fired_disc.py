@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -46,7 +44,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     }
 
     techno_name = GlossaryEnergy.BiomassFired
-    lifetime = 25  # Value for CHP units
+
 
     # Source for Initial prod in TWh (2019):
     # IEA 2022, Data Tables
@@ -74,7 +72,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'Opex_percentage': 0.04,
                                  'WACC': 0.075,
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,
                                  # IRENA (value from Figure 7.1, page 111)
                                  'Capex_init': 3000,
                                  'Capex_init_unit': '$/kW',
@@ -98,20 +95,9 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
     # 1.1632 / 15.414 ~= 7.5% added production each year (linear approximation)
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100 - 12 * 7.5, 7.5, 7.5, 7.5, 7.5,
-                                                         7.5, 7.5, 7.5, 7.5, 7.5,
-                                                         7.5, 7.5, 7.5, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0, 0.0]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               }
+                      }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

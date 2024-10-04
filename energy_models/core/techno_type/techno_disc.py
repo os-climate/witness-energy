@@ -73,8 +73,8 @@ class TechnoDiscipline(SoSWrapp):
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'user_level': 2},
-        'smooth_type': {'type': 'string', 'default': 'cons_smooth_max',
-                        'possible_values': ['smooth_max', 'soft_max', 'cons_smooth_max'],
+        'smooth_type': {'type': 'string', 'default': 'smooth_max',
+                        'possible_values': ['smooth_max', 'soft_max', ], # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
         GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
@@ -88,7 +88,9 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
-        'initial_production': {'type': 'float', 'unit': 'TWh'}
+        'initial_production': {'type': 'float', 'unit': 'TWh'},
+        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "description": "lifetime of a plant of the techno"},
+        GlossaryEnergy.InitialPlantsAgeDistribFactor: {'type': 'float', 'unit': 'years', "description": "lifetime of a plant of the techno"},
     }
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
@@ -101,6 +103,11 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.CO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
+        'initial_age_distrib': {'type': 'dataframe', 'unit': '%',
+                                'dataframe_descriptor': {
+                                           'age': ('float', None, True),
+                                           'distrib': ('float', None, True),
+                                           }},
         GlossaryEnergy.InstalledPower: GlossaryEnergy.InstalledPowerDf,
         GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf,
         GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction
@@ -207,7 +214,6 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
-            'non_use_capital': GlossaryEnergy.get_non_use_capital_df(techno_name=self.techno_name),  # todo: not coupled, rename cols and move to DESC_OUT
             'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name), # todo: not coupled, rename cols and move to DESC_OUT
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
@@ -222,8 +228,21 @@ class TechnoDiscipline(SoSWrapp):
 
     def update_default_values(self):
         '''
-        Update all default dataframes with years 
+        Update all default dataframes with years
         '''
+        if GlossaryEnergy.LifetimeName in self.get_data_in():
+            lifetime = self.get_sosdisc_inputs(GlossaryEnergy.LifetimeName)
+            if lifetime is None:
+                lifetime = GlossaryEnergy.TechnoLifetimeDict[self.techno_name]
+                self.update_default_value(GlossaryEnergy.LifetimeName, 'in', lifetime)
+
+        if GlossaryEnergy.InitialPlantsAgeDistribFactor in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
+            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+            initial_plant_age_distrib_factor = self.get_sosdisc_inputs(GlossaryEnergy.InitialPlantsAgeDistribFactor)
+            if initial_plant_age_distrib_factor is None and year_start is not None:
+                initial_plant_age_distrib_factor, _ = DatabaseWitnessEnergy.get_techno_age_distrib_factor(self.techno_name, year=year_start)
+                self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', initial_plant_age_distrib_factor)
+
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             initial_production = self.get_sosdisc_inputs('initial_production')
@@ -305,12 +324,12 @@ class TechnoDiscipline(SoSWrapp):
                         'CO2_emissions_detailed': self.techno_model.carbon_intensity,
                         GlossaryEnergy.LandUseRequiredValue: self.techno_model.land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
-                        'non_use_capital': self.techno_model.non_use_capital,
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         GlossaryEnergy.CostOfResourceUsageValue: self.techno_model.cost_of_resources_usage,
                         GlossaryEnergy.CostOfStreamsUsageValue: self.techno_model.cost_of_streams_usage,
-                        GlossaryEnergy.SpecificCostsForProductionValue: self.techno_model.specific_costs
+                        GlossaryEnergy.SpecificCostsForProductionValue: self.techno_model.specific_costs,
+                        'initial_age_distrib': self.techno_model.initial_age_distrib,
                         }
 
         self.store_sos_outputs_values(outputs_dict)
@@ -391,7 +410,7 @@ class TechnoDiscipline(SoSWrapp):
         if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
             for ratio_name in inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue].columns:
                 if ratio_name != GlossaryEnergy.Years:
-                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_unit})']
+                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_unit})'].values
 
                     self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(production_woratio,
                                                                                            ratio_name=ratio_name,
@@ -402,7 +421,7 @@ class TechnoDiscipline(SoSWrapp):
                         self.dprod_dratio[ratio_name])
 
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'],
+                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'].values,
                         ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
@@ -412,7 +431,7 @@ class TechnoDiscipline(SoSWrapp):
         if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
             for ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns:
                 if ratio_name != GlossaryEnergy.Years:
-                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_unit})']
+                    production_woratio = self.techno_model.production_woratio[f'{self.energy_name} ({self.techno_model.product_unit})'].values
 
                     self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
                         production_woratio,
@@ -424,7 +443,7 @@ class TechnoDiscipline(SoSWrapp):
                         self.dprod_dratio[ratio_name])
 
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'],
+                        self.techno_model.land_use_woratio[f'{self.techno_model.name} (Gha)'].values,
                         ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
@@ -475,7 +494,7 @@ class TechnoDiscipline(SoSWrapp):
                     if GlossaryEnergy.AllStreamsDemandRatioValue in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             GlossaryEnergy.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryEnergy.Years:
-                            production_woratio = self.techno_model.production_woratio[column]
+                            production_woratio = self.techno_model.production_woratio[column].values
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
                                 production_woratio,
                                 ratio_name=ratio_name,
@@ -488,7 +507,7 @@ class TechnoDiscipline(SoSWrapp):
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict[
                             'all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryEnergy.Years:
-                            production_woratio = self.techno_model.production_woratio[column]
+                            production_woratio = self.techno_model.production_woratio[column].values
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
                                 production_woratio,
                                 ratio_name=ratio_name,
@@ -558,8 +577,7 @@ class TechnoDiscipline(SoSWrapp):
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
-                                consumption_woratio = self.techno_model.consumption_woratio[
-                                    column]
+                                consumption_woratio = self.techno_model.consumption_woratio[column].values
                                 dprod_dratio = self.techno_model.compute_dprod_dratio(
                                     consumption_woratio, ratio_name=ratio_name,
                                     dapplied_ratio_dratio=dapplied_ratio_dratio)
@@ -574,7 +592,7 @@ class TechnoDiscipline(SoSWrapp):
                                           self.techno_model.construction_resource_list]:
                                 pass
                             else:
-                                consumption_woratio = self.techno_model.consumption_woratio[column]
+                                consumption_woratio = self.techno_model.consumption_woratio[column].values
                                 dprod_dratio = self.techno_model.compute_dprod_dratio(
                                     consumption_woratio,
                                     ratio_name=ratio_name,
@@ -598,12 +616,12 @@ class TechnoDiscipline(SoSWrapp):
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, self.dprod_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
             (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
-            ('non_use_capital', self.techno_model.name),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
             (GlossaryEnergy.UtilisationRatioValue, GlossaryEnergy.UtilisationRatioValue),
             self.techno_model.d_non_use_capital_d_utilisation_ratio())
 
@@ -619,7 +637,7 @@ class TechnoDiscipline(SoSWrapp):
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
-                        ('non_use_capital', self.techno_model.name),
+                        (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
                         (GlossaryEnergy.AllStreamsDemandRatioValue, ratio_name),
                         dnon_use_capital_dratio)
             if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
@@ -628,7 +646,7 @@ class TechnoDiscipline(SoSWrapp):
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
-                        ('non_use_capital', self.techno_model.name),
+                        (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
                         ('all_resource_ratio_usable_demand', ratio_name),
                         dnon_use_capital_dratio)
 
@@ -843,16 +861,14 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_chart_detailed_price_in_dollar_kwh(self):
 
-        techno_detailed_prices = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedPricesValue)
+        techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
         chart_name = f'Price breakdown of {self.techno_name}'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/MWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
         if 'percentage_resource' in self.get_data_in():
-            percentage_resource = self.get_sosdisc_inputs(
-                'percentage_resource')
+            percentage_resource = self.get_sosdisc_inputs('percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
             tot_price = techno_detailed_prices[self.techno_name].values / \
@@ -909,8 +925,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_chart_detailed_price_in_dollar_kg(self):
 
-        techno_detailed_prices = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedPricesValue)
+        techno_detailed_prices = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
 
         chart_name = f'Price breakdown of {self.techno_name}'
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
@@ -919,8 +934,7 @@ class TechnoDiscipline(SoSWrapp):
                                              chart_name=chart_name)
 
         if 'percentage_resource' in self.get_data_in():
-            percentage_resource = self.get_sosdisc_inputs(
-                'percentage_resource')
+            percentage_resource = self.get_sosdisc_inputs('percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
             tot_price = techno_detailed_prices[self.techno_name].values / \
@@ -986,8 +1000,7 @@ class TechnoDiscipline(SoSWrapp):
     def get_chart_investments(self):
         # Chart for input investments
         input_investments = self.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)
-        scaling_factor_invest_level = self.get_sosdisc_inputs(
-            'scaling_factor_invest_level')
+        scaling_factor_invest_level = self.get_sosdisc_inputs('scaling_factor_invest_level')
 
         chart_name = f'Investments in {self.techno_name}'
 
@@ -1006,10 +1019,8 @@ class TechnoDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
-        techno_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
@@ -1095,8 +1106,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_chart_applied_ratio(self):
         # Charts for consumption and prod
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')
+        applied_ratio = self.get_sosdisc_outputs('applied_ratio')
         chart_name = f'Ratio applied on {self.techno_name} technology energy Production'
         fig = go.Figure()
         fig.add_trace(go.Bar(x=applied_ratio[GlossaryEnergy.Years].values.tolist(),
@@ -1110,12 +1120,9 @@ class TechnoDiscipline(SoSWrapp):
 
     def get_chart_initial_production(self):
 
-        year_start = self.get_sosdisc_inputs(
-            GlossaryEnergy.YearStart)
-        initial_production = self.get_sosdisc_inputs(
-            'initial_production')
-        initial_age_distrib = self.get_sosdisc_inputs(
-            'initial_age_distrib')
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        initial_production = self.get_sosdisc_inputs('initial_production')
+        initial_age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
         initial_prod['energy (TWh)'] = initial_prod['distrib'] / \
@@ -1124,8 +1131,7 @@ class TechnoDiscipline(SoSWrapp):
         initial_prod.sort_values(GlossaryEnergy.Years, inplace=True)
         initial_prod['cum energy (TWh)'] = initial_prod['energy (TWh)'].cumsum(
         )
-        study_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} production [TWh]',
@@ -1150,8 +1156,7 @@ class TechnoDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_age_distribution_production(self):
-        age_distrib_production = self.get_sosdisc_outputs(
-            'age_distrib_production')
+        age_distrib_production = self.get_sosdisc_outputs('age_distrib_production')
         chart_name = f'{self.techno_name} factories age in term of TWh of {self.energy_name} production'
 
         if GlossaryEnergy.Years in age_distrib_production.columns:
@@ -1175,8 +1180,7 @@ class TechnoDiscipline(SoSWrapp):
             return new_chart
 
     def get_chart_factory_mean_age(self):
-        age_distrib_production = self.get_sosdisc_outputs(
-            'mean_age_production')
+        age_distrib_production = self.get_sosdisc_outputs('mean_age_production')
 
         if GlossaryEnergy.Years in age_distrib_production.columns:
             chart_name = f'{self.techno_name} factories average age'
@@ -1310,8 +1314,6 @@ class TechnoDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_non_use_capital(self):
-        non_use_capital = self.get_sosdisc_outputs(
-            'non_use_capital')
         techno_capital = self.get_sosdisc_outputs(GlossaryEnergy.TechnoCapitalValue)
         chart_name = f'Capital of {self.techno_name}'
 
@@ -1325,8 +1327,8 @@ class TechnoDiscipline(SoSWrapp):
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            non_use_capital[GlossaryEnergy.Years].values.tolist(),
-            non_use_capital[self.techno_name].values.tolist(),
+            techno_capital[GlossaryEnergy.Years].values.tolist(),
+            techno_capital[GlossaryEnergy.NonUseCapital].values.tolist(),
             'Unused capital (utilisation ratio + limitation from energy and resources)', 'bar')
 
         new_chart.series.append(serie)
@@ -1334,8 +1336,7 @@ class TechnoDiscipline(SoSWrapp):
         return new_chart
 
     def get_chart_power_production(self, technos_info_dict):
-        power_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.InstalledPower)
+        power_production = self.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         chart_name = f'Power installed of {self.techno_name} factories'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Power [MW]',

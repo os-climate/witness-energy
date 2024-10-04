@@ -62,7 +62,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
+            GlossaryEnergy.fossil, GlossaryEnergy.clean_energy, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage,
             f'{GlossaryEnergy.heat}.lowtemperatureheat', f'{GlossaryEnergy.heat}.mediumtemperatureheat',
             f'{GlossaryEnergy.heat}.hightemperatureheat']]
@@ -87,7 +87,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 biomass_energy_prod = biomass_energy_prod.rename(
                     columns={GlossaryEnergy.biogas: GlossaryEnergy.biomass_dry})
                 self.energy_production[f'{energy}'] = biomass_energy_prod
-                biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.EnergyConsumptionValue][
+                biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.StreamConsumptionValue][
                     'value'].copy()
                 biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{GlossaryEnergy.WetBiomassResource} ({GlossaryEnergy.mass_unit})'])
 
@@ -101,7 +101,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                     streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                         'value']
                 self.energy_consumption[f'{energy}'] = \
-                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
@@ -109,7 +109,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
 
         self.co2_emissions_ccus_Gt = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                    'carbon_storage Limited by capture (Gt)': np.linspace(1, 6,
@@ -145,7 +145,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+            f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
             f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
             f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix,
             f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list
@@ -158,7 +158,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
 
@@ -167,7 +167,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[
                     energy]
-                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
                     energy]
 
         for energy in self.ccs_list:
@@ -226,10 +226,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs.extend([
             f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in self.ccs_list])
         coupled_inputs.extend(
-            [f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list_wobiomass_dry])
+            [f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in energy_list_wobiomass_dry])
 
         coupled_inputs.extend([f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}',
-                               f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'])
+                               f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
@@ -269,7 +269,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         coupled_inputs = [
-            f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}']
+            f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}']
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 

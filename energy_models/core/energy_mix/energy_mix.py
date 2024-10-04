@@ -34,6 +34,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
@@ -51,7 +52,6 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_models.resource_glossary import (
@@ -91,7 +91,7 @@ class EnergyMix(BaseStream):
                          GlossaryEnergy.syngas: Syngas,
                          BiomassDry.name: BiomassDry,
                          LiquidHydrogen.name: LiquidHydrogen,
-                         Renewable.name: Renewable,
+                         CleanEnergy.name: CleanEnergy,
                          Fossil.name: Fossil,
                          lowtemperatureheat.name: lowtemperatureheat,
                          mediumtemperatureheat.name: mediumtemperatureheat,
@@ -100,7 +100,7 @@ class EnergyMix(BaseStream):
 
     # For simplified energy mix , raw_to_net factor is used to compute net
     # production from raw production
-    raw_tonet_dict = {Renewable.name: Renewable.raw_to_net_production,
+    raw_tonet_dict = {CleanEnergy.name: CleanEnergy.raw_to_net_production,
                       Fossil.name: Fossil.raw_to_net_production}
 
     only_energy_list = list(energy_class_dict.keys())
@@ -138,7 +138,8 @@ class EnergyMix(BaseStream):
         Constructor 
         '''
         super(EnergyMix, self).__init__(name)
-
+        self.period_tol_power_non_use_capital_constraint = None
+        self.non_use_capital_constraint_df = None
         self.target_production_constraint = None
         self.co2_emitted_by_energy = None
         self.CCS_price = None
@@ -192,6 +193,8 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
+        self.tol_constraint_non_use_capital_energy = None
+        self.ref_constraint_non_use_capital_energy = None
         self.losses_percentage_dict = {}
         self.inputs = {}
 
@@ -237,7 +240,9 @@ class EnergyMix(BaseStream):
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
-
+        self.tol_constraint_non_use_capital_energy = inputs_dict['tol_constraint_non_use_capital_energy']
+        self.ref_constraint_non_use_capital_energy = inputs_dict['ref_constraint_non_use_capital_energy']
+        self.period_tol_power_non_use_capital_constraint = inputs_dict['period_tol_power_non_use_capital_constraint']
         if self.subelements_list is not None:
             for energy in self.subelements_list:
                 if f'{energy}.losses_percentage' in inputs_dict:
@@ -264,10 +269,10 @@ class EnergyMix(BaseStream):
             self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamPricesValue}'][energy]
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
             self.sub_consumption_woratio_dict[energy] = inputs_dict[
-                                                            f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
+                                                            f'{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
             self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}']
 
@@ -295,12 +300,12 @@ class EnergyMix(BaseStream):
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
                     self.resources_demand[resource] = self.resources_demand[resource] + \
-                                                      inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'][
+                                                      inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'][
                                                           f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                       self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
                                                               inputs_dict[
-                                                                  f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
+                                                                  f'{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'][
                                                                   f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                               self.scaling_factor_energy_consumption
 
@@ -340,9 +345,24 @@ class EnergyMix(BaseStream):
 
         energy_capital = np.sum(energy_type_capitals, axis=0) / 1e3
 
+        energy_type_non_use_capitals = []
+        for energy in self.energy_list:
+            energy_ = energy
+            if energy == BiomassDry.name:
+                energy_ = AgricultureMixDiscipline.name
+            energy_type_non_use_capitals.append(
+                self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values)
+
+        for ccs in self.inputs[GlossaryEnergy.ccs_list]:
+            energy_type_non_use_capitals.append(
+                self.inputs[f"{ccs}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values)
+
+        energy_non_use_capital = np.sum(energy_type_non_use_capitals, axis=0) / 1e3
+
         self.energy_capital = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: energy_capital
+            GlossaryEnergy.Capital: energy_capital,
+            GlossaryEnergy.NonUseCapital: energy_non_use_capital,
         })
 
     def compute_raw_production(self):
@@ -350,8 +370,7 @@ class EnergyMix(BaseStream):
 
         for energy in self.subelements_list:
             column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
-            self.production_raw[column_name] = pd.Series(
-                self.sub_production_dict[energy][energy].values)
+            self.production_raw[column_name] = self.sub_production_dict[energy][energy].values
 
         columns_to_sum = [column for column in self.production_raw if column.endswith(f"({GlossaryEnergy.energy_unit})")]
         self.production_raw[GlossaryEnergy.TotalProductionValue] = self.production_raw[columns_to_sum].sum(axis=1)
@@ -450,8 +469,6 @@ class EnergyMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
                                                                     GlossaryEnergy.TotalProductionValue] * \
                                                                 self.heat_losses_percentage / 100.0
-
-
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -986,12 +1003,12 @@ class EnergyMix(BaseStream):
         self.compute_CO2_emissions_ratio()
         self.aggregate_land_use_required()
         self.compute_energy_capital()
+        self.compute_non_use_energy_capital_constraint()
         self.compute_total_prod_minus_min_prod_constraint()
         self.compute_constraint_solid_fuel_elec()
         self.compute_constraint_h2()
         self.compute_syngas_prod_objective()
         self.compute_syngas_prod_constraint()
-
 
         self.compute_all_streams_demand_ratio()
         self.compute_net_positive_consumable_energy_production()
@@ -1009,6 +1026,38 @@ class EnergyMix(BaseStream):
     def d_energy_mean_price_obj_d_energy_mean_price(self, d_energy_mean_price):
         return np.mean(d_energy_mean_price, axis=0) / self.energy_mean_price_objective_ref
 
+    def compute_non_use_energy_capital_constraint(self):
+        """
+        Non use capital <= 5%(tolerance) Capital <=> non use capital / capital - .05 <= 0.
+
+        <=> (non use capital / capital - tol) / ref <= 0
+        ref = 0.30 means after 35 % of capital not used the constraint will explode
+
+        It is not a problem if in the early years, there is a loss of capital, it may be necessary to drift away from current energy mix system,
+        so we increase constraint strenght with time, from 0 % at year start to 100% at year end, just like x^2 between 0 and 1
+        We add also a period tolerance, so
+        """
+        ratio_non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values / self.energy_capital[GlossaryEnergy.Capital].values
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** self.period_tol_power_non_use_capital_constraint
+        constraint = (ratio_non_use_capital - self.tol_constraint_non_use_capital_energy) / self.ref_constraint_non_use_capital_energy * period_tolerance
+
+        self.non_use_capital_constraint_df = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.ConstraintEnergyNonUseCapital: constraint
+        })
+
+    def d_non_use_capital_constraint_d_capital(self):
+
+        """
+        sum_technos NEC (techno) / sum_technos EC (techno)
+        """
+
+        capital = self.energy_capital[GlossaryEnergy.Capital].values
+        non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values
+        period_tolerance = np.linspace(0, 1, len(self.years)) ** self.period_tol_power_non_use_capital_constraint
+        d_non_use_capital = np.diag(period_tolerance / capital / self.ref_constraint_non_use_capital_energy / 1e3)
+        d_capital = np.diag(- non_use_capital * period_tolerance / (capital ** 2) / self.ref_constraint_non_use_capital_energy / 1e3)
+        return d_non_use_capital, d_capital
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
     '''

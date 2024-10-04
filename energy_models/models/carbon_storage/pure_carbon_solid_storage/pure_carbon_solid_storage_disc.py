@@ -50,12 +50,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.PureCarbonSolidStorage
-    lifetime = 35
+
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,  # should be modified
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -80,29 +79,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0
     
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0]
-                                             })
-
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
         {GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_storage: 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
                
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',

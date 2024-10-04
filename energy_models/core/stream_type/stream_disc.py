@@ -17,6 +17,7 @@ limitations under the License.
 import logging
 
 import numpy as np
+import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
@@ -69,10 +70,10 @@ class StreamDiscipline(SoSWrapp):
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         # energy_production and energy_consumption stored in PetaWh for
         # coupling variables scaling
-        GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.EnergyConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh'},
+        GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
+        GlossaryEnergy.StreamConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.EnergyProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+        GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
         GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha'},
         GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf
@@ -145,10 +146,10 @@ class StreamDiscipline(SoSWrapp):
 
         outputs_dict = {GlossaryEnergy.StreamPricesValue: cost_details,
                         'energy_detailed_techno_prices': cost_details_technos,
-                        GlossaryEnergy.EnergyConsumptionValue: consumption,
-                        GlossaryEnergy.EnergyConsumptionWithoutRatioValue: consumption_woratio,
+                        GlossaryEnergy.StreamConsumptionValue: consumption,
+                        GlossaryEnergy.StreamConsumptionWithoutRatioValue: consumption_woratio,
                         GlossaryEnergy.EnergyProductionValue: production,
-                        GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production_by_techno,
+                        GlossaryEnergy.StreamProductionDetailedValue: self.energy_model.production_by_techno,
                         'techno_mix': techno_mix,
                         GlossaryEnergy.LandUseRequiredValue: self.energy_model.land_use_required,
                         GlossaryEnergy.EnergyTypeCapitalDfValue: self.energy_model.energy_type_capital
@@ -167,7 +168,7 @@ class StreamDiscipline(SoSWrapp):
         list_columns_energyprod = list(
             outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
         list_columns_consumption = list(
-            outputs_dict[GlossaryEnergy.EnergyConsumptionValue].columns)
+            outputs_dict[GlossaryEnergy.StreamConsumptionValue].columns)
         mix_weight = outputs_dict['techno_mix']
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
@@ -210,12 +211,12 @@ class StreamDiscipline(SoSWrapp):
                 if column_name != GlossaryEnergy.Years:
                     if column_name == self.energy_name:
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyConsumptionValue, column_name),
+                            (GlossaryEnergy.StreamConsumptionValue, column_name),
                             (f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}', techno_prod_name_with_unit),
                             inputs_dict['scaling_factor_techno_consumption'] * np.identity(
                                 len(years)) / scaling_factor_energy_consumption)
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+                            (GlossaryEnergy.StreamConsumptionWithoutRatioValue, column_name), (
                             f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                             techno_prod_name_with_unit), inputs_dict['scaling_factor_techno_consumption'] * np.identity(
                                 len(years)) / scaling_factor_energy_consumption)
@@ -225,12 +226,12 @@ class StreamDiscipline(SoSWrapp):
                         for col_technoprod in list_columnstechnocons:
                             if column_name == col_technoprod:
                                 self.set_partial_derivative_for_other_types(
-                                    (GlossaryEnergy.EnergyConsumptionValue, column_name),
+                                    (GlossaryEnergy.StreamConsumptionValue, column_name),
                                     (f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}', col_technoprod),
                                     inputs_dict['scaling_factor_techno_consumption'] * np.identity(
                                         len(years)) / scaling_factor_energy_consumption)
                                 self.set_partial_derivative_for_other_types(
-                                    (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name),
+                                    (GlossaryEnergy.StreamConsumptionWithoutRatioValue, column_name),
                                     (f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}', col_technoprod),
                                     inputs_dict['scaling_factor_techno_consumption'] * np.identity(
                                         len(years)) / scaling_factor_energy_consumption)
@@ -308,6 +309,11 @@ class StreamDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.Capital),
                 (f"{techno}.{GlossaryEnergy.TechnoCapitalValue}", GlossaryEnergy.Capital),
+                identity,
+            )
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.NonUseCapital),
+                (f"{techno}.{GlossaryEnergy.TechnoCapitalValue}", GlossaryEnergy.NonUseCapital),
                 identity,
             )
 
@@ -435,7 +441,7 @@ class StreamDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
@@ -541,7 +547,7 @@ class StreamDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
 
         chart_name = f'Technology production for {self.energy_name}'
 
@@ -565,8 +571,8 @@ class StreamDiscipline(SoSWrapp):
         instanciated_charts = []
         techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         energy_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
-        techno_production = energy_production[[GlossaryEnergy.Years]]
+            GlossaryEnergy.StreamProductionDetailedValue)
+        techno_production = pd.DataFrame({GlossaryEnergy.Years: energy_production[GlossaryEnergy.Years].values})
         display_techno_list = []
 
         for techno in techno_list:

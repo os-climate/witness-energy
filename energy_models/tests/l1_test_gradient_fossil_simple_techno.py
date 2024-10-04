@@ -17,7 +17,6 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -29,9 +28,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
-    FossilSimpleTechnoDiscipline,
-)
 
 
 class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
@@ -46,8 +42,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.override_dump_jacobian = True
-        self.energy_name = 'FossilSimpleTechno'
+        self.energy_name = GlossaryEnergy.FossilSimpleTechno
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
@@ -57,19 +52,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        electricity_price = 1000 * np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                             0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                             0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                             0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                             0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                             0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                             0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                             0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                             0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                             0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                             0.0928246539459331])[:len(years)]
-        # We take biomass price of methane/5.0
-        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 90.
                                            })
 
         self.stream_co2_emissions = pd.DataFrame(
@@ -78,14 +61,10 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: 33.0 * 1.10 ** (years - GlossaryEnergy.YearStartDefault)})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones_like(years) * 110.0})
         # From future of hydrogen
@@ -105,7 +84,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'FossilSimpleTechno'
+        self.model_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -123,8 +102,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        techno_infos_dict = FossilSimpleTechnoDiscipline.techno_infos_dict_default
-        techno_infos_dict["lifetime"] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
         invest_before_ystart = pd.DataFrame(
             {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
@@ -133,6 +110,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
@@ -141,7 +119,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
 
@@ -167,7 +144,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_02_discipline_analytic_grad_construction_delay_0(self):
         self.name = 'Test'
-        self.model_name = 'FossilSimpleTechno'
+        self.model_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -184,16 +161,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        techno_infos_dict = {'maturity': 0, 'Opex_percentage': 0.024, 'WACC': 0.058, 'learning_rate': 0.00,
-                             'lifetime_unit': GlossaryEnergy.Years, 'Capex_init': 100.,
-                             'Capex_init_unit': '$/MWh', 'techno_evo_eff': 'no', 'efficiency': 1.0,
-                             'CO2_from_production': 0.37077040550222284, 'CO2_from_production_unit': 'kg/kg',
-                             GlossaryEnergy.ConstructionDelay: 0, 'resource_price': 75.0,
-                             'resource_price_unit': '$/MWh', 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
-                             'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
-                             'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
-                             'CH4_emission_factor_unit': 'Mt/TWh',
-                             "lifetime": GlossaryEnergy.LifetimeDefaultValueGradientTest}
 
         invest_before_ystart = pd.DataFrame(
             {GlossaryEnergy.Years: [], GlossaryEnergy.InvestValue: []})
@@ -207,11 +174,11 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ConstructionDelay}': 0,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
 

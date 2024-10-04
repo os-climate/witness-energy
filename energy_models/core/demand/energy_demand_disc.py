@@ -49,7 +49,7 @@ class EnergyDemandDiscipline(SoSWrapp):
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
-               GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
+               GlossaryEnergy.StreamProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                               "dynamic_dataframe_columns": True,
                                                               'dataframe_edition_locked': False,
                                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -116,7 +116,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         delec_demand_cosntraint_delec_prod = self.demand_model.compute_delec_demand_constraint_delec_prod()
         self.set_partial_derivative_for_other_types(
             ('electricity_demand_constraint', 'elec_demand_constraint'),
-            (GlossaryEnergy.EnergyProductionDetailedValue, self.elec_prod_column), delec_demand_cosntraint_delec_prod)
+            (GlossaryEnergy.StreamProductionDetailedValue, self.elec_prod_column), delec_demand_cosntraint_delec_prod)
 
         delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
         self.set_partial_derivative_for_other_types(
@@ -126,7 +126,7 @@ class EnergyDemandDiscipline(SoSWrapp):
 
         for energy_name in self.demand_model.energy_list_transport:
             self.set_partial_derivative_for_other_types(
-                ('transport_demand_constraint',), (GlossaryEnergy.EnergyProductionDetailedValue,
+                ('transport_demand_constraint',), (GlossaryEnergy.StreamProductionDetailedValue,
                                                    f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
 
@@ -186,7 +186,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         new_chart.series.append(serie)
 
         energy_production_detailed = self.get_sosdisc_inputs(
-            GlossaryEnergy.EnergyProductionDetailedValue)
+            GlossaryEnergy.StreamProductionDetailedValue)
         net_elec_prod = energy_production_detailed
         serie = InstanciatedSeries(
             net_elec_prod[GlossaryEnergy.Years].values.tolist(),
@@ -205,7 +205,7 @@ class EnergyDemandDiscipline(SoSWrapp):
             'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
-            [GlossaryEnergy.TransportDemandValue, GlossaryEnergy.EnergyProductionDetailedValue])
+            [GlossaryEnergy.TransportDemandValue, GlossaryEnergy.StreamProductionDetailedValue])
 
         serie = InstanciatedSeries(
             transport_demand[GlossaryEnergy.Years].values.tolist(),

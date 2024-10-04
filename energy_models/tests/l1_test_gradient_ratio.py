@@ -170,8 +170,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -250,8 +248,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
 
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -348,8 +344,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -445,8 +439,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -543,8 +535,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -620,17 +610,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
@@ -794,8 +773,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 output, 'coupling')]
 
         coupled_inputs = [
-            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = ['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.model_name}.pkl',
@@ -878,12 +857,12 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for energy in energy_list:
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamProductionWithoutRatioValue}', ]
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
         # coupled_inputs = [
-        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
@@ -918,7 +897,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on EnergyMix discipline.
         For now do not include it to the test routine (not sure how volatile this test it)
         '''
-        self.setUp()
         self.model_name = 'EnergyMix'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
@@ -971,9 +949,9 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         #                         ])
 
         coupled_inputs = [
-            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',
             # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
-            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.EnergyConsumptionValue}']
+            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.StreamConsumptionValue}']
         coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]
 
         # coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]
@@ -1069,8 +1047,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1167,8 +1143,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1261,8 +1235,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1355,8 +1327,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1453,8 +1423,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         coupled_outputs.remove(f'Test_Ratio.Electrolysis.PEM.{GlossaryEnergy.TechnoPricesValue}')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,

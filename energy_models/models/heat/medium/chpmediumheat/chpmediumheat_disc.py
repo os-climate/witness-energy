@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
@@ -50,7 +48,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Heat Producer [Online]
     # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
-    lifetime = 45  # years
+
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # Agricultural Economics Department Purdue University
@@ -59,8 +57,6 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init': 1300,
         # https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
         'Capex_init_unit': '$/kW',
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryEnergy.Years,
         'efficiency': 0.52,  # consumptions and productions already have efficiency included
         # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,
@@ -94,22 +90,9 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     initial_production = ((117 / 0.52) / 3) * (
                 1 - 0.52)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
-    distrib = [2.8, 2.4, 4.3, 2, 1.5, 1.3, 0.9, 1.3, 4.8, 7.1, 14.6, 14.2,
-               6.7, 4.9, 2.9, 2, 1.8, 2, 1.8, 2.9, 2.7, 1.5, 2.3, 1.4, 1.3,
-               2.1, 3.6, 1.3, 1.6, 3.0, 1.1, 1.3, 1.5, 1.4, 1.2, 1.1, 1.1,
-               1.1, 1.1, 1.1, 1.0, 1.0, 1.0, 1.0]
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})
-
     # Renewable Methane Association [online]
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {
-                                           'age': ('float', None, True),
-                                           'distrib': ('float', None, True),
-                                           }
-                                       },
+               
                       }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
