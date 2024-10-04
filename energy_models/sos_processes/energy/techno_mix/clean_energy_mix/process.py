@@ -42,7 +42,6 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}',
-                   GlossaryEnergy.NS_REFERENCE: f'{ns_study}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{energy_mix}.{CleanEnergy.name}'] = self.get_stream_disc_path(

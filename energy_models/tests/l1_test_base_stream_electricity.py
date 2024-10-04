@@ -105,8 +105,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                    'ns_electricity': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name}
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.energy_disciplines.electricity_disc.ElectricityDiscipline'

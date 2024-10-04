@@ -77,7 +77,6 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryEnergy.NS_WITNESS: f'{self.name}'}
