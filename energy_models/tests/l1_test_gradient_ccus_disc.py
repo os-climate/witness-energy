@@ -121,7 +121,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy': self.name,
                    GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
                    GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_carbon_capture': self.name,
                    'ns_carbon_storage': self.name}
