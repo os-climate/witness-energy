@@ -41,7 +41,7 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fa-solid fa-globe-europe fa-fw',
+        'icon': 'fas fa-air-freshener fa-fw',
         'version': '',
     }
     techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
