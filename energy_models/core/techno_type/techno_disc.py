@@ -746,7 +746,8 @@ class TechnoDiscipline(SoSWrapp):
                       GlossaryEnergy.UtilisationRatioValue,
                       'Non-Use Capital',
                       'Power production',
-                      'Power plants initial age distribution']
+                      'Power plants initial age distribution',
+                      'Capex']
         if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyRatio):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -842,6 +843,11 @@ class TechnoDiscipline(SoSWrapp):
             new_chart = self.get_chart_initial_age_distrib()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if 'Capex' in charts:
+            new_chart = self.get_chart_capex()
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_utilisation_ratio_chart(self):
@@ -1377,6 +1383,17 @@ class TechnoDiscipline(SoSWrapp):
         serie = InstanciatedSeries(
             age_distrib['age'].values.tolist(),
             age_distrib['distrib'].values.tolist(), '', 'bar')
+
+        new_chart.series.append(serie)
+        return new_chart
+
+    def get_chart_capex(self):
+        cost_details = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
+        chart_name = 'Capex'
+        years = cost_details[GlossaryEnergy.Years]
+        capex = cost_details[f'Capex_{self.techno_name}']
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
+        serie = InstanciatedSeries( years, capex, '','lines')
 
         new_chart.series.append(serie)
         return new_chart
