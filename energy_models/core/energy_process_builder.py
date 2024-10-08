@@ -24,7 +24,7 @@ INVEST_DISCIPLINE_OPTIONS = ['one_per_energy',  # Instantiate one disicpline for
                              # Only one discipline with absolute values for
                              # investments per techno and a constraint
                              ]
-INVEST_DISCIPLINE_DEFAULT = INVEST_DISCIPLINE_OPTIONS[1]  # 'one_invest'
+INVEST_DISCIPLINE_DEFAULT = INVEST_DISCIPLINE_OPTIONS[2]  # 'one_invest'
 
 
 class EnergyProcessBuilder(BaseProcessBuilder):
