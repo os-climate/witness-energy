@@ -24,15 +24,15 @@ INVEST_DISCIPLINE_OPTIONS = ['one_per_energy',  # Instantiate one disicpline for
                              # Only one discipline with absolute values for
                              # investments per techno and a constraint
                              ]
-INVEST_DISCIPLINE_DEFAULT = INVEST_DISCIPLINE_OPTIONS[2]  # 'one_invest'
+INVEST_DISCIPLINE_DEFAULT = INVEST_DISCIPLINE_OPTIONS[1]
 
 
 class EnergyProcessBuilder(BaseProcessBuilder):
 
-    def __init__(self, ee):
+    def __init__(self, ee, invest_discipline: str = INVEST_DISCIPLINE_DEFAULT):
         BaseProcessBuilder.__init__(self, ee)
         self.techno_list = None
-        self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
+        self.invest_discipline = invest_discipline
         self.associate_namespace = False
         #self.energy_name = filename.split('\\')[-2].replace("_mix", '')
         #self.techno_list = current_techno_dict[self.energy_name]
