@@ -21,4 +21,9 @@ from energy_models.core.techno_type.base_techno_models.renewable_techno import (
 
 
 class CleanEnergySimpleTechno(RenewableTechno):
-    pass
+
+    def compute_specifif_costs_of_technos(self):
+        self.specific_costs = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
+        })
