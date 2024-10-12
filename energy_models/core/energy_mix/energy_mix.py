@@ -78,7 +78,6 @@ class EnergyMix(BaseStream):
     RESOURCE_LIST = ['natural_gas_resource', 'uranium_resource',
                      'coal_resource', 'oil_resource', 'copper_resource']  # , 'platinum_resource',]
     RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
-    CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
                          HydrotreatedOilFuel.name: HydrotreatedOilFuel,

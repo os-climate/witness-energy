@@ -184,14 +184,6 @@ class Study(EnergyStudyManager):
                 list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
                 list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
-        if GlossaryEnergy.carbon_storage in self.ccs_list:
-            list_var.extend(["carbon_storage_constraint"])
-            list_parent.extend([""])
-            list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
-            list_weight.extend([0.0])
-            list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
-            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
-
         list_var.extend([EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
         list_parent.extend(["Energy_constraints"])
         list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
