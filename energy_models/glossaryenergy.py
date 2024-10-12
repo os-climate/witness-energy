@@ -1128,13 +1128,13 @@ class GlossaryEnergy(GlossaryWitnessCore):
         WetCropResidues: [electricity], # transport fuel in stead of elec
         Geothermal: [f"{heat}.{mediumtemperatureheat}"],  # just electricity
         BiomassBuryingFossilization: [biomass_dry],  # add transport fuel
-        DeepOceanInjection: [carbon_capture],  # add transport fuel
-        DeepSalineFormation: [carbon_capture],  # add transport fuel
-        DepletedOilGas: [carbon_capture],  # add transport fuel
-        EnhancedOilRecovery: [carbon_capture],  # add transport fuel
-        GeologicMineralization: [carbon_capture],  # add transport fuel
-        CarbonStorageTechno: [carbon_capture],
-        CropEnergy: [carbon_capture],
+        DeepOceanInjection: [],  # add transport fuel
+        DeepSalineFormation: [],  # add transport fuel
+        DepletedOilGas: [],  # add transport fuel
+        EnhancedOilRecovery: [],  # add transport fuel
+        GeologicMineralization: [],  # add transport fuel
+        CarbonStorageTechno: [],
+        CropEnergy: [],
     }
 
     # dict of resources used by technos
