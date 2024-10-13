@@ -53,15 +53,12 @@ class CCUS_Discipline(SoSWrapp):
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: {'type': 'int',
                         'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,},
-        'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                         'carbon_capture needed by energy mix (Gt)': ('float', None, True),
                                                                         }, },
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -303,7 +300,7 @@ class CCUS_Discipline(SoSWrapp):
             (co2_emissions[f'{GlossaryEnergy.carbon_storage} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             'CO2 captured and stored', 'bar')
         new_chart.add_series(serie)
-
+        new_chart.to_plotly().show()
         return new_chart
 
     def get_chart_co2_emissions_sources(self):

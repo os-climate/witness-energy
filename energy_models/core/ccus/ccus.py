@@ -67,7 +67,7 @@ class CCUS:
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
 
     def compute_carbon_storage_capacity(self):
-        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][ GlossaryEnergy.carbon_storage].values
+        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][ GlossaryEnergy.carbon_storage].values * self.inputs_dict['scaling_factor_energy_production']
 
         self.outputs_dict['carbon_storage_capacity (Gt)'] = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -84,6 +84,7 @@ class CCUS:
         # production of CCS technos are in Mt
         carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_capture].values
         carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_storage].values
+        scaling_factor_energy_prod = self.inputs_dict['scaling_factor_energy_production']
 
         # Outputs are in Gt (for automatic differentiation purpose : coupling output var is in Gt)
         carbon_capture_to_be_stored_gt, carbon_storage_limited_by_capture_gt, carbon_storage_gt, carbon_capture_from_cc_technos_gt = compute_carbon_storage_limited_by_capture_gt(
@@ -91,7 +92,8 @@ class CCUS:
             carbon_storage_prod_mt=carbon_storage_prod_mt,
             carbon_capture_from_energy_mix_gt=carbon_capture_from_energy_mix_gt,
             co2_emissions_needed_by_energy_mix_gt=co2_emissions_needed_by_energy_mix_gt,
-            co2_for_food_mt=co2_for_food_mt
+            co2_for_food_mt=co2_for_food_mt,
+            scaling_factor_energy_prod=scaling_factor_energy_prod
         )
 
         self.outputs_dict['co2_emissions_ccus'] = pd.DataFrame({
@@ -130,6 +132,7 @@ class CCUS:
         # production of CCS technos are in Mt
         carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_capture].values
         carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_storage].values
+        scaling_factor_energy_prod = self.inputs_dict['scaling_factor_energy_production']
 
         jac_carbon_capture_from_cc_prod, jac_carbon_capture_from_cs_prod, jac_carbon_capture_from_energy_mix, jac_co2_emissions_needed_by_energy_mix =\
             compute_carbon_storage_limited_by_capture_gt_der(
@@ -138,6 +141,7 @@ class CCUS:
             carbon_capture_from_energy_mix_gt=carbon_capture_from_energy_mix_gt,
             co2_emissions_needed_by_energy_mix_gt=co2_emissions_needed_by_energy_mix_gt,
             co2_for_food_mt=co2_for_food_mt,
+            scaling_factor_energy_prod=scaling_factor_energy_prod
         )
         # input_name : (column_name, grad value)
         out = {
@@ -156,6 +160,7 @@ def compute_carbon_storage_limited_by_capture_gt(
         carbon_capture_from_energy_mix_gt: np.ndarray,
         co2_emissions_needed_by_energy_mix_gt: np.ndarray,
         co2_for_food_mt: np.ndarray,
+        scaling_factor_energy_prod: float
         ):
     '''
     The carbon stored by invest is limited by the carbon to stored
@@ -165,13 +170,13 @@ def compute_carbon_storage_limited_by_capture_gt(
     carbon_capture_from_cc_technos_mt = carbon_capture_prod_mt
 
     carbon_capture_to_be_stored_mt = (
-            carbon_capture_from_cc_technos_mt +
+            carbon_capture_from_cc_technos_mt * scaling_factor_energy_prod +
             carbon_capture_from_energy_mix_gt * 1e3 -
             0 * co2_emissions_needed_by_energy_mix_gt * 1e3 -
             0 * co2_for_food_mt
     )
 
-    carbon_storage_limited_by_capture_mt = np.minimum(carbon_capture_to_be_stored_mt, carbon_storage_prod_mt)
+    carbon_storage_limited_by_capture_mt = np.minimum(carbon_capture_to_be_stored_mt, carbon_storage_prod_mt * scaling_factor_energy_prod)
     return carbon_capture_to_be_stored_mt / 1e3, carbon_storage_limited_by_capture_mt / 1e3, carbon_storage_prod_mt / 1e3, carbon_capture_from_cc_technos_mt / 1e3
 
 
@@ -181,12 +186,14 @@ def compute_carbon_storage_limited_by_capture_gt_der(
         carbon_capture_from_energy_mix_gt: np.ndarray,
         co2_emissions_needed_by_energy_mix_gt: np.ndarray,
         co2_for_food_mt: np.ndarray,
+        scaling_factor_energy_prod: float,
         ):
     args = (carbon_capture_prod_mt,
             carbon_storage_prod_mt,
             carbon_capture_from_energy_mix_gt,
             co2_emissions_needed_by_energy_mix_gt,
-            co2_for_food_mt,)
+            co2_for_food_mt,
+            scaling_factor_energy_prod)
 
     jac_carbon_capture_from_cc_prod = jacobian(lambda *args: compute_carbon_storage_limited_by_capture_gt(*args)[1], 0)
     jac_carbon_capture_from_cs_prod = jacobian(lambda *args: compute_carbon_storage_limited_by_capture_gt(*args)[1], 1)
