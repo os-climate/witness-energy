@@ -180,30 +180,31 @@ class TechnoDiscipline(SoSWrapp):
 
             if GlossaryEnergy.BoolApplyRatio in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                years = np.arange(year_start, year_end + 1)
-                if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyStreamRatio):
-                    demand_ratio_dict = dict(
-                        zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
-                    demand_ratio_dict[GlossaryEnergy.Years] = years
-                    all_streams_demand_ratio_default = pd.DataFrame(
-                        demand_ratio_dict)
-                    dynamic_inputs[GlossaryEnergy.AllStreamsDemandRatioValue] = {'type': 'dataframe', 'unit': '-',
-                                                                                 'default': all_streams_demand_ratio_default,
-                                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                                 'namespace': 'ns_energy',
-                                                                                 "dynamic_dataframe_columns": True
-                                                                                 }
-                if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyResourceRatio):
-                    resource_ratio_dict = dict(
-                        zip(EnergyMix.RESOURCE_LIST, np.ones(len(years)) * 100.0))
-                    resource_ratio_dict[GlossaryEnergy.Years] = years
-                    all_resource_ratio_usable_demand_default = pd.DataFrame(
-                        resource_ratio_dict)
-                    dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
-                                                                            'default': all_resource_ratio_usable_demand_default,
-                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                            'namespace': 'ns_resource',
-                                                                            "dynamic_dataframe_columns": True}
+                if year_start is not None and year_end is not None:
+                    years = np.arange(year_start, year_end + 1)
+                    if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyStreamRatio):
+                        demand_ratio_dict = dict(
+                            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
+                        demand_ratio_dict[GlossaryEnergy.Years] = years
+                        all_streams_demand_ratio_default = pd.DataFrame(
+                            demand_ratio_dict)
+                        dynamic_inputs[GlossaryEnergy.AllStreamsDemandRatioValue] = {'type': 'dataframe', 'unit': '-',
+                                                                                     'default': all_streams_demand_ratio_default,
+                                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                     'namespace': 'ns_energy',
+                                                                                     "dynamic_dataframe_columns": True
+                                                                                     }
+                    if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyResourceRatio):
+                        resource_ratio_dict = dict(
+                            zip(EnergyMix.RESOURCE_LIST, np.ones(len(years)) * 100.0))
+                        resource_ratio_dict[GlossaryEnergy.Years] = years
+                        all_resource_ratio_usable_demand_default = pd.DataFrame(
+                            resource_ratio_dict)
+                        dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
+                                                                                'default': all_resource_ratio_usable_demand_default,
+                                                                                'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                'namespace': 'ns_resource',
+                                                                                "dynamic_dataframe_columns": True}
 
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
@@ -238,29 +239,24 @@ class TechnoDiscipline(SoSWrapp):
 
         if GlossaryEnergy.InitialPlantsAgeDistribFactor in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            initial_plant_age_distrib_factor = self.get_sosdisc_inputs(GlossaryEnergy.InitialPlantsAgeDistribFactor)
-            if initial_plant_age_distrib_factor is None and year_start is not None:
+            if year_start is not None:
                 initial_plant_age_distrib_factor, _ = DatabaseWitnessEnergy.get_techno_age_distrib_factor(self.techno_name, year=year_start)
                 self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', initial_plant_age_distrib_factor)
 
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            initial_production = self.get_sosdisc_inputs('initial_production')
-            if initial_production is None and year_start is not None:
+            if year_start is not None:
                 initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
                 self.update_default_value('initial_production', 'in', initial_production)
 
         construction_delay = None
         if GlossaryEnergy.ConstructionDelay in self.get_data_in():
-            construction_delay = self.get_sosdisc_inputs(GlossaryEnergy.ConstructionDelay)
-            if construction_delay is None:
-                construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[self.techno_name]
-                self.update_default_value(GlossaryEnergy.ConstructionDelay, 'in', construction_delay)
+            construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[self.techno_name]
+            self.update_default_value(GlossaryEnergy.ConstructionDelay, 'in', construction_delay)
 
         if GlossaryEnergy.InvestmentBeforeYearStartValue in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'techno_infos_dict' in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            invest_before_year_start_val = self.get_sosdisc_inputs(GlossaryEnergy.InvestmentBeforeYearStartValue)
-            if year_start is not None and construction_delay is not None and invest_before_year_start_val is None:
+            if year_start is not None and construction_delay is not None:
                 default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
                     techno_name=self.techno_name, year_start=year_start, construction_delay=construction_delay)
                 self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
@@ -749,7 +745,9 @@ class TechnoDiscipline(SoSWrapp):
                       'CO2 emissions',
                       GlossaryEnergy.UtilisationRatioValue,
                       'Non-Use Capital',
-                      'Power production']
+                      'Power production',
+                      'Power plants initial age distribution',
+                      'Capex']
         if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyRatio):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -841,6 +839,15 @@ class TechnoDiscipline(SoSWrapp):
             new_chart = self.get_chart_power_production(technos_info_dict)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+        if 'Power plants initial age distribution' in charts:
+            new_chart = self.get_chart_initial_age_distrib()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'Capex' in charts:
+            new_chart = self.get_chart_capex()
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_utilisation_ratio_chart(self):
@@ -1365,4 +1372,28 @@ class TechnoDiscipline(SoSWrapp):
 
         new_chart.series.append(serie)
 
+        return new_chart
+
+    def get_chart_initial_age_distrib(self):
+        age_distrib = self.get_sosdisc_outputs('initial_age_distrib')
+        chart_name = 'Age distribution of initial power plants / factories'
+
+        new_chart = TwoAxesInstanciatedChart('Age', '%', chart_name=chart_name)
+
+        serie = InstanciatedSeries(
+            age_distrib['age'].values.tolist(),
+            age_distrib['distrib'].values.tolist(), '', 'bar')
+
+        new_chart.series.append(serie)
+        return new_chart
+
+    def get_chart_capex(self):
+        cost_details = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
+        chart_name = 'Capex'
+        years = cost_details[GlossaryEnergy.Years]
+        capex = cost_details[f'Capex_{self.techno_name}']
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
+        serie = InstanciatedSeries( years, capex, '','lines')
+
+        new_chart.series.append(serie)
         return new_chart

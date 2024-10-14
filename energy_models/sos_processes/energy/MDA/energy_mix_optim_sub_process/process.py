@@ -108,7 +108,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
             'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
-            GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
         }
 
@@ -122,7 +121,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
             'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
-            GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
             GlossaryEnergy.NS_GHGEMISSIONS: f'{self.ee.study_name}.{coupling_name}.{GHGemissionsDiscipline.name}',
         }
@@ -158,7 +156,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
                 GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}',
-                GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                 GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                 'ns_forest': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
                 'ns_crop': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
@@ -197,7 +194,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_emissions': f'{ns_study}.{energy_mix}',
                    'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{INVEST_DISC_NAME}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -219,7 +215,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                    'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{INVEST_DISC_NAME}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

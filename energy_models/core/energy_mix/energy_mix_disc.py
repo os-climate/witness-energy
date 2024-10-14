@@ -82,7 +82,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-battery-full fa-fw',
+        'icon': "fa-solid fa-bolt",
         'version': '',
     }
     # All values used to calibrate heat loss percentage
@@ -117,19 +117,13 @@ class Energy_Mix_Discipline(SoSWrapp):
                GlossaryEnergy.EnergyMeanPriceObjectiveRefValue: GlossaryEnergy.EnergyMeanPriceObjectiveRef,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-               'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
-                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                             'namespace': GlossaryEnergy.NS_REFERENCE},
-               'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
-                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                          'namespace': GlossaryEnergy.NS_REFERENCE},
+               'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8},
+               'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh'},
                GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},
-               'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh',
-                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                            'namespace': GlossaryEnergy.NS_REFERENCE},
+               'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh'},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3, 'unit': 'Twh'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
@@ -138,29 +132,16 @@ class Energy_Mix_Discipline(SoSWrapp):
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public'},
-               'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                              'namespace': GlossaryEnergy.NS_REFERENCE},
-               'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                  'namespace': GlossaryEnergy.NS_REFERENCE},
-               'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'unit': '%',
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                              'namespace': GlossaryEnergy.NS_REFERENCE},
-               'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                  'namespace': GlossaryEnergy.NS_REFERENCE},
+               'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2},
+               'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'unit': 'Twh', 'user_level': 2,},
+               'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'unit': '%',},
+               'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,},
                'ref_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.30, 'unit':'-','description': '0.30 means after 35 % of capital not used the constraint will explode'},
                'tol_constraint_non_use_capital_energy': {'type': 'float', 'default': 0.05, 'unit':'-','description': '0.05 means constraint does not penalize lagrangian when non use capital is less than 5%'},
                'period_tol_power_non_use_capital_constraint': {'type': 'float', 'default': 1.0, 'unit':'-','description': '0.05 means constraint does not penalize lagrangian when non use capital is less than 5%'},
-               'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
-               'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                                'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                'namespace': GlossaryEnergy.NS_REFERENCE},
-
-               'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2,
-                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
+               'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2},
+               'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2},
+               'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%',
                                           'range': [0., 100.]}, }
 
@@ -252,12 +233,13 @@ class Energy_Mix_Discipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         if GlossaryEnergy.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                             GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
-                                                                 years)})
-            self.set_dynamic_default_values(
-                {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                                 GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
+                                                                     years)})
+                self.set_dynamic_default_values(
+                    {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
             if energy_list is not None:
@@ -369,12 +351,14 @@ class Energy_Mix_Discipline(SoSWrapp):
         '''
         Update default variables knowing the year start and the year end 
         '''
-        if GlossaryEnergy.YearStart in inputs_dict:
-            years = np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)
-            lh_perc_default = np.concatenate(
-                (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
-            self.set_dynamic_default_values(
-                {'liquid_hydrogen_percentage': lh_perc_default})
+        if GlossaryEnergy.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                lh_perc_default = np.concatenate(
+                    (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+                self.set_dynamic_default_values(
+                    {'liquid_hydrogen_percentage': lh_perc_default})
 
     def run(self):
         # -- get inputs

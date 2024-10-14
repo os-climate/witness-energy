@@ -55,7 +55,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-cloud fa-fw',
+        'icon': "fa-solid fa-bolt",
         'version': '',
     }
 

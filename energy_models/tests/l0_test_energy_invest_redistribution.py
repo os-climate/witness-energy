@@ -88,7 +88,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
@@ -162,7 +161,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_CCS: f'{self.name}',
@@ -220,7 +218,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_CCS: f'{self.name}',
