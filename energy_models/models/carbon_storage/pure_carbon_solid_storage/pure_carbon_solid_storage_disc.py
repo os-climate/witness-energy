@@ -112,14 +112,15 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                years = np.arange(year_start, year_end + 1)
+                if year_start is not None and year_end is not None:
+                    years = np.arange(year_start, year_end + 1)
 
-                if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
-                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[
-                        GlossaryEnergy.Years].values.tolist() != list(years):
-                        self.update_default_value(
-                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
-                            pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
+                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
+                        if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[
+                            GlossaryEnergy.Years].values.tolist() != list(years):
+                            self.update_default_value(
+                                'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
+                                pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

@@ -110,16 +110,17 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                years = np.arange(year_start, year_end + 1)
+                if year_start is not None and year_end is not None:
+                    years = np.arange(year_start, year_end + 1)
 
-                if self.get_sosdisc_inputs('CO2_credits')[GlossaryEnergy.Years].values.tolist() != list(years):
-                    self.update_default_value(
-                        'CO2_credits', self.IO_TYPE_IN, pd.DataFrame({GlossaryEnergy.Years: years, 'CO2_credits': 50.}))
+                    if self.get_sosdisc_inputs('CO2_credits')[GlossaryEnergy.Years].values.tolist() != list(years):
+                        self.update_default_value(
+                            'CO2_credits', self.IO_TYPE_IN, pd.DataFrame({GlossaryEnergy.Years: years, 'CO2_credits': 50.}))
 
-                if self.get_sosdisc_inputs('market_demand')[GlossaryEnergy.Years].values.tolist() != list(years):
-                    self.update_default_value(
-                        'market_demand', self.IO_TYPE_IN,
-                        pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
+                    if self.get_sosdisc_inputs('market_demand')[GlossaryEnergy.Years].values.tolist() != list(years):
+                        self.update_default_value(
+                            'market_demand', self.IO_TYPE_IN,
+                            pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

@@ -82,7 +82,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
             'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}.{energy_mix}.resource',
-            GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
         }
 
@@ -133,7 +132,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                 GlossaryEnergy.NS_CCS: f'{ns_study}',
-                GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                 GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
             }
             if not self.energy_invest_input_in_abs_value:

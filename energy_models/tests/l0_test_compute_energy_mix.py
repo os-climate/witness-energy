@@ -152,7 +152,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
                    GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{name}.{model_name}',
                    'ns_energy': f'{name}.{model_name}',
                    GlossaryEnergy.NS_WITNESS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
@@ -246,7 +245,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
                    GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{name}.{model_name}',
                    'ns_energy': f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
@@ -330,7 +328,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
                    GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{name}.{model_name}',
                    'ns_energy': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
