@@ -783,12 +783,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                             -scaling_factor_energy_consumption * np.identity(
                                 len(years)) / scaling_factor_energy_production * scaling_factor_energy_production * 0)
 
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.StreamProductionDetailedValue, f'production {GlossaryEnergy.carbon_storage} ({GlossaryEnergy.unit_dicts[GlossaryEnergy.carbon_storage]})'),
-                (f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamConsumptionValue}', f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.unit_dicts[GlossaryEnergy.carbon_capture]})'),
-                -scaling_factor_energy_consumption * np.identity(
-                    len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
-
         # -------------------------#
         # ---- Prices gradients----#
         # -------------------------#
