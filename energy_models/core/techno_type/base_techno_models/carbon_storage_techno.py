@@ -28,9 +28,6 @@ class CSTechno(TechnoType):
     def compute_capital_recovery_factor(self, data_config):
         return 1
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = 1.
-
     def check_capex_unity(self, data_tocheck):
         """
         Put all capex in $/kgCO2
