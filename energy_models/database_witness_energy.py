@@ -87,6 +87,23 @@ class DatabaseWitnessEnergy:
     invest_before_year_start_folder = join(Path(__file__).parents[1], "data_energy", "techno_invests")
 
     @classmethod
+    def get_techno_invest(cls, techno_name: str, year: int):
+        name_formatted = techno_name.replace(".", "_")
+        name_formatted = name_formatted.lower()
+        path_to_csv = os.path.join(cls.invest_before_year_start_folder, name_formatted) + ".csv"
+        heavy_collected_data = HeavyCollectedData(
+            value=path_to_csv,
+            description="",
+            unit="G$",
+            link="",
+            source="",
+            last_update_date=datetime.datetime.today(),
+            critical_at_year_start=True,
+            column_to_pick="invest"
+        )
+        return heavy_collected_data.get_value_at_year(year=year)
+
+    @classmethod
     def get_techno_invest_before_year_start(cls, techno_name: str, year_start: int, construction_delay: int, is_available_at_year: bool = False):
         name_formatted = techno_name.replace(".", "_")
         name_formatted = name_formatted.lower()
