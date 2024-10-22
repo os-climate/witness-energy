@@ -271,11 +271,11 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         new_chart.series.append(serie)
 
-        if 'energy_costs' in techno_detailed_prices:
+        if 'energy_and_resources_costs' in techno_detailed_prices:
             # energy_costs
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                techno_detailed_prices['energy_costs'].values.tolist(), 'Energy costs', 'lines')
+                techno_detailed_prices['energy_and_resources_costs'].values.tolist(), 'Energy costs', 'lines')
 
             new_chart.series.append(serie)
 

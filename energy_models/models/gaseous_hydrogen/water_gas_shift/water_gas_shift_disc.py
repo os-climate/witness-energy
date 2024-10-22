@@ -176,7 +176,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             dwater_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'energy_costs'), ('syngas_ratio',),
+            (GlossaryEnergy.TechnoDetailedPricesValue, 'energy_and_resources_costs'), ('syngas_ratio',),
             (dsyngas_dsyngas_ratio + dwater_dsyngas_ratio) / 100.0)
 
         mol_H2 = (1.0 + syngas_ratio) / \
