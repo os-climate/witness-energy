@@ -13,12 +13,15 @@ from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_s
     CleanEnergySimpleTechnoDiscipline,
 )
 
+year_calibration = 2015
+
+
 df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.CleanEnergySimpleTechno)
 df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.CleanEnergySimpleTechno, year=2020)[1].value
 ref_price_2023 = 70.76 # $/MWh
 # data to run techno
 construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.CleanEnergySimpleTechno]
-year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), 2020))
+year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), year_calibration))
 year_end_fitting = int(min(df_invest_historic['years'].max(), df_prod_historic['years'].max()))
 
 prod_values_historic = df_prod_historic.loc[(df_prod_historic['years'] >= year_start_fitting) & (df_prod_historic['years'] <= year_end_fitting)]['production'].values
@@ -26,7 +29,7 @@ years_fitting = list(np.arange(year_start_fitting, year_end_fitting + 1))
 invest_df = df_invest_historic.loc[(df_invest_historic['years'] >= year_start_fitting) & (df_invest_historic['years'] <= year_end_fitting)]
 margin = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.MarginValue: 110})
 transport = pd.DataFrame({GlossaryEnergy.Years: years_fitting, 'transport': np.zeros(len(years_fitting))})
-co2_taxes = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(years_fitting))})
+co2_taxes = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.CO2Tax: np.linspace(0., 0., len(years_fitting))})
 stream_prices = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
 resources_price = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
 techno_dict_default = CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default
@@ -51,17 +54,16 @@ ee.configure()
 ee.display_treeview_nodes()
 
 
-
-def run_model(x: list, year_end: int = year_end_fitting):
+def run_model(x: list):
     techno_dict_default["Capex_init"] = x[0]
     init_age_distrib_factor = x[1]
-    #techno_dict_default["learning_rate"] = x[2]
+    techno_dict_default["learning_rate"] = x[2]
     techno_dict_default["Opex_percentage"] = x[3]
     techno_dict_default["WACC"] = x[4]
 
     inputs_dict = {
         f'{name}.{GlossaryEnergy.YearStart}': year_start_fitting,
-        f'{name}.{GlossaryEnergy.YearEnd}': year_end,
+        f'{name}.{GlossaryEnergy.YearEnd}': year_end_fitting,
         f'{name}.{GlossaryEnergy.StreamPricesValue}': stream_prices,
         f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years_fitting}),
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
@@ -96,7 +98,7 @@ def fitting_renewable(x: list):
 x0 = np.array([250., 1., 0.0, 0.2, 0.1])
 #x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
 
-bounds = [(0, 10000), (0, 3.0), (0.01, 0.95), (0.001, 0.99), (0.0001, 0.3)]
+bounds = [(0, 10000), (0, 1.1), (0.00, 0.), (0.001, 0.99), (0.0001, 0.3)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)

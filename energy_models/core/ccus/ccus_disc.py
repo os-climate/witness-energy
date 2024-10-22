@@ -300,7 +300,6 @@ class CCUS_Discipline(SoSWrapp):
             (co2_emissions[f'{GlossaryEnergy.carbon_storage} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             'CO2 captured and stored', 'bar')
         new_chart.add_series(serie)
-        new_chart.to_plotly().show()
         return new_chart
 
     def get_chart_co2_emissions_sources(self):
