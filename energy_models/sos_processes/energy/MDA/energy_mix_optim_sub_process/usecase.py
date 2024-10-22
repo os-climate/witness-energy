@@ -696,7 +696,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-8,
+            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-10,
             f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
         }
 
@@ -709,4 +709,4 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.test_jacobians_of_each_disc()

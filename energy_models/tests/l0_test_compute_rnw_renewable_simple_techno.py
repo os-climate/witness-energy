@@ -88,7 +88,6 @@ class CleanEnergySimpleTechnoTestCase(unittest.TestCase):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
-        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

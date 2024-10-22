@@ -53,16 +53,16 @@ class CleanEnergySimpleTechnoDiscipline(CleanEnergyTechnoDiscipline):
     clean_energy_capital = 12.414  # trillion dollars
 
     techno_infos_dict_default = {'maturity': 0,
-                                 'Opex_percentage': 0.12,
+                                 'Opex_percentage': 0.06,
                                  'WACC': 0.058,
-                                 'learning_rate': 0.00,
-                                 'Capex_init': 230.0,
+                                 'learning_rate': 0.01,
+                                 'Capex_init': 572.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'resource_price': 70.0,
+                                 'resource_price': 10.0,
                                  'resource_price_unit': '$/MWh'}
 
     techno_info_dict = techno_infos_dict_default

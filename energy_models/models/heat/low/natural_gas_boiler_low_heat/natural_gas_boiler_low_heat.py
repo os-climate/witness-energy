@@ -75,7 +75,7 @@ class NaturalGasLowHeat(lowheattechno):
 
     def compute_heat_flux(self):
         land_rate = self.land_rate
-        self.heat_flux = land_rate / self.cost_details['energy_costs'].values
+        self.heat_flux = land_rate / self.cost_details['energy_and_resources_costs'].values
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
                                                     'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
