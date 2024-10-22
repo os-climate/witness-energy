@@ -13,13 +13,12 @@ from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc 
     FossilSimpleTechnoDiscipline,
 )
 
-construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.FossilSimpleTechno]
-df_invest_historic, heavy_collected_data = DatabaseWitnessEnergy.get_techno_invest_before_year_start(techno_name=GlossaryEnergy.FossilSimpleTechno,
-                                                                               year_start=2023, construction_delay=construction_delay)
+df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.FossilSimpleTechno)
 df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.FossilSimpleTechno, year=2020)[1].value
 #ToDo: with or without tax?
-ref_price_2023 = 35. # $/MWh Source: chatgpt average of 30-40$/MWh
+ref_price_2023 = 121.5 # $/MWh Source: chatgpt
 # data to run techno
+construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.FossilSimpleTechno]
 year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), 2020))
 year_end_fitting = int(min(df_invest_historic['years'].max(), df_prod_historic['years'].max()))
 
@@ -28,7 +27,7 @@ years_fitting = list(np.arange(year_start_fitting, year_end_fitting + 1))
 invest_df = df_invest_historic.loc[(df_invest_historic['years'] >= year_start_fitting) & (df_invest_historic['years'] <= year_end_fitting)]
 margin = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.MarginValue: 110})
 transport = pd.DataFrame({GlossaryEnergy.Years: years_fitting, 'transport': np.zeros(len(years_fitting))})
-co2_taxes = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(years_fitting))})
+co2_taxes = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.CO2Tax: np.linspace(0., 0., len(years_fitting))})
 stream_prices = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
 resources_price = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
 techno_dict_default = FossilSimpleTechnoDiscipline.techno_infos_dict_default
@@ -81,7 +80,7 @@ def run_model(x: list, year_end: int = year_end_fitting):
     ee.execute()
 
     prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0])
-    prod_values_model = prod_df[f"{GlossaryEnergy.clean_energy} (TWh)"].values * 1000
+    prod_values_model = prod_df["fossil (TWh)"].values * 1000
 
     price_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoPricesValue)[0])
 
@@ -95,8 +94,8 @@ def fitting_renewable(x: list):
 
 
 # Initial guess for the variables
-x0 = np.array([250., 1., 0.0, 0.2, 0.1])
-#x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
+x0 = np.array([100., 1., 0.0, 0.024, 0.058]) # [capex_init, init_age_distrib_factor, learnin_rate, Opex_fraction, WACC]
+x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
 
 bounds = [(0, 10000), (0, 3.0), (0.01, 0.95), (0.001, 0.99), (0.0001, 0.3)]
 
