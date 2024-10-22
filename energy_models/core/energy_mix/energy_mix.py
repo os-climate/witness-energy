@@ -984,6 +984,7 @@ class EnergyMix(BaseStream):
         return dtot_CO2_emissions
 
     def compute_target_production_constraint(self, inputs_dict: dict):
+        """should be negative"""
         target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
         target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
         actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values

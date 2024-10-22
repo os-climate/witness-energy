@@ -1,10 +1,20 @@
 {
+    "methane": {
+        "type": "energy",
+        "value": [
+            "Methanation"
+        ]
+    },
     "hydrogen.gaseous_hydrogen": {
         "type": "energy",
         "value": [
-            "Electrolysis.SOEC",
-            "Electrolysis.PEM",
             "Electrolysis.AWE"
+        ]
+    },
+    "hydrogen.liquid_hydrogen": {
+        "type": "energy",
+        "value": [
+            "HydrogenLiquefaction"
         ]
     },
     "fuel.hydrotreated_oil_fuel": {
@@ -12,6 +22,12 @@
         "value": [
             "HefaDecarboxylation",
             "HefaDeoxygenation"
+        ]
+    },
+    "fuel.biodiesel": {
+        "type": "energy",
+        "value": [
+            "Transesterification"
         ]
     },
     "electricity": {
@@ -29,11 +45,8 @@
         "type": "CCUS",
         "value": [
             "flue_gas_capture.CalciumLooping",
-            "flue_gas_capture.ChilledAmmoniaProcess",
-            "flue_gas_capture.CO2Membranes",
             "flue_gas_capture.MonoEthanolAmine",
-            "flue_gas_capture.PiperazineProcess",
-            "flue_gas_capture.PressureSwingAdsorption"
+            "flue_gas_capture.PiperazineProcess"
         ]
     },
     "biomass_dry": {
@@ -46,12 +59,6 @@
         "type": "CCUS",
         "value": [
             "CarbonStorageTechno"
-        ]
-    },
-    "heat.hightemperatureheat": {
-        "type": "energy",
-        "value": [
-            "ElectricBoilerHighHeat"
         ]
     }
 }

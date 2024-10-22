@@ -19,7 +19,7 @@ from os.path import dirname, join
 techno_dict_folder = dirname(__file__)
 filename = "techno_dict_2024-07-14 Jul01_24technos_12streams.json"
 
-#filename = "techno_dict_test.json"
+filename = "techno_dict_test.json"
 def load_dict(filename: str):
     filepath = join(techno_dict_folder, filename)
     with open(filepath, 'r') as json_file:
