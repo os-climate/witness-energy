@@ -543,7 +543,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             ns_stream = self.get_ns_stream(stream)
 
             if stream in energies:
-                loss_percentage = inputs_dict[f'{ns_stream}.losses_percentage'] / 100.0
+                loss_percentage = 0#inputs_dict[f'{ns_stream}.losses_percentage'] / 100.0 # fixme : loss percentage by energy was considered in gradient but not in compute method so for the moment its also disabled in gradient to fix gradients
                 # To model raw to net percentage for witness coarse energies
                 if stream in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
@@ -557,8 +557,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     dtotal_prod_denergy_prod, inputs_dict['alpha'], outputs_dict[GlossaryEnergy.EnergyProductionValue],
                     years)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyProductionValue,
-                     GlossaryEnergy.TotalProductionValue),
+                    (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.TotalProductionValue),
                     (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     dtotal_prod_denergy_prod)
                 target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
@@ -567,8 +566,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     - dtotal_prod_denergy_prod * 1e3 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.StreamProductionDetailedValue,
-                     GlossaryEnergy.TotalProductionValue),
+                    (GlossaryEnergy.StreamProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
                     (f'{ns_stream}.{GlossaryEnergy.EnergyProductionValue}', stream),
                     dtotal_prod_denergy_prod * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
