@@ -410,8 +410,8 @@ class Study(EnergyStudyManager):
             "variable": [GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
             "parent": ["objectives", "constraints", "constraints"],
             "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
-            "weight": [1.0, 100.0, 100.0,],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM,],
+            "weight": [1.0, 10.0, 10.0,],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,],
             "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS,]
         })
         return func_df
