@@ -155,3 +155,16 @@ graph_list = disc.get_post_processing_list(filters)
 for graph in graph_list:
     graph.to_plotly().show()
     pass
+
+"""
+Results obtained:
+Function value at the optimum: 16826745.79920797 
+=> less than 6% error at max between model and historic production between 2015 and 2023
+=> no error on the price
+Optimal capex_init : 222.638
+Optimal init_age_distrib_factor : 1.0
+Optimal learning_rate : 0.0
+Optimal opex_percentage : 0.299
+Optimal wacc : 0.0
+Optimal utilization_ratio [100. 100. 100. 100. 100. 100.]
+"""
