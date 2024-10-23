@@ -24,18 +24,17 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc import (
-    CleanEnergySimpleTechnoDiscipline,
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
+    FossilSimpleTechnoDiscipline,
 )
 
 year_calibration = 2015
 
-
-df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.CleanEnergySimpleTechno)
-df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.CleanEnergySimpleTechno, year=2020)[1].value
-ref_price_2023 = 70.76 # $/MWh
+df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.FossilSimpleTechno)
+df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.FossilSimpleTechno, year=2020)[1].value
+ref_price_2023 = 121.5 # $/MWh Source: chatgpt LCOE without tax
 # data to run techno
-construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.CleanEnergySimpleTechno]
+construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.FossilSimpleTechno]
 year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), year_calibration))
 year_end_fitting = int(min(df_invest_historic['years'].max(), df_prod_historic['years'].max()))
 
@@ -47,19 +46,19 @@ transport = pd.DataFrame({GlossaryEnergy.Years: years_fitting, 'transport': np.z
 co2_taxes = pd.DataFrame({GlossaryEnergy.Years: years_fitting, GlossaryEnergy.CO2Tax: np.linspace(0., 0., len(years_fitting))})
 stream_prices = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
 resources_price = pd.DataFrame({GlossaryEnergy.Years: years_fitting})
-techno_dict_default = CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default
+techno_dict_default = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 
 name = 'Test'
-model_name = GlossaryEnergy.CleanEnergySimpleTechno
+model_name = GlossaryEnergy.FossilSimpleTechno
 ee = ExecutionEngine(name)
 ns_dict = {'ns_public': name,
            'ns_energy': name,
            'ns_energy_study': f'{name}',
-           'ns_clean_energy': name,
+           'ns_fossil': name,
            'ns_resource': name}
 ee.ns_manager.add_ns_def(ns_dict)
 
-mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
+mod_path = 'energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc.FossilSimpleTechnoDiscipline'
 builder = ee.factory.get_builder_from_module(
     model_name, mod_path)
 
@@ -69,16 +68,19 @@ ee.configure()
 ee.display_treeview_nodes()
 
 
-def run_model(x: list):
+
+def run_model(x: list, year_end: int = year_end_fitting):
     techno_dict_default["Capex_init"] = x[0]
     init_age_distrib_factor = x[1]
     techno_dict_default["learning_rate"] = x[2]
     techno_dict_default["Opex_percentage"] = x[3]
     techno_dict_default["WACC"] = x[4]
+    utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years_fitting,
+                                                          GlossaryEnergy.UtilisationRatioValue: x[5:]})
 
     inputs_dict = {
         f'{name}.{GlossaryEnergy.YearStart}': year_start_fitting,
-        f'{name}.{GlossaryEnergy.YearEnd}': year_end_fitting,
+        f'{name}.{GlossaryEnergy.YearEnd}': year_end,
         f'{name}.{GlossaryEnergy.StreamPricesValue}': stream_prices,
         f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years_fitting}),
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
@@ -89,6 +91,7 @@ def run_model(x: list):
         f'{name}.{model_name}.{GlossaryEnergy.MarginValue}': margin,
         f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.techno_infos_dict': techno_dict_default,
+        f'{name}.{model_name}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio,
     }
 
     ee.load_study_from_input_dict(inputs_dict)
@@ -96,11 +99,11 @@ def run_model(x: list):
     ee.execute()
 
     prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0])
-    prod_values_model = prod_df[f"{GlossaryEnergy.clean_energy} (TWh)"].values * 1000
+    prod_values_model = prod_df["fossil (TWh)"].values * 1000
 
     price_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoPricesValue)[0])
 
-    price_model_values = float((price_df.loc[price_df[GlossaryEnergy.Years] == 2023, f"{GlossaryEnergy.CleanEnergySimpleTechno}_wotaxes"]).values)
+    price_model_values = float((price_df.loc[price_df[GlossaryEnergy.Years] == 2023, f"{GlossaryEnergy.FossilSimpleTechno}_wotaxes"]).values)
     return prod_values_model, price_model_values
 
 
@@ -110,10 +113,11 @@ def fitting_renewable(x: list):
 
 
 # Initial guess for the variables
-x0 = np.array([250., 1., 0.0, 0.2, 0.1])
-#x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
+# [capex_init, init_age_distrib_factor, learnin_rate, Opex_fraction, WACC, utilization_ratio]
+x0 = np.concatenate((np.array([200., 1., 0.0, 0.024, 0.058]), 100.0 * np.ones_like(years_fitting)))
 
-bounds = [(0, 10000), (0, 1.1), (0.00, 0.), (0.001, 0.99), (0.0001, 0.3)]
+# can put different lower and upper bounds for utilization ratio if want to activate it
+bounds = [(0, 10000), (1.0, 1.0), (0.0, 0.0), (0.001, 0.99), (0.0001, 0.3)] + len(years_fitting) * [(100.0, 100.0)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
@@ -121,7 +125,6 @@ result = minimize(fitting_renewable, x0, bounds=bounds)
 prod_values_model, price_model_values = run_model(result.x)
 
 # Print the result
-#print("Optimal solution:", result.x)
 print("Function value at the optimum:", result.fun)
 
 
@@ -137,12 +140,13 @@ new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
 
+capex_init, init_age_distrib_factor, learning_rate, opex_percentage, wacc = result.x[0:5]
+utilization_ratio = result.x[5:]
 parameters = ["capex_init", "init_age_distrib_factor", "learning_rate", "opex_percentage", "wacc"]
-opt_values = dict(zip(parameters, np.round(result.x, 2)))
+opt_values = dict(zip(parameters, np.round(result.x, 3)))
 for key, val in opt_values.items():
     print("Optimal", key, ":", val)
-
-capex_init, init_age_distrib_factor, learning_rate, opex_percentage, wacc = result.x
+print("Optimal utilization_ratio", utilization_ratio)
 
 disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
@@ -151,3 +155,16 @@ graph_list = disc.get_post_processing_list(filters)
 for graph in graph_list:
     graph.to_plotly().show()
     pass
+
+"""
+Results obtained:
+Function value at the optimum: 16826745.79920797 
+=> less than 6% error at max between model and historic production between 2015 and 2023
+=> no error on the price
+Optimal capex_init : 222.638
+Optimal init_age_distrib_factor : 1.0
+Optimal learning_rate : 0.0
+Optimal opex_percentage : 0.299
+Optimal wacc : 0.0
+Optimal utilization_ratio [100. 100. 100. 100. 100. 100.]
+"""
