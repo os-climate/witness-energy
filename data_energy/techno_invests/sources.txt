@@ -2,7 +2,7 @@ FossilSimpleTechno : https://www.iea.org/data-and-statistics/charts/global-inves
 fossil simple techno invest = coal + gas + oil
 
 Clean energy simple techno  : https://www.iea.org/data-and-statistics/charts/global-investment-in-clean-energy-and-fossil-fuels-2015-2024
-Clean energy invest = Renewable + Nuclear and others + Low emission fuels + 75% of grid invests because renewable need a lot of grid invest to work (https://www.rystadenergy.com/news/power-grids-investments-energy-transition-permitting-policies)
+Clean energy invest = Renewable + Nuclear and others + Low emission fuels + 70% of grid invests because renewable need a lot of grid invest to work (https://www.rystadenergy.com/news/power-grids-investments-energy-transition-permitting-policies)
 
 CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-capture-and-utilisation
 DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
