@@ -73,4 +73,8 @@ class IndependentInvest(BaseInvest):
         max_budget_constraint_ref = inputs_dict[GlossaryEnergy.MaxBudgetConstraintRefValue]
         max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
         overspending = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
-        return overspending / max_budget_constraint_ref
+        max_budget_constraint_df = pd.DataFrame({
+            GlossaryEnergy.Years: inputs_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years],
+            GlossaryEnergy.MaxBudgetConstraintValue: overspending / max_budget_constraint_ref
+        })
+        return max_budget_constraint_df
