@@ -989,7 +989,10 @@ class EnergyMix(BaseStream):
         target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
         actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values
         missing_production = target_energy_production - actual_production_twh
-        self.target_production_constraint = missing_production / target_production_constraint_ref
+        self.target_production_constraint = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.TargetProductionConstraintValue: missing_production / target_production_constraint_ref
+        })
 
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)
