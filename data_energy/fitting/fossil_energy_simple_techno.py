@@ -117,7 +117,7 @@ def fitting_renewable(x: list):
 x0 = np.concatenate((np.array([200., 1., 0.0, 0.024, 0.058]), 100.0 * np.ones_like(years_fitting)))
 
 # can put different lower and upper bounds for utilization ratio if want to activate it
-bounds = [(0, 10000), (1.0, 1.0), (0.0, 0.0), (0.001, 0.99), (0.0001, 0.3)] + len(years_fitting) * [(100.0, 100.0)]
+bounds = [(0, 10000), (1.0, 1.0), (0.0, 0.0), (0.001, 0.99), (0.058, 0.3)] + len(years_fitting) * [(100.0, 100.0)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
@@ -164,7 +164,7 @@ Function value at the optimum: 16826745.79920797
 Optimal capex_init : 222.638
 Optimal init_age_distrib_factor : 1.0
 Optimal learning_rate : 0.0
-Optimal opex_percentage : 0.299
-Optimal wacc : 0.0
+Optimal opex_percentage : 0.262
+Optimal wacc : 0.058
 Optimal utilization_ratio [100. 100. 100. 100. 100. 100.]
 """

@@ -70,7 +70,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.299,
-                                 'WACC': 0.0,
+                                 'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'Capex_init': 222.64,
                                  'Capex_init_unit': '$/MWh',
