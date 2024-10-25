@@ -338,8 +338,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
+            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100.1], False),
         },
+    }
+
+    InitialPlantsTechnoProductionValue = "InitialPlantsTechnoProduction"
+    InitialPlantsTechnoProduction = {
+        "varname": InitialPlantsTechnoProductionValue,
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
     }
 
     EnergyTypeCapitalDfValue = "energy_type_capital"
@@ -1482,7 +1490,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"Capex_{techno_name}": ("float", None, False),
                 cls.InvestValue: ("float", None, False),
                 "efficiency": ("float", None, False),
-                "energy_costs": ("float", None, False),
+                "energy_and_resources_costs": ("float", None, False),
                 "transport": ("float", None, False),
                 f"{techno_name}_factory": ("float", None, False),
                 cls.MarginValue: ("float", None, False),

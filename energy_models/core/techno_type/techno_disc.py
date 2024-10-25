@@ -110,7 +110,8 @@ class TechnoDiscipline(SoSWrapp):
                                            }},
         GlossaryEnergy.InstalledPower: GlossaryEnergy.InstalledPowerDf,
         GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf,
-        GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction
+        GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction,
+        GlossaryEnergy.InitialPlantsTechnoProductionValue: GlossaryEnergy.InitialPlantsTechnoProduction,
     }
     _maturity = 'Research'
 
@@ -238,15 +239,16 @@ class TechnoDiscipline(SoSWrapp):
                 self.update_default_value(GlossaryEnergy.LifetimeName, 'in', lifetime)
 
         if GlossaryEnergy.InitialPlantsAgeDistribFactor in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
+            initial_plant_age_distrib_factor = self.get_sosdisc_inputs(GlossaryEnergy.InitialPlantsAgeDistribFactor)
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            if year_start is not None:
+            if year_start is not None and initial_plant_age_distrib_factor is None:
                 initial_plant_age_distrib_factor, _ = DatabaseWitnessEnergy.get_techno_age_distrib_factor(self.techno_name, year=year_start)
                 self.update_default_value(GlossaryEnergy.InitialPlantsAgeDistribFactor, 'in', initial_plant_age_distrib_factor)
 
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
             if year_start is not None:
-                initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start)
+                initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start - 1)
                 self.update_default_value('initial_production', 'in', initial_production)
 
         construction_delay = None
@@ -326,6 +328,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.CostOfStreamsUsageValue: self.techno_model.cost_of_streams_usage,
                         GlossaryEnergy.SpecificCostsForProductionValue: self.techno_model.specific_costs,
                         'initial_age_distrib': self.techno_model.initial_age_distrib,
+                        GlossaryEnergy.InitialPlantsTechnoProductionValue: self.techno_model.initial_plants_historical_prod,
                         }
 
         self.store_sos_outputs_values(outputs_dict)
@@ -900,9 +903,9 @@ class TechnoDiscipline(SoSWrapp):
 
         new_chart.series.append(serie)
 
-        if 'energy_costs' in techno_detailed_prices:
+        if 'energy_and_resources_costs' in techno_detailed_prices:
             # energy_costs
-            ec_price_mwh = techno_detailed_prices['energy_costs'].values
+            ec_price_mwh = techno_detailed_prices['energy_and_resources_costs'].values
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 ec_price_mwh.tolist(), 'Energy costs', 'bar')
@@ -969,9 +972,9 @@ class TechnoDiscipline(SoSWrapp):
             techno_kg_price.tolist(), 'Factory', 'bar')
 
         new_chart.series.append(serie)
-        if 'energy_costs' in techno_detailed_prices:
+        if 'energy_and_resources_costs' in techno_detailed_prices:
             # energy_costs
-            techno_kg_price = techno_detailed_prices['energy_costs'].values * \
+            techno_kg_price = techno_detailed_prices['energy_and_resources_costs'].values * \
                               data_fuel_dict['calorific_value']
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -1139,7 +1142,7 @@ class TechnoDiscipline(SoSWrapp):
         initial_prod['cum energy (TWh)'] = initial_prod['energy (TWh)'].cumsum(
         )
         study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
+        chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with {year_start} factories distribution'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} production [TWh]',
                                              chart_name=chart_name.capitalize())
