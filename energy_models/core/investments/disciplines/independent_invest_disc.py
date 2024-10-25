@@ -215,7 +215,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 ones * 1e-3)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.MaxBudgetConstraintValue,),
+                (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
                 (GlossaryEnergy.invest_mix, techno),
                 identity / max_budget_constraint_ref)
 
@@ -235,7 +235,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             ones * 1e-3)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.MaxBudgetConstraintValue,),
+            (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
             (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
             identity / max_budget_constraint_ref)
 
@@ -253,7 +253,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                     ones * 1e-3)
 
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.MaxBudgetConstraintValue,),
+                    (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
                     (techno, GlossaryEnergy.InvestmentsValue),
                     identity / max_budget_constraint_ref)
 
