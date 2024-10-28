@@ -105,7 +105,12 @@ class DatabaseWitnessEnergy:
         out_df = df.loc[df['years'] < year_start]
         if is_available_at_year:
             return construction_delay == 0 or (heavy_collected_data.is_available_at_year(year_start - construction_delay) and heavy_collected_data.is_available_at_year(year_start - 1))
-        if construction_delay > 0:
+        if construction_delay == 0:
+            out_df = pd.DataFrame({
+            "years": [],
+            "invest": []
+        })
+        elif construction_delay > 0:
             out_df = heavy_collected_data.get_between_years(year_start=year_start - construction_delay, year_end=year_start - 1)
         return out_df, heavy_collected_data
 
