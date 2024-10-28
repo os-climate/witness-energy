@@ -163,8 +163,8 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         proxy_disc = self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        local_data = proxy_disc.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline.local_data
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        local_data = proxy_disc.proxy_disciplines[0].discipline_wrapp.mdo_discipline.local_data
         # self.ee.root_process.pre_run_mda()
         output_error = ''
         test_passed = True

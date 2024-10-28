@@ -209,9 +209,9 @@ class FTPriceTestCase(unittest.TestCase):
 
         self.ee2.execute()
         ratio = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].mdo_discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
+            0].discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
         ratio2 = self.ee2.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].mdo_discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
+            0].discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
         techno_production_with_ratio = self.ee2.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}')
 

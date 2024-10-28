@@ -81,7 +81,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         self.disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.EnergyMix')[0].discipline_wrapp.mdo_discipline
         self.energy_list = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil]
 
     def TearDown(self):
