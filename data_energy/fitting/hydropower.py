@@ -29,8 +29,6 @@ from climateeconomics.glossarycore import GlossaryCore
 """
 This script is used to calibrate the hydropower invest so that the electricity production matches the IEA NZE scenario
 production values between 2020 and 2050
-Added the invest before year that does not work => could remove the x0 elements corresponding to the invest before year
-Could also try to only keep year_iea instead of the more discretized vector to reduce computation time
 """
 
 year_start = 2020
@@ -69,8 +67,7 @@ ee.display_treeview_nodes()
 
 def run_model(x: list, year_end: int = year_end):
     init_age_distrib_factor = x[0]
-    invest_before_year_start = x[1:4]
-    invest_years_optim = x[4:]
+    invest_years_optim = x[1:]
     # interpolate on missing years
     f = interp1d(years_optim, invest_years_optim, kind='linear')
     invests = f(years)
@@ -89,8 +86,6 @@ def run_model(x: list, year_end: int = year_end):
         f'{name}.{GlossaryEnergy.TransportCostValue}': pd.DataFrame({GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))}),
         f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.initial_production': df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == year_start]['electricity (TWh)'].values[0]
-        #f'{name}.{model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': pd.DataFrame(
-        #    {GlossaryEnergy.Years: np.arange(year_start - 3, year_start), GlossaryEnergy.InvestValue: list(invest_before_year_start)}),
     }
 
     ee.load_study_from_input_dict(inputs_dict)
@@ -104,15 +99,13 @@ def run_model(x: list, year_end: int = year_end):
 
 
 def fitting_renewable(x: list):
-    prod_values_model, prod_df = run_model(x)
+    prod_values_model, prod_df, invest_df = run_model(x)
     return (((prod_values_model - df_prod_iea['electricity (TWh)'].values)) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([1.6]), invest_year_start * np.ones(3), invest_year_start * np.ones(len(years_optim))))
-bounds = [(1., 2.)] \
-         + 3 * [(invest_year_start/10., 10.0 * invest_year_start)] \
-         + (len(years_optim)) * [(invest_year_start/10., 10.0 * invest_year_start)]
+x0 = np.concatenate((np.array([1.6]), invest_year_start * np.ones(len(years_optim))))
+bounds = [(1., 2.)] + (len(years_optim)) * [(invest_year_start/10., 10.0 * invest_year_start)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
@@ -122,8 +115,7 @@ prod_values_model, prod_df, invest_df = run_model(result.x)
 # Print the result
 print("Function value at the optimum:", result.fun)
 print("init age distrib at the optimum", result.x[0])
-print("invest before year start", result.x[1:4])
-print("invest at the optimum", result.x[4:])
+print("invest at the optimum", result.x[1:])
 print("prod at the optimum", prod_values_model)
 
 
@@ -141,7 +133,7 @@ new_chart.to_plotly().show()
 
 new_chart = TwoAxesInstanciatedChart('years', 'invest (G$)',
                                      chart_name='investments')
-serie = InstanciatedSeries(years_IEA, list(result.x)[4:], 'invests', 'lines')
+serie = InstanciatedSeries(years_IEA, list(result.x)[1:], 'invests', 'lines')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
