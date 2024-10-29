@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
@@ -87,7 +88,8 @@ def run_model(x: list, year_end: int = year_end):
         f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.initial_production': df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == year_start]['electricity (TWh)'].values[0]
     }
-
+    # bug: must load the study twice so that modifications are taked into accout
+    ee.load_study_from_input_dict(inputs_dict)
     ee.load_study_from_input_dict(inputs_dict)
 
     ee.execute()
@@ -147,5 +149,9 @@ for graph in graph_list:
     pass
 
 # export csv with correct unit, ie multiply by 1000
-
-invest_df.to_csv('invest_hydropower_iea_nze_Gdollars.csv', index=False, sep=',', float_format='%.3f')
+# update the invest_mix values with correct unit, ie multiply by 1000
+models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
+invest_mix_csv = os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'sos_processes', 'iam', 'witness', 'witness_optim_process', 'data', 'investment_mix.csv')
+df_invest_mix = pd.read_csv(invest_mix_csv)
+df_invest_mix['electricity.Hydropower'] = invest_df[GlossaryCore.InvestValue]
+df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
