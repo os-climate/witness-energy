@@ -169,7 +169,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -261,7 +261,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -357,7 +357,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -456,7 +456,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -548,7 +548,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -624,7 +624,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -705,7 +705,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_cc{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -757,7 +757,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -835,7 +835,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # EnergyMix
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}')[
-            0].discipline_wrapp.mdo_discipline
+            0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -935,7 +935,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -1046,7 +1046,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1139,7 +1139,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
@@ -1234,7 +1234,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1326,7 +1326,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1419,7 +1419,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )

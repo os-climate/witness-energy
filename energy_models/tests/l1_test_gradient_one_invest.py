@@ -123,7 +123,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_one_invest_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,

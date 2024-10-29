@@ -99,7 +99,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(derr_approx='complex_step',
                             inputs=self.coeff_jacobian,
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
@@ -140,7 +140,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
 
         outputs = [f'{self.name}.{self.model_name}.{col}_array_mix' for col in self.columns_names]
 
-        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(derr_approx='complex_step',
                             inputs=self.coeff_jacobian,
                             outputs=outputs,

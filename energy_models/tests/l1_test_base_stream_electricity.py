@@ -153,7 +153,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         print(self.ee.display_treeview_nodes(True))
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.electricity')[0].discipline_wrapp.mdo_discipline
+            f'{self.name}.electricity')[0].discipline_wrapp.discipline
         inputs_checked = [f'Test.electricity.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoProductionValue}',
                        f'Test.electricity.{GlossaryEnergy.GasTurbine}.{GlossaryEnergy.TechnoConsumptionValue}',
                        f'Test.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}',
