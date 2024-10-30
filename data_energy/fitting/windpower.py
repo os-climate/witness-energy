@@ -36,8 +36,6 @@ production values between 2020 and 2050
 year_start = 2020
 year_end = 2100
 years_IEA = [2020, 2025, 2030, 2035, 2040, 2045, 2050, 2100]
-# increase discretization in order to smooth production between 2020 and 2030
-years_optim = sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 years = np.arange(year_start, year_end + 1)
 
 # source: IEA report NZE2021Ch02
@@ -46,6 +44,15 @@ df_prod_iea = pd.read_csv(
     os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data', 'IEA_NZE_EnergyMix.electricity.WindXXshore.techno_production.csv'))
 new_row = pd.DataFrame({'years': [2100], 'electricity (TWh)': [35000.]})
 df_prod_iea = pd.concat([df_prod_iea, new_row], ignore_index=True)
+
+# interpolate data between 2050 and 2100
+years_IEA_interpolated = years
+f = interp1d(years_IEA, df_prod_iea['electricity (TWh)'].values, kind='linear')
+prod_IEA_interpolated = f(years_IEA_interpolated)
+
+# increase discretization in order to smooth production between 2020 and 2030
+years_optim = years_IEA_interpolated #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
+
 invest_year_start = 80. #G$
 
 name = 'Test'
@@ -59,25 +66,22 @@ ns_dict = {'ns_public': name,
 
 mod_path_onshore = 'energy_models.models.electricity.wind_onshore.wind_onshore_disc.WindOnshoreDiscipline'
 mod_path_offshore = 'energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline'
+ee = ExecutionEngine(name)
+ee.ns_manager.add_ns_def(ns_dict)
+builder = []
+builder.append(ee.factory.get_builder_from_module(
+    model_name_onshore, mod_path_onshore))
+builder.append(ee.factory.get_builder_from_module(
+    model_name_offshore, mod_path_offshore))
+ee.factory.set_builders_to_coupling_builder(builder)
 
+ee.configure()
+ee.display_treeview_nodes()
 
 
 
 
 def run_model(x: list, year_end: int = year_end):
-    #Todo understand why when the ee is outside the run_model, at the 3rd execution at iso inputs the outputs differ
-    ee = ExecutionEngine(name)
-    ee.ns_manager.add_ns_def(ns_dict)
-    builder = []
-    builder.append(ee.factory.get_builder_from_module(
-        model_name_onshore, mod_path_onshore))
-    builder.append(ee.factory.get_builder_from_module(
-        model_name_offshore, mod_path_offshore))
-    ee.factory.set_builders_to_coupling_builder(builder)
-
-    ee.configure()
-    ee.display_treeview_nodes()
-
     init_age_distrib_factor = x[0]
     invest_years_optim = x[1:]
     # interpolate on missing years
@@ -111,6 +115,8 @@ def run_model(x: list, year_end: int = year_end):
         f'{name}.{model_name}.initial_production': init_prod_dict[model_name],
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': pd.DataFrame({GlossaryEnergy.Years: years, GlossaryCore.InvestValue: invest_df[model_name].values}),
         })
+    # bug: must load the study twice so that modifications are taked into accout
+    ee.load_study_from_input_dict(inputs_dict)
     ee.load_study_from_input_dict(inputs_dict)
 
     ee.execute()
@@ -121,14 +127,14 @@ def run_model(x: list, year_end: int = year_end):
     df_prod = reduce(lambda left, right: pd.merge(left, right, on=GlossaryEnergy.Years), df_prod_list)
     # compute the sum of onshore and offshore technos:
     df_prod['electricity (TWh)'] = df_prod.drop(GlossaryEnergy.Years, axis=1).sum(axis=1) * 1000. #PWh
-    df_prod_model = df_prod.loc[df_prod[GlossaryEnergy.Years].isin(years_IEA)]
+    df_prod_model = df_prod.loc[df_prod[GlossaryEnergy.Years].isin(years_IEA_interpolated)]
 
-    return df_prod, df_prod_model, invest_df, ee
+    return df_prod, df_prod_model, invest_df
 
 
 def fitting_renewable(x: list):
-    df_prod, df_prod_model, invest_df, ee = run_model(x)
-    return (((df_prod_model['electricity (TWh)'].values - df_prod_iea['electricity (TWh)'].values)) ** 2).mean()
+    df_prod, df_prod_model, invest_df = run_model(x)
+    return (((df_prod_model['electricity (TWh)'].values - prod_IEA_interpolated)) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
@@ -138,7 +144,7 @@ bounds = [(1., 2.)] + (len(years_optim)) * [(invest_year_start/10., 10.0 * inves
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
 
-df_prod, df_prod_model, invest_df, ee = run_model(result.x)
+df_prod, df_prod_model, invest_df = run_model(result.x)
 
 # Print the result
 print("Function value at the optimum:", result.fun)
@@ -148,20 +154,24 @@ print("prod at the optimum", df_prod_model['electricity (TWh)'].values)
 
 
 new_chart = TwoAxesInstanciatedChart('years', 'production (TWh)',
-                                     chart_name='Production : model vs historic')
+                                     chart_name='Windpower Production : model vs historic')
 
 
-serie = InstanciatedSeries(years_IEA, df_prod_model['electricity (TWh)'].values, 'model', 'lines')
+serie = InstanciatedSeries(years_IEA_interpolated, df_prod_model['electricity (TWh)'].values, 'model', 'lines')
 new_chart.series.append(serie)
 
-serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'historic', 'lines')
+serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'historic', 'scatter')
+new_chart.series.append(serie)
+serie = InstanciatedSeries(list(years_IEA_interpolated), list(prod_IEA_interpolated), 'historic_interpolated', 'lines+markers')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
 
 new_chart = TwoAxesInstanciatedChart('years', 'invest (G$)',
-                                     chart_name='investments')
-serie = InstanciatedSeries(years_IEA, list(result.x)[1:], 'invests', 'lines')
+                                     chart_name='Windpower investments')
+serie = InstanciatedSeries(years_optim, list(result.x)[1:], 'invests_at_poles', 'lines+markers')
+new_chart.series.append(serie)
+serie = InstanciatedSeries(years, list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
@@ -176,5 +186,13 @@ for model_name in [model_name_offshore, model_name_onshore]:
         pass
 
 # export csv with correct unit, ie multiply by 1000
-
-invest_df.to_csv('invest_windpower_iea_nze_Gdollars.csv', index=False, sep=',', float_format='%.3f')
+models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
+invest_mix_csv = os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'sos_processes', 'iam', 'witness', 'witness_optim_process', 'data', 'investment_mix.csv')
+df_invest_mix = pd.read_csv(invest_mix_csv)
+df_prod_names = ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)
+for name in df_prod_names:
+    if 'WindOffshore' in name:
+        df_invest_mix['electricity.WindOffshore'] = invest_df[name]
+    elif 'WindOnshore' in name:
+        df_invest_mix['electricity.WindOnshore'] = invest_df[name]
+df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')

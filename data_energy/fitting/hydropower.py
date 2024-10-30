@@ -35,14 +35,19 @@ production values between 2020 and 2050
 year_start = 2020
 year_end = 2100
 years_IEA = [2020, 2025, 2030, 2035, 2040, 2045, 2050, 2100]
-# increase discretization in order to smooth production between 2020 and 2030
-years_optim = sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 years = np.arange(year_start, year_end + 1)
 
 # source: IEA report NZE2021Ch02
 # energy(2100) = energy(2050) = physical limit of available hydroenergy if all basins, rivers, etc. are used
 df_prod_iea = pd.DataFrame({GlossaryEnergy.Years: years_IEA,
                             'electricity (TWh)': [4444.3, 4999.9, 5833.2, 6666.5, 7499.8, 8055.3, 8610.9, 8610.9]})
+# interpolate data between 2050 and 2100
+years_IEA_interpolated = years
+f = interp1d(years_IEA, df_prod_iea['electricity (TWh)'].values, kind='linear')
+prod_IEA_interpolated = f(years_IEA_interpolated)
+
+# increase discretization in order to smooth production between 2020 and 2030
+years_optim = np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #years_IEA_interpolated #sorted(list(set(years_IEA_interpolated + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 invest_year_start = 18.957 #G$
 
 name = 'Test'
@@ -95,14 +100,14 @@ def run_model(x: list, year_end: int = year_end):
     ee.execute()
 
     prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0]) #PWh
-    prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(years_IEA), "electricity (TWh)"].values * 1000. #TWh
+    prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(years_IEA_interpolated), "electricity (TWh)"].values * 1000. #TWh
 
     return prod_values_model, prod_df[[GlossaryEnergy.Years, "electricity (TWh)"]], invest_df
 
 
 def fitting_renewable(x: list):
     prod_values_model, prod_df, invest_df = run_model(x)
-    return (((prod_values_model - df_prod_iea['electricity (TWh)'].values)) ** 2).mean()
+    return (((prod_values_model - prod_IEA_interpolated)) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
@@ -121,21 +126,25 @@ print("invest at the optimum", result.x[1:])
 print("prod at the optimum", prod_values_model)
 
 
-new_chart = TwoAxesInstanciatedChart('years', 'production (TWh)',
+new_chart = TwoAxesInstanciatedChart('years', 'hydropower production (TWh)',
                                      chart_name='Production : model vs historic')
 
 
-serie = InstanciatedSeries(years_IEA, prod_values_model, 'model', 'lines')
+serie = InstanciatedSeries(years_IEA_interpolated, prod_values_model, 'model', 'lines')
 new_chart.series.append(serie)
 
-serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'historic', 'lines')
+serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'historic', 'scatter')
+new_chart.series.append(serie)
+serie = InstanciatedSeries(list(years_IEA_interpolated), list(prod_IEA_interpolated), 'historic_interpolated', 'lines+markers')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
 
-new_chart = TwoAxesInstanciatedChart('years', 'invest (G$)',
+new_chart = TwoAxesInstanciatedChart('years', 'hydropower invest (G$)',
                                      chart_name='investments')
-serie = InstanciatedSeries(years_IEA, list(result.x)[1:], 'invests', 'lines')
+serie = InstanciatedSeries(years_optim, list(result.x)[1:], 'invests_at_poles', 'lines+markers')
+new_chart.series.append(serie)
+serie = InstanciatedSeries(years, list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
