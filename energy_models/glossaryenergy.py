@@ -338,8 +338,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
+            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100.1], False),
         },
+    }
+
+    InitialPlantsTechnoProductionValue = "InitialPlantsTechnoProduction"
+    InitialPlantsTechnoProduction = {
+        "varname": InitialPlantsTechnoProductionValue,
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
     }
 
     EnergyTypeCapitalDfValue = "energy_type_capital"
@@ -1128,13 +1136,13 @@ class GlossaryEnergy(GlossaryWitnessCore):
         WetCropResidues: [electricity], # transport fuel in stead of elec
         Geothermal: [f"{heat}.{mediumtemperatureheat}"],  # just electricity
         BiomassBuryingFossilization: [biomass_dry],  # add transport fuel
-        DeepOceanInjection: [carbon_capture],  # add transport fuel
-        DeepSalineFormation: [carbon_capture],  # add transport fuel
-        DepletedOilGas: [carbon_capture],  # add transport fuel
-        EnhancedOilRecovery: [carbon_capture],  # add transport fuel
-        GeologicMineralization: [carbon_capture],  # add transport fuel
-        CarbonStorageTechno: [carbon_capture],
-        CropEnergy: [carbon_capture],
+        DeepOceanInjection: [],  # add transport fuel
+        DeepSalineFormation: [],  # add transport fuel
+        DepletedOilGas: [],  # add transport fuel
+        EnhancedOilRecovery: [],  # add transport fuel
+        GeologicMineralization: [],  # add transport fuel
+        CarbonStorageTechno: [],
+        CropEnergy: [],
     }
 
     # dict of resources used by technos
@@ -1482,7 +1490,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"Capex_{techno_name}": ("float", None, False),
                 cls.InvestValue: ("float", None, False),
                 "efficiency": ("float", None, False),
-                "energy_costs": ("float", None, False),
+                "energy_and_resources_costs": ("float", None, False),
                 "transport": ("float", None, False),
                 f"{techno_name}_factory": ("float", None, False),
                 cls.MarginValue: ("float", None, False),

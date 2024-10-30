@@ -104,7 +104,6 @@ class Study(EnergyStudyManager):
         self.bspline = bspline
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.test_post_procs = False
-        
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -235,7 +234,7 @@ class Study(EnergyStudyManager):
         instanced_sub_studies = []
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
-            instance_sub_study = None # initialize variable
+            instance_sub_study = None  # initialize variable
             if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type:
                 prefix_name = f"{GlossaryEnergy.ccus_type}"
                 instance_sub_study = sub_study(
@@ -319,7 +318,6 @@ class Study(EnergyStudyManager):
                         'namespace_in': GlossaryEnergy.NS_WITNESS,
                         'namespace_out': GlossaryEnergy.NS_WITNESS
                     }
-
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
@@ -407,12 +405,12 @@ class Study(EnergyStudyManager):
 
     def make_func_df(self):
         func_df = pd.DataFrame({
-            "variable": [GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
-            "parent": ["objectives", "constraints", "constraints"],
-            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
-            "weight": [1.0, 100.0, 100.0,],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM,],
-            "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS,]
+            "variable": [GlossaryEnergy.ObjectiveEnergyNonUseCapital, GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
+            "parent": ["objectives", "objectives", "constraints", "constraints"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT],
+            "weight": [1.0, 1.0, .0, 100.0,],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS] * 4
         })
         return func_df
 
@@ -580,7 +578,6 @@ class Study(EnergyStudyManager):
             "indus_emissions": 0.
         })
 
-
         target_energy_prod = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.TargetEnergyProductionValue: np.linspace(100. * 1.e3, 150. * 1e3, len(self.years))
@@ -595,7 +592,6 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.TotalProductionValue: 0.
         })
-
 
         values_dict = {
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
@@ -696,7 +692,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-8,
+            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-10,
             f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
         }
 
@@ -709,4 +705,5 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

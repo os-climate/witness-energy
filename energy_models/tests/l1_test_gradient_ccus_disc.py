@@ -121,7 +121,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy': self.name,
                    GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
                    GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_carbon_capture': self.name,
                    'ns_carbon_storage': self.name}
@@ -183,8 +182,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.LandUseRequiredValue}',
         ]
         coupled_outputs = [f'{self.name}.co2_emissions_ccus_Gt',
-                           f'{self.name}.CCS_price',
-                           f'{self.name}.carbon_storage_constraint']
+                           f'{self.name}.CCS_price',]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

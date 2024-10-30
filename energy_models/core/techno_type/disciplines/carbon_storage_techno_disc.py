@@ -130,6 +130,10 @@ class CSTechnoDiscipline(TechnoDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'Capex' in charts:
+            new_chart = self.get_chart_capex()
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_detailed_price_in_dollar_ton(self):
@@ -172,11 +176,11 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
         new_chart.series.append(serie)
 
-        if 'energy_costs' in techno_detailed_prices:
+        if 'energy_and_resources_costs' in techno_detailed_prices:
             # energy_costs
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                techno_detailed_prices['energy_costs'].values.tolist(), 'Energy costs', 'lines')
+                techno_detailed_prices['energy_and_resources_costs'].values.tolist(), 'Energy costs', 'lines')
 
             new_chart.series.append(serie)
 

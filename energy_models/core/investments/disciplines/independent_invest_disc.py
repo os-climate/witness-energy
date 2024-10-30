@@ -215,7 +215,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 ones * 1e-3)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.MaxBudgetConstraintValue,),
+                (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
                 (GlossaryEnergy.invest_mix, techno),
                 identity / max_budget_constraint_ref)
 
@@ -235,7 +235,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             ones * 1e-3)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.MaxBudgetConstraintValue,),
+            (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
             (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
             identity / max_budget_constraint_ref)
 
@@ -253,7 +253,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                     ones * 1e-3)
 
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.MaxBudgetConstraintValue,),
+                    (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
                     (techno, GlossaryEnergy.InvestmentsValue),
                     identity / max_budget_constraint_ref)
 
@@ -294,6 +294,16 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
+
+            # max budget constraint charts
+            max_budget_df = self.get_sosdisc_inputs(GlossaryEnergy.MaxBudgetValue)
+            max_budget = max_budget_df[GlossaryEnergy.MaxBudgetValue].values
+            years = max_budget_df[GlossaryEnergy.Years].values
+            if max_budget.max() > 0:
+                serie_max_budget = InstanciatedSeries(list(years), list(max_budget), GlossaryEnergy.MaxBudgetValue,
+                                                      'dash_lines')
+                new_chart_energy.add_series(serie_max_budget)
+
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
 
@@ -373,23 +383,6 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             instanciated_charts.insert(1, new_chart_energy_ratio)
 
-        #max budget constraint charts
-        max_budget_df = self.get_sosdisc_inputs(GlossaryEnergy.MaxBudgetValue)
-        max_budget = max_budget_df[GlossaryEnergy.MaxBudgetValue].values
-        years = max_budget_df[GlossaryEnergy.Years].values
-        if max_budget.max() > 0 :
-
-            chart_max_budget = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.MaxBudgetDf['unit'],
-                                                              chart_name=GlossaryEnergy.MaxBudgetConstraintValue, stacked_bar=True)
-
-            serie_max_budget = InstanciatedSeries(list(years), list(max_budget), GlossaryEnergy.MaxBudgetValue, 'dash_lines')
-            chart_max_budget.add_series(serie_max_budget)
-
-            energy_invests = self.get_sosdisc_outputs(GlossaryEnergy.EnergyInvestmentsWoTaxValue)[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values  * 1000
-            serie_invests = InstanciatedSeries(list(years), list(energy_invests), "Invests",
-                                                  'bar')
-            chart_max_budget.add_series(serie_invests)
-            instanciated_charts.insert(1, chart_max_budget)
 
 
         return instanciated_charts

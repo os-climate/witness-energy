@@ -30,7 +30,7 @@ class CleanEnergyDiscipline(EnergyDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-fan fa-fw',
         'version': '',
     }
 
