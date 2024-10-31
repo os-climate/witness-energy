@@ -35,6 +35,7 @@ production values between 2020 and 2050
 year_start = 2020
 year_end = 2100
 years_IEA = [2020, 2025, 2030, 2035, 2040, 2045, 2050, 2100]
+construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion']
 years = np.arange(year_start, year_end + 1)
 
 # source: IEA report NZE2021Ch02
@@ -44,6 +45,8 @@ df_prod_iea = pd.read_csv(
     os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data', 'IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv'))
 new_row = pd.DataFrame({'years': [2100], "biogas AnaerobicDigestion (TWh)": [5000.]})
 df_prod_iea = pd.concat([df_prod_iea, new_row], ignore_index=True)
+initial_production = df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == year_start]["biogas AnaerobicDigestion (TWh)"].values[0]
+
 # interpolate data between 2050 and 2100
 years_IEA_interpolated = years #np.arange(years_IEA[0], years_IEA[-1] + 1, 5)
 f = interp1d(years_IEA, df_prod_iea["biogas AnaerobicDigestion (TWh)"].values, kind='linear')
@@ -74,8 +77,9 @@ ee.display_treeview_nodes()
 
 
 def run_model(x: list, year_end: int = year_end):
-    init_age_distrib_factor = x[0]
-    invest_years_optim = x[1:]
+    init_prod = x[0]
+    invest_before_year_start = x[1:1 + construction_delay]
+    invest_years_optim = x[1 + construction_delay:]
     # interpolate on missing years
     f = interp1d(years_optim, invest_years_optim, kind='linear')
     invests = f(years)
@@ -92,9 +96,9 @@ def run_model(x: list, year_end: int = year_end):
         f'{name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.zeros_like(years), GlossaryEnergy.WetBiomassResource: np.zeros_like(years)}),
         f'{name}.{GlossaryEnergy.ResourcesPriceValue}': pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.zeros_like(years), GlossaryEnergy.WetBiomassResource: np.zeros_like(years)}),
         f'{name}.{GlossaryEnergy.TransportCostValue}': pd.DataFrame({GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))}),
-        f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
-        f'{name}.{model_name}.initial_production': df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == year_start]["biogas AnaerobicDigestion (TWh)"].values[0]
-
+        #f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
+        f'{name}.{model_name}.initial_production': init_prod,
+        f'{name}.{model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(year_start - construction_delay, year_start), GlossaryEnergy.InvestValue: invest_before_year_start}),
     }
 
     # must load the dict twice, otherwise values are not taken into account
@@ -104,37 +108,37 @@ def run_model(x: list, year_end: int = year_end):
     ee.execute()
 
     prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0]) #PWh
-    prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(years_IEA_interpolated), "biogas (TWh)"].values * 1000. #TWh
 
-    return prod_values_model, prod_df[[GlossaryEnergy.Years, "biogas (TWh)"]], invest_df
+    return prod_df[[GlossaryEnergy.Years, "biogas (TWh)"]], invest_df
 
 
 def fitting_renewable(x: list):
-    prod_values_model, prod_df, invest_df = run_model(x)
+    prod_df, invest_df = run_model(x)
+    prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(
+        years_IEA_interpolated), "biogas (TWh)"].values * 1000.  # TWh
     return (((prod_values_model - prod_IEA_interpolated)) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([1.0]), invest_year_start * np.ones(len(years_optim))))
-bounds = [(1., 2.)] + (len(years_optim)) * [(invest_year_start/10., 10.0 * invest_year_start)]
+x0 = np.concatenate((np.array([initial_production]), invest_year_start * np.ones(construction_delay), invest_year_start * np.ones(len(years_optim))))
+bounds = [(initial_production * 0.87, initial_production * 0.87)] + [(invest_year_start/2.4, invest_year_start/2.4)] * construction_delay + (len(years_optim)) * [(invest_year_start/3., 3. * invest_year_start)]
 
 # Use minimize to find the minimum of the function
-result = minimize(fitting_renewable, x0, bounds=bounds)
+result = minimize(fitting_renewable, x0, bounds=bounds, options={'disp': True, 'maxiter': 500, 'maxfun': 500, 'method': 'trust-constr', 'FACTR': 1.e-7})
 
-prod_values_model, prod_df, invest_df = run_model(result.x)
-
+prod_df, invest_df = run_model(result.x)
 # Print the result
 print("Function value at the optimum:", result.fun)
-print("init age distrib at the optimum", result.x[0])
-print("invest at the optimum", result.x[1:])
-print("prod at the optimum", prod_values_model)
+print("initial production", result.x[0])
+print("invest before year start", result.x[1:1+construction_delay])
+print("invest at the optimum", result.x[1+construction_delay:])
 
 
 new_chart = TwoAxesInstanciatedChart('years', 'biogas production (TWh)',
                                      chart_name='Production : model vs historic')
 
 
-serie = InstanciatedSeries(years_IEA_interpolated, prod_values_model, 'model', 'lines+markers')
+serie = InstanciatedSeries(list(prod_df[GlossaryEnergy.Years].values), list(prod_df["biogas (TWh)"].values * 1000.), 'model', 'lines+markers')
 new_chart.series.append(serie)
 
 serie = InstanciatedSeries(years_IEA, df_prod_iea["biogas AnaerobicDigestion (TWh)"].values, 'historic', 'scatter')
@@ -146,9 +150,9 @@ new_chart.to_plotly().show()
 
 new_chart = TwoAxesInstanciatedChart('years', 'biogas invest (G$)',
                                      chart_name='investments')
-serie = InstanciatedSeries(years_optim, list(result.x)[1:], 'invests_at_poles', 'lines+markers')
+serie = InstanciatedSeries(list(years_optim), list(result.x)[1+construction_delay:], 'invests_at_poles', 'lines+markers')
 new_chart.series.append(serie)
-serie = InstanciatedSeries(years, list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
+serie = InstanciatedSeries(list(years), list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
@@ -158,7 +162,7 @@ disc = ee.dm.get_disciplines_with_name(
 filters = disc.get_chart_filter_list()
 graph_list = disc.get_post_processing_list(filters)
 for graph in graph_list:
-    #graph.to_plotly().show()
+    graph.to_plotly().show()
     pass
 
 # update the invest_mix values with correct unit, ie divide by 1000
