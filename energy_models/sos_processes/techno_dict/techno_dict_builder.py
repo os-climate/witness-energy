@@ -213,28 +213,39 @@ def build_techno_infos(stream_used_by_technos: dict, stream_produced_by_techno: 
 techno_info_dict = build_techno_infos(GlossaryEnergy.TechnoStreamsUsedDict, GlossaryEnergy.TechnoStreamProducedDict)
 
 inital_selection = [
-    GlossaryEnergy.CarbonStorageTechno,
     GlossaryEnergy.HefaDecarboxylation,
+    GlossaryEnergy.FischerTropsch,
+    #f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}",
+    #f"{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}",
 ]
 
 technos_to_avoid = [
 GlossaryEnergy.BiomassFermentation,
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}", # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}", # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}", # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}",  # remove
 GlossaryEnergy.BiomassBuryingFossilization,
 GlossaryEnergy.PureCarbonSolidStorage,
-GlossaryEnergy.FischerTropsch
+GlossaryEnergy.FossilSimpleTechno,
+GlossaryEnergy.CleanEnergySimpleTechno,
+
+GlossaryEnergy.RWGS,
+#GlossaryEnergy.FischerTropsch
 ]
 streams_to_avoid = [
 GlossaryEnergy.hightemperatureheat_energyname,
 GlossaryEnergy.mediumtemperatureheat_energyname,
 GlossaryEnergy.lowtemperatureheat_energyname,
-GlossaryEnergy.syngas,
-f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
+GlossaryEnergy.biomass_dry,
+#GlossaryEnergy.syngas,
+#f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
 ]
 streams_to_have = [
     GlossaryEnergy.carbon_capture,
+    GlossaryEnergy.carbon_storage,
 ]
 
 
@@ -242,8 +253,8 @@ if __name__ == '__main__':
     sub_techno_dict, n_technos, n_streams = techno_dict_builder(
         techno_infos=techno_info_dict,
         initial_selection=inital_selection,
-        minimal_stream_number=8,
-        minimal_techno_number=17,
+        minimal_stream_number=11,
+        minimal_techno_number=30,
         streams_to_avoid=streams_to_avoid,
         streams_to_have=streams_to_have,
         technos_to_avoid=technos_to_avoid,

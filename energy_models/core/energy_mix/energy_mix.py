@@ -137,6 +137,7 @@ class EnergyMix(BaseStream):
         Constructor
         '''
         super(EnergyMix, self).__init__(name)
+        self.non_use_capital_obj_by_stream = None
         self.non_use_capital_obj = None
         self.period_tol_power_non_use_capital_constraint = None
         self.non_use_capital_constraint_df = None
@@ -259,6 +260,7 @@ class EnergyMix(BaseStream):
         self.subelements_list = inputs_dict[GlossaryEnergy.energy_list] + \
                                 inputs_dict[GlossaryEnergy.ccs_list]
         self.energy_list = inputs_dict[GlossaryEnergy.energy_list]
+        self.ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         self.energy_mean_price_objective_ref = inputs_dict[GlossaryEnergy.EnergyMeanPriceObjectiveRefValue]
@@ -364,6 +366,23 @@ class EnergyMix(BaseStream):
             GlossaryEnergy.Capital: energy_capital,
             GlossaryEnergy.NonUseCapital: energy_non_use_capital,
         })
+
+    def compute_non_use_capital_mean_by_stream(self):
+        """to minimize"""
+
+        streams = self.energy_list + self.ccs_list
+        obj = 0.
+        for stream in streams:
+            stream_ = stream
+            if stream == BiomassDry.name:
+                stream_ = AgricultureMixDiscipline.name
+            stream_capital = self.inputs[f"{stream_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values
+            stream_non_used_capital = self.inputs[f"{stream_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values
+            stream_capital[stream_capital == 0] = 1.
+            stream_non_use_capital_ratio = (stream_non_used_capital / stream_capital).mean()
+            obj += stream_non_use_capital_ratio
+
+        self.non_use_capital_obj_by_stream = np.array([obj / len(streams)])
 
     def compute_raw_production(self):
         """sum of positive energy production --> raw total production"""
@@ -1007,6 +1026,7 @@ class EnergyMix(BaseStream):
         self.compute_CO2_emissions_ratio()
         self.aggregate_land_use_required()
         self.compute_energy_capital()
+        self.compute_non_use_capital_mean_by_stream()
         self.compute_non_use_energy_capital_constraint()
         self.compute_non_use_energy_capital_objective()
         self.compute_total_prod_minus_min_prod_constraint()
@@ -1061,6 +1081,18 @@ class EnergyMix(BaseStream):
         non_use_capital = self.energy_capital[GlossaryEnergy.NonUseCapital].values
         d_non_use_capital = 1 / capital / len(self.years) / 1e3
         d_capital = - non_use_capital / (capital ** 2) / len(self.years) / 1e3
+        return d_non_use_capital, d_capital
+
+    def d_non_use_capital_obj_by_stream_d_capital(self, stream: str):
+        n_streams = len(self.ccs_list + self.energy_list)
+        stream_capital = self.inputs[f"{stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values
+        stream_non_used_capital = self.inputs[f"{stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values
+        index_zeros = stream_capital == 0
+        stream_capital[stream_capital == 0] = 1
+        d_non_use_capital = 1 / stream_capital / len(self.years) / n_streams
+        d_capital = - stream_non_used_capital / (stream_capital ** 2) / len(self.years) / n_streams
+        d_capital[index_zeros] = 0
+        d_non_use_capital[index_zeros] = 0
         return d_non_use_capital, d_capital
 
     def d_non_use_capital_constraint_d_capital(self):
