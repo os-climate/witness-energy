@@ -27,7 +27,7 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 )
 
 
-class RWGSDiscipline(SyngasTechnoDiscipline):
+class ReversedWaterGasShiftDiscipline(SyngasTechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'Reversed Water Gas Shift Model',
@@ -42,7 +42,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = GlossaryEnergy.ReversedWaterGasShift
+    techno_name = GlossaryEnergy.RWGS
 
     techno_infos_dict_default = {'maturity': 5,
                                  'reaction': 'dCO2 + e(H2+r1C0) = syngas(H2+r2CO) + cH20',
@@ -187,7 +187,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.ReversedWaterGasShift), ('syngas_ratio',),
+            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.RWGS), ('syngas_ratio',),
             np.identity(len(years)) / 100.0 * (dco2_emissions_dsyngas_ratio.to_numpy() +
                                                dcons_syngas_dsyngas_ratio) / efficiency[:, np.newaxis]
             + dcons_electricity_dsyngas_ratio)
