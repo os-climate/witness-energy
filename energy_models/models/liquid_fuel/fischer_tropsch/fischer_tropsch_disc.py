@@ -164,7 +164,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                   100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'), ('syngas_ratio',), dprice_FT_dsyngas_ratio)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),
+            ('syngas_ratio',),
+            dprice_FT_dsyngas_ratio)
 
         # Grad of techno_production vs syngas_ratio
 
@@ -194,7 +196,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = {
             key: value / self.techno_model.applied_ratio[
-                'applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption for
+                'applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption / self.techno_model.utilisation_ratio * 100 for
             key, value in grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoConsumptionWithoutRatioValue, 'syngas_ratio', grad_dict)
@@ -461,13 +463,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 WGS_cost.tolist(), 'WGS', 'lines')
 
             new_chart.series.append(serie)
-        if 'RWGS' in techno_detailed_prices:
+        if GlossaryEnergy.RWGS in techno_detailed_prices:
             WGS_cost = specific_costs[GlossaryEnergy.syngas].values - \
                        techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values
             # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                WGS_cost.tolist(), 'RWGS', 'lines')
+                WGS_cost.tolist(), GlossaryEnergy.RWGS, 'lines')
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
@@ -554,13 +556,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 WGS_cost.tolist(), 'WGS', 'lines')
 
             new_chart.series.append(serie)
-        if 'RWGS' in techno_detailed_prices:
+        if GlossaryEnergy.RWGS in techno_detailed_prices:
             WGS_cost = (specific_costs[GlossaryEnergy.syngas].values -
                         techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values) * calorific_value
             # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                WGS_cost.tolist(), 'RWGS', 'lines')
+                WGS_cost.tolist(), GlossaryEnergy.RWGS, 'lines')
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
