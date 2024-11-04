@@ -247,7 +247,8 @@ class TechnoDiscipline(SoSWrapp):
 
         if 'initial_production' in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            if year_start is not None:
+            initial_production = self.get_sosdisc_inputs('initial_production')
+            if year_start is not None and initial_production is None:
                 initial_production, _ = DatabaseWitnessEnergy.get_techno_prod(self.techno_name, year=year_start - 1)
                 self.update_default_value('initial_production', 'in', initial_production)
 
