@@ -192,7 +192,12 @@ df_invest_mix = pd.read_csv(invest_mix_csv)
 df_prod_names = ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)
 for name in df_prod_names:
     if 'WindOffshore' in name:
-        df_invest_mix['electricity.WindOffshore'] = invest_df[name]
+        df_invest_mix['electricity.WindOffshore'] = invest_df['WindOffshore']
     elif 'WindOnshore' in name:
-        df_invest_mix['electricity.WindOnshore'] = invest_df[name]
+        df_invest_mix['electricity.WindOnshore'] = invest_df['WindOnshore']
 df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
+# values to set in the invest_design_space_NZE.csv
+for techno in ['WindOffshore', 'WindOnshore']:
+    f = interp1d(years, df_invest_mix[f"electricity.{techno}"].values, kind='linear')
+    invest_at_poles = f(np.linspace(year_start, year_end, 8))
+    print(f"invest at poles for {techno}={invest_at_poles}")

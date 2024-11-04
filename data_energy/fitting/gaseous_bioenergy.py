@@ -170,3 +170,8 @@ invest_mix_csv = os.path.join(models_path_abs, 'models', 'witness-core', 'climat
 df_invest_mix = pd.read_csv(invest_mix_csv)
 df_invest_mix['biogas.AnaerobicDigestion'] = invest_df[GlossaryCore.InvestValue]
 df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
+# values to set in the invest_design_space_NZE.csv
+f = interp1d(years, df_invest_mix['biogas.AnaerobicDigestion'].values, kind='linear')
+invest_at_poles = f(np.linspace(year_start, year_end, 8))
+print(f"invest at poles={invest_at_poles}")
+
