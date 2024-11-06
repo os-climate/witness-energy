@@ -259,7 +259,8 @@ class TechnoDiscipline(SoSWrapp):
 
         if GlossaryEnergy.InvestmentBeforeYearStartValue in self.get_data_in() and GlossaryEnergy.YearStart in self.get_data_in() and 'techno_infos_dict' in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-            if year_start is not None and construction_delay is not None:
+            invest_before_year_start = self.get_sosdisc_inputs(GlossaryEnergy.InvestmentBeforeYearStartValue)
+            if year_start is not None and construction_delay is not None and invest_before_year_start is None:
                 default_val, _ = DatabaseWitnessEnergy.get_techno_invest_before_year_start(
                     techno_name=self.techno_name, year_start=year_start, construction_delay=construction_delay)
                 self.update_default_value(GlossaryEnergy.InvestmentBeforeYearStartValue, 'in', default_val)
