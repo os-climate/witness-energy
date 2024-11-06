@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os
+from functools import reduce
+
 import numpy as np
 import pandas as pd
-from functools import reduce
-from scipy.optimize import minimize
+from climateeconomics.glossarycore import GlossaryCore
 from scipy.interpolate import interp1d
+from scipy.optimize import minimize
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -26,7 +28,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from climateeconomics.glossarycore import GlossaryCore
 
 """
 This script is used to calibrate the windpower invest so that the electricity production matches the IEA NZE scenario
