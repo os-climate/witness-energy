@@ -47,7 +47,7 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
     RWGS,
 )
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import (
-    RWGSDiscipline,
+    ReversedWaterGasShiftDiscipline,
 )
 
 
@@ -119,7 +119,7 @@ class FischerTropsch(LiquidFuelTechno):
         self.cost_of_streams_usage[GlossaryEnergy.electricity] = list(
             self.stream_prices[GlossaryEnergy.electricity] * self.cost_details[f'{GlossaryEnergy.electricity}_needs'])
         if np.all(self.needed_syngas_ratio > self.syngas_ratio):
-            self.sg_transformation_name = 'RWGS'
+            self.sg_transformation_name = GlossaryEnergy.RWGS
             self.costs_details_sg_techno = self.compute_rwgs_contribution(
                 self.syngas_ratio)
             # For RWGS dprice is composed of dsyngas, dCO2, delec
@@ -186,7 +186,7 @@ class FischerTropsch(LiquidFuelTechno):
                 sg_ratio_rwgs)
             self.syn_needs_rwgs = self.syngas_ratio_techno.get_theoretical_syngas_needs(sg_ratio_rwgs)
             price_details_sg_techno_rwgs['sg_ratio'] = self.syngas_ratio
-            price_details_sg_techno_rwgs[self.sg_transformation_name] = price_details_sg_techno_rwgs['RWGS']
+            price_details_sg_techno_rwgs[self.sg_transformation_name] = price_details_sg_techno_rwgs[GlossaryEnergy.RWGS]
             # RWGS matrix
 
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dprice_RWGS_wo_taxes_dsyngas_ratio() * \
@@ -198,9 +198,9 @@ class FischerTropsch(LiquidFuelTechno):
                                            dco2_taxes_dsyngas_ratio_rwgs * \
                                            (np.identity(len(self.years)) * sg_needs_efficiency) * \
                                            np.sign(
-                                               self.syngas_ratio_techno.carbon_intensity['RWGS'].values) * \
+                                               self.syngas_ratio_techno.carbon_intensity[GlossaryEnergy.RWGS].values) * \
                                            np.sign(np.maximum(
-                                               0.0, self.syngas_ratio_techno.carbon_intensity['RWGS'].values))
+                                               0.0, self.syngas_ratio_techno.carbon_intensity[GlossaryEnergy.RWGS].values))
 
             self.costs_details_sg_techno = pd.concat([costs_details_sg_techno_wgs.loc[
                                                           costs_details_sg_techno_wgs[
@@ -223,7 +223,7 @@ class FischerTropsch(LiquidFuelTechno):
                 (len(self.years), len(self.years)), dtype=arr_type)
 
             if self.syngas_ratio[0] < self.needed_syngas_ratio:
-                techno_first_year = 'RWGS'
+                techno_first_year = GlossaryEnergy.RWGS
             else:
                 techno_first_year = 'WGS'
             for i in range(self.year_end - self.year_start + 1):
@@ -242,7 +242,7 @@ class FischerTropsch(LiquidFuelTechno):
                         self.dprice_FT_wotaxes_dsyngas_ratio[i, 0] = 0.0
 
                     self.cost_details.loc[i, self.sg_transformation_name] = self.costs_details_sg_techno[
-                        'RWGS_wotaxes'].values[i]
+                        f'{GlossaryEnergy.RWGS}_wotaxes'].values[i]
 
                 else:
 
@@ -255,7 +255,7 @@ class FischerTropsch(LiquidFuelTechno):
                         self.dprice_FT_dsyngas_ratio[i,
                         :] = dprice_FT_wotaxes_dsyngas_ratio_wgs[i, :]
 
-                    if techno_first_year == 'RWGS':
+                    if techno_first_year == GlossaryEnergy.RWGS:
                         self.dprice_FT_dsyngas_ratio[i, 0] = 0.0
                         self.dprice_FT_wotaxes_dsyngas_ratio[i, 0] = 0.0
 
@@ -286,7 +286,7 @@ class FischerTropsch(LiquidFuelTechno):
                      self.cost_details['syngas_needs_for_FT'] / \
                      self.techno_infos_dict['efficiency']
 
-        if self.sg_transformation_name in ['WGS', 'RWGS']:
+        if self.sg_transformation_name in ['WGS', GlossaryEnergy.RWGS]:
 
             return {Electricity.name: np.identity(len(self.years)) * elec_needs.to_numpy(),
                     Syngas.name: np.identity(len(self.years)) * (
@@ -333,7 +333,7 @@ class FischerTropsch(LiquidFuelTechno):
                             self.cost_details['syngas_needs_for_FT'] /
                             self.cost_details['efficiency']).values
 
-        if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
+        if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
             co2_needs += (self.costs_details_sg_techno[f"{GlossaryEnergy.CO2Resource}_needs"].fillna(0.0) *
                           self.cost_details['syngas_needs_for_FT'] /
                           self.cost_details['efficiency']).values
@@ -360,7 +360,7 @@ class FischerTropsch(LiquidFuelTechno):
                           self.cost_details['syngas_needs_for_FT'] /
                           self.cost_details['efficiency']).values
 
-        if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
+        if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
             co2_needs += (self.costs_details_sg_techno[f"{GlossaryEnergy.CO2Resource}_needs"].fillna(0.0) *
                           self.cost_details['syngas_needs_for_FT'] /
                           self.cost_details['efficiency']).values
@@ -376,7 +376,7 @@ class FischerTropsch(LiquidFuelTechno):
         inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
                        GlossaryEnergy.YearEnd: self.year_end,
                        GlossaryEnergy.UtilisationRatioValue: utlisation_ratio,
-                       'techno_infos_dict': RWGSDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': ReversedWaterGasShiftDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.StreamPricesValue: self.stream_prices,
                        GlossaryEnergy.StreamsCO2EmissionsValue: self.streams_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
@@ -385,14 +385,14 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.InvestLevelValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
                        GlossaryEnergy.InvestmentBeforeYearStartValue: DatabaseWitnessEnergy.get_techno_invest_before_year_start(
-                           techno_name=RWGSDiscipline.techno_name, year_start=self.year_start, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[RWGSDiscipline.techno_name])[0],
+                           techno_name=ReversedWaterGasShiftDiscipline.techno_name, year_start=self.year_start, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[ReversedWaterGasShiftDiscipline.techno_name])[0],
                        GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
                        GlossaryEnergy.MarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        GlossaryEnergy.TransportCostValue: pd.DataFrame({GlossaryEnergy.Years: years, 'transport': 0.0}),
                        GlossaryEnergy.TransportMarginValue: pd.DataFrame(
                            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
-                       'initial_production': RWGSDiscipline.initial_production,
+                       'initial_production': ReversedWaterGasShiftDiscipline.initial_production,
                        GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
@@ -405,19 +405,19 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.BoolApplyStreamRatio: self.apply_stream_ratio,
                        GlossaryEnergy.BoolApplyResourceRatio: self.apply_resource_ratio,
                        'data_fuel_dict': self.syngas_energy_dict,
-                       GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.ReversedWaterGasShift] if GlossaryEnergy.ReversedWaterGasShift in GlossaryEnergy.TechnoBuildingResourceDict else [],
-                       GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.ReversedWaterGasShift],
-                       GlossaryEnergy.InitialPlantsAgeDistribFactor: DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=RWGSDiscipline.techno_name, year=self.year_start)[0],
+                       GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.TechnoResourceUsedDict[GlossaryEnergy.RWGS],
+                       GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.TechnoBuildingResourceDict[GlossaryEnergy.RWGS] if GlossaryEnergy.RWGS in GlossaryEnergy.TechnoBuildingResourceDict else [],
+                       GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.RWGS],
+                       GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.RWGS],
+                       GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.RWGS],
+                       GlossaryEnergy.InitialPlantsAgeDistribFactor: DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=ReversedWaterGasShiftDiscipline.techno_name, year=self.year_start)[0],
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
         if self.apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
-        self.syngas_ratio_techno = RWGS('RWGS')
+        self.syngas_ratio_techno = RWGS(GlossaryEnergy.RWGS)
         self.syngas_ratio_techno.syngas_COH2_ratio = sg_ratio * 100.0
         self.syngas_ratio_techno.configure_parameters(inputs_dict)
         self.syngas_ratio_techno.configure_parameters_update(inputs_dict)
@@ -502,11 +502,11 @@ class FischerTropsch(LiquidFuelTechno):
                                                                                             self.production_detailed[
                                                                                                 f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
 
-        elif self.sg_transformation_name == 'RWGS':
+        elif self.sg_transformation_name == GlossaryEnergy.RWGS:
             self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = 0.0
 
 
-        if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
+        if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
 
             water_prod = self.water_prod_RWGS * \
                          self.cost_details['syngas_needs_for_FT'] / \
@@ -563,13 +563,13 @@ class FischerTropsch(LiquidFuelTechno):
                                                                             self.production_detailed[
                                                                                 f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
 
-        elif self.sg_transformation_name == 'RWGS':
+        elif self.sg_transformation_name == GlossaryEnergy.RWGS:
             self.consumption_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = 0.0
 
         if self.sg_transformation_name == 'WGS':
             self.consumption_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = 0.0
 
-        elif self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
+        elif self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
 
             co2_needs = self.costs_details_sg_techno[f"{GlossaryEnergy.CO2Resource}_needs"].fillna(0.0) * \
                         self.cost_details['syngas_needs_for_FT'] / \
@@ -628,7 +628,7 @@ class FischerTropsch(LiquidFuelTechno):
                          self.cost_details['syngas_needs_for_FT'] / \
                          self.cost_details['efficiency']
 
-        if self.sg_transformation_name in ['RWGS', 'WGS or RWGS']:
+        if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
             co2_needs += self.costs_details_sg_techno[f"{GlossaryEnergy.CO2Resource}_needs"].fillna(0.0) * \
                          self.cost_details['syngas_needs_for_FT'] / \
                          self.cost_details['efficiency']
@@ -683,7 +683,7 @@ class FischerTropsch(LiquidFuelTechno):
         #                     GlossaryEnergy.syngas: dsyngas_co2_emissions_dsyngas_ratio_wgs - dco2_emissions_dsyngas_ratio_wgs
         #                     }
 
-        elif self.sg_transformation_name in ['RWGS']:
+        elif self.sg_transformation_name in [GlossaryEnergy.RWGS]:
 
             dsyngasco2_dsyngasratio = self.syngas_ratio_techno.dtotal_co2_emissions_dsyngas_ratio()
 
