@@ -405,12 +405,12 @@ class Study(EnergyStudyManager):
 
     def make_func_df(self):
         func_df = pd.DataFrame({
-            "variable": [GlossaryEnergy.ObjectiveEnergyNonUseCapital, GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
-            "parent": ["objectives", "objectives", "constraints", "constraints"],
-            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT],
-            "weight": [1.0, 1.0, .0, 100.0,],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,],
-            "namespace": [GlossaryEnergy.NS_FUNCTIONS] * 4
+            "variable": [GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream, GlossaryEnergy.ObjectiveEnergyNonUseCapital, GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
+            "parent": ["objectives", "objectives","objectives", "constraints", "constraints"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE,FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT],
+            "weight": [0., 0.1, 1.0, 10.0, 10.0,],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM,FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS] * 5
         })
         return func_df
 
@@ -691,7 +691,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
-            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
+            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 400,
             f"{self.study_name}.{self.coupling_name}.tolerance": 1e-10,
             f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
         }

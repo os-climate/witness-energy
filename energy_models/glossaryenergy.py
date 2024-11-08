@@ -599,7 +599,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CoElectrolysis = "CoElectrolysis"
     CoalGasification = "CoalGasification"
     Pyrolysis = "Pyrolysis"
-    ReversedWaterGasShift = "RWGS"
+    RWGS = "ReversedWaterGasShift"
     Crop = "Crop"
     Forest = "Forest"
     SMR = "SMR"
@@ -1061,7 +1061,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         Geothermal: [],
         Crop: [],
         Forest: [],
-        ReversedWaterGasShift: [WaterResource],
+        RWGS: [WaterResource],
     }
 
     # dictionnary of energies used by each techno
@@ -1130,7 +1130,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         BiomassGasification: [electricity, biomass_dry],  # heat instead of electricity, produce syngas
         CoElectrolysis: [electricity, carbon_capture],
         CoalGasification: [solid_fuel],  # add heat
-        ReversedWaterGasShift: [electricity, syngas], # heat instead of electricity, CO2 instead of carbon_capture
+        RWGS: [electricity, syngas], # heat instead of electricity, CO2 instead of carbon_capture
         SMR: [electricity, methane],  # heat instead of elec
         AnimalManure: [electricity],  # transport fuel in stead of elec
         WetCropResidues: [electricity], # transport fuel in stead of elec
@@ -1174,7 +1174,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CoElectrolysis: [WaterResource],
         Pyrolysis: [WoodResource],
         WaterGasShift: [WaterResource],
-        ReversedWaterGasShift: [CO2Resource],
+        RWGS: [CO2Resource],
         SMR: [WaterResource],
         HefaDecarboxylation: [NaturalOilResource],
         HefaDeoxygenation: [NaturalOilResource],
@@ -1251,7 +1251,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: carbon_storage,
         GeologicMineralization: carbon_storage,
         PureCarbonSolidStorage: carbon_storage,
-        ReversedWaterGasShift: syngas,
+        RWGS: syngas,
         WaterGasShift: f"{hydrogen}.{gaseous_hydrogen}",
         f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_capture,
         CropEnergy: biomass_dry,
@@ -1283,7 +1283,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     TechnoConstructionDelayDict = {
          FossilGas: 3,
-         ReversedWaterGasShift: 2,
+         RWGS: 2,
          UpgradingBiogas: 2,
          Methanation: 2,  # Thema, M., Bauer, F. and Sterner, M., 2019.  Power-to-Gas: Electrolysis and methanation status review.  Renewable and Sustainable Energy Reviews, 112, pp.775-787. the average time needed for planning and constructing was about 1.5years from Thema2019
          WaterGasShift: 2, # Giuliano, A., Freda, C. and Catizzone, E., 2020. Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections. Bioengineering, 7(3), p.70.
@@ -1363,7 +1363,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     TechnoLifetimeDict = {
-        ReversedWaterGasShift: 40, # for now constant in time but should increase with time
+        RWGS: 40, # for now constant in time but should increase with time
         FossilGas: 23, # for now constant in time but should increase with time
         UpgradingBiogas: 20, # for now constant in time but should increase with time
         Methanation: 15, # for now constant in time but should increase with time
@@ -1611,7 +1611,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"{cls.syngas} ({cls.unit_dicts[cls.syngas]})",
                 f"{cls.WaterResource} ({cls.mass_unit})",
             ]
-        if techno_name == GlossaryEnergy.ReversedWaterGasShift:
+        if techno_name == GlossaryEnergy.RWGS:
             extra_cols = [
                 f"{cls.carbon_capture} ({cls.unit_dicts[cls.carbon_capture]})",
             ]
