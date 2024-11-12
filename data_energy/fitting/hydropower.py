@@ -50,7 +50,7 @@ f = interp1d(years_IEA, df_prod_iea['electricity (TWh)'].values, kind='linear')
 prod_IEA_interpolated = f(years_IEA_interpolated)
 
 # increase discretization in order to smooth production between 2020 and 2030
-years_optim = np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #years_IEA_interpolated #sorted(list(set(years_IEA_interpolated + list(np.arange(year_start, max(year_start, 2030) + 1)))))
+years_optim = np.linspace(year_start, year_end, 8) #np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #years_IEA_interpolated #sorted(list(set(years_IEA_interpolated + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 invest_year_start = 18.957 #G$
 
 name = 'Test'
@@ -75,9 +75,9 @@ ee.display_treeview_nodes()
 
 
 def run_model(x: list, year_end: int = year_end):
-    init_prod = x[0]
-    invest_before_year_start = x[1:1 + construction_delay]
-    invest_years_optim = x[1 + construction_delay:]
+    init_prod = x[0] * initial_production
+    invest_before_year_start = x[1:1 + construction_delay] * invest_year_start
+    invest_years_optim = x[1 + construction_delay:] * invest_year_start
     # interpolate on missing years
     f = interp1d(years_optim, invest_years_optim, kind='linear')
     invests = f(years)
@@ -100,8 +100,6 @@ def run_model(x: list, year_end: int = year_end):
             {GlossaryEnergy.Years: np.arange(year_start - construction_delay, year_start),
              GlossaryEnergy.InvestValue: invest_before_year_start}),
     }
-    # bug: must load the study twice so that modifications are taked into accout
-    ee.load_study_from_input_dict(inputs_dict)
     ee.load_study_from_input_dict(inputs_dict)
 
     ee.execute()
@@ -115,25 +113,24 @@ def fitting_renewable(x: list):
     prod_df, invest_df = run_model(x)
     prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(
         years_IEA_interpolated), "electricity (TWh)"].values * 1000.  # TWh
-    return (((prod_values_model - prod_IEA_interpolated)) ** 2).mean()
+    return (((prod_values_model - prod_IEA_interpolated) / (initial_production * np.ones_like(prod_values_model))) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-# Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([initial_production]), invest_year_start * np.ones(construction_delay), invest_year_start * np.ones(len(years_optim))))
-bounds = [(initial_production, initial_production)] + [(invest_year_start/1., invest_year_start/1.)] * construction_delay + (len(years_optim)) * [(invest_year_start/10., 10. * invest_year_start)]
-
+x0 = np.concatenate((np.array([1.]), np.ones(construction_delay), np.ones(len(years_optim))))
+bounds = [(1., 1.)] + [(1., 1.)] * construction_delay + (len(years_optim)) * [(1./10., 10.)]
 
 # Use minimize to find the minimum of the function
-result = minimize(fitting_renewable, x0, bounds=bounds, options={'disp': True, 'maxiter': 500, 'maxfun': 500, 'method': 'trust-constr', 'FACTR': 1.e-7})
+result = minimize(fitting_renewable, x0, bounds=bounds, method='trust-constr', 
+                  options={'disp': True, 'maxiter': 2000, 'xtol': 1e-20})
 
 prod_df, invest_df = run_model(result.x)
 
 # Print the result
 print("Function value at the optimum:", result.fun)
-print("initial production", result.x[0])
-print("invest before year start", result.x[1:1+construction_delay])
-print("invest at the optimum", result.x[1+construction_delay:])
+print("initial production", result.x[0] * initial_production)
+print("invest before year start", result.x[1:1+construction_delay] * invest_year_start)
+print("invest at the optimum", result.x[1+construction_delay:] * invest_year_start)
 
 
 new_chart = TwoAxesInstanciatedChart('years', 'hydropower production (TWh)',
@@ -152,7 +149,7 @@ new_chart.to_plotly().show()
 
 new_chart = TwoAxesInstanciatedChart('years', 'hydropower invest (G$)',
                                      chart_name='investments')
-serie = InstanciatedSeries(list(years_optim), list(result.x)[1+construction_delay:], 'invests_at_poles', 'lines+markers')
+serie = InstanciatedSeries(list(years_optim), list(result.x[1+construction_delay:] * invest_year_start), 'invests_at_poles', 'lines+markers')
 new_chart.series.append(serie)
 serie = InstanciatedSeries(list(years), list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
 new_chart.series.append(serie)

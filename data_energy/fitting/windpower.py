@@ -52,7 +52,7 @@ f = interp1d(years_IEA, df_prod_iea['electricity (TWh)'].values, kind='linear')
 prod_IEA_interpolated = f(years_IEA_interpolated)
 
 # increase discretization in order to smooth production between 2020 and 2030
-years_optim = years_IEA_interpolated #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
+years_optim = np.linspace(year_start, year_end, 8) #years_IEA_interpolated #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 
 invest_year_start = 80. #G$
 
