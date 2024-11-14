@@ -17,10 +17,13 @@ import os
 
 import numpy as np
 import pandas as pd
+import pickle
+from copy import deepcopy
 from climateeconomics.glossarycore import GlossaryCore
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.bspline.bspline import BSpline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -53,78 +56,86 @@ prod_IEA_interpolated = f(years_IEA_interpolated)
 years_optim = np.linspace(year_start, year_end, 8) #np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #years_IEA_interpolated #sorted(list(set(years_IEA_interpolated + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 invest_year_start = 18.957 #G$
 
-name = 'Test'
-model_name = GlossaryEnergy.Hydropower
-ee = ExecutionEngine(name)
-ns_dict = {'ns_public': name,
-           'ns_energy': name,
-           'ns_energy_study': f'{name}',
-           'ns_electricity': name,
-           'ns_resource': name}
-ee.ns_manager.add_ns_def(ns_dict)
+name = 'usecase_witness_optim_nze_eval'
+model_name = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.Hydropower}"
 
-mod_path = 'energy_models.models.electricity.hydropower.hydropower_disc.HydropowerDiscipline'
-builder = ee.factory.get_builder_from_module(
-    model_name, mod_path)
-
-ee.factory.set_builders_to_coupling_builder(builder)
-
-ee.configure()
-ee.display_treeview_nodes()
-
-
+# recover the input data of the discipline from the iea nze scenario
+with open('dm_iea_nze.pkl', 'rb') as f:
+            dm = pickle.load(f)
+f.close()
+inputs_dict = deepcopy(dm)
+inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.biogas.{GlossaryEnergy.TransportCostValue}')})
 
 def run_model(x: list, year_end: int = year_end):
     init_prod = x[0] * initial_production
     invest_before_year_start = x[1:1 + construction_delay] * invest_year_start
     invest_years_optim = x[1 + construction_delay:] * invest_year_start
     # interpolate on missing years
-    f = interp1d(years_optim, invest_years_optim, kind='linear')
-    invests = f(years)
+    #f = interp1d(years_optim, invest_years_optim, kind='linear')
+    #invests = f(years)
+    list_t = np.linspace(0.0, 1.0, len(years))
+    bspline = BSpline(n_poles=len(years_optim))
+    bspline.set_ctrl_pts(invest_years_optim)
+    invests, b_array = bspline.eval_list_t(list_t)
     invest_df = pd.DataFrame({GlossaryEnergy.Years: years,
                                                           GlossaryCore.InvestValue: list(invests)})
 
-    inputs_dict = {
+    ee = ExecutionEngine(name)
+    ns_dict = {'ns_public': name,
+               'ns_energy': name,
+               'ns_energy_study': f'{name}',
+               'ns_electricity': name,
+               'ns_resource': name}
+    ee.ns_manager.add_ns_def(ns_dict)
+
+    mod_path = 'energy_models.models.electricity.hydropower.hydropower_disc.HydropowerDiscipline'
+    builder = ee.factory.get_builder_from_module(
+        model_name, mod_path)
+
+    ee.factory.set_builders_to_coupling_builder(builder)
+
+    ee.configure()
+    #ee.display_treeview_nodes()
+
+    inputs_dict.update({
         f'{name}.{GlossaryEnergy.YearStart}': year_start,
         f'{name}.{GlossaryEnergy.YearEnd}': year_end,
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
-        f'{name}.{GlossaryEnergy.CO2TaxesValue}': pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(0., 0., len(years))}),
-        f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years}),
-        f'{name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame({GlossaryEnergy.Years: years}),
-        f'{name}.{GlossaryEnergy.ResourcesPriceValue}': pd.DataFrame({GlossaryEnergy.Years: years}),
-        f'{name}.{GlossaryEnergy.TransportCostValue}': pd.DataFrame({GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))}),
         #f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.initial_production': init_prod,
         f'{name}.{model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(year_start - construction_delay, year_start),
              GlossaryEnergy.InvestValue: invest_before_year_start}),
-    }
+    })
     ee.load_study_from_input_dict(inputs_dict)
 
     ee.execute()
 
     prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0]) #PWh
 
-    return prod_df[[GlossaryEnergy.Years, "electricity (TWh)"]], invest_df
+    return prod_df[[GlossaryEnergy.Years, "electricity (TWh)"]], invest_df, ee
 
 
 def fitting_renewable(x: list):
-    prod_df, invest_df = run_model(x)
+    prod_df, invest_df, ee = run_model(x)
     prod_values_model = prod_df.loc[prod_df[GlossaryEnergy.Years].isin(
         years_IEA_interpolated), "electricity (TWh)"].values * 1000.  # TWh
     return (((prod_values_model - prod_IEA_interpolated) / (initial_production * np.ones_like(prod_values_model))) ** 2).mean()
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([1.]), np.ones(construction_delay), np.ones(len(years_optim))))
-bounds = [(1., 1.)] + [(1., 1.)] * construction_delay + (len(years_optim)) * [(1./10., 10.)]
+x0 = np.concatenate((np.array([1.]), np.array([0.]), 80./invest_year_start * np.ones(construction_delay - 1), np.ones(len(years_optim))))
+bounds = [(1., 1.)] + [(0., 0.)] + [(80./invest_year_start/2., 80./invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1./10., 10.)]
 
 # Use minimize to find the minimum of the function
-result = minimize(fitting_renewable, x0, bounds=bounds, method='trust-constr', 
+result = minimize(fitting_renewable, x0, bounds=bounds, #method='trust-constr',
                   options={'disp': True, 'maxiter': 2000, 'xtol': 1e-20})
 
-prod_df, invest_df = run_model(result.x)
+prod_df, invest_df, ee = run_model(result.x)
 
 # Print the result
 print("Function value at the optimum:", result.fun)
@@ -149,9 +160,9 @@ new_chart.to_plotly().show()
 
 new_chart = TwoAxesInstanciatedChart('years', 'hydropower invest (G$)',
                                      chart_name='investments')
-serie = InstanciatedSeries(list(years_optim), list(result.x[1+construction_delay:] * invest_year_start), 'invests_at_poles', 'lines+markers')
+serie = InstanciatedSeries(list(years_optim), list(result.x[1+construction_delay:] * invest_year_start), 'invests_at_poles', 'scatter')
 new_chart.series.append(serie)
-serie = InstanciatedSeries(list(years), list(invest_df[GlossaryEnergy.InvestValue]), 'invests', 'lines')
+serie = InstanciatedSeries(list(years), list(invest_df[GlossaryEnergy.InvestValue]), 'invests_bspline', 'lines')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
