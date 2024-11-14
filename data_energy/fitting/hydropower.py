@@ -74,9 +74,7 @@ def run_model(x: list, year_end: int = year_end):
     init_prod = x[0] * initial_production
     invest_before_year_start = x[1:1 + construction_delay] * invest_year_start
     invest_years_optim = x[1 + construction_delay:] * invest_year_start
-    # interpolate on missing years
-    #f = interp1d(years_optim, invest_years_optim, kind='linear')
-    #invests = f(years)
+    # interpolate on missing years using bspline as in sostrades-core
     list_t = np.linspace(0.0, 1.0, len(years))
     bspline = BSpline(n_poles=len(years_optim))
     bspline.set_ctrl_pts(invest_years_optim)
@@ -128,6 +126,8 @@ def fitting_renewable(x: list):
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
+# there is a bug with the invest before year start => first value must be set to 0
+# otherwise initial production at year start is not as expected
 x0 = np.concatenate((np.array([1.]), np.array([0.]), 80./invest_year_start * np.ones(construction_delay - 1), np.ones(len(years_optim))))
 bounds = [(1., 1.)] + [(0., 0.)] + [(80./invest_year_start/2., 80./invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1./10., 10.)]
 
@@ -141,19 +141,19 @@ prod_df, invest_df, ee = run_model(result.x)
 print("Function value at the optimum:", result.fun)
 print("initial production", result.x[0] * initial_production)
 print("invest before year start", result.x[1:1+construction_delay] * invest_year_start)
-print("invest at the optimum", result.x[1+construction_delay:] * invest_year_start)
+print("invest at the poles at the optimum", result.x[1+construction_delay:] * invest_year_start)
 
 
 new_chart = TwoAxesInstanciatedChart('years', 'hydropower production (TWh)',
-                                     chart_name='Production : model vs historic')
+                                     chart_name='witness vs IEA')
 
 
 serie = InstanciatedSeries(list(prod_df[GlossaryEnergy.Years].values), list(prod_df["electricity (TWh)"].values * 1000.), 'model', 'lines')
 new_chart.series.append(serie)
 
-serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'historic', 'scatter')
+serie = InstanciatedSeries(years_IEA, df_prod_iea['electricity (TWh)'].values, 'IEA', 'scatter')
 new_chart.series.append(serie)
-serie = InstanciatedSeries(list(years_IEA_interpolated), list(prod_IEA_interpolated), 'historic_interpolated', 'lines+markers')
+serie = InstanciatedSeries(list(years_IEA_interpolated), list(prod_IEA_interpolated), 'IEA_interpolated', 'lines+markers')
 new_chart.series.append(serie)
 
 new_chart.to_plotly().show()
@@ -184,6 +184,4 @@ df_invest_mix['electricity.Hydropower'] = invest_df[GlossaryCore.InvestValue]
 df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
 
 # values to set in the invest_design_space_NZE.csv
-f = interp1d(years, df_invest_mix['electricity.Hydropower'].values, kind='linear')
-invest_at_poles = f(np.linspace(year_start, year_end, 8))
-print(f"invest at poles={invest_at_poles}")
+print(f"invest at poles={result.x[1+construction_delay:] * invest_year_start}")
