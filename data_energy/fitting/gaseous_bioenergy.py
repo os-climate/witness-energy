@@ -179,5 +179,5 @@ df_invest_mix = pd.read_csv(invest_mix_csv)
 df_invest_mix['biogas.AnaerobicDigestion'] = invest_df[GlossaryCore.InvestValue]
 df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
 # values to set in the invest_design_space_NZE.csv
-print(f"invest at poles={result.x[1+construction_delay:] * invest_year_start}")
+print(f"invest at poles={result.x[construction_delay:] * invest_year_start}")
 
