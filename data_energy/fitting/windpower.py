@@ -175,12 +175,12 @@ def fitting_renewable(x: list):
     years_price_iea = df_price_iea['years'].values
     price_model_values = (price_df.loc[price_df[GlossaryEnergy.Years].isin(years_price_iea), f"{GlossaryEnergy.WindOnshore}_wotaxes"]).values
 
-    return (((df_prod_model['electricity (TWh)'].values - prod_IEA_interpolated) ** 2).mean() + ((price_model_values - price_iea_values) ** 2).mean())
+    return ((((df_prod_model['electricity (TWh)'].values - prod_IEA_interpolated)/prod_IEA_interpolated.mean()) ** 2).mean() + (((price_model_values - price_iea_values)/price_iea_values.mean()) ** 2).mean())
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
 x0 = np.concatenate((np.array([1.]), np.array([0.]), 80./invest_year_start * np.ones(construction_delay - 1), np.ones(len(years_optim))))
-bounds = [(1., 1.)] + [(0., 0.)] + [(80./invest_year_start/2., 80./invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1./10., 10.)]
+bounds = [(0.5, 1.5)] + [(0., 0.)] + [(80./invest_year_start/2., 80./invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1./10., 10.)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
