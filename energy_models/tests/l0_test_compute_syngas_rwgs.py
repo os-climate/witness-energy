@@ -73,7 +73,7 @@ class RWGSPriceTestCase(unittest.TestCase):
 
     def test_02_rwgs_discipline_for_other_ratio(self):
         self.name = 'Test'
-        self.model_name = 'RWGS'
+        self.model_name = GlossaryEnergy.RWGS
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -81,7 +81,7 @@ class RWGSPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc.RWGSDiscipline'
+        mod_path = 'energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc.ReversedWaterGasShiftDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

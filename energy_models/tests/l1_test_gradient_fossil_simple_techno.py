@@ -162,8 +162,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        invest_before_ystart = pd.DataFrame(
-            {GlossaryEnergy.Years: [], GlossaryEnergy.InvestValue: []})
+        invest_before_ystart = None
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,

@@ -197,6 +197,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         GlossaryEnergy.EnergyMeanPriceObjectiveValue: GlossaryEnergy.EnergyMeanPriceObjective,
         GlossaryEnergy.ConstraintEnergyNonUseCapital: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
         GlossaryEnergy.ObjectiveEnergyNonUseCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
+        GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
     }
 
     energy_name = EnergyMix.name
@@ -422,6 +423,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         GlossaryEnergy.EnergyMeanPriceObjectiveValue: self.energy_model.energy_mean_price_objective,
                         GlossaryEnergy.ConstraintEnergyNonUseCapital: self.energy_model.non_use_capital_constraint_df,
                         GlossaryEnergy.ObjectiveEnergyNonUseCapital: self.energy_model.non_use_capital_obj,
+                        GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream: self.energy_model.non_use_capital_obj_by_stream,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
@@ -518,6 +520,17 @@ class Energy_Mix_Discipline(SoSWrapp):
         d_non_use_capital_obj, d_capital_obj = self.energy_model.d_non_use_capital_obj_d_capital()
         for stream in inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]:
             ns_stream = self.get_ns_stream(stream)
+            d_non_use_capital_by_stream, d_capital_by_stream = self.energy_model.d_non_use_capital_obj_by_stream_d_capital(ns_stream)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream,),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
+                d_capital_by_stream
+            )
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream, ),
+                (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.NonUseCapital),
+                d_non_use_capital_by_stream
+            )
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.Capital),
                 (f'{ns_stream}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryEnergy.Capital),
@@ -2051,7 +2064,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         chart_name = 'Capital'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+            GlossaryEnergy.Years, f"[{GlossaryEnergy.EnergyCapitalDf['unit']}]", chart_name=chart_name)
 
         serie = InstanciatedSeries(
             capital_df[GlossaryEnergy.Years].values.tolist(),

@@ -499,7 +499,7 @@ class TechnoType:
         self.compute_other_streams_needs()
         self.compute_cost_of_other_streams_usage()
         self.compute_specifif_costs_of_technos()
-        self.compute_energy_and_resources_costs()
+        self.compute_streams_and_resources_costs()
 
     def is_invest_before_year(self, year):
         '''
@@ -1132,7 +1132,7 @@ class TechnoType:
         self.consumption_woratio = copy(self.consumption_detailed)
         self.land_use_woratio = copy(self.land_use)
 
-    def compute_energy_and_resources_costs(self):
+    def compute_streams_and_resources_costs(self):
         all_costs = self.cost_of_resources_usage[self.resources_used_for_production].values.sum(axis=1) + \
                     self.cost_of_streams_usage[self.streams_used_for_production].values.sum(axis=1) + \
                     self.specific_costs.drop(GlossaryEnergy.Years, axis=1).values.sum(axis=1)
