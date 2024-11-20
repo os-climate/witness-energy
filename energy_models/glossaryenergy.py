@@ -30,7 +30,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
     EXPORT_PROFILES_AT_POLES = "export_invest_profiles_at_poles"
-    YearEndDefaultValueGradientTest = 2030
+    YearEndDefaultValueGradientTest = 2050  # TODO: if using 2030 => year
     LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050
     YearEndDefaultCore = GlossaryWitnessCore.YearEndDefault
