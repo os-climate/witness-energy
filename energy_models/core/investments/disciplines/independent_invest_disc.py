@@ -72,7 +72,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                                         'float', None, False)},
                                                'namespace': 'ns_invest',
                                                'dataframe_edition_locked': False},
-        GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
+        GlossaryEnergy.MaxBudgetValue: GlossaryEnergy.MaxBudgetDf,
         GlossaryEnergy.MaxBudgetConstraintRefValue: GlossaryEnergy.MaxBudgetConstraintRef
     }
 
@@ -382,7 +382,5 @@ class IndependentInvestDiscipline(SoSWrapp):
                 new_chart_energy_ratio.add_series(serie_ratio)
 
             instanciated_charts.insert(1, new_chart_energy_ratio)
-
-
 
         return instanciated_charts

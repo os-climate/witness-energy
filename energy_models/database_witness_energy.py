@@ -148,8 +148,8 @@ class DatabaseWitnessEnergy:
             out_df = heavy_collected_data.get_between_years(year_start=year_start - construction_delay, year_end=year_start - 1)
         return out_df, heavy_collected_data
 
-
     techno_production_historic_folder = join(Path(__file__).parents[1], "data_energy", "techno_production_historic")
+
     @classmethod
     def get_techno_prod(cls, techno_name: str, year: int, is_available_at_year: bool = False):
         name_formatted = techno_name.replace(".", "_")
@@ -171,7 +171,6 @@ class DatabaseWitnessEnergy:
 
         out = heavy_collected_data.get_value_at_year(year=year)
         return out, heavy_collected_data
-
 
     techno_age_distrib_folder = join(Path(__file__).parents[1], "data_energy", "techno_factories_age")
 
@@ -195,4 +194,3 @@ class DatabaseWitnessEnergy:
 
         out = heavy_collected_data.get_value_at_year(year=year)
         return out, heavy_collected_data
-

@@ -50,7 +50,6 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.cost_details[f'{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
-
     def compute_byproducts_production(self):
         C_per_h2 = self.get_theoretical_solid_carbon_production()
 
@@ -58,7 +57,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
             C_per_h2 * self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 
     def get_theoretical_solid_carbon_production(self):
-        ''' 
+        '''
         Get methane needs in kg C /kWh H2
         1 mol of C for 2 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -75,7 +74,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         return methane_needs
 
     def get_theoretical_methane_needs(self):
-        ''' 
+        '''
         Get methane needs in kWh CH4 /kWh H2
         1 mol of CH4 for 2 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -92,7 +91,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         return methane_needs
 
     def get_theoretical_cO2_prod(self):
-        ''' 
+        '''
         Need to model the fact that carbon is created but not CO2
         '''
 

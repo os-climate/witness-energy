@@ -38,7 +38,6 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        
 
         # We take biomass price of methane/5.0
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
@@ -58,7 +57,6 @@ class LiquefactionPriceTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.1715})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

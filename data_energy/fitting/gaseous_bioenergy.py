@@ -14,21 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os
+import pickle
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-import pickle
+from climateeconomics.glossarycore import GlossaryCore
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 from sostrades_core.tools.bspline.bspline import BSpline
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+            InstanciatedSeries,
+            TwoAxesInstanciatedChart,
+)
+
 from energy_models.glossaryenergy import GlossaryEnergy
-from climateeconomics.glossarycore import GlossaryCore
-from copy import deepcopy
 
 """
 This script is used to calibrate the gaseous bioenergy invest so that the energy production matches the IEA NZE scenario
@@ -51,14 +52,14 @@ df_prod_iea = pd.concat([df_prod_iea, new_row], ignore_index=True)
 initial_production = df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == year_start]["biogas AnaerobicDigestion (TWh)"].values[0]
 
 # interpolate data between 2050 and 2100
-years_IEA_interpolated = years #np.arange(years_IEA[0], years_IEA[-1] + 1, 5)
+years_IEA_interpolated = years  # np.arange(years_IEA[0], years_IEA[-1] + 1, 5)
 f = interp1d(years_IEA, df_prod_iea["biogas AnaerobicDigestion (TWh)"].values, kind='linear')
 prod_IEA_interpolated = f(years)
 
 # increase discretization in order to smooth production between 2020 and 2030
-years_optim = np.linspace(year_start, year_end, 8) #np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
+years_optim = np.linspace(year_start, year_end, 8)  # np.arange(years_IEA[0], years_IEA[-1] + 1, 5) #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 
-invest_year_start = 3.432 #G$
+invest_year_start = 3.432  # G$
 
 # chose the name so that it mathes the datamanager of the IEA vs NZE study
 name = 'usecase_witness_optim_nze_eval'
@@ -101,13 +102,13 @@ def run_model(x: list, inputs_dict: dict = inputs_dict, year_end: int = year_end
     ee.factory.set_builders_to_coupling_builder(builder)
 
     ee.configure()
-    #ee.display_treeview_nodes()
+    # ee.display_treeview_nodes()
 
     inputs_dict.update({
         f'{name}.{GlossaryEnergy.YearStart}': year_start,
         f'{name}.{GlossaryEnergy.YearEnd}': year_end,
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
-        #f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
+        # f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.initial_production': initial_production,
         f'{name}.{model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(year_start - construction_delay, year_start), GlossaryEnergy.InvestValue: invest_before_year_start}),
     })
@@ -116,7 +117,7 @@ def run_model(x: list, inputs_dict: dict = inputs_dict, year_end: int = year_end
 
     ee.execute()
 
-    prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0]) #PWh
+    prod_df = ee.dm.get_value(ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)[0])  # PWh
 
     return prod_df[[GlossaryEnergy.Years, "biogas (TWh)"]], invest_df, ee
 
@@ -129,11 +130,11 @@ def fitting_renewable(x: list):
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([0.]), 1/2.4 * np.ones(construction_delay - 1), np.ones(len(years_optim))))
-bounds = [(0., 0.)] + [(1./2.4/3., 1./2.4 * 3.)] * (construction_delay - 1) + (len(years_optim)) * [(1./3., 3. * 1.)]
+x0 = np.concatenate((np.array([0.]), 1 / 2.4 * np.ones(construction_delay - 1), np.ones(len(years_optim))))
+bounds = [(0., 0.)] + [(1. / 2.4 / 3., 1. / 2.4 * 3.)] * (construction_delay - 1) + (len(years_optim)) * [(1. / 3., 3. * 1.)]
 # Use minimize to find the minimum of the function
-result = minimize(fitting_renewable, x0, bounds=bounds, #method='trust-constr',
-                  options={'disp': True, 'maxiter': 500}) #, 'maxfun': 500, 'ftol': 1.e-6, 'maxls': 50})
+result = minimize(fitting_renewable, x0, bounds=bounds,  # method='trust-constr',
+                  options={'disp': True, 'maxiter': 500})  # , 'maxfun': 500, 'ftol': 1.e-6, 'maxls': 50})
 
 prod_df, invest_df, ee = run_model(result.x)
 # Print the result
@@ -180,4 +181,3 @@ df_invest_mix['biogas.AnaerobicDigestion'] = invest_df[GlossaryCore.InvestValue]
 df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
 # values to set in the invest_design_space_NZE.csv
 print(f"invest at poles={result.x[construction_delay:] * invest_year_start}")
-

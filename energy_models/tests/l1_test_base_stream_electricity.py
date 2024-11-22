@@ -94,8 +94,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
     def test_01_base_stream(self):
         '''
-        The objective is to test output energy price and energy co2 emissions when 
-        one techno has low prod compare to the other 
+        The objective is to test output energy price and energy co2 emissions when
+        one techno has low prod compare to the other
         We want to kill the low influence to reduce gradients
         '''
         self.name = 'Test'
@@ -105,7 +105,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                    'ns_electricity': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryEnergy.NS_ENERGY_MIX: self.name,}
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name, }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.energy_disciplines.electricity_disc.ElectricityDiscipline'

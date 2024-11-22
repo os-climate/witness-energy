@@ -47,7 +47,6 @@ class FossilGas(MethaneTechno):
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
 
-
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[

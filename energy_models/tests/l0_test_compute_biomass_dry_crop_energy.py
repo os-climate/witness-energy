@@ -54,7 +54,6 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: 0.})  # * 0.1*(0.001*237.95*1.52 + 0.2*237.95*0.52)})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

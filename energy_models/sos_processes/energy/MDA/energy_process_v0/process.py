@@ -47,7 +47,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
-        self.techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT
+        self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
 
     def get_builders(self):
 

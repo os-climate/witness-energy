@@ -35,14 +35,12 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
         self.model_name = 'investments profile'
         self.ee = ExecutionEngine(self.name)
 
-
         self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         self.n_profiles = 4
         self.year_min = 2020
         self.export_profiles_at_poles = False
         self.year_max = 2025
         self.years = np.arange(self.year_min, self.year_max + 1)
-
 
         self.inputs_dict = {
             f'{self.name}.{self.model_name}.column_names': self.columns_names,
@@ -96,7 +94,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()
 
     def test_02_output_at_poles(self):
@@ -130,5 +128,5 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()

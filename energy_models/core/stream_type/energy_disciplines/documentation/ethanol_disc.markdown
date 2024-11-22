@@ -1,13 +1,13 @@
 ## Ethanol
 
 ## Description
-Bioethanol is a form of renewable energy that can be produced from agricultural feedstocks. 
-It can be made from very common crops such as hemp, sugarcane, potato, cassava and corn. 
-There has been considerable debate about how useful bioethanol is in replacing gasoline. 
+Bioethanol is a form of renewable energy that can be produced from agricultural feedstocks.
+It can be made from very common crops such as hemp, sugarcane, potato, cassava and corn.
+There has been considerable debate about how useful bioethanol is in replacing gasoline.
 Concerns about its production and use relate to increased food prices due to the large amount of arable land required for crops, as well as the energy and pollution balance of the whole cycle of ethanol production, especially from corn.[^1]
 
-## Engines Fuel 
-Ethanol contains approximately 34% less energy per unit volume than gasoline, and therefore in theory, burning pure ethanol in a vehicle reduces range per unit measure by 34%, given the same fuel economy, compared to burning pure gasoline. 
+## Engines Fuel
+Ethanol contains approximately 34% less energy per unit volume than gasoline, and therefore in theory, burning pure ethanol in a vehicle reduces range per unit measure by 34%, given the same fuel economy, compared to burning pure gasoline.
 However, since ethanol has a higher octane rating, the engine can be made more efficient by raising its compression ratio.
 
 More than 98% of U.S. gasoline contains ethanol, typically E10 (10% ethanol, 90% gasoline), to oxygenate the fuel, which reduces air pollution.
@@ -22,7 +22,7 @@ Compared with conventional unleaded gasoline, ethanol is a particulate-free burn
 The most common production process is "Dry Milling" representing 90% of total production.[^3]
 
 ![](ethanol_world_prod_rfa.PNG)
-(Image Credit: 
+(Image Credit:
 [Renewable Fuels Association](https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production))
 
 ## Sources

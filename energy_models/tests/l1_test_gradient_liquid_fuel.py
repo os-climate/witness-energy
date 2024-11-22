@@ -92,7 +92,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         self.invest_level_negative2 = pd.DataFrame({GlossaryEnergy.Years: years,
                                                     GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
-        
+
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(4435750000.0, 5093000000.0, len(self.years)) * 1.0e-9})
 
@@ -289,7 +289,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.override_dump_jacobian = True # Test seems KO in server, regenerate pickle at each test
+        self.override_dump_jacobian = True  # Test seems KO in server, regenerate pickle at each test
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',

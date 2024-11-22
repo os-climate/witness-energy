@@ -74,7 +74,7 @@ class TechnoDiscipline(SoSWrapp):
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'user_level': 2},
         'smooth_type': {'type': 'string', 'default': 'smooth_max',
-                        'possible_values': ['smooth_max', 'soft_max', ], # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
+                        'possible_values': ['smooth_max', 'soft_max', ],  # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
         GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
@@ -216,7 +216,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
-            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name), # todo: not coupled, rename cols and move to DESC_OUT
+            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name),  # todo: not coupled, rename cols and move to DESC_OUT
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         self.add_inputs(dynamic_inputs)
@@ -303,7 +303,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def run(self):
         '''
-        Generic run for all technologies 
+        Generic run for all technologies
         '''
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
@@ -524,7 +524,7 @@ class TechnoDiscipline(SoSWrapp):
                     var_cons = (consumption[column] / installed_power['new_power_production']).fillna(0)
                     self.dcons_column_dinvest = self.dpower_dinvest.copy()
                 else:
-                    var_cons = (consumption[column] /production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(0)
+                    var_cons = (consumption[column] / production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(0)
                     self.dcons_column_dinvest = self.dprod_dinvest.copy()
 
                 for line in range(len(years)):
@@ -1398,7 +1398,7 @@ class TechnoDiscipline(SoSWrapp):
         years = cost_details[GlossaryEnergy.Years]
         capex = cost_details[f'Capex_{self.techno_name}']
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
-        serie = InstanciatedSeries( years, capex, '','lines')
+        serie = InstanciatedSeries(years, capex, '', 'lines')
 
         new_chart.series.append(serie)
         return new_chart

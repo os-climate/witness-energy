@@ -129,8 +129,7 @@ class StreamDiscipline(SoSWrapp):
         self.energy_model.configure(inputs_dict)
         # -- compute informations
         cost_details, production, consumption, consumption_woratio, techno_mix = self.energy_model.compute(inputs_dict,
-                                                                                                           exp_min=
-                                                                                                           inputs_dict[
+                                                                                                           exp_min=inputs_dict[
                                                                                                                'exp_min'])
 
         cost_details_technos = self.energy_model.sub_prices
@@ -154,7 +153,7 @@ class StreamDiscipline(SoSWrapp):
                         GlossaryEnergy.LandUseRequiredValue: self.energy_model.land_use_required,
                         GlossaryEnergy.EnergyTypeCapitalDfValue: self.energy_model.energy_type_capital
                         }
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

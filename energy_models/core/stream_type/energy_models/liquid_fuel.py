@@ -81,8 +81,8 @@ class LiquidFuel(EnergyType):
         Specific computation for the CO2 per use taking into account the use of oil in petrochemical plants (plastic and textile) and construction
 
 
-        We only take into account energy emissions and not industrial emissions in energy mix 
-        --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model 
+        We only take into account energy emissions and not industrial emissions in energy mix
+        --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model
         '''
 
         #         kgcoal_per_kgsteel = 1 / 1.7

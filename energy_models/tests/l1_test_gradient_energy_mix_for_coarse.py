@@ -136,9 +136,9 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
         '''
         For unknown reasons, the test does not pass on the platform (Tekton) but passes locally.
-        Therefore, the pkl file is removed after the test is done so that it is automatically regenerated at 
+        Therefore, the pkl file is removed after the test is done so that it is automatically regenerated at
         each execution of the test
-        ''' # FIXME: address this --> remove the self.override_dump_jacobian in both tests
+        '''  # FIXME: address this --> remove the self.override_dump_jacobian in both tests
         os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):

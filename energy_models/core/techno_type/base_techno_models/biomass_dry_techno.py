@@ -42,5 +42,3 @@ class BiomassDryTechno(TechnoType):
         if 'recyle_part' in self.techno_infos_dict:
             self.land_use[f'{self.name} (Gha)'] *= (
                     1 - self.techno_infos_dict['recyle_part'])
-
-    

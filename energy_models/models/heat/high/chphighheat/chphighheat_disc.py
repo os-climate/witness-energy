@@ -49,7 +49,6 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
     # Heat Producer [Online]
     # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
 
-
     techno_infos_dict_default = {
         'Capex_init': 1300,
         # https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
@@ -91,7 +90,7 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
+
                       }
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

@@ -51,7 +51,6 @@ class PelletsPriceTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: np.linspace(12., 23., len(years))})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

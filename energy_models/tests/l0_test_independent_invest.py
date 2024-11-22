@@ -229,7 +229,7 @@ class TestIndependentInvest(unittest.TestCase):
 
         for graph in graph_list:
             pass
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
 
 
 if '__main__' == __name__:

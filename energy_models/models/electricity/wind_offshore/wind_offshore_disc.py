@@ -71,7 +71,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     #     techno_infos_dict_default['capacity_factor']
     initial_production = 89  # IEA in 2019
     # Invest in 2019 => 29.6 bn
-    
+
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

@@ -65,7 +65,7 @@ class EnergyMixTestCase(unittest.TestCase):
              f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': np.linspace(12, 492, len(self.years)),
              f'{GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': np.linspace(142, 5910, len(self.years)),
              'MEA (Mt)': np.linspace(.7, 293., len(self.years)),
-             'oil_resource (Mt)': np.linspace(.7, 293., len(self.years)),})
+             'oil_resource (Mt)': np.linspace(.7, 293., len(self.years)), })
 
         self.production = pd.DataFrame(
             {GlossaryEnergy.methane: np.linspace(116, 6800., len(self.years)),
@@ -76,7 +76,7 @@ class EnergyMixTestCase(unittest.TestCase):
              'CO2 (Mt)':  np.linspace(5, 222, len(self.years))})
 
         self.cost_details = pd.DataFrame({GlossaryEnergy.methane:  np.linspace(193, 336, len(self.years)),
-                                          'methane_wotaxes': np.linspace(193, 336, len(self.years)),})
+                                          'methane_wotaxes': np.linspace(193, 336, len(self.years)), })
         # Biomass dry inputs coming from agriculture mix disc
         #
         energy_consumption_biomass = np.linspace(0, 4, self.year_range)
@@ -109,7 +109,6 @@ class EnergyMixTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: self.years, 'random techno (Gha)': 0.0})
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
@@ -220,8 +219,8 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        #for graph in graph_list:
-            #graph.to_plotly().show()
+        # for graph in graph_list:
+            # graph.to_plotly().show()
 
     def test_03_energy_mix_discipline_exponential_limit(self):
         """

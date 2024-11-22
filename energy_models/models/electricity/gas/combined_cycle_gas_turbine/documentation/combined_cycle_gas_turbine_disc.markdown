@@ -2,42 +2,42 @@
 
 
 **Definition:**
-Gas power plants generate electricity by burning gas. There exists different types of gas power plant to generate electricity. All of them use a gas turbine: "natural gas is added, along with a stream of air, which combusts and expands through this turbine causing a generator to spin a magnet, making electricity."[^1]. Within this process, waste heat is generated. Some types of plant use this waste heat (see below).   
-Natural gas power plants are cheap and quick to build. They also have very high thermodynamic efficiencies compared to other power plants.    
+Gas power plants generate electricity by burning gas. There exists different types of gas power plant to generate electricity. All of them use a gas turbine: "natural gas is added, along with a stream of air, which combusts and expands through this turbine causing a generator to spin a magnet, making electricity."[^1]. Within this process, waste heat is generated. Some types of plant use this waste heat (see below).
+Natural gas power plants are cheap and quick to build. They also have very high thermodynamic efficiencies compared to other power plants.
 There are two types of natural gas power plants: **Simple cycle gas plants** and **combined cycle gas plants**. The former consists of a gas turbine connected to a generator and the latter consists of a simple cycle plant, combined with another external combustion engine.
 
-## Simple Cycle 
+## Simple Cycle
 "The simple cycle is simpler but less efficient than the combined cycle. However, simple cycle plants are able to dispatch faster than coal-fired power plants or nuclear plants. This means they can be turned on or off faster in order to meet societies electricity needs. Often needed on the grid with wind power and solar power, its purpose is to meet the fluctuating electricity needs of society, known as peaking power."[^1]
 
 ## Combined Cycle Gas Plant
 "Combined cycle plants are more efficient because it makes use of the hot exhaust gases that would otherwise be dispelled from the system. These exhaust gases are used to boil water into steam which can then spin another turbine and generate more electricity. The thermal efficiency of the combined cycle can get up to 60%. Moreover, these plants produce one third of the waste heat of a plant with a 33% efficiency (like a typical nuclear power plant or an older coal power plant). The cost of a combined cycle plants is generally higher since they cost more to build and run."[^1]
- 
-## Data    
+
+## Data
 Production of high heat is calculated in TWh. Where, consumption of methane(TWh) is more than production of electricity(TWh).
 
 The efficiency drops significantly at partial load. The typical simple-cycle efficiency is 33–43% at maximum load and drops significantly at partial load. The efficiency for a CCGT will vary with size and type of turbine selected. But tends to increase with the size of the turbine.
 
 
-The data used for this model is extracted from World Bank[^2], the International Energy Agency[^3], the Energy Information Administration[^4], Lazard[^5] and Fraunhofer[^6].  
-In its document[^2], the World Bank gather data from several sources to compute the Levelized Cost of Energy and compare the different results. 
+The data used for this model is extracted from World Bank[^2], the International Energy Agency[^3], the Energy Information Administration[^4], Lazard[^5] and Fraunhofer[^6].
+In its document[^2], the World Bank gather data from several sources to compute the Levelized Cost of Energy and compare the different results.
 
-### GHG emissions 
+### GHG emissions
 
 The GAINS model predicts methane fugitive emissions from gas energy. Emission factors from gas production are adapted from IPCC guidelines and a mean value has been taken for the leakage at industrial and power plants of 0.1025 kt/PJ [^8].
 
 The GAINS model also predict N2O fugitive emissions from gas energy. The emission factor is equal to 0.0001 kt/PJ. [^7]
 
 ### Hypotheses
-For global investment and production we only have data for gas electricity without the detail for each technology. For the production, the Energy Information Agency[^3] explains that in 2017, 53% of the gas electricity was produced by Combined Cycle Gas Plant and the left 47% by gas turbine. This information was used for our assumption that 55% of global production comes from CCGT and 45% from GT.  
-Regarding investment, the only information we found is also from the Energy Information Agency[^3]. It states that the majority of the investment goes into CCGT plant. Our hypothesis is that 75% of investment of the 2 past years in gas plant was for CCGT plant and 25% for GT plant. 
+For global investment and production we only have data for gas electricity without the detail for each technology. For the production, the Energy Information Agency[^3] explains that in 2017, 53% of the gas electricity was produced by Combined Cycle Gas Plant and the left 47% by gas turbine. This information was used for our assumption that 55% of global production comes from CCGT and 45% from GT.
+Regarding investment, the only information we found is also from the Energy Information Agency[^3]. It states that the majority of the investment goes into CCGT plant. Our hypothesis is that 75% of investment of the 2 past years in gas plant was for CCGT plant and 25% for GT plant.
 
 ## Some insight on gas Electricity evolution
 
 
 Global electricity generation by source and scenario (TWh)[^3]
-![Global electricity generation by source and scenario (TWh)[^3]](electricitybysourceIEA.PNG)  
+![Global electricity generation by source and scenario (TWh)[^3]](electricitybysourceIEA.PNG)
 Global power generation capacity by source and scenario[^3]
-![](byscenarioprodelecIEA.PNG)  
+![](byscenarioprodelecIEA.PNG)
 Global annual average power sector investment, historical and
 by scenario, 2019-2040[^3]
 ![](investIEA.PNG)

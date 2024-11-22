@@ -26,7 +26,7 @@ class Electricity(EnergyType):
     default_techno_list = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal', GlossaryEnergy.Hydropower,
                            GlossaryEnergy.CoalGen, 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                            GlossaryEnergy.GasTurbine, 'BiogasFired', 'BiomassFired',
-                           #è'Geothermal'
+                           # è'Geothermal'
                            ]
 
     def __init__(self, name):
@@ -45,7 +45,7 @@ class Electricity(EnergyType):
 
     def compute_hydropower_constraint(self):
         '''
-        Compute hydropower production constraint so that 
+        Compute hydropower production constraint so that
         '''
         self.hydropower_constraint = pd.DataFrame(
             {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years]})

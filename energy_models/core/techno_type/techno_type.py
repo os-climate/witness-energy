@@ -201,7 +201,6 @@ class TechnoType:
             <= self.year_end]
         self.stream_prices = inputs_dict[GlossaryEnergy.StreamPricesValue]
 
-
         self.invest_level = inputs_dict[GlossaryEnergy.InvestLevelValue].loc[
             inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years]
             <= self.year_end]
@@ -280,7 +279,7 @@ class TechnoType:
 
     def apply_resources_ratios(self, apply_ressources_ratio: bool = True):
         """! Select the most constraining ratio and apply it to production and consumption.
-        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
+        To avoid clipping effects, the applied ratio is not the minimum value between all the ratios,
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
         A model variables is set in this method:
             -self.applied_ratio: the effective ratio applied for each year
@@ -351,11 +350,11 @@ class TechnoType:
         '''
         Compute Capital & loss of capital because of the unusability of the technology.
         When the applied ratio is below 1, the technology does not produce all the energy possible.
-        Investments on this technology is consequently non_use. 
-        This method computes the non_use of capital 
+        Investments on this technology is consequently non_use.
+        This method computes the non_use of capital
 
         Capex is in $/MWh
-        Prod in TWh 
+        Prod in TWh
         then capex*prod_wo_ratio is in $/MWh*(1e6MWh)= M$
 
         We divide by scaling_factor_invest_level to put non_use_capital in G$
@@ -470,7 +469,7 @@ class TechnoType:
         """
         Cost of resource R = need of resource R x price of resource R
         """
-        cost_of_resource_usage =  {
+        cost_of_resource_usage = {
             GlossaryEnergy.Years: self.years,
         }
         for resource in self.resources_used_for_production:
@@ -616,7 +615,7 @@ class TechnoType:
         """
         Put all capex in $/MWh
         """
-        capex_init = None # intialize capex init variable
+        capex_init = None  # intialize capex init variable
         if data_tocheck['Capex_init_unit'] == 'euro':
             # it is a total capital requirement TCR , need to be divided by
             # full_load_hours available power and capacity factor
@@ -742,7 +741,6 @@ class TechnoType:
 
         return elec_need
 
-
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """
         Compute energy demand in kWh/kWh or MWh/MWh (equivalent)
@@ -787,7 +785,7 @@ class TechnoType:
 
         self.cost_details['efficiency'] = efficiency
         return efficiency
-    
+
     def sigmoid_function(self, x, eff_max, eff_ini, x_shift, slope):
         x = x - x_shift
         # Logistic function
@@ -882,7 +880,7 @@ class TechnoType:
 
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
+        '''
         Get the theoretical CO2 production for a given technology,
         Need to be overloaded in each technology model (example in SMR)
         '''
@@ -891,7 +889,7 @@ class TechnoType:
     def compute_primary_energy_production(self):
         '''
         Compute the primary energy production for each technology
-        (primary energy is H2 for H2 techno , Kero for Kero techno ...etc) 
+        (primary energy is H2 for H2 techno , Kero for Kero techno ...etc)
         '''
         # First compute the initial aging distribution with the initial
         # production found in the techno discipline
@@ -917,7 +915,6 @@ class TechnoType:
             0.0)
 
     def compute_primary_installed_power(self):
-
 
         if 'full_load_hours' in self.techno_infos_dict:
             full_load_hours = self.techno_infos_dict['full_load_hours']
@@ -948,9 +945,9 @@ class TechnoType:
     def compute_aging_distribution_production(self):
         '''
         Compute the aging distribution production of primary energy for years of study
-        Start with the initial distribution and add a year on the age each year 
+        Start with the initial distribution and add a year on the age each year
         Add also the yearly production regarding the investment
-        All productions older than the lifetime are removed from the dataframe  
+        All productions older than the lifetime are removed from the dataframe
         '''
         # To break the object link with initial distrib
         aging_distrib_year_df = pd.DataFrame(
@@ -1209,7 +1206,6 @@ class TechnoType:
         applied_ratio = self.applied_ratio['applied_ratio'].values / 100.
         utilisation_ratio = self.utilisation_ratio
         return np.diag(applied_ratio * utilisation_ratio / 100.) * d_capital_d_invest_level
-
 
     def compute_dlanduse_dinvest(self):
         """
@@ -1551,7 +1547,6 @@ class TechnoType:
         # line by line
         return (1.0 - maximum_learning_capex_ratio) * dcapex_calc_list_dinvest_list * dinvest_func.reshape(
             len(invest_list))
-
 
     "---------END OF GRADIENTS---------"
 

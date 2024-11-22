@@ -71,7 +71,6 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.techno_infos_dict['hydrogen_demand'] / self.cost_details['efficiency']
 
-
     def compute_byproducts_production(self):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict

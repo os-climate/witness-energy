@@ -80,8 +80,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 0.1715})
 
-        
-
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
@@ -232,8 +230,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict[f'{namespace}.{self.energy_name}.{GlossaryEnergy.HydrogenLiquefaction}.{GlossaryEnergy.TechnoProductionValue}'][
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})'] *= np.linspace(5.0, 5.0, len(self.years))
-
-        
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

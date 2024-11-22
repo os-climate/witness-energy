@@ -810,7 +810,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             inputs=self.get_checked_inputs(),
                             outputs=self.get_checked_outputs(), )
 
-
     def test_12_biomass_fired_discipline_analytic_grad(self):
 
         self.name = 'Test'

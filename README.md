@@ -27,7 +27,7 @@ This package contains the following main disciplines categories:
 
 For more information, please look at the documentation associated.
 
-The technologies are in the models folder. Most of the technology models logic is generic and is thus implemented in the 
+The technologies are in the models folder. Most of the technology models logic is generic and is thus implemented in the
 mother classes *techno type* and *techno disc*.
 The streams are in the core/stream_type folder. They similarly rely on mother class.
 

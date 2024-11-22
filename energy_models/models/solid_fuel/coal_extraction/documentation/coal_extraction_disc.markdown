@@ -17,7 +17,7 @@ Lifetime : 35 years, Capex : 0.00081 USD/kWh, Opex : 0.2*Capex
 The exchange rate between AU.D and US.D is assumed as follow : 1AU.D = 0.77 US.D
 Additional datas can be found in [^3].
 
-![](mines_data.PNG) 
+![](mines_data.PNG)
 
 
 
@@ -33,7 +33,7 @@ According to [^5], the full combustion of 1 short ton of coal emits 2.86 short t
 
 The emission of methane is a big issue for coal extraction mines. A lot of methane gas is immersed in coal seams and is leaking into the atmosphere via mineshafts the whole time the coal is mined. But that is not all. Methane leaks for decades into the atmosphere after mining from abandoned mines. Consequently, the global methane emissions from coal mining could continue groing even with declining coal production. [^4]
 
-The Model for Calculating Coal Mine Methane (MC2M) developed by [^4] and used by IPCC models computed the annual CH4 emissions from coal mines with the equation : 
+The Model for Calculating Coal Mine Methane (MC2M) developed by [^4] and used by IPCC models computed the annual CH4 emissions from coal mines with the equation :
 
 $$CH4\_emissions (m^3) = coal\_production (t) *gas\_content(mine\_depth,coal\_type)*ef\_coefficient$$
 

@@ -107,7 +107,6 @@ class FischerTropsch(LiquidFuelTechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
     def compute_specifif_costs_of_technos(self):
         nb_years = self.year_end - self.year_start + 1
         sg_needs_efficiency = [self.get_theoretical_syngas_needs_for_FT(
@@ -279,7 +278,7 @@ class FischerTropsch(LiquidFuelTechno):
 
     def grad_price_vs_stream_price(self):
         '''
-        Compute the gradient of global price vs energy prices 
+        Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.costs_details_sg_techno[f'{GlossaryEnergy.electricity}_needs'] * \
@@ -473,7 +472,7 @@ class FischerTropsch(LiquidFuelTechno):
                        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.TechnoStreamsUsedDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.ConstructionDelay: GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.WaterGasShift],
                        GlossaryEnergy.LifetimeName: GlossaryEnergy.TechnoLifetimeDict[GlossaryEnergy.WaterGasShift],
-                       GlossaryEnergy.InitialPlantsAgeDistribFactor:DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=WaterGasShiftDiscipline.techno_name, year=self.year_start)[0],
+                       GlossaryEnergy.InitialPlantsAgeDistribFactor: DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=WaterGasShiftDiscipline.techno_name, year=self.year_start)[0],
                        }
         if self.apply_stream_ratio:
             inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
@@ -505,13 +504,11 @@ class FischerTropsch(LiquidFuelTechno):
         elif self.sg_transformation_name == GlossaryEnergy.RWGS:
             self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = 0.0
 
-
         if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
 
             water_prod = self.water_prod_RWGS * \
                          self.cost_details['syngas_needs_for_FT'] / \
                          self.cost_details['efficiency']
-
 
         water_prod += self.get_theoretical_water_prod_from_FT() / \
                       self.cost_details['efficiency']
@@ -593,7 +590,7 @@ class FischerTropsch(LiquidFuelTechno):
         return delec_consumption
 
     def compute_scope_2_emissions(self):
-        ''' 
+        '''
         Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
         '''
 
@@ -755,7 +752,7 @@ class FischerTropsch(LiquidFuelTechno):
     #                     GlossaryEnergy.syngas: dsyngas_emission_dsyngas_ratio}
 
     def get_theoretical_syngas_needs_for_FT(self):
-        ''' 
+        '''
         Get syngas needs in kWh syngas /kWh liquid_fuel
         H2 + n/(2n+1)CO --> 1/(2n+1) CnH_2n+1 + n/(2n+1)H20
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -775,7 +772,7 @@ class FischerTropsch(LiquidFuelTechno):
         return syngas_needs_for_FT
 
     def get_theoretical_water_prod_from_FT(self):
-        ''' 
+        '''
         Get water prod in kg H20 /kWh liquid_fuel
         H2 + n/(2n+1)CO --> 1/(2n+1) CnH_2n+1 + n/(2n+1)H20
         Warning : molar mass is in g/mol but we divide and multiply by one

@@ -3,7 +3,7 @@
 What is the Electric Boiler?
 
 An Electric Boiler is a Boiler which operates using electricity rather than a combustible fossil fuel such as gas or oil boilers.
-Electrically heated boilers make use of electric current running through a heating element to create heat, to boil water into high-temperature and high-pressure steam. 
+Electrically heated boilers make use of electric current running through a heating element to create heat, to boil water into high-temperature and high-pressure steam.
 They can be classified into the automatically controlled and the manually controlled types.
 
 Low temperature heat in electric boiler technology, the temperature range is below 100 degree C.
@@ -28,7 +28,7 @@ The cold water is passed over the metal heating element and heat is transferred,
 The exact way in which the boiler works in terms of heating and storing the water depends on the type of electric boiler/heater used.
 
 ![img.png](img.png)
-## Data     
+## Data
 The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heating.
 
 [^1]: [Electric boiler Working - rio heating](https://www.rioheating.com/how-do-electric-heaters-work/#:~:text=Electric%20heating%20is%20the%20process,where%20the%20heat%20is%20created.)

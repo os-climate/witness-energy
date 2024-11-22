@@ -50,7 +50,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.CropEnergy
 
-
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
     # 50% of crops are left on the field,
@@ -144,7 +143,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
     def run(self):
         '''
-        specific run for crops 
+        specific run for crops
         '''
         super().run()
         self.specific_run()
@@ -155,7 +154,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -235,7 +234,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
     def get_production_chart(self):
         '''
-        Create chart with production details for industry/energy 
+        Create chart with production details for industry/energy
         '''
         production_mix_df = self.get_sosdisc_outputs('mix_detailed_production')
 
