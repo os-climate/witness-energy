@@ -24,3 +24,5 @@ class KeroseneTechno(TechnoType):
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
+
+    

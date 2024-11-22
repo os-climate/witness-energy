@@ -78,13 +78,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0
-
+    
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
         {GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_storage: 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-
+               
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,
@@ -129,7 +129,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     def run(self):
         '''
-        specific run for carbon storage
+        specific run for carbon storage 
         '''
         # -- get inputs
         CSTechnoDiscipline.run(self)

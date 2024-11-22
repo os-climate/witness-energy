@@ -196,7 +196,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       # f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        f'{self.study_name}.{GlossaryEnergy.ccs_list}': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
 
                        }

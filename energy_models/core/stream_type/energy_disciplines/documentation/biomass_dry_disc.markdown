@@ -8,7 +8,7 @@ Biomass sources for energy include:
 
 * Wood and wood processing wastes—firewood, wood pellets, and wood chips, lumber and furniture mill sawdust and waste, and black liquor from pulp and paper mills
 * Agricultural crops and waste materials—corn, soybeans, sugar cane, switchgrass, woody plants, and algae, and crop and food processing residues
-* Biogenic materials in municipal solid waste—paper, cotton, and wool products, and food, yard, and wood wastes
+* Biogenic materials in municipal solid waste—paper, cotton, and wool products, and food, yard, and wood wastes 
 * Animal manure and human sewage
 
 ![](biomass_prod.PNG) [^1]

@@ -3,7 +3,7 @@
 The upgrading process for biogas involves the removal of CO2. The most widely commercialized and used upgrading technologies are those that have for a long time been employed by the natural gas industry, pressure swing adsorption (PSA), chemical solvent scrubbing (using amines), and pressurized water scrubbing.[^2]
 
 Biogas Water Scrubber System Design, Greenlane Biogas [^3]
-![](water_scrubbing.PNG)
+![](water_scrubbing.PNG) 
 (Image Credit: Hudde (2010), taken from [^3])
 
 Amine water scrubbing is one traditional chemical solvent scrubbing method of upgrading that is applied due to its low methane slippage and its capability to provide a high purity renewable methane product.
@@ -16,15 +16,15 @@ $$2(OH - 2CH_2 - NH_2) + CO_2 <--> (OH) - (CH_2)_2 - NHCOO- + OH - (CH_2)_2 - NH
 $$2(OH - (CH_2)_2 - NH_2) + H_2S <--> (HOCH_2CH_2NH_3)_2S$$
 $$(HOCH_2CH_2NH_3)_2S + H_2S <-->2HOCH_2CH_2NH_3HS$$
 
-## Data
+## Data     
 
-Economic and technical datas is taken from Vo & al [^1].
+Economic and technical datas is taken from Vo & al [^1]. 
 Currently around 3.5 Mtoe of biomethane are produced worldwide and 92.3% are from upgrading biogas[^4].
 The initial age distribution has been computed with biomethane plant lists from [^5] since most of biogas is converted into biomethane.
 
 ## Cooling
 [^6] Biogas upgrading process by receiving 2.393 kg/s biogas, 663.2 kW cooling energy, and 1650 kW power produces 0.5533 kg/s biomethane.
-
+ 
 
 [^1]: Vo, T. T.; Wall, D. M.; Ring, D.; Rajendran, K.; Murphy, J. D. (2018). Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied Energy, 212, pp. 1191-1202.
 [^2]:https://anaerobic-digestion.com/biogas-upgrading-technologies/

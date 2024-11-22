@@ -1,6 +1,6 @@
 **Definition[^1] :**
 
-The Chilled Ammonia Process is based on the chemistry of the NH3-CO2-H2O system and the ability of the ammoniated solution to absorb CO2 at low temperature and to release the CO2 at moderately elevated temperature.
+The Chilled Ammonia Process is based on the chemistry of the NH3-CO2-H2O system and the ability of the ammoniated solution to absorb CO2 at low temperature and to release the CO2 at moderately elevated temperature. 
 
 Fundamentals of Chilled ammonia process[^1]
 ![](cap.PNG)

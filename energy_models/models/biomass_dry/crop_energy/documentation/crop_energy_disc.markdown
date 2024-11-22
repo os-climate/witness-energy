@@ -77,7 +77,7 @@ The computed land-use amount of hectares is the agricultural area for energy cro
 
 $$NumberOfHa=\frac{CropProductionForEnergy}{density\_per\_ha*calorific\_value}$$
 
-With:
+With: 
 - CropProductionForEnergy, the production of crop and residue for energy sector computed by this model
 
 **Costs**
@@ -88,7 +88,7 @@ For CAPEX computation:
 For OPEX computation:
   - crop harvest and processing: 87.74 €/ha (264.4$/acre)[^7]
   - residue harvest (22$/t) + fertilizing (23$/t): 37.54 €/ha[^8]
-
+  
 The computed price is the mixed price of crop and residue. Details in the composition of prices of crop and residue is shown in the graphics named "Detailed Price of energy crop technology over the years". Prices are computed with the input parameter crop_residue_price_percent_dif.
 
 ## Other Data

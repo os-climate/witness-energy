@@ -34,5 +34,6 @@ class BiomassGasification(SyngasTechno):
 
         self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_demand']
 
+
     def compute_byproducts_production(self):
         self.compute_ghg_emissions(Methane.emission_name)

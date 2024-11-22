@@ -89,7 +89,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                },
                'market_demand': {'type': 'dataframe', 'default': market_demand, 'unit': 'Mt/year', 'structuring': True,
                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                          'carbon_demand': ('float', None, True), }
+                                                          'carbon_demand': ('float', None, True),}
                                  }
                }
 

@@ -52,7 +52,7 @@ class CCUS_Discipline(SoSWrapp):
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: {'type': 'int',
-                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [2000, 2300]},
+                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -62,7 +62,7 @@ class CCUS_Discipline(SoSWrapp):
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                    'carbon_capture from energy mix (Gt)': ('float', None, True), }, },
+                                                                    'carbon_capture from energy mix (Gt)': ('float', None, True), },},
         'co2_for_food': {
             'type': 'dataframe', 'unit': 'Mt',
             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
@@ -304,7 +304,7 @@ class CCUS_Discipline(SoSWrapp):
 
     def get_chart_co2_emissions_sources(self):
         '''
-        Plot all CO2 emissions sources
+        Plot all CO2 emissions sources 
         '''
         chart_name = 'CO2 emissions sources'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions')
@@ -341,3 +341,4 @@ class CCUS_Discipline(SoSWrapp):
         new_chart.add_series(serie)
 
         return new_chart
+

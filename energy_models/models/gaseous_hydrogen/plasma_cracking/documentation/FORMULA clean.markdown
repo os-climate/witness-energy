@@ -16,14 +16,14 @@ $$X = \dfrac {H2\_revenue}{SUM\_revenues}$$
 
 $$= \dfrac {H2\_revenue}{H2\_revenue+ Carbon\_sold\_revenue+Carbon\_storage\_revenue}$$
 
-if  Carbon\_prod - Carbon\_demand < 0:
+if  Carbon\_prod - Carbon\_demand < 0: 
 
 $$X = \dfrac {H2\_revenue}{H2\_revenue+ Carbon\_sold\_revenue+ 0}$$
 
 $$= \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+ [Carbon\_prod * Carbon\_price]}$$
 
-if  Carbon\_prod - Carbon\_demand > 0 :
-
+if  Carbon\_prod - Carbon\_demand > 0 : 
+    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if  Carbon\_storage < Carbon\_storage\_max :
@@ -43,7 +43,7 @@ $$X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+[Carbon\_demand * Ca
 \
 ### Gradient computation:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+ [Carbon\_prod * Carbon\_price]}$$
 
@@ -72,7 +72,7 @@ $$=\dfrac {[ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * Carbon\_s
 \
 \
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 
 $$X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ] 	+  [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$

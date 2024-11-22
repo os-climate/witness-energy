@@ -55,6 +55,7 @@ class OilGenPriceTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 50.0})
 
+
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 0.0})
         self.margin = pd.DataFrame(

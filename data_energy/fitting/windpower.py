@@ -14,26 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os
-import pickle
-from copy import deepcopy
 from functools import reduce
-
+import pickle
 import numpy as np
 import pandas as pd
+from copy import deepcopy
 from climateeconomics.glossarycore import GlossaryCore
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.bspline.bspline import BSpline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.tools.bspline.bspline import BSpline
 from energy_models.models.electricity.wind_onshore.wind_onshore_disc import (
     WindOnshoreDiscipline,
 )
+from energy_models.models.electricity.wind_offshore.wind_offshore_disc import (
+    WindOffshoreDiscipline,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
+
 
 """
 This script is used to calibrate the windpower invest so that the electricity production matches the IEA NZE scenario
@@ -62,12 +64,12 @@ f = interp1d(years_IEA, df_prod_iea['electricity (TWh)'].values, kind='linear')
 prod_IEA_interpolated = f(years_IEA_interpolated)
 
 # optimization at the poles just like in witness-full study
-years_optim = np.linspace(year_start, year_end, 8)  # years_IEA_interpolated #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
+years_optim = np.linspace(year_start, year_end, 8) #years_IEA_interpolated #sorted(list(set(years_IEA + list(np.arange(year_start, max(year_start, 2030) + 1)))))
 
-invest_year_start = 80.  # G$
-construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore']  # same construction delay for windonshore and windoffshore
+invest_year_start = 80. #G$
+construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore'] # same construction delay for windonshore and windoffshore
 if construction_delay != GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore']:
-    raise ValueError("must adapt script as construction delay for windOnshore and windOffshore differ")
+    raise ValueError(f"must adapt script as construction delay for windOnshore and windOffshore differ")
 
 name = 'usecase_witness_optim_nze_eval'
 model_name_onshore = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOnshore}"
@@ -82,7 +84,7 @@ mod_path_onshore = 'energy_models.models.electricity.wind_onshore.wind_onshore_d
 mod_path_offshore = 'energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline'
 
 # if want to modify the capex of both onshore and offshore
-# dict_techno_dict_default = {model_name_onshore: WindOnshoreDiscipline.techno_infos_dict_default,
+#dict_techno_dict_default = {model_name_onshore: WindOnshoreDiscipline.techno_infos_dict_default,
 #                            model_name_offshore: WindOffshoreDiscipline.techno_infos_dict_default}
 techno_info_dict_default = WindOnshoreDiscipline.techno_infos_dict_default
 Capex_init0 = WindOnshoreDiscipline.techno_infos_dict_default['Capex_init']
@@ -105,8 +107,6 @@ init_prod_dict = {
     model_name_onshore: initial_prod * init_prod_onshore_over_offshore / (1. + init_prod_onshore_over_offshore),
     model_name_offshore: initial_prod / (1. + init_prod_onshore_over_offshore)}
 ratio_invest_onshore_offshore = 3.6689  # taken from initial witness results
-
-
 def run_model(x: list, year_end: int = year_end):
     techno_info_dict_default['Capex_init'] = Capex_init0 * x[0]
     invest_before_year_start = x[1:construction_delay + 1] * invest_year_start
@@ -125,6 +125,7 @@ def run_model(x: list, year_end: int = year_end):
         df[model_name_onshore] = df[GlossaryCore.InvestValue] * ratio_invest_onshore_offshore / (1. + ratio_invest_onshore_offshore)
         df[model_name_offshore] = df[GlossaryCore.InvestValue] / (1. + ratio_invest_onshore_offshore)
 
+
     ee = ExecutionEngine(name)
     ee.ns_manager.add_ns_def(ns_dict)
     builder = []
@@ -135,7 +136,7 @@ def run_model(x: list, year_end: int = year_end):
     ee.factory.set_builders_to_coupling_builder(builder)
 
     ee.configure()
-    # ee.display_treeview_nodes()
+    #ee.display_treeview_nodes()
 
     inputs_dict.update({
         f'{name}.{GlossaryEnergy.YearStart}': year_start,
@@ -144,11 +145,11 @@ def run_model(x: list, year_end: int = year_end):
     })
     for model_name in [model_name_offshore, model_name_onshore]:
         inputs_dict.update({
-        # f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
+        #f'{name}.{model_name}.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': init_age_distrib_factor,
         f'{name}.{model_name}.initial_production': init_prod_dict[model_name],
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': pd.DataFrame({GlossaryEnergy.Years: years, GlossaryCore.InvestValue: invest_df[model_name].values}),
         f'{name}.{model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(year_start - construction_delay, year_start),
-                  GlossaryEnergy.InvestValue: invest_before_year_start_df[model_name].values}),
+                  GlossaryEnergy.InvestValue:invest_before_year_start_df[model_name].values}),
         })
 
     ee.load_study_from_input_dict(inputs_dict)
@@ -157,10 +158,10 @@ def run_model(x: list, year_end: int = year_end):
 
     # put electricity production for both wind techno energies in a single dataframe
     df_prod_names = ee.dm.get_all_namespaces_from_var_name(GlossaryEnergy.TechnoProductionValue)
-    df_prod_list = [ee.dm.get_value(df_prod_names[i]).rename(columns={"electricity (TWh)": df_prod_names[i]}) for i in range(len(df_prod_names))]  # PWh
+    df_prod_list = [ee.dm.get_value(df_prod_names[i]).rename(columns={"electricity (TWh)": df_prod_names[i]}) for i in range(len(df_prod_names))] #PWh
     df_prod = reduce(lambda left, right: pd.merge(left, right, on=GlossaryEnergy.Years), df_prod_list)
     # compute the sum of onshore and offshore technos:
-    df_prod['electricity (TWh)'] = df_prod.drop(GlossaryEnergy.Years, axis=1).sum(axis=1) * 1000.  # PWh
+    df_prod['electricity (TWh)'] = df_prod.drop(GlossaryEnergy.Years, axis=1).sum(axis=1) * 1000. #PWh
     df_prod_model = df_prod.loc[df_prod[GlossaryEnergy.Years].isin(years_IEA_interpolated)]
 
     price_df = ee.dm.get_value(f"{name}.{model_name}.{GlossaryEnergy.TechnoPricesValue}")
@@ -174,12 +175,12 @@ def fitting_renewable(x: list):
     years_price_iea = df_price_iea['years'].values
     price_model_values = (price_df.loc[price_df[GlossaryEnergy.Years].isin(years_price_iea), f"{GlossaryEnergy.WindOnshore}_wotaxes"]).values
 
-    return ((((df_prod_model['electricity (TWh)'].values - prod_IEA_interpolated) / prod_IEA_interpolated.mean()) ** 2).mean() + (((price_model_values - price_iea_values) / price_iea_values.mean()) ** 2).mean())
+    return ((((df_prod_model['electricity (TWh)'].values - prod_IEA_interpolated)/prod_IEA_interpolated.mean()) ** 2).mean() + (((price_model_values - price_iea_values)/price_iea_values.mean()) ** 2).mean())
 
 
 # Initial guess for the variables invest from year 2025 to 2100.
-x0 = np.concatenate((np.array([1.]), np.array([0.]), 80. / invest_year_start * np.ones(construction_delay - 1), np.ones(len(years_optim))))
-bounds = [(0.5, 1.5)] + [(0., 0.)] + [(80. / invest_year_start / 2., 80. / invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1. / 10., 10.)]
+x0 = np.concatenate((np.array([1.]), np.array([0.]), 80./invest_year_start * np.ones(construction_delay - 1), np.ones(len(years_optim))))
+bounds = [(0.5, 1.5)] + [(0., 0.)] + [(80./invest_year_start/2., 80./invest_year_start * 2.)] * (construction_delay - 1) + (len(years_optim)) * [(1./10., 10.)]
 
 # Use minimize to find the minimum of the function
 result = minimize(fitting_renewable, x0, bounds=bounds)
@@ -191,6 +192,7 @@ print("Function value at the optimum:", result.fun)
 print('Capex_init wind onshore:', result.x[0] * Capex_init0)
 print("invest before year start", result.x[1:construction_delay + 1] * invest_year_start)
 print("invest at the poles at the optimum", result.x[construction_delay + 1:] * invest_year_start)
+
 
 
 new_chart = TwoAxesInstanciatedChart('years', 'production (TWh)',
@@ -249,5 +251,5 @@ df_invest_mix.to_csv(invest_mix_csv, index=False, sep=',')
 # values to set in the invest_design_space_NZE.csv
 print(f"invest at poles for WindOnshore={result.x[construction_delay + 1:] * invest_year_start * ratio_invest_onshore_offshore / (1. + ratio_invest_onshore_offshore)}")
 print(f"invest at poles for WindOffshore={result.x[construction_delay + 1:] * invest_year_start / (1. + ratio_invest_onshore_offshore)}")
-print(f"invest before year start for WindOnshore={result.x[1:construction_delay + 1] * invest_year_start * ratio_invest_onshore_offshore / (1. + ratio_invest_onshore_offshore)}")
+print(f"invest before year start for WindOnshore={result.x[1:construction_delay +1] * invest_year_start * ratio_invest_onshore_offshore / (1. + ratio_invest_onshore_offshore)}")
 print(f"invest before year start for WindOffshore={result.x[1:construction_delay + 1] * invest_year_start / (1. + ratio_invest_onshore_offshore)}")

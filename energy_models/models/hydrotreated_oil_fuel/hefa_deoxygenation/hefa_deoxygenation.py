@@ -42,14 +42,16 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
 
     elec_consumption_factor = .185
 
+
     def compute_resources_needs(self):
         naturaloil_data = NaturalOil.data_energy_dict
         self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs(
         ) / naturaloil_data['calorific_value']
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
+        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.cost_details['efficiency']
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
+
 
     def compute_byproducts_production(self):
         # Theoretical C02 production in kg

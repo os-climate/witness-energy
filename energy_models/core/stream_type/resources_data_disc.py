@@ -85,7 +85,7 @@ class ResourcesDisc(SoSWrapp):
 
     df_desc_resource = {
         GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-        **{resource: ('float', None, True) for resource in GlossaryEnergy.ResourcesList}
+        **{resource : ('float', None, True) for resource in GlossaryEnergy.ResourcesList}
     }
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
@@ -136,7 +136,7 @@ class ResourcesDisc(SoSWrapp):
 
         outputs_dict = {GlossaryEnergy.ResourcesPriceValue: resources_price,
                         GlossaryEnergy.RessourcesCO2EmissionsValue: co2_emissions}
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

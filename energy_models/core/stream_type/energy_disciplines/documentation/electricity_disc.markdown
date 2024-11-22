@@ -22,7 +22,7 @@ World electricity production was estimated around 26 000 TWh in 2019, and the fo
 
 **Price:**
 
-The selection of electricity production modes and their economic viability varies in accordance with demand and region. The economics vary considerably around the world, resulting in widespread residential selling prices, e.g. the price in Serbia is around 6 cents per kWh while Germany has one of the most expensive electricity price around 30 cents per kWh (€).
+The selection of electricity production modes and their economic viability varies in accordance with demand and region. The economics vary considerably around the world, resulting in widespread residential selling prices, e.g. the price in Serbia is around 6 cents per kWh while Germany has one of the most expensive electricity price around 30 cents per kWh (€). 
 
 **CO2 impact:**
 

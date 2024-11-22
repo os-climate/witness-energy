@@ -41,6 +41,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Methanation
 
+
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
                                  # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.

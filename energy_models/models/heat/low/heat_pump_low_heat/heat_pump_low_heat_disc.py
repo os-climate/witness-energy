@@ -45,6 +45,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.HeatPumpLowHeat
     energy_name = lowtemperatureheat.name
 
+
     # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
@@ -61,7 +62,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         # 660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04,
-        # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -85,7 +86,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     flux_input_dict = {'land_rate': 19000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-
+                      
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
@@ -121,7 +122,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     @staticmethod

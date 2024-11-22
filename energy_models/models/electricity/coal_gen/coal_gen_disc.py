@@ -114,7 +114,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 0.41,
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1150 / 1e9  # According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented. Computing the need in Mt/MW.,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1150 /1e9 #According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -124,7 +124,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
-
+    
     FLUE_GAS_RATIO = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

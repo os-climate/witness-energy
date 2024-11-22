@@ -46,6 +46,8 @@ class SolarPvPriceTestCase(unittest.TestCase):
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 0.13})
 
+        
+
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
@@ -106,7 +108,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       # f'{self.name}.{self.model_name}.{GlossaryEnergy.ResourcesUsedForProductionValue}': [],
+                       #f'{self.name}.{self.model_name}.{GlossaryEnergy.ResourcesUsedForProductionValue}': [],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)

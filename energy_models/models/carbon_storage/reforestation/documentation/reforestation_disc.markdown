@@ -29,7 +29,7 @@ The worldwide gain in forest cover totalled 5.2 million hectares per year, the a
 
 ## Carbon storage
 
-The intensity of the metabolic processes in trees depends not only on their age but also on certain environmental factors, such as density, temperature, humidity, availability of nutrients, and presence of weather anomalies. There are so many variables that any estimates as to the amount of CO2 absorbed by forests are beset with uncertainty. Consequently, there is a risk that important political decisions regarding climate change mitigation will be based on uncertain predictions.
+The intensity of the metabolic processes in trees depends not only on their age but also on certain environmental factors, such as density, temperature, humidity, availability of nutrients, and presence of weather anomalies. There are so many variables that any estimates as to the amount of CO2 absorbed by forests are beset with uncertainty. Consequently, there is a risk that important political decisions regarding climate change mitigation will be based on uncertain predictions. 
 
 A tree absorbs 30 kgCO2 per year in average [^2].
 The world mean density of trees per hectare is 225.40[3].

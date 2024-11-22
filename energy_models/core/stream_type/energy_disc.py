@@ -101,7 +101,7 @@ class EnergyDiscipline(StreamDiscipline):
         outputs_dict = {GlossaryEnergy.CO2EmissionsValue: CO2_emissions}
 
         outputs_dict.update(ghg_per_use)
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

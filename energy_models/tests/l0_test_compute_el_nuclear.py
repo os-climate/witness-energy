@@ -49,6 +49,7 @@ class NuclearTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.
 
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 

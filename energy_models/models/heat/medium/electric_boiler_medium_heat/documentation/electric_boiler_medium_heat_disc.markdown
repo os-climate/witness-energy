@@ -28,7 +28,7 @@ The cold water is passed over the metal heating element and heat is transferred,
 The exact way in which the boiler works in terms of heating and storing the water depends on the type of electric boiler/heater used.
 
 ![img.png](img.png)
-## Data
+## Data     
 The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heating.
 
 [^1]: [Electric boiler Working - rio heating](https://www.rioheating.com/how-do-electric-heaters-work/#:~:text=Electric%20heating%20is%20the%20process,where%20the%20heat%20is%20created.)
@@ -36,7 +36,7 @@ The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heati
 [^2]: [Electric Boiler Overview - ehc](https://www.electric-heatingcompany.co.uk/article/electric-boiler-guide/#:~:text=An%20Electric%20Boiler%20is%20a%20device%20used%20to%20heat%20your,designed%20to%20maximise%20surface%20area.)
 
 [^3]: [Electric Boiler Process - ehc](https://www.electric-heatingcompany.co.uk/article/how-do-electric-boilers-heaters-work/)
-
+                                      
 [^4]: [About Electric Boiler – EHB Leaflet](https://www.labour.gov.hk/eng/public/bpvd/EHB_Leaflet_2016_Eng_2%20web.pdf)
 
 [^5]: [Electric Boiler: World heat production – WBA(World Bioenergy Association)](https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf)

@@ -71,7 +71,7 @@ class SolidFuel(EnergyType):
 
     def compute_ghg_per_use(self, ghg_type):
         '''
-        Specific computation for the CO2 per use taking into account the use of coal for cement and steel
+        Specific computation for the CO2 per use taking into account the use of coal for cement and steel 
 
 
         1t of steel --> 1.852 t of CO2
@@ -79,8 +79,8 @@ class SolidFuel(EnergyType):
         1T of cement --> 0.9 t of CO2
         1T of cement --> 0.25 t of coal
 
-        We only take into account energy emissions and not industrial emissions in energy mix
-        --> CO2 per use for iron and steel and cement will be used in an industrial co2 emissions model
+        We only take into account energy emissions and not industrial emissions in energy mix 
+        --> CO2 per use for iron and steel and cement will be used in an industrial co2 emissions model 
         '''
 
         # Source: IEA 2022, Iron and Steel technology roadmap,

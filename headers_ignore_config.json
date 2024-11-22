@@ -1,31 +1,31 @@
 {
-  "extension_to_ignore": [
-    "pkl",
-    "png",
-    "jpg",
-    "csv",
-    "md",
-    "markdown",
-    "avif",
-    "json",
-    "in",
-    "gitignore",
-    "cfg",
-    "puml",
-    "pdf",
-    "txt",
-    "ipynb",
-    "zip",
-    "rst",
-    "ini",
-    "coveragerc",
-    "yaml",
-    "bat",
-    "toml"
-  ],
-  "files_to_ignore": [
-    ".readthedocs",
-    "docs/Makefile"
-  ],
-  "airbus_rev_commit": "37fb4ae"
+    "extension_to_ignore": [
+        "pkl",
+        "png",
+        "jpg",
+        "csv",
+        "md",
+        "markdown",
+        "avif",
+        "json",
+        "in",
+        "gitignore",
+        "cfg",
+        "puml",
+        "pdf",
+        "txt",
+        "ipynb",
+        "zip",
+        "rst",
+        "ini",
+        "coveragerc",
+        "yaml",
+        "bat",
+        "toml"
+    ],
+    "files_to_ignore": [
+        ".readthedocs",
+        "docs/Makefile"
+    ],
+    "airbus_rev_commit": "37fb4ae"
 }

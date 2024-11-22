@@ -32,6 +32,7 @@ class CHPMediumHeat(mediumheattechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
+
         # methane_needs
 
         # output needed in this method is in $/kwh of heat

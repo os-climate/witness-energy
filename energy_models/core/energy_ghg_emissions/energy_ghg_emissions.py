@@ -162,7 +162,7 @@ class EnergyGHGEmissions(BaseStream):
         self.compute_gwp()
 
     def sum_ghg_emissions_by_use(self):
-        '''Total CO2 by use
+        '''Total CO2 by use 
         which is the sum of all CO2 emissions emitted by use of net energy production
         '''
         for ghg in self.GHG_TYPE_LIST:
@@ -171,9 +171,9 @@ class EnergyGHGEmissions(BaseStream):
                 col.endswith(f'{ghg} by use {self.ghg_input_unit}')]].sum(axis=1)
 
     def compute_other_co2_emissions(self):
-        ''' CO2 from energy mix
-         CO2 expelled by energy mix technologies during the process
-         i.e. for machinery or tractors
+        ''' CO2 from energy mix    
+         CO2 expelled by energy mix technologies during the process 
+         i.e. for machinery or tractors 
         '''
         energy_producing_co2 = self.ghg_production_dict[GlossaryEnergy.CO2][[
             col for col in self.ghg_production_dict[GlossaryEnergy.CO2] if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
@@ -206,7 +206,7 @@ class EnergyGHGEmissions(BaseStream):
                 f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' CO2 removed by energy mix
-         CO2 removed by energy mix technologies during the process
+         CO2 removed by energy mix technologies during the process 
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = self.CO2_consumption[[
@@ -220,7 +220,7 @@ class EnergyGHGEmissions(BaseStream):
             self.CO2_sinks[
                 f'{GlossaryEnergy.carbon_capture} removed by energy mix {self.ghg_input_unit}'] = 0.0
 
-        ''' Total C02 from Flue gas
+        ''' Total C02 from Flue gas 
             sum of all production of flue gas
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
@@ -405,9 +405,9 @@ class EnergyGHGEmissions(BaseStream):
         #             self.total_co2_emissions[
         # f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = 0.0
 
-        ''' CO2 from energy mix
-         CO2 expelled by energy mix technologies during the process
-         i.e. for machinery or tractors
+        ''' CO2 from energy mix       
+         CO2 expelled by energy mix technologies during the process 
+         i.e. for machinery or tractors 
         '''
         energy_producing_co2 = co2_production[[
             col for col in co2_production if col.endswith(f'{GlossaryEnergy.carbon_capture} {self.ghg_input_unit}')]]
@@ -425,8 +425,8 @@ class EnergyGHGEmissions(BaseStream):
         #             self.total_co2_emissions[
         #                 f'{GlossaryEnergy.carbon_capture} from energy mix {self.ghg_input_unit}'] = 0.0
 
-        ''' CO2 removed by energy mix
-         CO2 removed by energy mix technologies during the process
+        ''' CO2 removed by energy mix       
+         CO2 removed by energy mix technologies during the process 
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[
@@ -445,7 +445,7 @@ class EnergyGHGEmissions(BaseStream):
         #                 f'{GlossaryEnergy.carbon_capture} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' Total C02 from Flue gas
-            sum of all production of flue gas
+            sum of all production of flue gas 
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
         #         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = self.co2_production[[
@@ -490,8 +490,8 @@ class EnergyGHGEmissions(BaseStream):
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
 
-        ''' CO2 removed by energy mix
-         CO2 removed by energy mix technologies during the process
+        ''' CO2 removed by energy mix       
+         CO2 removed by energy mix technologies during the process 
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[

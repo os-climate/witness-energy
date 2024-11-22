@@ -49,6 +49,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     techno_name = GlossaryEnergy.ManagedWood
 
+
     # available planted forests in 2020: 294 Mha (worldbioenergy.org)
 
     # reference:
@@ -152,6 +153,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                          years_between_harvest / (1 - recycle_part)  # in Twh
 
     # distrib computed, for planted forests since 150 years
+    
 
     # distrib computed, for planted forests since 1980 (40years)
     #                                              'distrib': [3.25, 3.26, 3.27, 3.27, 3.27, 3.24, 3.21, 3.17, 3.14, 3.1,
@@ -170,7 +172,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-
+                      
                }
     # -- add specific techno inputs to this
     DESC_IN.update(BiomassDryTechnoDiscipline.DESC_IN)
@@ -195,7 +197,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_post_processing_list(self, filters=None):

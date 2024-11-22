@@ -34,8 +34,8 @@ class EnergyProcessBuilder(BaseProcessBuilder):
         self.techno_list = None
         self.invest_discipline = invest_discipline
         self.associate_namespace = False
-        # self.energy_name = filename.split('\\')[-2].replace("_mix", '')
-        # self.techno_list = current_techno_dict[self.energy_name]
+        #self.energy_name = filename.split('\\')[-2].replace("_mix", '')
+        #self.techno_list = current_techno_dict[self.energy_name]
 
     def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT, associate_namespace=False):
         self.techno_list = techno_list

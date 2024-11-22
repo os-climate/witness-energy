@@ -1,92 +1,92 @@
 {
-  "methane": {
-    "type": "energy",
-    "value": [
-      "FossilGas"
-    ]
-  },
-  "hydrogen.gaseous_hydrogen": {
-    "type": "energy",
-    "value": [
-      "Electrolysis.SOEC",
-      "Electrolysis.PEM",
-      "Electrolysis.AWE",
-      "PlasmaCracking",
-      "WaterGasShift"
-    ]
-  },
-  "hydrogen.liquid_hydrogen": {
-    "type": "energy",
-    "value": [
-      "HydrogenLiquefaction"
-    ]
-  },
-  "biogas": {
-    "type": "energy",
-    "value": [
-      "AnaerobicDigestion"
-    ]
-  },
-  "syngas": {
-    "type": "energy",
-    "value": [
-      "Pyrolysis"
-    ]
-  },
-  "fuel.liquid_fuel": {
-    "type": "energy",
-    "value": [
-      "Refinery",
-      "FischerTropsch"
-    ]
-  },
-  "fuel.hydrotreated_oil_fuel": {
-    "type": "energy",
-    "value": [
-      "HefaDecarboxylation",
-      "HefaDeoxygenation"
-    ]
-  },
-  "fuel.biodiesel": {
-    "type": "energy",
-    "value": [
-      "Transesterification"
-    ]
-  },
-  "solid_fuel": {
-    "type": "energy",
-    "value": [
-      "CoalExtraction"
-    ]
-  },
-  "electricity": {
-    "type": "energy",
-    "value": [
-      "WindOffshore",
-      "WindOnshore",
-      "SolarPv",
-      "SolarThermal",
-      "Hydropower",
-      "Nuclear",
-      "CombinedCycleGasTurbine",
-      "BiogasFired",
-      "CoalGen",
-      "OilGen"
-    ]
-  },
-  "carbon_capture": {
-    "type": "CCUS",
-    "value": [
-      "direct_air_capture.AmineScrubbing",
-      "direct_air_capture.CalciumPotassiumScrubbing"
-    ]
-  },
-  "carbon_storage": {
-    "type": "CCUS",
-    "value": [
-      "DeepOceanInjection",
-      "DeepSalineFormation",
-      "GeologicMineralization"
-    ]
-  }
+    "methane": {
+        "type": "energy",
+        "value": [
+            "FossilGas"
+        ]
+    },
+    "hydrogen.gaseous_hydrogen": {
+        "type": "energy",
+        "value": [
+            "Electrolysis.SOEC",
+            "Electrolysis.PEM",
+            "Electrolysis.AWE",
+            "PlasmaCracking",
+            "WaterGasShift"
+        ]
+    },
+    "hydrogen.liquid_hydrogen": {
+        "type": "energy",
+        "value": [
+            "HydrogenLiquefaction"
+        ]
+    },
+    "biogas": {
+        "type": "energy",
+        "value": [
+            "AnaerobicDigestion"
+        ]
+    },
+    "syngas": {
+        "type": "energy",
+        "value": [
+            "Pyrolysis"
+        ]
+    },
+    "fuel.liquid_fuel": {
+        "type": "energy",
+        "value": [
+            "Refinery",
+            "FischerTropsch"
+        ]
+    },
+    "fuel.hydrotreated_oil_fuel": {
+        "type": "energy",
+        "value": [
+            "HefaDecarboxylation",
+            "HefaDeoxygenation"
+        ]
+    },
+    "fuel.biodiesel": {
+        "type": "energy",
+        "value": [
+            "Transesterification"
+        ]
+    },
+    "solid_fuel": {
+        "type": "energy",
+        "value": [
+            "CoalExtraction"
+        ]
+    },
+    "electricity": {
+        "type": "energy",
+        "value": [
+            "WindOffshore",
+            "WindOnshore",
+            "SolarPv",
+            "SolarThermal",
+            "Hydropower",
+            "Nuclear",
+            "CombinedCycleGasTurbine",
+            "BiogasFired",
+            "CoalGen",
+            "OilGen"
+        ]
+    },
+    "carbon_capture": {
+        "type": "CCUS",
+        "value": [
+            "direct_air_capture.AmineScrubbing",
+            "direct_air_capture.CalciumPotassiumScrubbing"
+        ]
+    },
+    "carbon_storage": {
+        "type": "CCUS",
+        "value": [
+            "DeepOceanInjection",
+            "DeepSalineFormation",
+            "GeologicMineralization"
+        ]
+    }
 }

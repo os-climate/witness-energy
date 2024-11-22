@@ -38,7 +38,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
 
     def get_water_needs(self):
-        '''
+        ''' 
         Get water needs in kg Water /kWh H2
         1 mol of H20 for 1 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -54,7 +54,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         return water_needs
 
     def get_oxygen_produced(self):
-        '''
+        ''' 
         Get oxygen needs in kg O2 /kWh H2
         1 mol of O2 for 2 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -72,7 +72,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
     def get_theoretical_platinum_needs(self):
         """
         Get platinum needs in kg platinum /kWh H2
-
+        
         https://www.energy.gov/sites/prod/files/2016/03/f30/At_A_GLANCE%20%28FCTO%29.pdf
         According to the Fuel Cell Technologies Office, 1g of platinum enables the production of 8K of H2
 

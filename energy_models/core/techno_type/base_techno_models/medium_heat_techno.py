@@ -29,3 +29,5 @@ class mediumheattechno(TechnoType):
                          self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
 
         return transport_cost
+
+

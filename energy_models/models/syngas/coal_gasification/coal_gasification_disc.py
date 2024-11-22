@@ -64,9 +64,9 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
                                  'efficiency': 1.0,
-                                     'techno_evo_eff': 'no', }
+                                     'techno_evo_eff': 'no',}
     # We do not invest on coal gasification yet
-
+    
     syngas_ratio = CoalGasification.syngas_COH2_ratio
 
     # From Future of hydrogen : Around 70 Mt of dedicated hydrogen are produced today, 76% from natural gas and

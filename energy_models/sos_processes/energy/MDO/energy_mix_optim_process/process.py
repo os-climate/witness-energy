@@ -25,7 +25,6 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
-
     def __init__(self, ee):
         super().__init__(ee)
         self.sub_process_repo = 'energy_models.sos_processes.energy.MDA'

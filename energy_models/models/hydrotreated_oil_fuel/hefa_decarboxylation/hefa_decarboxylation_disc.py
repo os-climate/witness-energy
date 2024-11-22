@@ -48,6 +48,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
 
+
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
     gallon_to_mc = 0.00378541

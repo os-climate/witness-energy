@@ -10,8 +10,8 @@ Significant datas for liquid fuel [^2]:
 
   * Molecular Weight : 170.0 g/mol
   * Density: 1300 kg/m^3
-  * CO2 after use : 2.42 kgCO2/kg
-  * N2O after use : 0.0014 kt/PJ [^4]
+  * CO2 after use : 2.42 kgCO2/kg 
+  * N2O after use : 0.0014 kt/PJ [^4]  
   * Calorific value : 4.86 kWh/kg[^3]
 
 

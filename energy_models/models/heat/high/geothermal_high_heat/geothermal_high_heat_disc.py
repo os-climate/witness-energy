@@ -47,6 +47,8 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.GeothermalHighHeat
     energy_name = hightemperatureheat.name
 
+
+
     techno_infos_dict_default = {
         'Capex_init': 3830,
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
@@ -79,7 +81,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     flux_input_dict = {'land_rate': 23000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-
+                      
 
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -116,7 +118,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     @staticmethod

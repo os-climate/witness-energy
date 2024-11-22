@@ -53,7 +53,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
 
         self.plasmacracking_techno_prices = pd.DataFrame({
             GlossaryEnergy.Years: years,
-            GlossaryEnergy.PlasmaCracking: 63.,
+            GlossaryEnergy.PlasmaCracking:63.,
             'PlasmaCracking_wotaxes': 54.
         })
 
@@ -64,9 +64,9 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                              })
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": 0.,
+                                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})":0.,
                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': 14481557540,
-                                            'CO2 (Mt)': 1452504570, })
+                                            'CO2 (Mt)': 1452504570,})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                        f"{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})": 0.,

@@ -46,6 +46,7 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 0.0325})
 
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(

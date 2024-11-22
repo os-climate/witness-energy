@@ -55,6 +55,7 @@ class CalciumPotassium(CCTechno):
 
     def compute_byproducts_production(self):
 
+
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[
                                                                                             f'{Methane.name}_needs'] * \
                                                                                         self.production_detailed[

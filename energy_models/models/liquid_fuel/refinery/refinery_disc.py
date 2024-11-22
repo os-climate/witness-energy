@@ -187,7 +187,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 grad_on_co2_tax)
-
+            
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
                                   )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values

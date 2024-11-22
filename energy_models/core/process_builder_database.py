@@ -37,7 +37,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
 
         Parameters:
         ns_dict (dict): The namespace definition to add.
-        associate_namespace (bool): If True, associates the namespace with builders.
+        associate_namespace (bool): If True, associates the namespace with builders. 
         database_name (str): The name of the database.
 
         Returns:
@@ -50,7 +50,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         return ns_ids
 
     def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False, get_from_database=False):
-        '''
+        ''' 
         define a base namespace
         instantiate builders iterating over a list of module paths
         return the list of disciplines built
@@ -72,7 +72,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         Parameters:
         builders_list (list): A list of builder objects.
         ns_dict (dict): A dictionary of namespaces.
-        associate_namespace (bool): If True, associates the namespace dictionary with the builder(s).
+        associate_namespace (bool): If True, associates the namespace dictionary with the builder(s). 
         database_location (str): The path to the directory where the database will be saved.
         database_name (str): The name of the database.
 

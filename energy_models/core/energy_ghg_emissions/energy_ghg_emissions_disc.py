@@ -159,7 +159,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'namespace': 'ns_energy',
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True), }
+                                                         GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True),}
                             }
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',

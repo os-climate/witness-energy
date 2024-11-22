@@ -70,6 +70,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))})
+        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
@@ -278,6 +279,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         for techno in technos:
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
+
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

@@ -50,6 +50,7 @@ class NuclearTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.
 
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 
@@ -140,7 +141,7 @@ class NuclearTestCase(unittest.TestCase):
         disc_us = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{model_name_US}')[0]
 
-        # we have associated only ns_electricity_nuc to the database. It means that only values of variables in this namespace will be loaded from the json file
+        # we have associated only ns_electricity_nuc to the database. It means that only values of variables in this namespace will be loaded from the json file 
         with open(file_path, "r") as f:
             json_data = f.read()
 
@@ -148,19 +149,20 @@ class NuclearTestCase(unittest.TestCase):
         data_ref_europe = data_dict_json['Europe']
         data_ref_us = data_dict_json['US']
 
-        # check techno_infos_dict maturity is equal to the json value
+        # check techno_infos_dict maturity is equal to the json value 
         self.assertEqual(data_ref_europe['techno_infos_dict']['maturity'],
                          disc_europe.get_sosdisc_inputs('techno_infos_dict')['maturity'])
         self.assertEqual(data_ref_us['techno_infos_dict']['maturity'],
                          disc_us.get_sosdisc_inputs('techno_infos_dict')['maturity'])
 
-        # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable
+        # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable 
         self.assertNotEqual(data_ref_europe[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
                             disc_europe.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
                                 GlossaryEnergy.MarginValue].max())
         self.assertNotEqual(data_ref_us[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
                             disc_us.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
                                 GlossaryEnergy.MarginValue].max())
+
 
 
 def convert_to_editable_json(data):

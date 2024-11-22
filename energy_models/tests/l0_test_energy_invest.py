@@ -243,6 +243,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
+
         self.check_jacobian(location=dirname(__file__), filename='jacobian_techno_invest_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -251,6 +252,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                             outputs=[
                                           f'{self.name}.{self.model_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'
                                           for techno in technology_list], )
+
 
     def test_07_energy_invest_disc_check_jacobian(self):
 
@@ -290,3 +292,4 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                             outputs=[
                                 f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.InvestLevelValue}'
                                 for energy in energy_list], )
+

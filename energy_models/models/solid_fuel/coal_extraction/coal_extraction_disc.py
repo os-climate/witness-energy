@@ -45,6 +45,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.CoalExtraction
 
+
     # Most coal seams are too deep underground for opencast mining and require
     # underground mining, a method that currently accounts for about 60
     # percent of world coal production. Wikipedia source :
@@ -107,7 +108,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     # From ourworldindata
     initial_production = 43752. - energy_own_use
     # First invest is zero to get exactly the initial production in 2020
-
+    
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                       }

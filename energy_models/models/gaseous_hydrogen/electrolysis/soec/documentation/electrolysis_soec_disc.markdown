@@ -1,8 +1,8 @@
 # SOEC (Solid Oxyde Electrolyser Cell) Electrolysis
 
-The solid oxide electrolysis (SOE) first introduced by Donitz and Erdle in the 1980s. Solid oxide electrolysis has attracted an abundant deal of attention due to the electrical energy converts into the chemical energy along with producing the ultra-pure hydrogen with greater efficiency. Solid oxide electrolysis operates at high pressure and high temperatures 500-850 C and utilizes the water in the form of steam. [^1]
+The solid oxide electrolysis (SOE) first introduced by Donitz and Erdle in the 1980s. Solid oxide electrolysis has attracted an abundant deal of attention due to the electrical energy converts into the chemical energy along with producing the ultra-pure hydrogen with greater efficiency. Solid oxide electrolysis operates at high pressure and high temperatures 500-850 C and utilizes the water in the form of steam. [^1] 
 
-![](SOEC.PNG)
+![](SOEC.PNG) 
 (Image Credit: S.Shiva Kumar & V.Himabindu [^1])
 
 
@@ -22,7 +22,7 @@ CAPEX estimates for SOEC electrolysers range across 2 800 to 600 USD/kW dependin
 
 SOEC is in a pre-commercial and fundamental research stage although Sunfire is already offering systems of 150 kW in a 20 ft or 40 ft
 container. Other companies investigating the SOEC technologies are Haldor Topsoe (incooperation with Riso DTU), Cermatec (in cooperation with the
-Idaho National Laboratory), FuelCell Energy and Toshiba. The initial production of the technology is assumed negligible.
+Idaho National Laboratory), FuelCell Energy and Toshiba. The initial production of the technology is assumed negligible. 
 
 ## Heat
 In Electrolysis, heat production assumed the net difference between total electricity consumption and total hydrogen production.

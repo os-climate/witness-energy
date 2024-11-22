@@ -87,7 +87,7 @@ class ReversedWaterGasShiftDiscipline(SyngasTechnoDiscipline):
     # Fake initial age distrib (not found in the litterature...)
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-
+                      
                'syngas_ratio': {'type': 'array', 'unit': '%'},
                'needed_syngas_ratio': {'type': 'float', 'unit': '%'}
                }

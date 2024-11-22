@@ -16,7 +16,7 @@ Significant datas for liquid hydrogen [^2]:
 Water is often considered harmless for the environment and it can be considered "zero emission", however, water vapor emitted in the athmosphere contribute to global warming (to a lesser extent than CO2).
 
 The energy cost to produce 1 kg of LH2 is between 10 to 12 kWh/kg for current industrial liquefaction plants, and goes down to around 6.0 kWh/kg in R&D prototypes.
-The losses of H2 to produce LH2 are estimated around 1.6 % from input stream to output stream.
+The losses of H2 to produce LH2 are estimated around 1.6 % from input stream to output stream.  
 
 [^1]: Hydrogen Fuel Wikipedia page, https://en.wikipedia.org/wiki/Hydrogen_fuel
 

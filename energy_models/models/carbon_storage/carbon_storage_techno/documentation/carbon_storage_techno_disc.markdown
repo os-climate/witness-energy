@@ -1,3 +1,3 @@
 **Definition :**
 
-A simplified techno used to demonstrate EnergyMix
+A simplified techno used to demonstrate EnergyMix 

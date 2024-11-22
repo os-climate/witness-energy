@@ -89,6 +89,6 @@ class EnergyType(BaseStream):
         elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[
             f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
             ghg_type_per_use = self.data_energy_dict_input[f'{ghg_type}_per_use']
-        else:
+        else :
             raise Exception("ghg per use unit is not handled")
         return ghg_type_per_use

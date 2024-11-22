@@ -1,7 +1,7 @@
 # Hydrogen liquefaction
 
-Hydrogen liquefaction is the process of changing the state of hydrogen from gas to liquid (temperatures of around 20 K).
-This is performed through thermodynamics cycles.
+Hydrogen liquefaction is the process of changing the state of hydrogen from gas to liquid (temperatures of around 20 K). 
+This is performed through thermodynamics cycles. 
 The data used here are taken from a model based on a four steps process:
 - the hydrogen feed is first pressurized and pre-cooled,
 - then it is cooled down with liquid nitrogen in a Claude cycle to be below the inversion point
@@ -38,3 +38,4 @@ the model is based on a liquifier with a capacity of 200000 kg/day.
 
 [^5]: [Hydrogen liquefaction and liquid hydrogen storage, G Valenti (2016)](https://www.sciencedirect.com/science/article/pii/B978178242362100002X)
 [^6]: https://www.idealhy.eu/uploads/documents/IDEALHY_Cryogenics_2012_Precooling.pdf
+                                

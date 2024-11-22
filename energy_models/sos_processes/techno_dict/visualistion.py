@@ -27,6 +27,7 @@ technologies = {
 }
 
 
+
 def generate_color_mapping(strings):
     # Get a list of all available colors
     colors = list(mcolors.CSS4_COLORS.keys())
@@ -52,17 +53,15 @@ def generate_color_mapping(strings):
 
     return color_mapping
 
-
 def visualize(technologies):
     # Initialize the directed graph
     import re
 
     import networkx as nx
-
     def improve_string(ss):
-        ss = ss.replace('.', '\n').replace('_', ' ')
+        ss = ss.replace('.','\n').replace('_',' ')
         ss = re.sub(r'(?<!^)(?=[A-Z])', ' ', ss)
-        ss = ss.replace('S O E C', 'SOEC')
+        ss = ss.replace('S O E C','SOEC')
         ss = ss.replace(' P E M', 'PEM')
         ss = ss.replace(' A W E', 'AWE')
         ss = ss.replace(' C O', 'CO')
@@ -88,7 +87,7 @@ def visualize(technologies):
 
     # Draw the graph
     pos = nx.spring_layout(G, k=600.5, iterations=1500)
-    size = 70
+    size= 70
     plt.figure(figsize=(size, size))
     # Define edge labels (using consumed energy for this example)
     edge_labels = {(improve_string(provider_tech), improve_string(tech)): improve_string(consumed_energy)
@@ -101,5 +100,5 @@ def visualize(technologies):
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8, font_color='red', rotate=False)
 
     nx.draw(G, pos, with_labels=True, node_size=3000, font_size=10, font_weight="bold", arrowsize=20, node_color=node_colors, edge_color=edges_colors)
-    # plt.title("Interconnections Between Technologies")
+    #plt.title("Interconnections Between Technologies")
     plt.show()

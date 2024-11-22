@@ -46,6 +46,7 @@ class WindOffshoreTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
 
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 

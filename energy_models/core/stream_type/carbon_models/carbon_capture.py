@@ -88,7 +88,7 @@ class CarbonCapture(BaseStream):
 
     def compute_production(self, sub_production_dict, sub_consumption_dict):
         '''
-        Specific compute energy production where we compute carbon captured from flue gas
+        Specific compute energy production where we compute carbon captured from flue gas 
         '''
 
         # Initialize dataframe out
@@ -196,11 +196,11 @@ class CarbonCapture(BaseStream):
         ptot = p1 + p2 + p3
         for dpi/dpi
             Old : dtechno_mix(p1)/dprod1 = dp1(ptot-p1)/ptot**2
-                with p1 = fexp(prod1)
+                with p1 = fexp(prod1) 
                     dp1/dprod1 = 1.0*f'exp(prod1)
                     dp2/dprod1 = 0.0
             New : dtechno_mix(p1)/dprod1 = dp1/ptot-(dp1+dp2)p1/ptot**2 = dp1(ptot-p1)/ptot**2 -dp2p1/ptot**2
-                with p1 = fexp(pbis1)
+                with p1 = fexp(pbis1) 
                     pbis1 = prod1*fg_perc = prod1*fexpp(fg_prod/(prod1+prod2))
                     dp1/dprod1 = f'exp(pbis1)*dpbis1 = f'exp(pbis1)*(fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
                                = dp1old * (fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
@@ -216,7 +216,7 @@ class CarbonCapture(BaseStream):
                 with dp1/dprod1 = 1.0*f'exp(prod1)
             New :  dtechno_mix(p2)/dprod1 = -p2dp1/ptot**2 -p2dp2/ptot**2
 
-                with
+                with 
                 dp1/dprod1 = f'exp(pbis1)*dpbis1 = f'exp(pbis1)*(fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
                                = dp2old * (fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
                 dp2/dprod1 = f'exp(pbis2)*dpbis2 =f'exp(pbis2)*prod2*f'expp(fg_ratio)*dfg_ratio

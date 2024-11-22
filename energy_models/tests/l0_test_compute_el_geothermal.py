@@ -47,6 +47,7 @@ class GeothermalTestCase(unittest.TestCase):
         self.invest_level[GlossaryEnergy.InvestValue] = 5.0 * \
                                                         1.10 ** (self.invest_level[GlossaryEnergy.Years] - GlossaryEnergy.YearStartDefault)
 
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 

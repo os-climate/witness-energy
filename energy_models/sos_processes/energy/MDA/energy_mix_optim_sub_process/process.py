@@ -95,6 +95,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                                                                after_name=self.ee.study_name,
                                                                clean_existing=False)
 
+
         # ---------------------------------------------
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
@@ -196,6 +197,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{INVEST_DISC_NAME}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
 
         # ---------------------------------------------
         # design variables builder

@@ -1,6 +1,6 @@
 # PlasmaCracking
 
-## Introduction
+## Introduction 
 The plasma cracking process consists in breaking the connection between the carbon and the hydrogen of the methane using high frequency microwaves. The reaction is the following:
 
 $$CH_4  --> C + 2H_2$$
@@ -13,13 +13,13 @@ This process allows to extract solid carbon out of methane and if used with biom
 
 
 
-![](plasmacracking.png)
+![](plasmacracking.png) 
 
 ## Gradient computation - Summary
 
 H2_price : techno price \
 X : percentage resource \
-PC_cost : Plasma Cracking cost
+PC_cost : Plasma Cracking cost 
 
 ### Formula:
 
@@ -53,11 +53,11 @@ $$X = \dfrac {H2\_revenue}{H2\_revenue
 
 with:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$A = Carbon\_sold\_revenue$$
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
@@ -71,7 +71,7 @@ $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}
 
 $$\dfrac {\partial X}{\partial energy\_prices} =
 \dfrac {
-    \dfrac {\partial H2\_price}{\partial energy\_prices} * H2\_prod *
+    \dfrac {\partial H2\_price}{\partial energy\_prices} * H2\_prod * 
     A
 }{[H2\_revenue
 	+ A ]^2
@@ -80,11 +80,11 @@ $$
 
 with:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$A = Carbon\_sold\_revenue$$
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
@@ -107,13 +107,13 @@ $$
 
 with:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$A = Carbon\_sold\_revenue$$
 
 $$B = Carbon\_price$$
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
@@ -139,13 +139,13 @@ $$
 
 with:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$A = Carbon\_sold\_revenue$$
 
 $$B = Carbon\_price$$
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
@@ -168,13 +168,13 @@ $$
 
 with:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$A = Carbon\_sold\_revenue$$
 
 $$B = Carbon\_sold\_revenue$$
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
@@ -203,14 +203,14 @@ $$X = \dfrac {H2\_revenue}{SUM\_revenues}$$
 
 $$= \dfrac {H2\_revenue}{H2\_revenue+ Carbon\_sold\_revenue+Carbon\_storage\_revenue}$$
 
-if  Carbon\_prod - Carbon\_demand < 0:
+if  Carbon\_prod - Carbon\_demand < 0: 
 
 $$X = \dfrac {H2\_revenue}{H2\_revenue+ Carbon\_sold\_revenue+ 0}$$
 
 $$= \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+ [Carbon\_prod * Carbon\_price]}$$
 
-if  Carbon\_prod > Carbon\_demand :
-
+if  Carbon\_prod > Carbon\_demand : 
+    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
 
 $${\scriptsize X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+[Carbon\_demand * Carbon\_price]+ [\dfrac {(Carbon\_prod -Carbon\_demand)* Carbon\_mol * CO2\_credit}{CO2\_mol}]}}$$
@@ -224,7 +224,7 @@ $$= \dfrac {H2\_revenue}{H2\_revenue +  A}$$
 
 ### Gradient computation:
 
-if  Carbon\_prod < Carbon\_demand :
+if  Carbon\_prod < Carbon\_demand : 
 
 $$X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]+ [Carbon\_prod * Carbon\_price]}$$
 
@@ -257,7 +257,7 @@ $$=\dfrac {[ \dfrac {\partial H2\_prod}{\partial invest} * H2\_price * Carbon\_s
 
 
 
-if  Carbon\_prod > Carbon\_demand :
+if  Carbon\_prod > Carbon\_demand : 
 
 $${\scriptsize X = \dfrac {H2\_prod * H2\_price}{[H2\_prod * H2\_price ]    +  [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price- \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]} }$$
 

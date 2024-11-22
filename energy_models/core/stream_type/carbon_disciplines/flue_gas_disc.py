@@ -188,7 +188,7 @@ class FlueGasDiscipline(SoSWrapp):
             GlossaryEnergy.FlueGasMean: flue_gas_mean,
             'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
             'flue_gas_prod_ratio': self.energy_model.get_total_flue_gas_prod_ratio()}
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

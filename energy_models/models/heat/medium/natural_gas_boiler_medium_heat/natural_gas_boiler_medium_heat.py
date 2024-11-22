@@ -34,6 +34,7 @@ class NaturalGasMediumHeat(mediumheattechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
 
+
         # methane_needs
 
         # output needed in this method is in $/kwh of heat

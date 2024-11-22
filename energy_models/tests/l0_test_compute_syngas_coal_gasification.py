@@ -53,7 +53,8 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.InvestValue: np.linspace(.88, 1.05, len(years))})
+             GlossaryEnergy.InvestValue: np.linspace(.88,1.05, len(years))})
+        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

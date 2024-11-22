@@ -71,7 +71,7 @@ class FlueGas(BaseStream):
 
     def get_total_flue_gas_prod_ratio(self):
         '''
-        Return mix weights which is flue gas production ratio
+        Return mix weights which is flue gas production ratio 
         '''
         return self.mix_weights
 

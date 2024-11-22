@@ -119,7 +119,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       # f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
         techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})

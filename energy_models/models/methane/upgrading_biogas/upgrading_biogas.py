@@ -35,6 +35,7 @@ class UpgradingBiogas(MethaneTechno):
     def compute_resources_needs(self):
         self.cost_details[f"{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss()
 
+
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
@@ -49,7 +50,7 @@ class UpgradingBiogas(MethaneTechno):
 
     def get_biogas_needs(self):
         '''
-        COmpute theoretical biogas needs with proportion of CO2 and CH4 given in biogas energy
+        COmpute theoretical biogas needs with proportion of CO2 and CH4 given in biogas energy 
         Divide by efficiency for realistic demand
         '''
         biogas_data = BioGas.data_energy_dict
@@ -71,7 +72,7 @@ class UpgradingBiogas(MethaneTechno):
         return mea_loss
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        '''
+        ''' 
         Get CO2 prod from upgrading biogas
         With the fraction of CO2 in biogas considered
         '''

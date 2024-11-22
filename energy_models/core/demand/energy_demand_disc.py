@@ -58,13 +58,13 @@ class EnergyDemandDiscipline(SoSWrapp):
                # old value is 20900TWh
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', },
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh',},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
                GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {
                    GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                    GlossaryEnergy.TransportDemandValue: ('float', None, True)},
                                                      'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', },
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh',},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
     DESC_OUT = {

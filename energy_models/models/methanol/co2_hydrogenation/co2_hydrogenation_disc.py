@@ -48,6 +48,8 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     methanol_density = Methanol.data_energy_dict['density']
     methanol_calorific_value = Methanol.data_energy_dict['calorific_value']
 
+
+
     techno_infos_dict_default = {
         'Capex_init': 35.58 / (20 * 50) / 5.54,
         # Total capital [M$] / (annual production * lifetime) [kt] / conversion factor [kWh/kg] = [$/kWh]

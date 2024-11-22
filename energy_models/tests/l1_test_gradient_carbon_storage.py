@@ -88,7 +88,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 12.})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 7.23})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.0325})
@@ -626,6 +626,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
+
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

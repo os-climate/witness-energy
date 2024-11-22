@@ -61,6 +61,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: 33.0 * 1.10 ** (years - GlossaryEnergy.YearStartDefault)})
+        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
@@ -100,6 +101,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
 
         invest_before_ystart = pd.DataFrame(
             {'past years': np.arange(-3, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})

@@ -1,81 +1,81 @@
 {
-  "hydrogen.gaseous_hydrogen": {
-    "type": "energy",
-    "value": [
-      "Electrolysis.SOEC",
-      "Electrolysis.PEM",
-      "Electrolysis.AWE"
-    ]
-  },
-  "hydrogen.liquid_hydrogen": {
-    "type": "energy",
-    "value": [
-      "HydrogenLiquefaction"
-    ]
-  },
-  "syngas": {
-    "type": "energy",
-    "value": [
-      "CoElectrolysis"
-    ]
-  },
-  "fuel.hydrotreated_oil_fuel": {
-    "type": "energy",
-    "value": [
-      "HefaDecarboxylation",
-      "HefaDeoxygenation"
-    ]
-  },
-  "fuel.biodiesel": {
-    "type": "energy",
-    "value": [
-      "Transesterification"
-    ]
-  },
-  "solid_fuel": {
-    "type": "energy",
-    "value": [
-      "Pelletizing"
-    ]
-  },
-  "electricity": {
-    "type": "energy",
-    "value": [
-      "WindOffshore",
-      "WindOnshore",
-      "SolarPv",
-      "SolarThermal",
-      "Hydropower",
-      "Nuclear"
-    ]
-  },
-  "carbon_capture": {
-    "type": "CCUS",
-    "value": [
-      "flue_gas_capture.CalciumLooping",
-      "flue_gas_capture.ChilledAmmoniaProcess",
-      "flue_gas_capture.CO2Membranes",
-      "flue_gas_capture.MonoEthanolAmine",
-      "flue_gas_capture.PiperazineProcess",
-      "flue_gas_capture.PressureSwingAdsorption"
-    ]
-  },
-  "biomass_dry": {
-    "type": "agriculture",
-    "value": [
-      "CropEnergy"
-    ]
-  },
-  "carbon_storage": {
-    "type": "CCUS",
-    "value": [
-      "CarbonStorageTechno"
-    ]
-  },
-  "heat.hightemperatureheat": {
-    "type": "energy",
-    "value": [
-      "GeothermalHighHeat"
-    ]
-  }
+    "hydrogen.gaseous_hydrogen": {
+        "type": "energy",
+        "value": [
+            "Electrolysis.SOEC",
+            "Electrolysis.PEM",
+            "Electrolysis.AWE"
+        ]
+    },
+    "hydrogen.liquid_hydrogen": {
+        "type": "energy",
+        "value": [
+            "HydrogenLiquefaction"
+        ]
+    },
+    "syngas": {
+        "type": "energy",
+        "value": [
+            "CoElectrolysis"
+        ]
+    },
+    "fuel.hydrotreated_oil_fuel": {
+        "type": "energy",
+        "value": [
+            "HefaDecarboxylation",
+            "HefaDeoxygenation"
+        ]
+    },
+    "fuel.biodiesel": {
+        "type": "energy",
+        "value": [
+            "Transesterification"
+        ]
+    },
+    "solid_fuel": {
+        "type": "energy",
+        "value": [
+            "Pelletizing"
+        ]
+    },
+    "electricity": {
+        "type": "energy",
+        "value": [
+            "WindOffshore",
+            "WindOnshore",
+            "SolarPv",
+            "SolarThermal",
+            "Hydropower",
+            "Nuclear"
+        ]
+    },
+    "carbon_capture": {
+        "type": "CCUS",
+        "value": [
+            "flue_gas_capture.CalciumLooping",
+            "flue_gas_capture.ChilledAmmoniaProcess",
+            "flue_gas_capture.CO2Membranes",
+            "flue_gas_capture.MonoEthanolAmine",
+            "flue_gas_capture.PiperazineProcess",
+            "flue_gas_capture.PressureSwingAdsorption"
+        ]
+    },
+    "biomass_dry": {
+        "type": "agriculture",
+        "value": [
+            "CropEnergy"
+        ]
+    },
+    "carbon_storage": {
+        "type": "CCUS",
+        "value": [
+            "CarbonStorageTechno"
+        ]
+    },
+    "heat.hightemperatureheat": {
+        "type": "energy",
+        "value": [
+            "GeothermalHighHeat"
+        ]
+    }
 }

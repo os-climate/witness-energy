@@ -22,7 +22,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class EnergyOrCCSInvest:
     '''
-        Model to split global investment into investment for Carbon Capture and Storage technologies and into investment for energy conversion
+        Model to split global investment into investment for Carbon Capture and Storage technologies and into investment for energy conversion 
     '''
 
     def __init__(self):
@@ -44,7 +44,7 @@ class EnergyOrCCSInvest:
 
     def compute(self):
         '''
-        Compute the investment in to CCS and into energy_conversion
+        Compute the investment in to CCS and into energy_conversion 
         '''
         ccs_invest = self.global_invest[GlossaryEnergy.EnergyInvestmentsValue].values * \
                      self.invest_ccs_percentage['ccs_percentage'].values / 100.0

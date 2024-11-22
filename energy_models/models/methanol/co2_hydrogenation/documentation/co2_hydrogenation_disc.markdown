@@ -9,14 +9,14 @@ It can also be used as a fuel, through combustion reaction as an alternative to 
 A CO2 stream and a dihydrogen stream are combined, and are brought together with a catalyst, to transform the mix
 into $$CH_{3}OH$$.
 
-A raw methanol stream, containing impurities (less than for syngas reforming) comes out of the catalyzer and into a distillery,
+A raw methanol stream, containing impurities (less than for syngas reforming) comes out of the catalyzer and into a distillery, 
 to be cooled down and remove the impurities.
 
 ## Sources
 
 All the data used to fill the properties of this technology come from the sources below.
 
-The details of the calculation/transformation of the data can be found on an excel sheet in the documentation
+The details of the calculation/transformation of the data can be found on an excel sheet in the documentation 
 folder of the technology in the corresponding git repository.
 
 [^1][Collodi, G., Azzaro, G., Ferrari, N. and Santos, S., 2017. Demonstrating large scale industrial CCS through CCU–a case study for methanol production. Energy Procedia, 114, pp.122-138.](https://www.sciencedirect.com/science/article/pii/S1876610217313280)
@@ -27,7 +27,7 @@ folder of the technology in the corresponding git repository.
 
 [^4] [Engineering Toolbox](https://www.engineeringtoolbox.com)
 
-[^5] [Eco-Techno-Economic Analysis of Methanol Production from Biogas and Power-to-X,
+[^5] [Eco-Techno-Economic Analysis of Methanol Production from Biogas and Power-to-X, 
 Emanuele Moioli and Tilman Schildhauer, Industrial & Engineering Chemistry Research 2022 61 (21), 7335-7348](https://pubs.acs.org/doi/pdf/10.1021/acs.iecr.1c04682)
 
 [^6] [Schröder, J., Müller-Langer, F., Aakko-Saksa, P., Winther, K., Baumgarten, W. and Lindgren, M., 2020. Methanol as motor fuel: Summary Report.](https://www.iea-amf.org/content/fuel_information/methanol#general)

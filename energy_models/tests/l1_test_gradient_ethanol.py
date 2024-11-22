@@ -69,7 +69,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(years))
                                           })
-
+        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
@@ -118,7 +118,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.techno_infos_dict': techno_infos_dict, }
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

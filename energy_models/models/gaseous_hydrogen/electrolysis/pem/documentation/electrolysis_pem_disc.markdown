@@ -2,7 +2,7 @@
 
 PEM electrolysers use a proton exchange membrane to separate the protons (H+) from water and oxygen. Operating conditions range between 20-100 C and up to 100 bar.
 
-![](PEM_electrolysis.PNG)
+![](PEM_electrolysis.PNG) 
 (Image Credit: S.Shiva Kumar & V.Himabindu [^2])
 
 
@@ -26,10 +26,10 @@ PEM electrolyser OPEX costs are 2 - 3 % of CAPEX excluding electricity [^4].
 
 It is worth to note, that electrolysers are still built in small volumes for niche markets, which puts the large expected costs reductions into context. Significant cost reductions are expected to come from technology innovations, improved supply chains and bigger production volumes, which enable more efficient manufacturing techniques [^4].
 
-PEM electrolysers need expensive noble metals (platinum, iridium) which makes them more expensive and less efficient than alkaline electrolysers [^2].
+PEM electrolysers need expensive noble metals (platinum, iridium) which makes them more expensive and less efficient than alkaline electrolysers [^2]. 
 
 
-PEM electrolysers are not yet fully developped but Buttler [^6] reported around 6MW of PEM electrolysers nominal power around the world in 2017. With new project emerging, the nominal power of PEM is around 50MW in 2021 (a new 10MW hydrogen electrolysis plant, the largest of its kind in Europe operates in 2020[^7] and another 20 MW, the largest of its kind in the world, will start operating in 2021 in Quebec (Canada) [^10] ) leading to a global hydrogen production of 0.4TWh per year.
+PEM electrolysers are not yet fully developped but Buttler [^6] reported around 6MW of PEM electrolysers nominal power around the world in 2017. With new project emerging, the nominal power of PEM is around 50MW in 2021 (a new 10MW hydrogen electrolysis plant, the largest of its kind in Europe operates in 2020[^7] and another 20 MW, the largest of its kind in the world, will start operating in 2021 in Quebec (Canada) [^10] ) leading to a global hydrogen production of 0.4TWh per year. 
 Public investment in Europe for electrolysers is handled by the Fuel Cell and Hydrogen Joint Undertaking (FCH-JU) organism [^8].In 2019, european investments was around 156 MEUR or around 190 MDollars. We assume half of it is dedicated tor PEM. Around 36% of PEM electrolysers is financed by European union worldwide [^9]. Consequently the hypothesis investment in 2019 for PEM is around :
 
 $$\frac{190*100}{2*36}= 263.88 \ MDollars$$
@@ -55,4 +55,4 @@ In Electrolysis, heat production assumed the net difference between total electr
 
 [^9]:https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
 
-[^10]: https://www.cummins.com/news/releases/2021/01/26/cummins-hydrogen-technology-powers-largest-proton-exchange-membrane-pemCUMMINS
+[^10]: https://www.cummins.com/news/releases/2021/01/26/cummins-hydrogen-technology-powers-largest-proton-exchange-membrane-pemCUMMINS 

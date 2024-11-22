@@ -3,7 +3,7 @@
 
 [^2] A heat pump can be an energy-efficient alternative to fossil-fuel furnaces and water heaters that use natural gas and heating oil, which emit CO2 directly. Heat pumps also are more efficient than electric resistance heat. Switching from fossil fuel heat-generating devices, such as furnaces and boilers, to an efficient electric heat pump can be step toward a zero-carbon system.
 
-![](HeatPumps.avif)
+![](HeatPumps.avif) 
 (Image Credit: IEA – International Energy Agency, taken from [^1])
 
 COP (Coefficient of Performance) [^3]
@@ -12,10 +12,10 @@ The Co-efficient of performance (COP) is an expression of the efficiency of a he
 COP is defined as the relationship between the power (kWh) that is drawn out of the heat pump as cooling or heat, and the power (kWh) that is supplied to the compressor.
 
 
-## Data
-![](Heat_Model_Assumptions.png)
+## Data     
+![](Heat_Model_Assumptions.png) 
 (Heat Model Assumptions, taken from [^4])
-## References
+## References   
 [^1]: [How a heat pump works – The Future of Heat Pumps - IEA](https://www.iea.org/reports/the-future-of-heat-pumps/how-a-heat-pump-works)
 
 [^2]: [The Important Role of Heat Pumps in a Sustainable Future](https://www.reuters.com/article/sponsored/the-important-role-of-heat-pumps-in-a-sustainable-future)
@@ -33,3 +33,4 @@ COP is defined as the relationship between the power (kWh) that is drawn out of 
 [^8]: Opex, https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
 
 [^9]: Initial production, https://www.iea.org/reports/heat-pumps
+

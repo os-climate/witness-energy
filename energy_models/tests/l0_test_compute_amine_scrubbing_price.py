@@ -56,6 +56,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: np.linspace(.0001, .00008, len(years))
              })
+        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

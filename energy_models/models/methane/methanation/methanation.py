@@ -28,6 +28,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class Methanation(MethaneTechno):
 
+
     def compute_resources_needs(self):
         # in kg of CO2 for kWh of CH4
         self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
@@ -62,7 +63,7 @@ class Methanation(MethaneTechno):
         return production_for_1kg
 
     def get_theoretical_hydrogen_needs(self):
-        '''
+        ''' 
         Get hydrogen needs in kWhH2 /kWh CH4
         4 mol of H2 for 1 mol of CH4
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -78,7 +79,7 @@ class Methanation(MethaneTechno):
         return h2_needs
 
     def get_theoretical_co2_needs(self):
-        '''
+        ''' 
         Get hydrogen needs in kWhH2 /kWh CH4
         4 mol of H2 for 1 mol of CH4
         Warning : molar mass is in g/mol but we divide and multiply by one

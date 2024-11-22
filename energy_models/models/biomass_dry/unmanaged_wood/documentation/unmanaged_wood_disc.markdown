@@ -84,7 +84,7 @@ The computed land-use amount of hectares is the global amount of managed forest 
 
 $$NumberOfHa=\frac{WoodProductionForEnergy+WoodProductionForNonEnergy}{mean\_density\_per\_ha * mean\_calorific\_value} \\ * years\_between\_harvest * (1 - recycle\_part)$$
 
-With:
+With: 
 - WoodProductionForEnergy, the production of Managed wood and residue computed by this model
 - WoodProductionForNonEnergy, the computed amount of Managed Wood used for production using the inputs data wood_percentage_for_energy and wood_percentage_for_energy.
 
@@ -95,7 +95,7 @@ For CAPEX computation:
 
 For OPEX computation:
   - cutting, chipping, off_road transportation : 8 $/Mwh[^5]
-
+  
 The computed price is the mixed price of wood and residue. Details in the composition of prices of wood and residue is shown in the graphics named "Detailed Price of Unmanaged wood technology over the years". Prices are computed with the input parameter wood_residue_price_percent_dif.
 
 ## Other Data

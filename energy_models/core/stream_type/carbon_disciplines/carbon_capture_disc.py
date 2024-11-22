@@ -78,7 +78,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     def run(self):
         '''
-        Overwrite run to limit flue gas carbon capture
+        Overwrite run to limit flue gas carbon capture 
         '''
 
         super().run()
@@ -87,7 +87,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
         }
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

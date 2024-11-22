@@ -7,7 +7,7 @@ Biomass comes from organic feedstocks as wood, plants or wastes.
 - herbaceous biomass comes from crops residues or energy crops (providing biomass for energy purpose and not feeding). Algae can also be used as biomass source.
 - Wastes biomass comes from municipal or industrial wastes.
 
-The heat generated during pelletizing can come from several sources, depending on the type of materials being pelletized and the equipment used.
+The heat generated during pelletizing can come from several sources, depending on the type of materials being pelletized and the equipment used. 
 
 Consumption of heat is calculated in TWh for high temperature. It depends on production of solid fuel(TWh) and efficiency value.
 
@@ -20,7 +20,7 @@ Biomass in SosTrades has been divided following its use.
 ![](biomass.png)
 
 **Biomass problematic[^2] :**
-The low energy density of biomass feedstocks tends to limit the transport distance from a biomass power plant. Moreover forests and landfields have to be well managed to stay as sustainable energy source and carbon neutral and therefore large local quantities are not available. This can place a limit on the scale of the biomass power plant, meaning that biomass struggles to take advantage of economies of scale in the generating plant because large quantities of low-cost feedstock are not available.
+The low energy density of biomass feedstocks tends to limit the transport distance from a biomass power plant. Moreover forests and landfields have to be well managed to stay as sustainable energy source and carbon neutral and therefore large local quantities are not available. This can place a limit on the scale of the biomass power plant, meaning that biomass struggles to take advantage of economies of scale in the generating plant because large quantities of low-cost feedstock are not available.  
 
 Transforming biomass into **pellets** offers a solution to this problem. Biomass is dried, crushed and pelletized to be converted into pellets that have standardized size and properties, high energy content and high density. It reduses costs of transports, storage and handling.
 Pellets can directly be used in firing or co-firing with coal in boilers.

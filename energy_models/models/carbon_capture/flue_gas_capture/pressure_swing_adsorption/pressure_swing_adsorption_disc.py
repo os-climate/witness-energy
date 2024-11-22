@@ -43,6 +43,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}'
 
+
     # Most of the data from this model come from :
     # Guandalini, G., Romano, M.C., Ho, M., Wiley, D., Rubin, E.S. and Abanades, J.C., 2019.
     # A sequential approach for the economic evaluation of new CO2 capture technologies for power plants.
@@ -93,7 +94,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
     initial_capture = 5  # Mt
 
     # We assume 0.5 MT increase per year, with a capex ~ 40$/ton
-
+    
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',

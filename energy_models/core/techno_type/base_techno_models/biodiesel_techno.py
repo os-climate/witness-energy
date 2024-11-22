@@ -23,3 +23,5 @@ class BioDieselTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
         self.energy_name = BioDiesel.name
+
+    

@@ -92,12 +92,12 @@ class Fossil(EnergyType):
 """
     def compute_ghg_per_use(self, data_energy_dict):
         '''
-        Specific computation for the CO2 per use taking into account the use of fossil in
-        petrochemical plants (plastic and textile), construction, cement and steel
+        Specific computation for the CO2 per use taking into account the use of fossil in 
+        petrochemical plants (plastic and textile), construction, cement and steel 
 
 
-        We only take into account energy emissions and not industrial emissions in energy mix
-        --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model
+        We only take into account energy emissions and not industrial emissions in energy mix 
+        --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model 
 
         This CO2_per_use is used in CO2 emitted by net energy
         '''
