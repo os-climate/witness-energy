@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import pandas as pd
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
@@ -38,6 +39,22 @@ class FossilGas(MethaneTechno):
             fuel_need = 0.0
 
         return fuel_need
+
+    def compute_cost_of_resources_usage(self):
+        """
+        Cost of resource R = need of resource R x price of resource R
+        """
+        cost_of_resource_usage = {
+            GlossaryEnergy.Years: self.years,
+        }
+        for resource in self.resources_used_for_production:
+            if resource == GlossaryEnergy.methane:
+                # Skip Methane so not to count it twice
+                continue
+
+            cost_of_resource_usage[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_prices[resource].values
+
+        self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
 
     def compute_resources_needs(self):
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
