@@ -16,6 +16,7 @@ limitations under the License.
 '''
 
 import pandas as pd
+
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
