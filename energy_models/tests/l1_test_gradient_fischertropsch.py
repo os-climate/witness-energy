@@ -333,7 +333,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.array(
-                           list(np.linspace(100, 0, 5)) + list(np.linspace(0, 100, 6))),
+                           list(np.linspace(100, 0, 5)
+                                ) + list(np.linspace(0, 100, GlossaryEnergy.YearEndDefaultValueGradientTest - self.years[4]))),
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
