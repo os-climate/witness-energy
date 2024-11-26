@@ -14,28 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os
-from functools import reduce
 import pickle
+from copy import deepcopy
+from functools import reduce
+
 import numpy as np
 import pandas as pd
-from copy import deepcopy
 from climateeconomics.glossarycore import GlossaryCore
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.bspline.bspline import BSpline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-from sostrades_core.tools.bspline.bspline import BSpline
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.wind_onshore.wind_onshore_disc import (
     WindOnshoreDiscipline,
 )
-from energy_models.models.electricity.wind_offshore.wind_offshore_disc import (
-    WindOffshoreDiscipline,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
-
 
 """
 This script is used to calibrate the windpower invest so that the electricity production matches the IEA NZE scenario
@@ -69,7 +67,7 @@ years_optim = np.linspace(year_start, year_end, 8) #years_IEA_interpolated #sort
 invest_year_start = 80. #G$
 construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore'] # same construction delay for windonshore and windoffshore
 if construction_delay != GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore']:
-    raise ValueError(f"must adapt script as construction delay for windOnshore and windOffshore differ")
+    raise ValueError("must adapt script as construction delay for windOnshore and windOffshore differ")
 
 name = 'usecase_witness_optim_nze_eval'
 model_name_onshore = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOnshore}"
