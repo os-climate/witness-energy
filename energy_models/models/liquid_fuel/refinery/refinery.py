@@ -40,6 +40,24 @@ class Refinery(LiquidFuelTechno):
         self.dprod_dinvest = None
         self.dprod_list_dcapex_list = None
 
+    def compute_cost_of_resources_usage(self):
+        """
+        Cost of resource R = need of resource R x price of resource R
+
+        Does not take oil price into account
+        """
+        cost_of_resource_usage = {
+            GlossaryEnergy.Years: self.years,
+        }
+        for resource in self.resources_used_for_production:
+            if resource == GlossaryEnergy.OilResource:
+                # Skip OilResource so not to count it twice
+                cost_of_resource_usage[resource] = 0.0
+            else:
+                cost_of_resource_usage[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_prices[resource].values
+
+        self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
+
     def get_fuel_needs(self):
         """
         Get the fuel needs for 1 kwh of the energy producted by the technology
