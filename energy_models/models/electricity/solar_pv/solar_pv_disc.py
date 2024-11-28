@@ -52,7 +52,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     # 4.0.
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
-                                 'Opex_percentage': 0.021,  # Mean of IEA 2019, EOLES data and others
+                                 'Opex_percentage': 0.02,  # represent 10 $/MWh, 6 to 10 in 2020, 10 to 30 in 2023
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'fuel_demand': 0.0,
@@ -61,17 +61,14 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'heat_demand': 0.0,
                                  'heat_demand_unit': 'kWh/kgCO2',
-                                 'WACC': 0.075,  # Weighted averaged cost of capital. Source IRENA
+                                 'WACC': 0.06,  # between 5 to 7% according to IRENA
                                  'learning_rate': 0.18,  # IEA 2011
-                                 'Capex_init': 1077,  # IEA 2019 Mean of regional value
+                                 'Capex_init': 883,  # IRENA 2020 https://www.irena.org/Data/View-data-by-topic/Costs/Solar-costs, 850 $/kW in 2023
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'full_load_hours': 8760,  # 1577, #Source Audi ?
+                                 'full_load_hours': 1577,  # capacity factor=0.18 , IEA Average annual capacity factors by technology, 2018 10-21%, IRENA 2019: 18%
                                  'water_demand': 0.0,
                                  'water_demand_unit': '',
-                                 # IEA Average annual capacity factors by
-                                 # technology, 2018 10-21%, IRENA 2019: 18%
-                                 'capacity_factor': 0.2,
                                  'density_per_ha': 315059,
                                  'density_per_ha_unit': 'kWh/ha',
                                  'transport_cost_unit': '$/kg',  # check if pertient
