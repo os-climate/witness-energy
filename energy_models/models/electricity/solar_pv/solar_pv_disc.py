@@ -52,7 +52,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     # 4.0.
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
-                                 'Opex_percentage': 0.02,  # represent 10 $/MWh, 6 to 10 in 2020, 10 to 30 in 2023
+                                 'Opex_percentage': 0.017,  # represent 10 $/MWh, 6 to 10 in 2020, 10 to 30 in 2023
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'fuel_demand': 0.0,
