@@ -151,15 +151,16 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_stream_price()
 
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price(ignore_oil=True)
+        grad_dict_resources_for_co2 = self.techno_model.grad_price_vs_resources_price(ignore_oil=False)
 
         carbon_emissions = self.get_sosdisc_outputs(
             GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources)
+            grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_for_co2)
 
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_for_co2={}):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
         """
@@ -187,7 +188,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
                 grad_on_co2_tax)
-            
+
             dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                   self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
                                   )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
@@ -208,7 +209,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                 (GlossaryEnergy.ResourcesPriceValue, resource), value *
                                                                 self.techno_model.margin[
                                                                     GlossaryEnergy.MarginValue].values / 100.0)
-            grad_on_co2_tax = value * \
+            value_for_co2 = grad_dict_resources_for_co2[resource]
+            grad_on_co2_tax = value_for_co2 * \
                               self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
                                                               <= self.techno_model.year_end][
                                   GlossaryEnergy.CO2Tax].values[:,
@@ -221,7 +223,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value)
+                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value_for_co2)
 
     def get_chart_filter_list(self):
 

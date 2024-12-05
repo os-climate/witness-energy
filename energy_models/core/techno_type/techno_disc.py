@@ -74,7 +74,7 @@ class TechnoDiscipline(SoSWrapp):
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'user_level': 2},
         'smooth_type': {'type': 'string', 'default': 'smooth_max',
-                        'possible_values': ['smooth_max', 'soft_max', ], # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
+                        'possible_values': ['smooth_max', 'soft_max', ],  # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
         GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
@@ -216,7 +216,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
-            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name), # todo: not coupled, rename cols and move to DESC_OUT
+            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name),  # todo: not coupled, rename cols and move to DESC_OUT
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         self.add_inputs(dynamic_inputs)
@@ -303,7 +303,7 @@ class TechnoDiscipline(SoSWrapp):
 
     def run(self):
         '''
-        Generic run for all technologies 
+        Generic run for all technologies
         '''
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
@@ -524,7 +524,7 @@ class TechnoDiscipline(SoSWrapp):
                     var_cons = (consumption[column] / installed_power['new_power_production']).fillna(0)
                     self.dcons_column_dinvest = self.dpower_dinvest.copy()
                 else:
-                    var_cons = (consumption[column] /production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(0)
+                    var_cons = (consumption[column] / production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(0)
                     self.dcons_column_dinvest = self.dprod_dinvest.copy()
 
                 for line in range(len(years)):
@@ -651,7 +651,7 @@ class TechnoDiscipline(SoSWrapp):
                         ('all_resource_ratio_usable_demand', ratio_name),
                         dnon_use_capital_dratio)
 
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_for_co2=None):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
         """
@@ -706,6 +706,9 @@ class TechnoDiscipline(SoSWrapp):
                 (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
                 dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
 
+        if grad_dict_resources_for_co2 is None:
+            grad_dict_resources_for_co2 = grad_dict_resources
+
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.TechnoPricesValue, self.techno_name),
@@ -717,18 +720,21 @@ class TechnoDiscipline(SoSWrapp):
                 value * self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0)
 
             if carbon_emissions is not None:
+
+                value_for_co2 = grad_dict_resources_for_co2[resource]
+
                 # resources carbon emissions
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
                     (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),
-                    value)
+                    value_for_co2)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <=
                                                                      self.techno_model.year_end][
                                                     self.techno_name]) + 1 - np.sign(
                     carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <=
                                          self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * \
+                grad_on_co2_tax = value_for_co2 * \
                                   self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
                                                                   self.techno_model.year_end][
                                       GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(0,
@@ -1398,7 +1404,7 @@ class TechnoDiscipline(SoSWrapp):
         years = cost_details[GlossaryEnergy.Years]
         capex = cost_details[f'Capex_{self.techno_name}']
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
-        serie = InstanciatedSeries( years, capex, '','lines')
+        serie = InstanciatedSeries(years, capex, '', 'lines')
 
         new_chart.series.append(serie)
         return new_chart
