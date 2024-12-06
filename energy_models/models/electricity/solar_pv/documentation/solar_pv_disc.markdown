@@ -11,6 +11,15 @@ Solar photovoltaic (PV) systems primarily generate electricity, not heat. These 
 In summary, while solar PV systems themselves do not produce heat, they can indirectly impact heat production by supplying electricity for heating purposes, reducing the demand for traditional heating sources, and contributing to overall energy savings.
 ## Data     
 To generate the data for this model we used International Energy Agency (IEA)[^3] and International Renewable Energy Agency (IRENA)[^4] reports.
+
+|variable| 2020 value | 2023 value |
+| - |:----------:|:----------:|
+| Opex percentage |   0.017 (6 to 10$/MWh) |  0.021 (10 to 30$/MWh) |
+| WACC |   0.06 (between 5 to 7%)  |  0.06  |
+| Capex initial |   883 $/kW  |  850 $/kW  |
+| Full load hours |   1577 (18%)  |  1752 (20%)  |
+
+
 ## Some insight on Solar PV evolution
 IEA solar PV power generation in the Sustainable Development Scenario, 2000-2030[^7]
 ![](IEAsolarprodsds.png)  
