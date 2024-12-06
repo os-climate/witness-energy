@@ -58,6 +58,14 @@ class Refinery(LiquidFuelTechno):
 
         self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
 
+    def grad_price_vs_resources_price(self, ignore_oil: bool = False):
+        grad = {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
+
+        if ignore_oil:
+            grad[GlossaryEnergy.OilResource] = grad[GlossaryEnergy.OilResource] * 0.0
+
+        return grad
+
     def get_fuel_needs(self):
         """
         Get the fuel needs for 1 kwh of the energy producted by the technology
@@ -88,7 +96,6 @@ class Refinery(LiquidFuelTechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.techno_infos_dict['hydrogen_demand'] / self.cost_details['efficiency']
-
 
     def compute_byproducts_production(self):
         for energy in self.other_energy_dict:
