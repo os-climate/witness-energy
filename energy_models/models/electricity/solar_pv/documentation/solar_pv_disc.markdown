@@ -14,10 +14,10 @@ To generate the data for this model we used International Energy Agency (IEA)[^3
 
 |variable| 2020 value | 2023 value |
 | - |:----------:|:----------:|
-| Opex percentage |   0.017 (6 to 10$/MWh) |  0.025 (10 to 30$/MWh) |
+| Opex percentage |   0.017 (6 to 10$/MWh) |  0.021 (10 to 30$/MWh) |
 | WACC |   0.06 (between 5 to 7%)  |  0.06  |
 | Capex initial |   883 $/kW [^9] |  758 $/kW [^10] |
-| Full load hours |   1577 (18%)  |  1752 (20%)  |
+| Full load hours |   1577 (18%)  |  1577 (18%)  |
 
 
 ## Some insight on Solar PV evolution
