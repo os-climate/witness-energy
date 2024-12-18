@@ -116,7 +116,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -208,7 +208,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -303,7 +303,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -398,7 +398,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -496,7 +496,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -744,7 +744,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -811,7 +811,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{GlossaryEnergy.YearEnd}'] = self.year_end
         full_values_dict[f'{self.name}.{usecase.coupling_name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-8
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDANewtonRaphson'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         # Overwrite values for ratios with values from setup
         full_values_dict[
@@ -923,7 +923,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -993,7 +993,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1085,7 +1085,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1181,7 +1181,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1273,7 +1273,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1365,7 +1365,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',

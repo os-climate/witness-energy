@@ -102,7 +102,7 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.inner_mda_name': 'GSNewtonMDA',
         }
         values_dict_list.append(numerical_values_dict)
 
