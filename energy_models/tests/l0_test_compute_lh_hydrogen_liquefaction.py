@@ -19,8 +19,8 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from gemseo.utils.compare_data_manager_tooling import compare_dict
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.compare_data_manager_tooling import compare_dict
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -163,8 +163,8 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         proxy_disc = self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        local_data = proxy_disc.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline.local_data
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
+        local_data = proxy_disc.proxy_disciplines[0].discipline_wrapp.discipline.local_data
         # self.ee.root_process.pre_run_mda()
         output_error = ''
         test_passed = True

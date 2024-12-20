@@ -241,7 +241,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_techno_invest_disc.pkl',
@@ -282,7 +282,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_energy_invest_disc.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
