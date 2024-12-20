@@ -68,7 +68,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
-        values_dict[0][f'{usecase.study_name}.sub_mda_class'] = 'MDANewtonRaphson'
+        values_dict[0][f'{usecase.study_name}.inner_mda_name'] = 'MDANewtonRaphson'
         values_dict[0][f'{usecase.study_name}.linearization_mode'] = 'adjoint'
 
         full_values_dict = {}

@@ -136,7 +136,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=[
             f'{self.name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.{GlossaryEnergy.TechnoProductionValue}',
