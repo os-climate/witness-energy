@@ -175,14 +175,14 @@ class Study(EnergyStudyManager):
             list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
-        if GaseousHydrogen.name in self.energy_list:
-            if "PlasmaCracking" in self.dict_technos[GaseousHydrogen.name]:
-                list_var.extend([PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT])
-                list_parent.extend(["Carbon_to_be_stored_constraints"])
-                list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
-                list_weight.extend([0.0])
-                list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
-                list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
+        # if GaseousHydrogen.name in self.energy_list:
+        #     if "PlasmaCracking" in self.dict_technos[GaseousHydrogen.name]:
+        #         list_var.extend([PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT])
+        #         list_parent.extend(["Carbon_to_be_stored_constraints"])
+        #         list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
+        #         list_weight.extend([0.0])
+        #         list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
+        #         list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         list_var.extend([EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
         list_parent.extend(["Energy_constraints"])
