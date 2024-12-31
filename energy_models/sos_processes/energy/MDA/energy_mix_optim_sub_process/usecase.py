@@ -565,7 +565,7 @@ class Study(EnergyStudyManager):
         all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
-        forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
+        forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: 5})
 
         co2_land_emissions = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -610,7 +610,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
-            f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
+            f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ReforestationInvestmentValue}": forest_invest_df,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": co2_land_emissions,

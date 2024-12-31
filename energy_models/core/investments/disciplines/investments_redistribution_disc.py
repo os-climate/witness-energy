@@ -60,7 +60,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyListName: energy_list_desc_dict,
         GlossaryEnergy.CCSListName: ccs_list_desc_dict,
-        GlossaryEnergy.ForestInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
+        GlossaryEnergy.ReforestationInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
         GlossaryEnergy.EconomicsDfValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EconomicsDf),
         GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(
             GlossaryEnergy.EnergyInvestPercentageGDP)
@@ -234,7 +234,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
+            (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
             identity * 1e-3)
 
         if BiomassDry.name in energy_list:
@@ -305,18 +305,18 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
                     new_chart_energy.series.append(serie)
 
-            forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
+            reforestation_investment = self.get_sosdisc_inputs(GlossaryEnergy.ReforestationInvestmentValue)
             chart_name = 'Distribution of reforestation investments '
             agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                          chart_name=chart_name, stacked_bar=True)
             serie_agriculture = InstanciatedSeries(
-                forest_investment[GlossaryEnergy.Years].values.tolist(),
-                forest_investment[GlossaryEnergy.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
+                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
+                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].values.tolist(), 'Reforestation', 'bar')
             agriculture_chart.series.append(serie_agriculture)
             instanciated_charts.append(agriculture_chart)
             serie = InstanciatedSeries(
-                forest_investment[GlossaryEnergy.Years].values.tolist(),
-                forest_investment[GlossaryEnergy.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
+                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
+                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].tolist(), 'Reforestation', 'bar')
 
             new_chart_energy.series.append(serie)
 
