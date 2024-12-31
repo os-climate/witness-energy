@@ -68,12 +68,12 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.full_values_dict[f'{self.name}.epsilon0'] = 1.0
         self.full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         self.full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        forest_investment = pd.DataFrame({
+        reforestation_investment = pd.DataFrame({
             GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
-            GlossaryEnergy.ForestInvestmentValue: 5.
+            GlossaryEnergy.ReforestationInvestmentValue: 5.
         })
         self.full_values_dict.update({
-            f"{self.name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_investment,
+            f"{self.name}.InvestmentDistribution.{GlossaryEnergy.ReforestationInvestmentValue}": reforestation_investment,
 
         })
         self.ee.load_study_from_input_dict(self.full_values_dict)

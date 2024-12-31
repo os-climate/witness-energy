@@ -134,7 +134,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TransportCostValue = "transport_cost"
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
-    ForestInvestmentValue = "forest_investment"
+    ReforestationInvestmentValue = "reforestation_investment"
     CarbonCapturedValue = "carbon_captured_type"
     InstalledPower = (
         "power_production"  # todo : rename string to Installed Power [MW] (check unit)
@@ -482,7 +482,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     ForestInvestment = {
-        "var_name": ForestInvestmentValue,
+        "var_name": ReforestationInvestmentValue,
         "type": "dataframe",
         "unit": "G$",
         "visibility": "Shared",
@@ -492,7 +492,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            ForestInvestmentValue: ("float", [0.0, 1e30], False),
+            ReforestationInvestmentValue: ("float", [0.0, 1e30], False),
         },
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,

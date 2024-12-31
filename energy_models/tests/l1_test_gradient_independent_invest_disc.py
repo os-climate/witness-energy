@@ -71,8 +71,8 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: np.linspace(5, 8, year_range)})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: np.linspace(5, 8, year_range)})
 
         self.managed_wood_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 2, year_range)})
@@ -135,7 +135,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                          GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
-                       f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
+                       f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.crop_investment': self.crop_invest_df}
@@ -149,7 +149,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
         self.check_jacobian(derr_approx='complex_step',
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}',
-                                    f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                    f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}',
                                     f'{self.name}.managed_wood_investment',
                                     f'{self.name}.deforestation_investment',
                                     f'{self.name}.crop_investment'],

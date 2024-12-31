@@ -55,8 +55,8 @@ class IndependentInvest(BaseInvest):
         techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        techno_invest_sum += inputs_dict[GlossaryEnergy.ForestInvestmentValue][
-            GlossaryEnergy.ForestInvestmentValue].values
+        techno_invest_sum += inputs_dict[GlossaryEnergy.ReforestationInvestmentValue][
+            GlossaryEnergy.ReforestationInvestmentValue].values
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
         if BiomassDry.name in energy_list:
