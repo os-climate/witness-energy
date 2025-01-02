@@ -138,7 +138,7 @@ class Refinery(LiquidFuelTechno):
 
         # Reverse the array of invest before year start with [::-1]
         prod_before_ystart = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(self.year_start - self.construction_delay, self.year_start),
+            {GlossaryEnergy.Years: np.arange(self.year_start - self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay], self.year_start),
              GlossaryEnergy.InvestValue: self.invest_before_ystart[GlossaryEnergy.InvestValue].values[::1],
              f'Capex_{self.name}': self.cost_details.loc[
                  self.cost_details[GlossaryEnergy.Years] == self.year_start, f'Capex_{self.name}'].values[0]})
@@ -153,7 +153,7 @@ class Refinery(LiquidFuelTechno):
         production_from_invest['prod_from_invest'] = production_from_invest[GlossaryEnergy.InvestValue] / \
                                                      (production_from_invest[f'Capex_{self.name}'] +
                                                       self.oil_extraction_capex)
-        production_from_invest[GlossaryEnergy.Years] += self.construction_delay
+        production_from_invest[GlossaryEnergy.Years] += self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay]
         production_from_invest = production_from_invest[production_from_invest[GlossaryEnergy.Years]
                                                         <= self.year_end]
 
@@ -181,10 +181,10 @@ class Refinery(LiquidFuelTechno):
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                               (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
-                                    self.construction_delay - i),
-                                self.lifetime)
+                                    self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay] - i),
+                                self.inputs['techno_infos_dict'][GlossaryEnergy.LifetimeName])
             first_len_zeros = min(
-                i + self.construction_delay, nb_years)
+                i + self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
@@ -231,10 +231,10 @@ class Refinery(LiquidFuelTechno):
             dprod_list_dcapex_list = np.zeros(
                 (nb_years, nb_years), dtype='complex128')
         for i in range(nb_years):
-            len_non_zeros = min(max(0, nb_years - self.construction_delay - i),
-                                self.lifetime)
+            len_non_zeros = min(max(0, nb_years - self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay] - i),
+                                self.inputs['techno_infos_dict'][GlossaryEnergy.LifetimeName])
             first_len_zeros = min(
-                i + self.construction_delay, nb_years)
+                i + self.inputs['techno_infos_dict'][GlossaryEnergy.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex
@@ -252,7 +252,7 @@ class Refinery(LiquidFuelTechno):
 
         for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
             len_non_zeros = min(
-                self.lifetime, nb_years - index)
+                self.inputs['techno_infos_dict'][GlossaryEnergy.LifetimeName], nb_years - index)
             dprod_list_dcapex_list[:, 0] += np.hstack((np.zeros(index),
                                                        np.ones(
                                                            len_non_zeros) * dpprod_dpcapex0,

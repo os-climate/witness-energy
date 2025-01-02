@@ -81,8 +81,8 @@ class FischerTropsch(LiquidFuelTechno):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0
 
-        self.needed_syngas_ratio = self.techno_infos_dict['carbon_number'] / (
-                2 * self.techno_infos_dict['carbon_number'] + 1)
+        self.needed_syngas_ratio = self.inputs['techno_infos_dict']['carbon_number'] / (
+                2 * self.inputs['techno_infos_dict']['carbon_number'] + 1)
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -284,7 +284,7 @@ class FischerTropsch(LiquidFuelTechno):
         '''
         elec_needs = self.costs_details_sg_techno[f'{GlossaryEnergy.electricity}_needs'] * \
                      self.cost_details['syngas_needs_for_FT'] / \
-                     self.techno_infos_dict['efficiency']
+                     self.inputs['techno_infos_dict']['efficiency']
 
         if self.sg_transformation_name in ['WGS', GlossaryEnergy.RWGS]:
 
@@ -304,7 +304,7 @@ class FischerTropsch(LiquidFuelTechno):
                     dsyngas_dprice[i] = (self.cost_details['syngas_needs_for_FT'][i] * self.costs_details_rwgs['syngas_needs'].values[i])
                     elec_needs = self.costs_details_rwgs[f'{GlossaryEnergy.electricity}_needs'] * \
                                  self.cost_details['syngas_needs_for_FT'] / \
-                                 self.techno_infos_dict['efficiency']
+                                 self.inputs['techno_infos_dict']['efficiency']
                     delec_dprice[i, :] = (np.identity(
                         len(self.years)) * elec_needs.values[:, np.newaxis])[i, :]
                 else:
@@ -312,7 +312,7 @@ class FischerTropsch(LiquidFuelTechno):
                                          self.price_details_wgs['efficiency'][i])
                     elec_needs = self.price_details_wgs[f'{GlossaryEnergy.electricity}_needs'] * \
                                  self.cost_details['syngas_needs_for_FT'] / \
-                                 self.techno_infos_dict['efficiency']
+                                 self.inputs['techno_infos_dict']['efficiency']
                     delec_dprice[i, :] = (np.identity(
                         len(self.years)) * elec_needs.values[:, np.newaxis])[i, :]
             return {Electricity.name: delec_dprice,
@@ -521,7 +521,7 @@ class FischerTropsch(LiquidFuelTechno):
                                                                            f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
 
         # self.production[f'{mediumheattechno.energy_name} ({self.product_unit})'] = \
-        #     self.techno_infos_dict['medium_heat_production'] * \
+        #     self.inputs['techno_infos_dict']['medium_heat_production'] * \
         #     self.production[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] * 1000000000
 
         self.production = self.production_detailed.fillna(0.0)
@@ -763,7 +763,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         mol_syngas = 1.0
         mol_liquid_fuel = 1.0 / \
-                          (2 * self.techno_infos_dict['carbon_number'] + 1)
+                          (2 * self.inputs['techno_infos_dict']['carbon_number'] + 1)
         syngas_molar_mass = compute_syngas_molar_mass(self.needed_syngas_ratio)
 
         syngas_calorific_value = compute_syngas_calorific_value(
@@ -781,7 +781,7 @@ class FischerTropsch(LiquidFuelTechno):
         Warning : molar mass is in g/mol but we divide and multiply by one
         '''
 
-        mol_H20 = self.techno_infos_dict['carbon_number']
+        mol_H20 = self.inputs['techno_infos_dict']['carbon_number']
         mol_liquid_fuel = 1.0
         water_data = Water.data_energy_dict
         water_prod = mol_H20 * water_data['molar_mass'] / \
@@ -795,10 +795,10 @@ class FischerTropsch(LiquidFuelTechno):
         invest_sum = 0.0
         capex_year = 0.0
         capex_init = self.check_capex_unity(
-            self.techno_infos_dict)
+            self.inputs['techno_infos_dict'])
 
         expo_factor = self.compute_expo_factor(
-            self.techno_infos_dict)
+            self.inputs['techno_infos_dict'])
 
         if 'complex128' in [type(self.initial_production), type(capex_init),
                             self.cost_details[GlossaryEnergy.InvestValue].values.dtype]:
@@ -813,8 +813,8 @@ class FischerTropsch(LiquidFuelTechno):
         qlist = []
         self.slope_capex = 0.0
 
-        if 'maximum_learning_capex_ratio' in self.techno_infos_dict:
-            maximum_learning_capex_ratio = self.techno_infos_dict['maximum_learning_capex_ratio']
+        if 'maximum_learning_capex_ratio' in self.inputs['techno_infos_dict']:
+            maximum_learning_capex_ratio = self.inputs['techno_infos_dict']['maximum_learning_capex_ratio']
         else:
             maximum_learning_capex_ratio = 0.9
 

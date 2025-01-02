@@ -37,64 +37,6 @@ class UnmanagedWood(BiomassDryTechno):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
-    def grad_production_invest(self, capex, production, production_mix):
-
-        dcapex_dinvest = self.compute_dcapex_dinvest(self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
-                                                                           <= self.year_end][
-                                                         GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
-
-        dprod_dinvest = self.compute_dprod_dinvest(
-            capex, self.invest_level[GlossaryEnergy.InvestValue].values,
-            self.invest_before_ystart[GlossaryEnergy.InvestValue].values,
-            self.techno_infos_dict, dcapex_dinvest)
-
-        years = self.years
-        name_tot = f'{self.energy_name}_tot (TWh)'
-
-        residue_year_start_production = production_mix[name_tot][0] * self.techno_infos_dict[
-            'residue_density_percentage'] * \
-                                        (1 - self.techno_infos_dict['residue_percentage_for_energy'])
-        wood_year_start_production = production_mix[name_tot][0] * self.techno_infos_dict[
-            'non_residue_density_percentage'] * \
-                                     (1 - self.techno_infos_dict['wood_percentage_for_energy'])
-
-        # compute production dedicated to energy from residue
-        residues = production_mix[name_tot] * \
-                   self.techno_infos_dict['residue_density_percentage'] - \
-                   residue_year_start_production
-        d_residue = [
-                        self.techno_infos_dict['residue_density_percentage']] * len(residues)
-        for i in range(0, len(residues)):
-            if residues[i] < 0:
-                d_residue[i] = 0
-        # compute production dedicated to energy from wood
-        woods = production_mix[name_tot] * \
-                self.techno_infos_dict['non_residue_density_percentage'] - \
-                wood_year_start_production
-        d_woods = [
-                      self.techno_infos_dict['non_residue_density_percentage']] * len(woods)
-        for i in range(0, len(residues)):
-            if woods[i] < 0:
-                d_woods[i] = 0
-        d_production_tot = np.add(d_residue, d_woods)
-
-        dconso_dinvest = {}
-        for column in production:
-            dprod_column_dinvest = dprod_dinvest.copy()
-            if column == f'{self.energy_name} ({self.product_unit})':
-                var_prod = d_production_tot
-                for line in range(len(years)):
-                    if self.is_invest_before_year(
-                            years[line] - self.construction_delay) \
-                            and var_prod[line] == 0.0 and dprod_dinvest[line, :].sum() != 0.0 and line != len(
-                        years) - 1:
-                        var_prod[line] = var_prod[line + 1]
-                    dprod_column_dinvest[line,
-                    :] = dprod_dinvest[line, :] * var_prod[line]
-                dconso_dinvest[column] = dprod_column_dinvest
-
-        return dconso_dinvest
-
     def compute_byproducts_production(self):
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
