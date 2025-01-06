@@ -208,6 +208,10 @@ class FuelDiscipline(SoSWrapp):
 
         self.store_sos_outputs_values(outputs_dict)
 
+    def compute_sos_jacobian(self):
+        """Compute nothing, here to avoid l1 error."""
+        pass
+
     # POST PROCESSING
     def get_chart_filter_list(self):
 
