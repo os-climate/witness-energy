@@ -126,6 +126,30 @@ class WindOnshoreTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledCapacity)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
+        import pickle
+        with open('windtest.pkl' ,'rb') as f:
+            pickle_dev = pickle.load(f)
+
+        cur_dm = self.ee.dm.get_data_dict_values()
+
+        commun_keys = set(cur_dm.keys()).intersection(set(pickle_dev.keys()))
+        for key in commun_keys:
+            curren_value = cur_dm[key]
+            if isinstance(curren_value, pd.DataFrame):
+                for col in curren_value.columns:
+                    if col != GlossaryEnergy.Years:
+                        curren_col = curren_value[col].values
+                        if col in pickle_dev[key].columns:
+                            before_col = pickle_dev[key][col].values
+                            if curren_col.shape == before_col.shape:
+                                try:
+                                    mean_ratio  = (before_col / curren_col).mean()
+                                    if abs(mean_ratio - 1) > 0.02:
+                                        print(key, col, mean_ratio)
+                                except Exception as e:
+                                    #print(key, col , e)
+                                    pass
+                            a = 1
         self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_capacity'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
