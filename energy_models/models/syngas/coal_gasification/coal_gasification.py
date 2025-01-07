@@ -29,9 +29,9 @@ class CoalGasification(SyngasTechno):
         """
         Get the fuel needs for 1 kwh of the energy producted by the technology
         """
-        if self.techno_infos_dict['fuel_demand'] != 0.0:
-            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
-                                                      self.techno_infos_dict['fuel_demand'])
+        if self.inputs['techno_infos_dict']['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.inputs['techno_infos_dict']['fuel_demand_unit'],
+                                                      self.inputs['techno_infos_dict']['fuel_demand'])
 
         else:
             fuel_need = 0.0
@@ -40,14 +40,14 @@ class CoalGasification(SyngasTechno):
 
     def compute_other_streams_needs(self):
         # in kwh of fuel by kwh of syngas
-        self.cost_details[f'{SolidFuel.name}_needs'] = self.get_fuel_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = self.get_fuel_needs()
 
 
     def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
+                                                                                        self.inputs['data_energy_dict'][
                                                                                             'calorific_value'] * \
-                                                                                        self.production_detailed[
+                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                                             f'{SyngasTechno.energy_name} ({self.product_unit})']

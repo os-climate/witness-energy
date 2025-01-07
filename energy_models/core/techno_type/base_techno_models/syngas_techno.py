@@ -29,25 +29,30 @@ class SyngasTechno(TechnoType):
     energy_name = GlossaryEnergy.syngas
     syngas_COH2_ratio = None
 
-    def configure_energy_data(self, inputs_dict):
-        self.data_energy_dict = deepcopy(inputs_dict['data_fuel_dict'])
+    def compute(self):
+        super().compute()
+        self.outputs[f'syngas_ratio:{GlossaryEnergy.Years}'] = self.years
+        self.outputs['syngas_ratio:syngas_ratio'] = self.zeros_array + self.syngas_COH2_ratio
+
+    def configure_energy_data(self):
+        self.inputs['data_energy_dict'] = self.inputs['data_fuel_dict']
 
         molar_mass = compute_molar_mass(self.syngas_COH2_ratio / 100.)
         calorific_value = compute_calorific_value(
             self.syngas_COH2_ratio / 100.)
         density = compute_density(self.syngas_COH2_ratio / 100.)
 
-        self.data_energy_dict['molar_mass'] = molar_mass
-        self.data_energy_dict['calorific_value'] = calorific_value
-        self.data_energy_dict['high_calorific_value'] = calorific_value
-        self.data_energy_dict['density'] = density
+        self.inputs['data_energy_dict']['molar_mass'] = molar_mass
+        self.inputs['data_energy_dict']['calorific_value'] = calorific_value
+        self.inputs['data_energy_dict']['high_calorific_value'] = calorific_value
+        self.inputs['data_energy_dict']['density'] = density
 
     
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must $/kWh
-        transport_cost = self.transport_cost['transport'].values * \
-                         self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
+        transport_cost = self.inputs[f'{GlossaryEnergy.TransportCostValue}:transport'] * \
+                         self.inputs[f'{GlossaryEnergy.TransportMarginValue}:{GlossaryEnergy.MarginValue}'] / 100.0
 
         return transport_cost

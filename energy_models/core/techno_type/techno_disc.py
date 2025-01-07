@@ -25,6 +25,8 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from plotly import graph_objects as go
+
+from climateeconomics.core.tools.differentiable_model import DifferentiableModel
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -74,7 +76,7 @@ class TechnoDiscipline(SoSWrapp):
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'user_level': 2},
         'smooth_type': {'type': 'string', 'default': 'smooth_max',
-                        'possible_values': ['smooth_max', 'soft_max', ],  # 'cons_smooth_max' : deactivated cause gradients are wrong when all ratios are 1. (no limiting stream)
+                        'possible_values': ['smooth_max', 'soft_max', 'cons_smooth_max' ],
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
         GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
@@ -95,7 +97,6 @@ class TechnoDiscipline(SoSWrapp):
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
     DESC_OUT = {
-        GlossaryEnergy.TechnoDetailedConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt', },
         GlossaryEnergy.TechnoProductionWithoutRatioValue: {'type': 'dataframe', 'unit': 'TWh or Mt'},
@@ -108,7 +109,7 @@ class TechnoDiscipline(SoSWrapp):
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }},
-        GlossaryEnergy.InstalledPower: GlossaryEnergy.InstalledPowerDf,
+        GlossaryEnergy.InstalledCapacity: GlossaryEnergy.InstalledCapacityDf,
         GlossaryEnergy.TechnoCapitalValue: GlossaryEnergy.TechnoCapitalDf,
         GlossaryEnergy.SpecificCostsForProductionValue: GlossaryEnergy.SpecificCostsForProduction,
         GlossaryEnergy.InitialPlantsTechnoProductionValue: GlossaryEnergy.InitialPlantsTechnoProduction,
@@ -131,7 +132,7 @@ class TechnoDiscipline(SoSWrapp):
         self.dcons_column_dinvest = None
         self.dprices_demissions = None
         self.grad_total = None
-        self.techno_model = None
+        self.techno_model: DifferentiableModel = None
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
@@ -216,7 +217,6 @@ class TechnoDiscipline(SoSWrapp):
                                                                                             energy_name=self.energy_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
-            'age_distrib_production': GlossaryEnergy.get_age_distrib_prod_df(energy_name=self.energy_name),  # todo: not coupled, rename cols and move to DESC_OUT
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         self.add_inputs(dynamic_inputs)
@@ -308,17 +308,17 @@ class TechnoDiscipline(SoSWrapp):
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
-        self.techno_model.compute(inputs_dict)
+        self.techno_model.set_inputs(inputs_dict)
+        self.techno_model.compute()
 
+        """
         outputs_dict = {GlossaryEnergy.TechnoDetailedPricesValue: self.techno_model.cost_details,
                         GlossaryEnergy.TechnoPricesValue: self.techno_model.cost_details[[GlossaryEnergy.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
-                        GlossaryEnergy.TechnoDetailedConsumptionValue: self.techno_model.consumption_detailed,
                         GlossaryEnergy.TechnoConsumptionValue: self.techno_model.consumption,
                         GlossaryEnergy.TechnoConsumptionWithoutRatioValue: self.techno_model.consumption_woratio,
                         GlossaryEnergy.TechnoDetailedProductionValue: self.techno_model.production_detailed,
                         GlossaryEnergy.TechnoProductionValue: self.techno_model.production,
                         GlossaryEnergy.TechnoProductionWithoutRatioValue: self.techno_model.production_woratio,
-                        'age_distrib_production': self.techno_model.age_distrib_prod_df,
                         'mean_age_production': self.techno_model.mean_age_df,
                         GlossaryEnergy.CO2EmissionsValue: self.techno_model.carbon_intensity[[GlossaryEnergy.Years, self.techno_name]],
                         'CO2_emissions_detailed': self.techno_model.carbon_intensity,
@@ -332,12 +332,12 @@ class TechnoDiscipline(SoSWrapp):
                         'initial_age_distrib': self.techno_model.initial_age_distrib,
                         GlossaryEnergy.InitialPlantsTechnoProductionValue: self.techno_model.initial_plants_historical_prod,
                         }
-
-        self.store_sos_outputs_values(outputs_dict)
+        """
+        outputs = self.techno_model.get_dataframes()
+        self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
         pass
-
     def get_chart_filter_list(self):
 
         chart_filters = []
@@ -439,7 +439,7 @@ class TechnoDiscipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Power production' in charts:
-            new_chart = self.get_chart_power_production(technos_info_dict)
+            new_chart = self.get_chart_installed_capacity(technos_info_dict)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Power plants initial age distribution' in charts:
@@ -484,13 +484,13 @@ class TechnoDiscipline(SoSWrapp):
             tot_price = techno_detailed_prices[self.techno_name].values / \
                         (percentage_resource[self.energy_name] / 100.)
             serie = InstanciatedSeries(
-                techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+                techno_detailed_prices[GlossaryEnergy.Years],
                 tot_price.tolist(), 'Total price without percentage', 'lines')
             new_chart.series.append(serie)
         # Add total price
         tot_price_mwh = techno_detailed_prices[self.techno_name].values
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             tot_price_mwh.tolist(), 'Total price', 'lines')
 
         new_chart.series.append(serie)
@@ -498,7 +498,7 @@ class TechnoDiscipline(SoSWrapp):
         factory_price_mwh = techno_detailed_prices[f'{self.techno_name}_factory'].values
         # Factory price
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             factory_price_mwh.tolist(), 'Factory', 'bar')
 
         new_chart.series.append(serie)
@@ -507,7 +507,7 @@ class TechnoDiscipline(SoSWrapp):
             # energy_costs
             ec_price_mwh = techno_detailed_prices['energy_and_resources_costs'].values
             serie = InstanciatedSeries(
-                techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+                techno_detailed_prices[GlossaryEnergy.Years],
                 ec_price_mwh.tolist(), 'Energy costs', 'bar')
 
             new_chart.series.append(serie)
@@ -515,20 +515,20 @@ class TechnoDiscipline(SoSWrapp):
         transport_price_mwh = techno_detailed_prices['transport'].values
         # Transport price
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             transport_price_mwh.tolist(), 'Transport', 'bar')
 
         new_chart.series.append(serie)
         # CO2 taxes
         co2_price_mwh = techno_detailed_prices['CO2_taxes_factory'].values
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             co2_price_mwh.tolist(), 'CO2 taxes due to production', 'bar')
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            techno_detailed_prices[GlossaryEnergy.MarginValue].values.tolist(), 'Margin', 'bar')
+            techno_detailed_prices[GlossaryEnergy.Years],
+            techno_detailed_prices[GlossaryEnergy.MarginValue], 'Margin', 'bar')
         new_chart.series.append(serie)
 
         return new_chart
@@ -551,7 +551,7 @@ class TechnoDiscipline(SoSWrapp):
                         (percentage_resource[self.energy_name] / 100.)
 
             serie = InstanciatedSeries(
-                techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+                techno_detailed_prices[GlossaryEnergy.Years],
                 tot_price.tolist(), 'Total price without percentage', 'lines')
             new_chart.series.append(serie)
         # Add total price
@@ -559,7 +559,7 @@ class TechnoDiscipline(SoSWrapp):
         techno_kg_price = techno_detailed_prices[self.techno_name].values * \
                           data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price.tolist(), 'Total price', 'lines')
 
         new_chart.series.append(serie)
@@ -568,7 +568,7 @@ class TechnoDiscipline(SoSWrapp):
         techno_kg_price = techno_detailed_prices[f'{self.techno_name}_factory'].values * \
                           data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price.tolist(), 'Factory', 'bar')
 
         new_chart.series.append(serie)
@@ -577,7 +577,7 @@ class TechnoDiscipline(SoSWrapp):
             techno_kg_price = techno_detailed_prices['energy_and_resources_costs'].values * \
                               data_fuel_dict['calorific_value']
             serie = InstanciatedSeries(
-                techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+                techno_detailed_prices[GlossaryEnergy.Years],
                 techno_kg_price.tolist(), 'Energy costs', 'bar')
 
             new_chart.series.append(serie)
@@ -585,7 +585,7 @@ class TechnoDiscipline(SoSWrapp):
         techno_kg_price = techno_detailed_prices['transport'].values * \
                           data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price.tolist(), 'Transport', 'bar')
 
         new_chart.series.append(serie)
@@ -593,7 +593,7 @@ class TechnoDiscipline(SoSWrapp):
         techno_kg_price = techno_detailed_prices['CO2_taxes_factory'].values * \
                           data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price.tolist(), 'CO2 taxes due to production', 'bar')
         new_chart.series.append(serie)
 
@@ -601,7 +601,7 @@ class TechnoDiscipline(SoSWrapp):
         techno_kg_price = techno_detailed_prices[GlossaryEnergy.MarginValue].values * \
                           data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
-            techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
+            techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price.tolist(), 'Margin', 'bar')
         new_chart.series.append(serie)
 
@@ -619,7 +619,7 @@ class TechnoDiscipline(SoSWrapp):
         invest = input_investments[GlossaryEnergy.InvestValue].values * \
                  scaling_factor_invest_level
         serie = InstanciatedSeries(
-            input_investments[GlossaryEnergy.Years].values.tolist(),
+            input_investments[GlossaryEnergy.Years],
             invest.tolist(), '', 'bar')
 
         new_chart.series.append(serie)
@@ -629,7 +629,7 @@ class TechnoDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
         techno_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
@@ -642,7 +642,7 @@ class TechnoDiscipline(SoSWrapp):
                 legend_title = f'{reactant} consumption'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
-                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
+                    techno_consumption[GlossaryEnergy.Years],
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
@@ -653,7 +653,7 @@ class TechnoDiscipline(SoSWrapp):
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
-                    techno_production[GlossaryEnergy.Years].values.tolist(),
+                    techno_production[GlossaryEnergy.Years],
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
@@ -695,7 +695,7 @@ class TechnoDiscipline(SoSWrapp):
                 # 1GT = 1e9T = 1e12 kg
                 mass = -techno_consumption[reactant].values
                 serie = InstanciatedSeries(
-                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
+                    techno_consumption[GlossaryEnergy.Years],
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
         for product in techno_production.columns:
@@ -705,7 +705,7 @@ class TechnoDiscipline(SoSWrapp):
                 # 1GT = 1e9T = 1e12 kg
                 mass = techno_production[product].values
                 serie = InstanciatedSeries(
-                    techno_production[GlossaryEnergy.Years].values.tolist(),
+                    techno_production[GlossaryEnergy.Years],
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
 
@@ -719,11 +719,11 @@ class TechnoDiscipline(SoSWrapp):
         applied_ratio = self.get_sosdisc_outputs('applied_ratio')
         chart_name = f'Ratio applied on {self.techno_name} technology energy Production'
         fig = go.Figure()
-        fig.add_trace(go.Bar(x=applied_ratio[GlossaryEnergy.Years].values.tolist(),
-                             y=applied_ratio['applied_ratio'].values.tolist(),
-                             marker=dict(color=applied_ratio['applied_ratio'].values.tolist(),
+        fig.add_trace(go.Bar(x=applied_ratio[GlossaryEnergy.Years],
+                             y=applied_ratio['applied_ratio'],
+                             marker=dict(color=applied_ratio['applied_ratio'],
                                          colorscale='Emrld'),
-                             hovertext=applied_ratio['min_ratio_name'].values.tolist()))
+                             hovertext=applied_ratio['limiting_input']))
         new_chart = InstantiatedPlotlyNativeChart(
             fig, chart_name=chart_name, default_title=True)
         return new_chart
@@ -748,59 +748,33 @@ class TechnoDiscipline(SoSWrapp):
                                              chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
-            initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod['cum energy (TWh)'].values.tolist(), 'Initial production by 2020 factories', 'lines')
+            initial_prod[GlossaryEnergy.Years],
+            initial_prod['cum energy (TWh)'], f'Initial production by {year_start} factories', 'lines')
 
         study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
-        study_prod_l.insert(
-            0, initial_prod['cum energy (TWh)'].values.tolist()[-1])
-        serie = InstanciatedSeries(
-            years_study,
-            study_prod_l, 'Predicted production', 'lines')
+        study_prod_l.insert(0, initial_prod['cum energy (TWh)'].values[-1])
+        serie = InstanciatedSeries(years_study, study_prod_l, 'Predicted production', 'lines')
         new_chart.series.append(serie)
 
         return new_chart
 
-    def get_chart_age_distribution_production(self):
-        age_distrib_production = self.get_sosdisc_outputs('age_distrib_production')
-        chart_name = f'{self.techno_name} factories age in term of TWh of {self.energy_name} production'
-
-        if GlossaryEnergy.Years in age_distrib_production.columns:
-            new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production [TWh]',
-                                                 chart_name=chart_name.capitalize())
-            years = age_distrib_production[GlossaryEnergy.Years].values
-            filtered_years = list(
-                set([year for year in years if year % 10 == 0]))
-            filtered_years.sort()
-
-            for year in filtered_years:
-                filtered_df = age_distrib_production.loc[
-                    age_distrib_production[GlossaryEnergy.Years] == year].sort_values(
-                    'age')
-                serie = InstanciatedSeries(
-                    filtered_df['age'].values.tolist(),
-                    filtered_df['distrib_prod (TWh)'].values.tolist(), f'{year}', 'lines')
-
-                new_chart.series.append(serie)
-
-            return new_chart
 
     def get_chart_factory_mean_age(self):
-        age_distrib_production = self.get_sosdisc_outputs('mean_age_production')
+        mean_age_production = self.get_sosdisc_outputs('mean_age_production')
 
-        if GlossaryEnergy.Years in age_distrib_production.columns:
+        if GlossaryEnergy.Years in mean_age_production.columns:
             chart_name = f'{self.techno_name} factories average age'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mean age',
                                                  chart_name=chart_name.capitalize())
 
             serie = InstanciatedSeries(
-                age_distrib_production[GlossaryEnergy.Years].values.tolist(),
-                age_distrib_production['mean age'].values.tolist(), '', 'lines')
+                mean_age_production[GlossaryEnergy.Years],
+                mean_age_production['mean age'], '', 'lines')
 
             new_chart.series.append(serie)
 
@@ -826,7 +800,7 @@ class TechnoDiscipline(SoSWrapp):
                 CO2_per_use = np.ones(
                     len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
-                carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                carbon_emissions[GlossaryEnergy.Years],
                 CO2_per_use.tolist(), f'if {self.energy_name} used', 'bar')
 
             new_chart.series.append(serie)
@@ -836,18 +810,18 @@ class TechnoDiscipline(SoSWrapp):
                 total_carbon_emissions = CO2_per_use + \
                                          carbon_emissions[self.techno_name].values
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
-                    carbon_emissions[self.techno_name].values.tolist(), 'Total w/o use', 'lines')
+                    carbon_emissions[GlossaryEnergy.Years],
+                    carbon_emissions[self.techno_name], 'Total w/o use', 'lines')
                 new_chart.series.append(serie)
 
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                    carbon_emissions[GlossaryEnergy.Years],
                     total_carbon_emissions.tolist(), 'Total if used', 'lines')
                 new_chart.series.append(serie)
             elif emission_type != GlossaryEnergy.Years and not (carbon_emissions[emission_type] == 0).all():
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
-                    carbon_emissions[emission_type].values.tolist(), emission_type, 'bar')
+                    carbon_emissions[GlossaryEnergy.Years],
+                    carbon_emissions[emission_type], emission_type, 'bar')
                 new_chart.series.append(serie)
 
         return new_chart
@@ -873,7 +847,7 @@ class TechnoDiscipline(SoSWrapp):
                     len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] * data_fuel_dict[
                                   'high_calorific_value']
             serie = InstanciatedSeries(
-                carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                carbon_emissions[GlossaryEnergy.Years],
                 CO2_per_use.tolist(), f'if {self.energy_name} used', 'bar')
 
             new_chart.series.append(serie)
@@ -885,19 +859,19 @@ class TechnoDiscipline(SoSWrapp):
                 total_carbon_emissions = CO2_per_use + total_carbon_emission_wo_use
 
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                    carbon_emissions[GlossaryEnergy.Years],
                     total_carbon_emission_wo_use.tolist(), 'Total w/o use', 'lines')
                 new_chart.series.append(serie)
 
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                    carbon_emissions[GlossaryEnergy.Years],
                     total_carbon_emissions.tolist(), 'Total if used ', 'lines')
                 new_chart.series.append(serie)
             elif emission_type != GlossaryEnergy.Years and not (carbon_emissions[emission_type] == 0).all():
                 emissions_kg_kg = carbon_emissions[emission_type].values * \
                                   data_fuel_dict['high_calorific_value']
                 serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years].values.tolist(),
+                    carbon_emissions[GlossaryEnergy.Years],
                     emissions_kg_kg.tolist(), emission_type, 'bar')
                 new_chart.series.append(serie)
 
@@ -917,8 +891,8 @@ class TechnoDiscipline(SoSWrapp):
                                                  chart_name=chart_name)
 
             serie = InstanciatedSeries(
-                land_use_required[GlossaryEnergy.Years].values.tolist(),
-                land_use_required[f'{self.techno_name} (Gha)'].values.tolist(), 'Gha', 'lines')
+                land_use_required[GlossaryEnergy.Years],
+                land_use_required[f'{self.techno_name} (Gha)'], 'Gha', 'lines')
             new_chart.series.append(serie)
 
         return new_chart
@@ -931,23 +905,23 @@ class TechnoDiscipline(SoSWrapp):
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            techno_capital[GlossaryEnergy.Years].values.tolist(),
-            techno_capital[GlossaryEnergy.Capital].values.tolist(), 'Total capital', 'lines')
+            techno_capital[GlossaryEnergy.Years],
+            techno_capital[GlossaryEnergy.Capital], 'Total capital', 'lines')
 
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            techno_capital[GlossaryEnergy.Years].values.tolist(),
-            techno_capital[GlossaryEnergy.NonUseCapital].values.tolist(),
+            techno_capital[GlossaryEnergy.Years],
+            techno_capital[GlossaryEnergy.NonUseCapital],
             'Unused capital (utilisation ratio + limitation from energy and resources)', 'bar')
 
         new_chart.series.append(serie)
 
         return new_chart
 
-    def get_chart_power_production(self, technos_info_dict):
-        power_production = self.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
-        chart_name = f'Power installed of {self.techno_name} factories'
+    def get_chart_installed_capacity(self, technos_info_dict):
+        installed_capacity = self.get_sosdisc_outputs(GlossaryEnergy.InstalledCapacity)
+        chart_name = f'Capacity installed of {self.techno_name} factories'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Power [MW]',
                                              chart_name=chart_name)
@@ -958,20 +932,20 @@ class TechnoDiscipline(SoSWrapp):
             new_chart.annotation_upper_left = note
 
         serie = InstanciatedSeries(
-            power_production[GlossaryEnergy.Years].values.tolist(),
-            power_production['total_installed_power'].values.tolist(), 'Total', 'lines')
+            installed_capacity[GlossaryEnergy.Years],
+            installed_capacity['total_installed_capacity'], 'Total', 'lines')
 
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            power_production[GlossaryEnergy.Years].values.tolist(),
-            power_production['new_power_production'].values.tolist(), 'Newly implemented', 'lines')
+            installed_capacity[GlossaryEnergy.Years],
+            installed_capacity['newly_installed_capacity'], 'Newly installed', 'lines')
 
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            power_production[GlossaryEnergy.Years].values.tolist(),
-            power_production['removed_power_production'].values.tolist(), 'Newly dismantled', 'lines')
+            installed_capacity[GlossaryEnergy.Years],
+            installed_capacity['removed_installed_capacity'], 'Newly dismantled', 'lines')
 
         new_chart.series.append(serie)
 
@@ -984,8 +958,8 @@ class TechnoDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart('Age', '%', chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            age_distrib['age'].values.tolist(),
-            age_distrib['distrib'].values.tolist(), '', 'bar')
+            age_distrib['age'],
+            age_distrib['distrib'], '', 'bar')
 
         new_chart.series.append(serie)
         return new_chart

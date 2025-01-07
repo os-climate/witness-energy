@@ -32,7 +32,7 @@ class PureCarbonSS(CSTechno):
         self.carbon_to_be_stored_constraint = None
 
     def compute_resources_needs(self):
-        self.cost_details[f'{GlossaryEnergy.SolidCarbon}_needs'] = 1 / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.SolidCarbon}_needs'] = 1 / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """

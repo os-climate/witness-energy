@@ -125,14 +125,14 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
 
         production_detailed = disc.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
-        power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
+        power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledCapacity)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
         self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
-                             list(power_production['total_installed_power'] * techno_infos_dict[
+                             list(power_production['total_installed_capacity'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
         self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
-                                list(power_production['total_installed_power'] * techno_infos_dict[
+                                list(power_production['total_installed_capacity'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
 
         filters = disc.get_chart_filter_list()

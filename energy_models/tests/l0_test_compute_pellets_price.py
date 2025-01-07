@@ -65,6 +65,7 @@ class PelletsPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.CO2, 'water'])
         self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price[GlossaryEnergy.CO2] = np.linspace(.04, .1, len(years))
+        self.resources_price['water'] = np.linspace(.04, .1, len(years))
         # biomass_dry price in $/kg
         # self.resources_price[GlossaryEnergy.biomass_dry] = 68.12
         self.scaling_factor_techno_consumption = 1e3

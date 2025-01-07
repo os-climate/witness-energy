@@ -51,7 +51,6 @@ from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -204,7 +203,7 @@ class Energy_Mix_Discipline(SoSWrapp):
     energy_class_dict = EnergyMix.energy_class_dict
     stream_class_dict = EnergyMix.stream_class_dict
     SYNGAS_NAME = GlossaryEnergy.syngas
-    BIOMASS_DRY_NAME = BiomassDry.name
+    BIOMASS_DRY_NAME = GlossaryEnergy.biomass_dry
     LIQUID_FUEL_NAME = LiquidFuel.name
     HYDROGEN_NAME = GaseousHydrogen.name
     LIQUID_HYDROGEN_NAME = LiquidHydrogen.name
@@ -454,22 +453,22 @@ class Energy_Mix_Discipline(SoSWrapp):
         energy_list = inputs_dict_orig[GlossaryEnergy.energy_list]
         agri_name = AgricultureMixDiscipline.name
         if GlossaryEnergy.biomass_dry in energy_list:
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.StreamConsumptionValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.StreamConsumptionValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.StreamConsumptionValue}')
             inputs_dict[
-                f'{BiomassDry.name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
+                f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.EnergyProductionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.StreamPricesValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.StreamPricesValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.StreamPricesValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.LandUseRequiredValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.LandUseRequiredValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.LandUseRequiredValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.CO2EmissionsValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2PerUse}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.CO2PerUse}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.CO2PerUse}')
-            inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.losses_percentage'] = inputs_dict_orig.pop(
                 f'{agri_name}.losses_percentage')
 
     def compute_sos_jacobian(self):
@@ -1310,7 +1309,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         '''
 
-        if stream == BiomassDry.name:
+        if stream == GlossaryEnergy.biomass_dry:
             ns_stream = AgricultureMixDiscipline.name
         else:
             ns_stream = stream
@@ -2038,8 +2037,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             techno_disc = self.ee.dm.get_disciplines_with_name(self.ee.dm.get_all_namespaces_from_var_name(
                 f'{techno}.{GlossaryEnergy.TechnoProductionValue}')[0][
                                                                :-len('.{GlossaryEnergy.TechnoProductionValue}')])[0]
-            cons_col = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoDetailedConsumptionValue).columns
+            cons_col = techno_disc.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue).columns
             consummed_stream = [col.split(' ')[0]
                                 for col in cons_col if col not in [GlossaryEnergy.Years]]
             techno_cons_dict[techno] = consummed_stream

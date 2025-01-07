@@ -79,7 +79,7 @@ class CHPTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_02_chp_discipline(self):
+    def test_02_chp_discipline_medium_heat(self):
         self.name = 'Test'
         self.model_name = 'CHP'
         self.ee = ExecutionEngine(self.name)

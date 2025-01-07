@@ -27,17 +27,17 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class GasElec(ElectricityTechno):
     def compute_other_streams_needs(self):
-        self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict['kwh_methane/kwh']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.inputs['techno_infos_dict']['kwh_methane/kwh']
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                        self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+                                                                                        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
                                                                                             f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.consumption_detailed[f'{Methane.name} ({self.product_unit})'] - \
-            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{Methane.name} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{ElectricityTechno.energy_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
@@ -50,7 +50,7 @@ class GasElec(ElectricityTechno):
         # kg of C02 per kg of methane burnt
         methane_co2 = methane_data[GlossaryEnergy.CO2PerUse]
         # Amount of methane in kwh for 1 kwh of elec
-        methane_need = self.techno_infos_dict['kwh_methane/kwh']
+        methane_need = self.inputs['techno_infos_dict']['kwh_methane/kwh']
         calorific_value = methane_data['calorific_value']  # kWh/kg
 
         co2_prod = methane_co2 / calorific_value * methane_need
@@ -66,8 +66,8 @@ class GasElec(ElectricityTechno):
         emission_factor is in Mt/TWh
         '''
         ghg_type = Methane.emission_name
-        emission_factor = self.techno_infos_dict[f'{ghg_type}_emission_factor']
+        emission_factor = self.inputs['techno_infos_dict'][f'{ghg_type}_emission_factor']
 
-        self.production_detailed[f'{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                     self.consumption_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
+                                                                     self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:'
                                                                          f'{Methane.name} ({self.product_unit})']

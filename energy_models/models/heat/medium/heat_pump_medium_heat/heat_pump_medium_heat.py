@@ -31,31 +31,18 @@ class HeatPump(mediumheattechno):
         self.heat_flux_distribution = None
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
         # Production
-        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_unit})'] = \
-            self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_unit})'] / \
-            self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{mediumtemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{mediumtemperatureheat.name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
-        mean_temperature = self.techno_infos_dict['mean_temperature']
-        output_temperature = self.techno_infos_dict['output_temperature']
+        mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']
+        output_temperature = self.inputs['techno_infos_dict']['output_temperature']
         COP = output_temperature / (output_temperature - mean_temperature)
         electricity_needs = 1 / COP  # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
-
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
-
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        self.heat_flux = land_rate / self.cost_details['energy_and_resources_costs'].values
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                                    'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution

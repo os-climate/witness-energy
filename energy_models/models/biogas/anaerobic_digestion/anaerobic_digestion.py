@@ -25,9 +25,9 @@ class AnaerobicDigestion(BioGasTechno):
 
     def compute_resources_needs(self):
         # Wet biomass_needs are in kg/m^3
-        self.cost_details[f"{WetBiomass.name}_needs"] = self.techno_infos_dict[f"{WetBiomass.name}_needs"] / \
-                                                 self.data_energy_dict['density'] / \
-                                                 self.data_energy_dict['calorific_value']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{WetBiomass.name}_needs"] = self.inputs['techno_infos_dict'][f"{WetBiomass.name}_needs"] / \
+                                                 self.inputs['data_fuel_dict']['density'] / \
+                                                 self.inputs['data_fuel_dict']['calorific_value']
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()

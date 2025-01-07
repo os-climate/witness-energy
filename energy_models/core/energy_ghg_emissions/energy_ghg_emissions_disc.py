@@ -40,7 +40,6 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import (
     EnergyGHGEmissions,
 )
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -135,7 +134,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name:
+                    if energy == GlossaryEnergy.biomass_dry:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.{ghg}_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
@@ -232,7 +231,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_sources.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name:
+                if energy == GlossaryEnergy.biomass_dry:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     if 'Total CO2 by use' in co2_emission_column:
@@ -337,7 +336,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_sinks.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name:
+                if energy == GlossaryEnergy.biomass_dry:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(

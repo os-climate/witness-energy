@@ -25,14 +25,14 @@ class CSTechno(TechnoType):
         TechnoType.__init__(self, name)
         self.product_unit = 'Mt'
 
-    def compute_capital_recovery_factor(self, data_config):
+    def compute_capital_recovery_factor(self):
         return 1
 
-    def check_capex_unity(self, data_tocheck):
+    def capex_unity_harmonizer(self):
         """
         Put all capex in $/kgCO2
         """
-
+        data_tocheck = self.inputs['techno_infos_dict']
         if data_tocheck['Capex_init_unit'] == '$/kgCO2':
 
             capex_init = data_tocheck['Capex_init']

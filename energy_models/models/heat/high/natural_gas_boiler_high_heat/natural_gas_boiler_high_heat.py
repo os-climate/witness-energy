@@ -38,28 +38,28 @@ class NaturalGasBoilerHighHeat(highheattechno):
         # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
-        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
 
     def compute_byproducts_production(self):
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
-                                                                                        self.consumption_detailed[
+                                                                                        self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
                                                                                             f'{Methane.name} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh 
-        methane_demand = self.techno_infos_dict['methane_demand']
+        methane_demand = self.inputs['techno_infos_dict']['methane_demand']
 
         methane_needs = methane_demand
 
         return methane_needs
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        co2_captured__production = self.techno_infos_dict['co2_captured__production']
+        co2_captured__production = self.inputs['techno_infos_dict']['co2_captured__production']
         heat_density = Methane.data_energy_dict['density']  # kg/m^3
         heat_calorific_value = Methane.data_energy_dict['calorific_value']  # kWh/kg
 
@@ -67,15 +67,3 @@ class NaturalGasBoilerHighHeat(highheattechno):
 
         return co2_prod
 
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
-
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        self.heat_flux = land_rate / self.cost_details['energy_and_resources_costs'].values
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                                    'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution

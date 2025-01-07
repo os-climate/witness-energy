@@ -136,18 +136,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TransportDemandValue = "transport_demand"
     ReforestationInvestmentValue = "reforestation_investment"
     CarbonCapturedValue = "carbon_captured_type"
-    InstalledPower = (
-        "power_production"  # todo : rename string to Installed Power [MW] (check unit)
-    )
 
-    InstalledPowerDf = {
+    InstalledCapacity = "installed_capacity"
+    InstalledCapacityDf = {
         "type": "dataframe",
-        "unit": "MW",
+        "unit": "MW or Mt",
+        "description": "Capacity of energy production (MW) or carbon capture (Mt)",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("float", None, True),
-            "new_power_production": ("float", None, True),
-            "total_installed_power": ("float", None, True),
-            "removed_power_production": ("float", None, True),
+            "newly_installed_capacity": ("float", None, True),
+            "total_installed_capacity": ("float", None, True),
+            "removed_installed_capacity": ("float", None, True),
         },
     }
 
@@ -531,9 +530,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     # techno names
     NaturalGas = "NaturalGas"
-    CropEnergy = "CropEnergy"
-    ManagedWood = "ManagedWood"
-    UnmanagedWood = "UnmanagedWood"
     OrganicWaste = "OrganicWaste"
     BiomassBuryingFossilization = "BiomassBuryingFossilization"
     CarbonStorageTechno = "CarbonStorageTechno"
@@ -683,10 +679,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
         f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
         solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
-        biomass_dry: {
-            stream_type: agriculture_type,
-            value: [ManagedWood, UnmanagedWood, CropEnergy],
-        },
         electricity: {stream_type: energy_type, value: [WindOffshore]},
         f"{hydrogen}.{liquid_hydrogen}": {
             stream_type: energy_type,
@@ -775,7 +767,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
         f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
         solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
-        biomass_dry: {stream_type: agriculture_type, value: []},
         electricity: {
             stream_type: energy_type,
             value: [
@@ -1054,10 +1045,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         FossilSimpleTechno: [CO2FromFlueGas, GlossaryWitnessCore.CH4],
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
-        ManagedWood: [],
-        UnmanagedWood: [carbon_capture],
-        CropEnergy: [],
-        Reforestation: [],
         Geothermal: [],
         Crop: [],
         Forest: [],
@@ -1071,8 +1058,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoStreamsUsedDict = {
         Transesterification: [electricity],  # heat -> low, no electricity
         AnaerobicDigestion: [electricity],  # produce heat -> low, dont consume electricity, consume biomass_dry and wet
-        ManagedWood: [electricity],  # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
-        UnmanagedWood: [electricity], # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
         f"{direct_air_capture}.{AmineScrubbing}": [electricity, methane],   # put heat instead of methane
         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [electricity, methane], # put heat instead of methane
         f"{direct_air_capture}.{DirectAirCaptureTechno}": [GlossaryWitnessCore.clean_energy, fossil], # dont touch
@@ -1142,7 +1127,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: [],  # add transport fuel
         GeologicMineralization: [],  # add transport fuel
         CarbonStorageTechno: [],
-        CropEnergy: [],
     }
 
     # dict of resources used by technos
@@ -1254,12 +1238,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         RWGS: syngas,
         WaterGasShift: f"{hydrogen}.{gaseous_hydrogen}",
         f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_capture,
-        CropEnergy: biomass_dry,
-        ManagedWood: biomass_dry,
         CarbonStorageTechno: carbon_storage,
-        Reforestation: carbon_storage,
         Geothermal: electricity,
-        UnmanagedWood: biomass_dry,
         f"{flue_gas_capture}.{FlueGasTechno}": carbon_capture,
         ElectricBoilerHighHeat: f"{heat}.{hightemperatureheat}",
         HeatPumpHighHeat: f"{heat}.{hightemperatureheat}",
@@ -1334,13 +1314,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
          EnhancedOilRecovery: 0,
          GeologicMineralization: 0,
          PureCarbonSolidStorage: 0,
-        UnmanagedWood: 3,
-        Reforestation: 3,
         CarbonStorageTechno: 0,
         f"{direct_air_capture}.{DirectAirCaptureTechno}": 3,
-        CropEnergy: 1,
         Geothermal: 7,     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). # National Renewable Energy Lab.(NREL), Golden, CO (United States).
-        ManagedWood: 3,
         f"{flue_gas_capture}.{FlueGasTechno}": 1,
         HeatPumpHighHeat: 1,
         ElectricBoilerHighHeat: 2,
@@ -1415,9 +1391,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: 35, # should be modified
         GeologicMineralization: 35, # should be modified
         PureCarbonSolidStorage: 35, # should be modified
-        ManagedWood: 150, # for now constant in time but should increase with time
-        UnmanagedWood: 150, # for now constant in time but should increase with time
-        CropEnergy: 50, # for now constant in time but should increase with time
         FossilSimpleTechno: 25,
         NaturalGasBoilerHighHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
         HeatPumpHighHeat: 25, # years # https://www.energy.gov/energysaver/heat-pump-systems
@@ -1439,7 +1412,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{CarbonStorageTechno}": 35,
         f"{direct_air_capture}.{DirectAirCaptureTechno}": 35,
         f"{flue_gas_capture}.{FlueGasTechno}": 25,
-        Reforestation: 150,  # for now constant in time but should increase with time,
         Geothermal: 30, # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.  Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.  Publications Office of the European Union, Luxemburgo.
         AnimalManure: 25, # for now constant in time but should increase with time
         WetCropResidues: 25,  # for now constant in time but should increase with time
@@ -1519,19 +1491,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name}": ("float", None, False),
                 f"{techno_name}_wotaxes": ("float", None, False),
-            },
-        }
-
-    @classmethod
-    def get_age_distrib_prod_df(cls, energy_name: str):
-        techno_unit = cls.unit_dicts[energy_name]
-        return {
-            "type": "dataframe",
-            "unit": techno_unit,
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
-                f"distrib_prod ({techno_unit})": ("float", None, False),
-                "age_x_prod": ("float", None, False),
             },
         }
 

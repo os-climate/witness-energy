@@ -37,7 +37,7 @@ class TestIndependentInvest(unittest.TestCase):
         self.energy_list = [
             GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
         self.energy_list_bis = [
-            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane, GlossaryEnergy.biomass_dry]
+            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
 
         self.ccs_list = [
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]

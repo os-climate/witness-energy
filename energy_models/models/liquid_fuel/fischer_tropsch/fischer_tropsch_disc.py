@@ -138,9 +138,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.grad_total = None
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = FischerTropsch(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     def compute_sos_jacobian(self):
 

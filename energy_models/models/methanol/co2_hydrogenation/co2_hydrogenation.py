@@ -30,17 +30,17 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CO2Hydrogenation(MethanolTechno):
 
     def compute_resources_needs(self):
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Water.name}_needs'] = self.get_theoretical_water_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.carbon_capture}_needs'] = self.get_theoretical_co2_needs() / self.cost_details['efficiency']
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_capture}_needs'] = self.get_theoretical_co2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_co2_needs(self):
         """
         """
-        carbon_capture_demand = self.techno_infos_dict['carbon_capture_demand']
+        carbon_capture_demand = self.inputs['techno_infos_dict']['carbon_capture_demand']
         carbon_capture_calorific_value = CarbonCapture.data_energy_dict['calorific_value']  # kWh/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
@@ -50,7 +50,7 @@ class CO2Hydrogenation(MethanolTechno):
     def get_theoretical_hydrogen_needs(self):
         """
         """
-        hydrogen_demand = self.techno_infos_dict['hydrogen_demand']  # kg/kg
+        hydrogen_demand = self.inputs['techno_infos_dict']['hydrogen_demand']  # kg/kg
         hydrogen_calorific_value = GaseousHydrogen.data_energy_dict['calorific_value']  # kWh/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
@@ -60,7 +60,7 @@ class CO2Hydrogenation(MethanolTechno):
     def get_theoretical_water_needs(self):
         """
         """
-        water_demand = self.techno_infos_dict['water_demand']  # kg/kg
+        water_demand = self.inputs['techno_infos_dict']['water_demand']  # kg/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
         water_needs = water_demand / methanol_calorific_value  # kg/kWh = Mt/TWh
@@ -69,7 +69,7 @@ class CO2Hydrogenation(MethanolTechno):
     def get_theoretical_electricity_needs(self):
         """
         """
-        elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kg
+        elec_demand = self.inputs['techno_infos_dict']['elec_demand']  # kWh/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
         electricity_needs = elec_demand / methanol_calorific_value  # kWh/kWh

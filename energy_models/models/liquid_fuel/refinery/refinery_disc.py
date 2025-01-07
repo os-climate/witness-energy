@@ -140,9 +140,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = Refinery(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
@@ -309,8 +307,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'

@@ -31,7 +31,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.independent_invest import IndependentInvest
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -113,7 +112,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name:
+                    if energy == GlossaryEnergy.biomass_dry:
                         dynamic_inputs['managed_wood_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
@@ -180,7 +179,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                        GlossaryEnergy.MaxBudgetConstraintValue: max_budget_constraint}
 
         for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
-            if energy == BiomassDry.name:
+            if energy == GlossaryEnergy.biomass_dry:
                 pass
             else:
                 for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
@@ -240,7 +239,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             identity / max_budget_constraint_ref)
 
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
-        if BiomassDry.name in energy_list:
+        if GlossaryEnergy.biomass_dry in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
@@ -346,7 +345,7 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             new_chart_energy.series.append(serie)
 
-            if BiomassDry.name in energy_list:
+            if GlossaryEnergy.biomass_dry in energy_list:
                 chart_name = 'Distribution of agriculture sector investments'
                 agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)

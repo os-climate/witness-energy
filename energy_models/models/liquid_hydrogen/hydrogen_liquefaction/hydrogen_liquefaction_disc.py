@@ -79,9 +79,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     DESC_OUT = LiquidHydrogenTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = HydrogenLiquefaction(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):
     #     inputs_dict = self.get_sosdisc_inputs()

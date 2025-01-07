@@ -32,36 +32,23 @@ class GeothermalHeat(highheattechno):
         self.heat_flux_distribution = None
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
 
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                               self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
+                                                                               self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                                    f'{hightemperatureheat.name} ({self.product_unit})'] / \
-                                                                               self.cost_details['efficiency']
+                                                                               self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
-        mean_temperature = self.techno_infos_dict['mean_temperature']
-        output_temperature = self.techno_infos_dict['output_temperature']
+        mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']
+        output_temperature = self.inputs['techno_infos_dict']['output_temperature']
         COP = output_temperature / (output_temperature - mean_temperature)
         electricity_needs = 1 / COP  # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
-
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
-
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        self.heat_flux = land_rate / self.cost_details['energy_and_resources_costs'].values
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                                    'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution
 
     @staticmethod
     def get_theoretical_steel_needs(self):
@@ -69,6 +56,6 @@ class GeothermalHeat(highheattechno):
         Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
         According to the www.energy.gov, Geothermal need 968 kg of copper for each MW implemented. Computing the need in Mt/MW
         """
-        steel_need = self.techno_infos_dict['steel_needs'] / 1000 / 1000 / 1000
+        steel_need = self.inputs['techno_infos_dict']['steel_needs'] / 1000 / 1000 / 1000
 
         return steel_need

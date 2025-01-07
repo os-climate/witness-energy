@@ -117,9 +117,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = CalciumLooping(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice

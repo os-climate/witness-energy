@@ -19,6 +19,7 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     LowHeatTechnoDiscipline,
 )
+from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.low.chplowheat.chplowheat import CHPLowHeat
 
@@ -93,14 +94,18 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
                 1 - 0.6)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
     # Renewable Methane Association [online]
-    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
-                      }
+    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},}
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = TechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = CHPLowHeat(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+
+    def get_chart_filter_list(self):
+        return TechnoDiscipline.get_chart_filter_list(self)
+    def get_post_processing_list(self, filters=None):
+        """
+        Basic post processing method for the model
+        """
+        return TechnoDiscipline.get_post_processing_list(self, filters)

@@ -80,7 +80,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_02_heatpump_discipline(self):
+    def test_02_heatpump_discipline_high_heat(self):
         self.name = 'Test'
         self.model_name = 'HeatPump'
         self.ee = ExecutionEngine(self.name)

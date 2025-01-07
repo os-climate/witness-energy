@@ -19,9 +19,8 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
-    AgricultureMixDiscipline,
-)
+
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     smooth_maximum,
@@ -33,7 +32,6 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
@@ -120,7 +118,7 @@ class EnergyMix(BaseStream):
     electricity_name = GlossaryEnergy.electricity
     gaseousHydrogen_name = GaseousHydrogen.name
     liquidHydrogen_name = LiquidHydrogen.name
-    biomass_name = BiomassDry.name
+    biomass_name = GlossaryEnergy.biomass_dry
     syngas_name = GlossaryEnergy.syngas
     lowtemperatureheat_name = lowtemperatureheat.name
     mediumtemperatureheat_name = mediumtemperatureheat.name
@@ -336,8 +334,6 @@ class EnergyMix(BaseStream):
         energy_type_capitals = []
         for energy in self.energy_list:
             energy_ = energy
-            if energy == BiomassDry.name:
-                energy_ = AgricultureMixDiscipline.name
             energy_type_capitals.append(
                 self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values)
 
@@ -350,8 +346,6 @@ class EnergyMix(BaseStream):
         energy_type_non_use_capitals = []
         for energy in self.energy_list:
             energy_ = energy
-            if energy == BiomassDry.name:
-                energy_ = AgricultureMixDiscipline.name
             energy_type_non_use_capitals.append(
                 self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values)
 
@@ -374,8 +368,6 @@ class EnergyMix(BaseStream):
         obj = 0.
         for stream in streams:
             stream_ = stream
-            if stream == BiomassDry.name:
-                stream_ = AgricultureMixDiscipline.name
             stream_capital = self.inputs[f"{stream_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values
             stream_non_used_capital = self.inputs[f"{stream_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.NonUseCapital].values
             stream_capital[stream_capital == 0] = 1.

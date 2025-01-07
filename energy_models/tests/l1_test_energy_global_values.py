@@ -768,18 +768,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #         print('----------  Biomass dry balances -------------')
         #
         #         print('We consider biomass_dry equals to the sum of primary solid biofuels (no municipal/industiral waste) but in the doc they do not consider crop residues')
-        #         biomass_dry_raw_prod_iea = (
-        #             48309940) / 3600  # TWh 1414648 + 1142420 +
-        #         biomass_dry_net_prod_iea = (36537355) / 3600  # TWh + 150882 + 519300
-        #
-        #         managed_wood_prod = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.ManagedWood.{GlossaryEnergy.TechnoProductionValue}')
-        #
-        #         computed_managed_wood_prod = managed_wood_prod[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
-        #             managed_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0
-        #
-        #         unmanaged_wood_prod = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biomass_dry}.UnmanagedWood.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_unmanaged_wood_prod = unmanaged_wood_prod[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             unmanaged_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000.0

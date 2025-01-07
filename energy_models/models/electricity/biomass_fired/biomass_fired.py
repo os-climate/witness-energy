@@ -26,17 +26,17 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class BiomassFired(ElectricityTechno):
     def compute_other_streams_needs(self):
-        self.cost_details[f'{BiomassDry.name}_needs'] = self.techno_infos_dict['biomass_needs']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs'] = self.inputs['techno_infos_dict']['biomass_needs']
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                        self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                                             f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.consumption_detailed[f'{BiomassDry.name} ({self.product_unit})'] - \
-            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']  # TWh
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{GlossaryEnergy.biomass_dry} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})']  # TWh
 
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -47,7 +47,7 @@ class BiomassFired(ElectricityTechno):
         # kg of C02 per kg of biomass burnt
         biomass_co2 = biomass_data[GlossaryEnergy.CO2PerUse]
         # Amount of biomass in kwh for 1 kwh of elec
-        biomass_need = self.techno_infos_dict['biomass_needs']
+        biomass_need = self.inputs['techno_infos_dict']['biomass_needs']
         calorific_value = biomass_data['calorific_value']  # kWh/kg
 
         co2_prod = biomass_co2 / calorific_value * biomass_need

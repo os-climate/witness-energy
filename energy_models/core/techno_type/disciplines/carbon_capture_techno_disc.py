@@ -67,89 +67,6 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     energy_name = GlossaryEnergy.carbon_capture
 
-    def set_partial_derivatives_flue_gas(self, energy_name=GlossaryEnergy.electricity):
-
-        inputs_dict = self.get_sosdisc_inputs()
-        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
-        scaling_factor_techno_production = self.get_sosdisc_inputs(
-            'scaling_factor_techno_production')
-        dcapex_dfluegas = self.techno_model.compute_dcapex_dfg_ratio(
-            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.FlueGasMean].values,
-            inputs_dict[GlossaryEnergy.InvestLevelValue].loc[
-                inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years] <=
-                inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.InvestValue].values,
-            inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
-        utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][GlossaryEnergy.UtilisationRatioValue].values
-        crf = self.techno_model.compute_capital_recovery_factor(inputs_dict['techno_infos_dict'])
-        dfactory_dfluegas = dcapex_dfluegas * \
-                            (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
-
-        delec_dflue_gas = self.techno_model.compute_delec_dfg_ratio(
-            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.FlueGasMean].values, inputs_dict['fg_ratio_effect'],
-            energy_name)
-
-        margin = \
-        inputs_dict[GlossaryEnergy.MarginValue].loc[inputs_dict[GlossaryEnergy.MarginValue][GlossaryEnergy.Years]
-                                                    <= inputs_dict[GlossaryEnergy.YearEnd]][
-            GlossaryEnergy.MarginValue].values
-
-        dprice_dfluegas = (dfactory_dfluegas + delec_dflue_gas) * np.split(margin, len(margin)) / \
-                          100.0
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),
-            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dprice_dfluegas)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dprice_dfluegas)
-
-        capex = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)[
-            f'Capex_{self.techno_name}'].values
-
-        dprod_dfluegas = self.techno_model.compute_dprod_dfluegas(
-            capex, inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.InvestValue].values,
-            inputs_dict[GlossaryEnergy.InvestmentBeforeYearStartValue][GlossaryEnergy.InvestValue].values,
-            inputs_dict['techno_infos_dict'], dcapex_dfluegas)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
-                GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-            dprod_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
-                             np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
-
-        production, consumption = self.get_sosdisc_outputs(
-            [GlossaryEnergy.TechnoProductionValue, GlossaryEnergy.TechnoConsumptionValue])
-        for column in consumption:
-            dprod_column_dfluegas = dprod_dfluegas.copy()
-            if column != GlossaryEnergy.Years:
-                var_cons = (consumption[column] /
-                            production[f'{self.energy_name} ({self.techno_model.product_unit})']).fillna(
-                    0)
-                for line in range(len(consumption[column].values)):
-                    dprod_column_dfluegas[line, :] = dprod_dfluegas[line,
-                                                     :] * var_cons[line]
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.TechnoConsumptionValue, column),
-                    (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                    dprod_column_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
-                                            np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.TechnoConsumptionWithoutRatioValue,
-                     column), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                    dprod_column_dfluegas * scaling_factor_invest_level / scaling_factor_techno_production)
-
-        dnon_use_capital_dflue_gas_mean, dtechnocapital_dflue_gas_mean = self.techno_model.compute_dnon_usecapital_dfluegas(
-            dcapex_dfluegas, dprod_dfluegas)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.NonUseCapital),
-            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-            dnon_use_capital_dflue_gas_mean)
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
-            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dtechnocapital_dflue_gas_mean)
-
     def get_chart_filter_list(self):
 
         chart_filters = super().get_chart_filter_list()
@@ -313,8 +230,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} resources production & consumption <br>with input investments'
@@ -350,8 +266,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
     def get_charts_consumption_and_production_energy(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} energy production & consumption<br>with input investments'

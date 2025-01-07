@@ -29,13 +29,13 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
     electrolysis class
     """
     def compute_resources_needs(self):
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
-        self.cost_details[f'{GlossaryEnergy.PlatinumResource}_needs'] = self.get_theoretical_platinum_needs()
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.PlatinumResource}_needs'] = self.get_theoretical_platinum_needs()
 
     def compute_other_streams_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = 1.0 / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_water_needs(self):
         ''' 
@@ -48,8 +48,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         mol_H2 = 1.0
         water_data = Water.data_energy_dict
         water_needs = mol_H20 * water_data['molar_mass'] / \
-                      (mol_H2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_H2 * self.inputs['data_fuel_dict']['molar_mass'] *
+                       self.inputs['data_fuel_dict']['calorific_value'])
 
         return water_needs
 
@@ -64,8 +64,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         mol_H2 = 2.0
         oxygen_data = Dioxygen.data_energy_dict
         oxygen_needs = mol_O2 * oxygen_data['molar_mass'] / \
-                       (mol_H2 * self.data_energy_dict['molar_mass'] *
-                        self.data_energy_dict['calorific_value'])
+                       (mol_H2 * self.inputs['data_fuel_dict']['molar_mass'] *
+                        self.inputs['data_fuel_dict']['calorific_value'])
 
         return oxygen_needs
 
@@ -78,16 +78,16 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         Need to convert in kg/kWh ~ Mt/TWh
         """
-        platinum_needs = self.techno_infos_dict['platinum_needs'] / 1000 / self.techno_infos_dict[
+        platinum_needs = self.inputs['techno_infos_dict']['platinum_needs'] / 1000 / self.inputs['techno_infos_dict'][
             'full_load_hours']  # kg of platinum needed for 1 kWh of H2
 
         return platinum_needs
 
     def compute_byproducts_production(self):
         o2_needs = self.get_oxygen_produced()
-        self.production_detailed[f'O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
-                                                             self.data_energy_dict['calorific_value'] * \
-                                                             self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
+                                                             self.inputs['data_fuel_dict']['calorific_value'] * \
+                                                             self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                  f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
         # Production
         # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \

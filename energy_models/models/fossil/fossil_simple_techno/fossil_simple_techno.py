@@ -27,28 +27,23 @@ class FossilSimpleTechno(FossilTechno):
 
 
     def compute_specifif_costs_of_technos(self):
-        self.specific_costs = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.ResourcesPriceValue: self.techno_infos_dict['resource_price']
-        })
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.ResourcesPriceValue}"] = self.inputs['techno_infos_dict']['resource_price']
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.inputs['techno_infos_dict']['resource_price']
 
     def compute_byproducts_production(self):
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels
-        co2_per_use = self.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
-                      self.data_energy_dict['calorific_value']
-        co2_from_raw_to_net = self.production_detailed[
-                                  f'{FossilTechno.energy_name} ({self.product_unit})'].values * (
-                                      1.0 - Fossil.raw_to_net_production) * co2_per_use
+        co2_per_use = self.inputs['data_fuel_dict'][GlossaryEnergy.CO2PerUse] / \
+                      self.inputs['data_fuel_dict']['calorific_value']
+        co2_from_raw_to_net = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+                                  f'{FossilTechno.energy_name} ({self.product_unit})'] * (1.0 - Fossil.raw_to_net_production) * co2_per_use
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{FossilTechno.energy_name} ({self.product_unit})'] + \
-                                                                                        co2_from_raw_to_net
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            self.inputs['techno_infos_dict']['CO2_from_production'] / self.inputs['data_fuel_dict']['calorific_value'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'f'{FossilTechno.energy_name} ({self.product_unit})'] + \
+            co2_from_raw_to_net
         '''
         Method to compute CH4 emissions from gas production
         The proposed V0 only depends on production.
@@ -57,10 +52,10 @@ class FossilSimpleTechno(FossilTechno):
         CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
         emission_factor is in Mt/TWh
         '''
-        emission_factor = self.techno_infos_dict['CH4_flaring_emission_factor'] + \
-                          self.techno_infos_dict['CH4_venting_emission_factor'] + \
-                          self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
+        emission_factor = self.inputs['techno_infos_dict']['CH4_flaring_emission_factor'] + \
+                          self.inputs['techno_infos_dict']['CH4_venting_emission_factor'] + \
+                          self.inputs['techno_infos_dict']['CH4_unintended_leakage_emission_factor']
 
-        self.production_detailed[f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                                  self.production_detailed[
-                                                                                      f'{FossilTechno.energy_name} ({self.product_unit})'].values
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
+                                                                                  self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+                                                                                      f'{FossilTechno.energy_name} ({self.product_unit})']

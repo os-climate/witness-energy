@@ -17,7 +17,6 @@ from math import isclose
 
 import pandas as pd
 
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -57,7 +56,7 @@ class InvestmentsRedistribution:
         self.energy_list = self.inputs_dict[GlossaryEnergy.EnergyListName]
         self.ccs_list = self.inputs_dict[GlossaryEnergy.CCSListName]
         self.techno_list_dict = {energy: self.inputs_dict[f'{energy}.{GlossaryEnergy.TechnoListName}'] for energy in
-                                 self.energy_list + self.ccs_list if energy != BiomassDry.name}
+                                 self.energy_list + self.ccs_list if energy != GlossaryEnergy.biomass_dry}
         self.reforestation_investment_df = self.inputs_dict[GlossaryEnergy.ReforestationInvestmentValue]
 
     def compute(self):
@@ -74,7 +73,7 @@ class InvestmentsRedistribution:
                                                           self.reforestation_investment_df[
                                                               GlossaryEnergy.ReforestationInvestmentValue].values)
 
-        if BiomassDry.name in self.energy_list:
+        if GlossaryEnergy.biomass_dry in self.energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
                     GlossaryEnergy.InvestmentsValue].values
@@ -94,7 +93,7 @@ class InvestmentsRedistribution:
         investments_dict = {}
         for energy, techno_list in self.techno_list_dict.items():
             # biomassdry technologies does not come in percentages
-            if energy != BiomassDry.name:
+            if energy != GlossaryEnergy.biomass_dry:
                 for techno in techno_list:
                     # investment in technology is total invest in energy * techno percentage
                     investments_dict[f'{energy}.{techno}'] = (self.total_investments_in_energy *

@@ -31,11 +31,11 @@ class CCTechno(TechnoType):
         self.product_unit = 'Mt'
         self.energy_unit = 'TWh'
 
-    def check_capex_unity(self, data_tocheck):
+    def capex_unity_harmonizer(self):
         """
         Put all capex in $/kgCO2
         """
-
+        data_tocheck = self.inputs['techno_infos_dict']
         if data_tocheck['Capex_init_unit'] == '$/kgCO2':
 
             capex_init = data_tocheck['Capex_init']
@@ -161,7 +161,7 @@ class CCTechno(TechnoType):
             elec_needs = self.get_electricity_needs()
 
             grad = np.array(slopes)[:, np.newaxis] \
-                   * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] * \
+                   * elec_needs / 8.5 / self.inputs['techno_infos_dict']['efficiency'] * \
                    self.stream_prices[energy_name].values[:, np.newaxis]
         else:
             grad = 0.0
@@ -196,8 +196,8 @@ class CCTechno(TechnoType):
         '''
 
         dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[
-            f'{self.energy_name} ({self.product_unit})'].values.reshape((len(self.years), 1)) +
-                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape(
+            f'{self.energy_name} ({self.product_unit})'].reshape((len(self.years), 1)) +
+                                   dprod_dfluegas * self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'].values.reshape(
                     (len(self.years), 1)))
 
         dnon_usecapital_dfluegas = dtechnocapital_dfluegas * (

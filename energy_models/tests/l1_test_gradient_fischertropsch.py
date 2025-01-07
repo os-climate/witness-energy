@@ -99,7 +99,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
             resource_ratio_dict)
         # overload value of lifetime to reduce test duration
         self.techno_infos_dict = FischerTropschDiscipline.techno_infos_dict_default
-        self.techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+        self.inputs[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
 
     def test_01_FT_gradient_syngas_ratio_08(self):
         self.name = 'Test'

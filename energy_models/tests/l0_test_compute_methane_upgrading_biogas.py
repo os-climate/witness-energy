@@ -76,7 +76,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_02_emethane_discipline(self):
+    def test_02_emethane_discipline_biogas(self):
         self.name = 'Test'
         self.model_name = 'upgrading_biogas'
         self.ee = ExecutionEngine(self.name)

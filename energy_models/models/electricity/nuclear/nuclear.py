@@ -29,23 +29,23 @@ class Nuclear(ElectricityTechno):
     URANIUM_RESOURCE_NAME = GlossaryEnergy.UraniumResource
 
     def compute_resources_needs(self):
-        self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()
 
     def compute_specifif_costs_of_technos(self):
-        self.specific_costs = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            'waste_disposal': self.compute_nuclear_waste_disposal_cost()
-        })
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.Years}"] = self.years
+        waste_disposal_cost = self.compute_nuclear_waste_disposal_cost()
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:waste_disposal"] = waste_disposal_cost
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = waste_disposal_cost
 
     def compute_byproducts_production(self):
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
-                                                                                               self.consumption_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
+                                                                                               self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
                                                                                                    f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
 
-        # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
+        # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_unit})']) / \
-        #       self.techno_infos_dict['efficiency']
+        #       self.inputs['techno_infos_dict']['efficiency']
 
 
     def get_theoretical_uranium_fuel_needs(self):
@@ -60,7 +60,7 @@ class Nuclear(ElectricityTechno):
         => 1 kg of fuel => 8.33 kg of ore
         With a complete  fission, approx around 24,000,000 kWh of heat can be generated from 1 kg of uranium-235
         """
-        uranium_fuel_needs = 1.0 / (24000000.00 * self.techno_infos_dict[
+        uranium_fuel_needs = 1.0 / (24000000.00 * self.inputs['techno_infos_dict'][
             'efficiency'])  # kg of uranium_fuel needed for 1 kWh of electric
 
         return uranium_fuel_needs
@@ -82,32 +82,33 @@ class Nuclear(ElectricityTechno):
             - World Nuclear Association
             (https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-wastes/radioactive-waste-management.aspx,
         """
-        waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
+        waste_disposal_levy = self.inputs['techno_infos_dict']['waste_disposal_levy']
         return waste_disposal_levy
 
-    def compute_capex(self, invest_list, data_config):
+    def compute_capex(self):
         """
         overloads check_capex_unity that return the capex in $/MW to add the decommissioning cost
         decommissioning_cost unit is $/kW
         """
-        expo_factor = self.compute_expo_factor(data_config)
-        capex_init = self.check_capex_unity(data_config)
+        invest_list = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.InvestValue}']
+        expo_factor = self.compute_expo_factor()
+        capex_init = self.capex_unity_harmonizer()
 
         # add decommissioning_cost
-        capex_init += self.techno_infos_dict['decommissioning_cost'] * 1.0e3 \
-                      / self.techno_infos_dict['full_load_hours'] \
-                      / self.techno_infos_dict['capacity_factor']
+        capex_init += self.inputs['techno_infos_dict']['decommissioning_cost'] * 1.0e3 \
+                      / self.inputs['techno_infos_dict']['full_load_hours'] \
+                      / self.inputs['techno_infos_dict']['capacity_factor']
 
         if expo_factor != 0.0:
             capacity_factor_list = None
-            if 'capacity_factor_at_year_end' in data_config \
-                    and 'capacity_factor' in data_config:
-                capacity_factor_list = np.linspace(data_config['capacity_factor'],
-                                                   data_config['capacity_factor_at_year_end'],
+            if 'capacity_factor_at_year_end' in self.inputs['techno_infos_dict'] \
+                    and 'capacity_factor' in self.inputs['techno_infos_dict']:
+                capacity_factor_list = np.linspace(self.inputs['techno_infos_dict']['capacity_factor'],
+                                                   self.inputs['techno_infos_dict']['capacity_factor_at_year_end'],
                                                    len(invest_list))
 
             capex_calc_list = []
-            invest_sum = self.initial_production * capex_init
+            invest_sum = self.inputs['initial_production'] * capex_init
             capex_year = capex_init
 
             for i, invest in enumerate(invest_list):
@@ -122,7 +123,7 @@ class Nuclear(ElectricityTechno):
                     if capacity_factor_list is not None:
                         try:
                             ratio_invest = ((invest_sum + invest) / invest_sum *
-                                            (capacity_factor_list[i] / data_config['capacity_factor'])) \
+                                            (capacity_factor_list[i] / self.inputs['techno_infos_dict']['capacity_factor'])) \
                                            ** (-expo_factor)
 
                         except:
@@ -157,8 +158,8 @@ class Nuclear(ElectricityTechno):
                 capex_calc_list.append(capex_year)
                 invest_sum += invest
 
-            if 'maximum_learning_capex_ratio' in data_config:
-                maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
+            if 'maximum_learning_capex_ratio' in self.inputs['techno_infos_dict']:
+                maximum_learning_capex_ratio = self.inputs['techno_infos_dict']['maximum_learning_capex_ratio']
             else:
                 # if maximum learning_capex_ratio is not specified, the learning
                 # rate on capex ratio cannot decrease the initial capex mor ethan
@@ -170,4 +171,4 @@ class Nuclear(ElectricityTechno):
         else:
             capex_calc_list = capex_init * np.ones(len(invest_list))
 
-        return capex_calc_list.tolist()
+        return np.array(capex_calc_list)

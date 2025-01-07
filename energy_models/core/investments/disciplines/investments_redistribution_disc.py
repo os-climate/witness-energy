@@ -31,7 +31,6 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.investments_redistribution import (
     InvestmentsRedistribution,
 )
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -90,7 +89,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy != BiomassDry.name:
+                    if energy != GlossaryEnergy.biomass_dry:
                         # Add technologies_list to inputs
                         techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
                         # update informations of technologies list with specific ones (namespace, default and possible values)
@@ -183,7 +182,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
         # add investments in all technologies (except for biomass dry to output)
         for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
-            if energy != BiomassDry.name:
+            if energy != GlossaryEnergy.biomass_dry:
                 for techno_name, invest_techno in self.invest_redistribution_model.investment_per_technology_dict.items():
                     output_dict[f'{techno_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_techno
 
@@ -237,7 +236,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
             identity * 1e-3)
 
-        if BiomassDry.name in energy_list:
+        if GlossaryEnergy.biomass_dry in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
@@ -281,7 +280,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             # add a chart per energy with breakdown of investments in every technology of the energy
             for energy in energy_list + ccs_list:
                 list_energy = []
-                if energy != BiomassDry.name:
+                if energy != GlossaryEnergy.biomass_dry:
                     chart_name = f'Distribution of investments for {energy} '
                     new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                                 chart_name=chart_name, stacked_bar=True)
@@ -320,7 +319,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
             new_chart_energy.series.append(serie)
 
-            if BiomassDry.name in energy_list:
+            if GlossaryEnergy.biomass_dry in energy_list:
                 chart_name = 'Distribution of agriculture sector investments '
                 agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)

@@ -26,30 +26,30 @@ class Pyrolysis(SyngasTechno):
 
     def compute_resources_needs(self):
         # syngas produced in kg by 1kg of wood
-        syngas_kg = 1.0 * self.techno_infos_dict['syngas_yield']
+        syngas_kg = 1.0 * self.inputs['techno_infos_dict']['syngas_yield']
 
         # kwh produced by 1kg of wood
 
-        syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
+        syngas_kwh = self.inputs['data_energy_dict']['calorific_value'] * syngas_kg
 
         # wood needs in kg to produce 1kWh of syngas
-        self.cost_details[f"{GlossaryEnergy.WoodResource}_needs"] = 1 / syngas_kwh
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WoodResource}_needs"] = 1 / syngas_kwh
 
     def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
+                                                                                        self.inputs['data_energy_dict'][
                                                                                             'calorific_value'] * \
-                                                                                        self.production_detailed[
+                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                                             f'{SyngasTechno.energy_name} ({self.product_unit})']
 
-        self.production_detailed[f'char ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:char ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                    f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
-                                                               self.techno_infos_dict['char_yield'] / \
-                                                               self.techno_infos_dict['syngas_yield']
+                                                               self.inputs['techno_infos_dict']['char_yield'] / \
+                                                               self.inputs['techno_infos_dict']['syngas_yield']
 
-        self.production_detailed[f'bio_oil ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:bio_oil ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                       f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
-                                                                  self.techno_infos_dict['bio_oil_yield'] / \
-                                                                  self.techno_infos_dict['syngas_yield']
+                                                                  self.inputs['techno_infos_dict']['bio_oil_yield'] / \
+                                                                  self.inputs['techno_infos_dict']['syngas_yield']

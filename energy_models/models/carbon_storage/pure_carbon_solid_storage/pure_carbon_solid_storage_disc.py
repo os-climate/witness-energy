@@ -123,9 +123,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                 pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = PureCarbonSS(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     def run(self):
         '''

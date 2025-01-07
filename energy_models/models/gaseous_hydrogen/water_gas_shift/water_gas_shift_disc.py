@@ -110,23 +110,21 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = WGS(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
         GaseousHydrogenTechnoDiscipline.compute_sos_jacobian(self)
 
-        syngas_ratio = self.techno_model.syngas_ratio
+        syngas_ratio = self.techno_model.syngas_ratio_fliuf
 
         inputs_dict = self.get_sosdisc_inputs()
         ##############
         needed_syngas_molar_mass = compute_syngas_molar_mass(
-            self.techno_model.needed_syngas_ratio)
+            self.techno_model.needed_syngas_ratio_feku)
         needed_calorific_value = compute_syngas_calorific_value(
-            self.techno_model.needed_syngas_ratio)
+            self.techno_model.needed_syngas_ratio_feku)
 
         ###################
 
@@ -180,20 +178,20 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             (dsyngas_dsyngas_ratio + dwater_dsyngas_ratio) / 100.0)
 
         mol_H2 = (1.0 + syngas_ratio) / \
-                 (1.0 + self.techno_model.needed_syngas_ratio)
+                 (1.0 + self.techno_model.needed_syngas_ratio_feku)
 
         dmol_H2up = 1.0
 
-        mol_H2down = (1.0 + self.techno_model.needed_syngas_ratio)
+        mol_H2down = (1.0 + self.techno_model.needed_syngas_ratio_feku)
 
         dmol_H2_dsyngas_ratio = (dmol_H2up * mol_H2down) / mol_H2down ** 2
 
         # # CO2 emissions
         co2_data = CO2.data_energy_dict
-        mol_CO2 = syngas_ratio - self.techno_model.needed_syngas_ratio * mol_H2
+        mol_CO2 = syngas_ratio - self.techno_model.needed_syngas_ratio_feku * mol_H2
 
         dmol_CO2_dsyngas_ratio = 1 - \
-                                 self.techno_model.needed_syngas_ratio * dmol_H2_dsyngas_ratio
+                                 self.techno_model.needed_syngas_ratio_feku * dmol_H2_dsyngas_ratio
 
         #         co2_prod = mol_CO2 * co2_data['molar_mass'] / \
         #             (mol_H2 * needed_syngas_molar_mass *

@@ -35,7 +35,6 @@ from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions impo
     ConsumptionCO2Emissions,
 )
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -137,7 +136,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name:
+                    if energy == GlossaryEnergy.biomass_dry:
                         co2_per_use_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CO2PerUseDf)
                         co2_per_use_var.update({
                             'visbility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS
@@ -197,11 +196,11 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         inputs_dict.update(inputs_dict_orig)
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
         if GlossaryEnergy.biomass_dry in energy_list:
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.StreamConsumptionValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.StreamConsumptionValue}'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2PerUse}'] = inputs_dict_orig.pop(
+            inputs_dict[f'{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.CO2PerUse}'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.CO2PerUse}')
         self.model.configure_parameters_update(inputs_dict)
         CO2_sources, CO2_sinks = self.model.compute_CO2_emissions()
@@ -239,7 +238,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sources.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name:
+                if energy == GlossaryEnergy.biomass_dry:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     if 'Total CO2 by use' in co2_emission_column:
@@ -304,7 +303,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sinks.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name:
+                if energy == GlossaryEnergy.biomass_dry:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(

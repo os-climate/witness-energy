@@ -28,13 +28,13 @@ class CoElectrolysis(SyngasTechno):
     def compute_resources_needs(self):
 
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_other_streams_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f"{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
 
     def get_theoretical_CO2_needs(self):
@@ -48,8 +48,8 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         co2_data = CO2.data_energy_dict
         co2_needs = mol_CO2 * co2_data['molar_mass'] / \
-                    (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                     self.data_energy_dict['calorific_value'])
+                    (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                     self.inputs['data_energy_dict']['calorific_value'])
 
         return co2_needs
 
@@ -64,8 +64,8 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         water_data = Water.data_energy_dict
         water_needs = mol_H2O * water_data['molar_mass'] / \
-                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                       self.inputs['data_energy_dict']['calorific_value'])
 
         return water_needs
 
@@ -78,17 +78,17 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         oxygen_data = Dioxygen.data_energy_dict
         oxygen_production = mol_O2 * oxygen_data['molar_mass'] / \
-                            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                             self.data_energy_dict['calorific_value'])
+                            (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                             self.inputs['data_energy_dict']['calorific_value'])
 
         return oxygen_production
 
     def compute_byproducts_production(self):
         o2_production = self.get_oxygen_production()
 
-        self.production_detailed[f'{Dioxygen.name} ({GlossaryEnergy.mass_unit})'] = o2_production / \
-                                                                          self.data_energy_dict['calorific_value'] * \
-                                                                          self.production_detailed[
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Dioxygen.name} ({GlossaryEnergy.mass_unit})'] = o2_production / \
+                                                                          self.inputs['data_energy_dict']['calorific_value'] * \
+                                                                          self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                               f'{SyngasTechno.energy_name} ({self.product_unit})']
 
     def get_h2o_production(self):
@@ -102,7 +102,7 @@ class CoElectrolysis(SyngasTechno):
         water_data = Water.data_energy_dict
         production_for_1kg = mol_H20 * \
                              water_data['molar_mass'] / \
-                             (mol_syngas * self.data_energy_dict['molar_mass']
-                              * self.data_energy_dict['calorific_value'])
+                             (mol_syngas * self.inputs['data_energy_dict']['molar_mass']
+                              * self.inputs['data_energy_dict']['calorific_value'])
 
         return production_for_1kg
