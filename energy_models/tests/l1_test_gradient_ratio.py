@@ -48,7 +48,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             self.test_07_ratio_CalciumLooping_discipline_jacobian,
             self.test_08_gaseous_hydrogen_discipline_jacobian,
             # self.test_09_carbon_capture_discipline_jacobian,
-            self.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian,
             self.test_01b_ratio_FossilGas_discipline_jacobian(),
             self.test_02b_ratio_Nuclear_discipline_jacobian(),
             self.test_03b_ratio_CoalExtraction_discipline_jacobian(),
@@ -116,7 +115,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -169,7 +168,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -208,7 +207,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -261,7 +260,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -303,7 +302,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -357,7 +356,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -398,7 +397,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -456,7 +455,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -496,7 +495,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -548,7 +547,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -624,7 +623,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -705,7 +704,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_cc{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -744,7 +743,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -757,7 +756,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -811,7 +810,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{GlossaryEnergy.YearEnd}'] = self.year_end
         full_values_dict[f'{self.name}.{usecase.coupling_name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-8
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDANewtonRaphson'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         # Overwrite values for ratios with values from setup
         full_values_dict[
@@ -835,7 +834,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # EnergyMix
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}')[
-            0].mdo_discipline_wrapp.mdo_discipline
+            0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -892,75 +891,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
                             inputs=coupled_inputs, outputs=coupled_outputs, )
 
-    def test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
-        '''
-        Test the gradients of the ratios on EnergyMix discipline.
-        For now do not include it to the test routine (not sure how volatile this test it)
-        '''
-        self.model_name = 'EnergyMix'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_public': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        repo = 'energy_models.sos_processes.energy.MDA'
-        builder = self.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0')
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.configure()
-        usecase = Study(execution_engine=self.ee, year_end=self.year_end)
-        usecase.study_name = self.name
-        values_dict = usecase.setup_usecase()
-
-        self.ee.display_treeview_nodes()
-        full_values_dict = {}
-        for dict_v in values_dict:
-            full_values_dict.update(dict_v)
-
-        full_values_dict[f'{self.name}.{GlossaryEnergy.YearEnd}'] = self.year_end
-        full_values_dict[f'{self.name}.epsilon0'] = 1.0
-        full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
-        full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
-        # Overwrite values for ratios with values from setup
-        full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
-        full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
-        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
-        full_values_dict[f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
-        full_values_dict[f'{self.name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
-        self.ee.load_study_from_input_dict(full_values_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-
-        # Get coupled inputs and outputs
-        full_inputs = disc.get_input_data_names()
-        full_outputs = disc.get_output_data_names()
-
-        # coupled_inputs = [input for input in full_inputs if self.ee.dm.get_data(
-        #     input, 'coupling')]
-        # coupled_outputs = [output for output in full_outputs if self.ee.dm.get_data(
-        #     output, 'coupling')]
-        # coupled_outputs.extend(['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}'
-        #                         ])
-
-        coupled_inputs = [
-            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',
-            # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
-            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.StreamConsumptionValue}']
-        coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]
-
-        # coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]
-        # coupled_outputs = ['Test_Ratio.EnergyMix.output_test']
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_false_true_{self.model_name}.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
-                            inputs=coupled_inputs, outputs=coupled_outputs, )
-
     def test_01b_ratio_FossilGas_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (natural_gas_resource consumption)
@@ -993,7 +923,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1046,7 +976,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1085,7 +1015,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1139,7 +1069,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
@@ -1181,7 +1111,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1234,7 +1164,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1273,7 +1203,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1326,7 +1256,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1365,7 +1295,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1419,7 +1349,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )

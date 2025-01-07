@@ -68,8 +68,8 @@ class TestIndependentInvest(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
 
         forest_invest = np.linspace(5, 8, year_range)
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: forest_invest})
         managed_wood_invest = np.linspace(0.5, 2, year_range)
         self.managed_wood_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, "investment": managed_wood_invest})
@@ -122,7 +122,7 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                                                                                       GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -199,7 +199,7 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                                                                                       GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
-                       f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
+                       f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.Forest.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.Crop.crop_investment': self.crop_invest_df}

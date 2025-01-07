@@ -34,7 +34,7 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].mdo_discipline_wrapp.wrapper.energy_name
+        0].discipline_wrapp.wrapper.energy_name
     chart_list += [f'{energy} Price data of all technologies']
 
     # The filters are set to False by default since the graphs are not yet
@@ -230,16 +230,16 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list.extend(chart_filter.selected_values)
     # ----
     # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
-    wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
+    wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper
     if wrapper_type is not None:
-        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
+        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
         if f'{energy} Price data of all technologies' in graphs_list:
             capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
                                                                   '15 Most Producing Technologies Capex', 'CAPEX_Part',
                                                                   'Capex')
             instanciated_charts.append(capex_bar_slider_graph)
 
-        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
+        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
         if f'{energy} Price data of all technologies' in graphs_list:
             total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
                                                                         '15 Most Producing Technologies Price',

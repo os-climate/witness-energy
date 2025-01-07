@@ -151,7 +151,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2PerUse}' for energy in self.energy_list if
@@ -226,7 +226,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in self.ccs_list]

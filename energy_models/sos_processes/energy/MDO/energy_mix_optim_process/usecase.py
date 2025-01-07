@@ -13,7 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -26,7 +28,7 @@ from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dic
 INVEST_DISC_NAME = 'InvestmentDistribution'
 
 
-class Study(StudyManager):
+class Study(ClimateEconomicsStudyManager):
     def __init__(
             self,
             file_path=__file__,
