@@ -153,6 +153,8 @@ class WindOnshoreTestCase(unittest.TestCase):
                                 except Exception as e:
                                     #print(key, col , e)
                                     pass
+                        else:
+                            print("missing col", key, col)
                             a = 1
 
         self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),

@@ -791,13 +791,13 @@ class TechnoType(DifferentiableModel):
         for column in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoProductionValue, expect_years=True, full_path=True):
             self.outputs[column] /= self.inputs['scaling_factor_techno_production']
 
-        for column in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoDetailedProductionValue, expect_years=True, full_path=True):
-            self.outputs[column] /= self.inputs['scaling_factor_techno_production']
-
         for column in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoConsumptionWithoutRatioValue, expect_years=True, full_path=True):
             self.outputs[column] /= self.inputs['scaling_factor_techno_consumption']
         for column in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoProductionWithoutRatioValue, expect_years=True, full_path=True):
             self.outputs[column] /= self.inputs['scaling_factor_techno_production']
+
+        self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}'] /= self.inputs['scaling_factor_invest_level']
+        self.inputs[f'{GlossaryEnergy.InvestmentBeforeYearStartValue}:{GlossaryEnergy.InvestValue}'] /= self.inputs['scaling_factor_invest_level']
 
     def apply_utilisation_ratio(self):
         """
