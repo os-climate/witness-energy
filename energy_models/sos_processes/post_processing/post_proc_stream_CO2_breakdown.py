@@ -41,7 +41,7 @@ def post_processing_filters(execution_engine, namespace):
 
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].mdo_discipline_wrapp.wrapper.energy_name
+        0].discipline_wrapp.wrapper.energy_name
     chart_list += [f'{energy} CO2 intensity']
     chart_list += [f'{energy} CO2 breakdown sankey']
     chart_list += [f'{energy} CO2 breakdown bar']
@@ -123,7 +123,7 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list.extend(chart_filter.selected_values)
     # ----
 
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
     if f'{energy} Figures table' in graphs_list:
         for year in YEAR_COMPARISON:
             new_table = get_comparision_data(execution_engine, namespace, year)
@@ -327,7 +327,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         index=idx,
         columns=['production', GlossaryEnergy.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
-                       0].mdo_discipline_wrapp.wrapper.energy_name]
+                       0].discipline_wrapp.wrapper.energy_name]
     total_carbon_emissions = None
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
@@ -651,7 +651,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     @return multilevel_df: Dataframe
     '''
 
-    energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
+    energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper
     energy_list = [energy_disc.energy_name]
 
     years = np.arange(energy_disc.get_sosdisc_inputs(

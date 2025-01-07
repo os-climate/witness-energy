@@ -187,7 +187,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         energy_list_wobiomass_dry = [
             energy for energy in self.energy_list if energy != GlossaryEnergy.biomass_dry]
@@ -217,7 +217,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         energy_list_wobiomass_dry = [
             energy for energy in self.energy_list if energy != GlossaryEnergy.biomass_dry]
@@ -245,7 +245,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.co2_emissions_ccus_Gt',
@@ -266,7 +266,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}']

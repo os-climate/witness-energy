@@ -121,7 +121,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         values_dict[0][f'{usecase.study_name}.tolerance'] = 1.0e-8
         values_dict[0][f'{usecase.study_name}.chain_linearize'] = True
-        values_dict[0][f'{usecase.study_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict[0][f'{usecase.study_name}.inner_mda_name'] = 'MDAGaussSeidel'
         values_dict[0][f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         self.ee.display_treeview_nodes()
         full_values_dict = {}
@@ -172,7 +172,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc_mda = self.ee.root_process
@@ -228,7 +228,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc_mda = self.ee.root_process
@@ -275,7 +275,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                                                                                'tol': 1.0e-14}
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{usecase.study_name}.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDANewtonRaphson'
 
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -303,7 +303,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             dump_dir, exec_eng2, DirectLoadDump())
 
         full_values_dict = {
-            f'{usecase.study_name}.sub_mda_class': 'MDAGaussSeidel',
+            f'{usecase.study_name}.inner_mda_name': 'MDAGaussSeidel',
             f'{usecase.study_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
             f'{usecase.study_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_emissions}
 
@@ -365,7 +365,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGaussSeidel'
 
         nb_poles = 5
 
@@ -447,7 +447,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
 #         full_values_dict[f'{usecase.study_name}.tolerance'] = 1.0e-12
 #         full_values_dict[f'{usecase.study_name}.max_mda_iter'] = 200
-#         full_values_dict[f'{usecase.study_name}.sub_mda_class'] = 'MDAGaussSeidel'
+#         full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGaussSeidel'
 #
 #         nb_poles = 5
 #

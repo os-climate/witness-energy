@@ -71,8 +71,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                                                                                                                   20.,
                                                                                                                   len(self.years))})
         forest_invest = np.linspace(5, 8, len(self.years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: forest_invest})
         managed_wood_invest = np.linspace(0.5, 2, len(self.years))
         self.managed_wood_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, "investment": managed_wood_invest})
@@ -118,7 +118,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -191,13 +191,13 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
@@ -206,7 +206,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}'
                                     ],
                             outputs=[f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
@@ -251,7 +251,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.crop_investment': self.crop_invest_df
@@ -260,7 +260,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
@@ -269,7 +269,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}',
                                     f'{self.name}.managed_wood_investment',
                                     f'{self.name}.deforestation_investment',

@@ -565,7 +565,7 @@ class Study(EnergyStudyManager):
         all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
-        forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
+        forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: 5})
 
         co2_land_emissions = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -605,12 +605,12 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
-            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.inner_mda_name": "MDAGSNewton",
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.MaxBudgetValue}": max_invest,
-            f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
+            f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ReforestationInvestmentValue}": forest_invest_df,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": co2_land_emissions,
             f"{self.study_name}.{self.coupling_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": co2_land_emissions,
@@ -693,7 +693,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 400,
             f"{self.study_name}.{self.coupling_name}.tolerance": 1e-10,
-            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
+            f"{self.study_name}.{self.coupling_name}.inner_mda_name": "MDAGaussSeidel",
         }
 
         dvar_values = self.get_dvar_values(dspace)

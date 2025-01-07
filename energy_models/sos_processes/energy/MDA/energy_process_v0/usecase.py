@@ -63,9 +63,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
-    PureCarbonSS,
-)
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
@@ -175,14 +172,14 @@ class Study(EnergyStudyManager):
             list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
-        if GaseousHydrogen.name in self.energy_list:
-            if "PlasmaCracking" in self.dict_technos[GaseousHydrogen.name]:
-                list_var.extend([PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT])
-                list_parent.extend(["Carbon_to_be_stored_constraints"])
-                list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
-                list_weight.extend([0.0])
-                list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
-                list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
+        # if GaseousHydrogen.name in self.energy_list:
+        #     if "PlasmaCracking" in self.dict_technos[GaseousHydrogen.name]:
+        #         list_var.extend([PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT])
+        #         list_parent.extend(["Carbon_to_be_stored_constraints"])
+        #         list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
+        #         list_weight.extend([0.0])
+        #         list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
+        #         list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         list_var.extend([EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
         list_parent.extend(["Energy_constraints"])
@@ -620,7 +617,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
-            f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
+            f"{self.study_name}.inner_mda_name": "MDAGaussSeidel",
             f"{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage": np.concatenate(
                 (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None
             ),

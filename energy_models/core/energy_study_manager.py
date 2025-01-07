@@ -16,13 +16,15 @@ limitations under the License.
 '''
 from importlib import import_module
 
-from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class EnergyStudyManager(StudyManager):
+class EnergyStudyManager(ClimateEconomicsStudyManager):
     """
     classdocs
     """

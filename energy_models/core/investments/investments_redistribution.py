@@ -42,7 +42,7 @@ class InvestmentsRedistribution:
         self.techno_list_dict = None
         self.total_investments_in_energy = None
         self.total_investments_in_energy_w_biomass_dry = None
-        self.forest_investment_df = None
+        self.reforestation_investment_df = None
         self.inputs_dict = None
 
     def configure_parameters(self, inputs_dict: dict):
@@ -58,7 +58,7 @@ class InvestmentsRedistribution:
         self.ccs_list = self.inputs_dict[GlossaryEnergy.CCSListName]
         self.techno_list_dict = {energy: self.inputs_dict[f'{energy}.{GlossaryEnergy.TechnoListName}'] for energy in
                                  self.energy_list + self.ccs_list if energy != BiomassDry.name}
-        self.forest_investment_df = self.inputs_dict[GlossaryEnergy.ForestInvestmentValue]
+        self.reforestation_investment_df = self.inputs_dict[GlossaryEnergy.ReforestationInvestmentValue]
 
     def compute(self):
         """compute investment per technology and total energy investments"""
@@ -71,8 +71,8 @@ class InvestmentsRedistribution:
         # compute sum of all investments (energy investments + forest investments + biomass_dry investments
         # if used in model )
         self.total_investments_in_energy_w_biomass_dry = (self.total_investments_in_energy +
-                                                          self.forest_investment_df[
-                                                              GlossaryEnergy.ForestInvestmentValue].values)
+                                                          self.reforestation_investment_df[
+                                                              GlossaryEnergy.ReforestationInvestmentValue].values)
 
         if BiomassDry.name in self.energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
