@@ -73,8 +73,6 @@ class WindOnshoreTestCase(unittest.TestCase):
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == f'{GlossaryEnergy.electricity}.Wind_Onshore']
-        self.scaling_factor_techno_consumption = 1e3
-        self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict[GlossaryEnergy.Years] = self.years
@@ -126,6 +124,12 @@ class WindOnshoreTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledCapacity)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
+        drop_pickle = False
+        if drop_pickle:
+            import pickle
+            with open('windtest.pkl','wb') as f:
+                pickle.dump(self.ee.dm.get_data_dict_values(), f)
+                pass
         import pickle
         with open('windtest.pkl' ,'rb') as f:
             pickle_dev = pickle.load(f)
@@ -150,6 +154,7 @@ class WindOnshoreTestCase(unittest.TestCase):
                                     #print(key, col , e)
                                     pass
                             a = 1
+
         self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_capacity'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
