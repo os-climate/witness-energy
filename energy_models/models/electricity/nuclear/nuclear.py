@@ -35,8 +35,8 @@ class Nuclear(ElectricityTechno):
     def compute_specifif_costs_of_technos(self):
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.Years}"] = self.years
         waste_disposal_cost = self.compute_nuclear_waste_disposal_cost()
-        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:waste_disposal"] = waste_disposal_cost
-        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = waste_disposal_cost
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:waste_disposal"] = self.zeros_array + waste_disposal_cost
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.zeros_array + waste_disposal_cost
 
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
@@ -90,7 +90,7 @@ class Nuclear(ElectricityTechno):
         overloads check_capex_unity that return the capex in $/MW to add the decommissioning cost
         decommissioning_cost unit is $/kW
         """
-        invest_list = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.InvestValue}']
+        invests = self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}'] * 1e3  # G$ to M$
         expo_factor = self.compute_expo_factor()
         capex_init = self.capex_unity_harmonizer()
 
@@ -105,13 +105,13 @@ class Nuclear(ElectricityTechno):
                     and 'capacity_factor' in self.inputs['techno_infos_dict']:
                 capacity_factor_list = np.linspace(self.inputs['techno_infos_dict']['capacity_factor'],
                                                    self.inputs['techno_infos_dict']['capacity_factor_at_year_end'],
-                                                   len(invest_list))
+                                                   len(invests))
 
             capex_calc_list = []
             invest_sum = self.inputs['initial_production'] * capex_init
             capex_year = capex_init
 
-            for i, invest in enumerate(invest_list):
+            for i, invest in enumerate(invests):
 
                 # below 1M$ investments has no influence on learning rate for capex
                 # decrease
@@ -169,6 +169,6 @@ class Nuclear(ElectricityTechno):
             capex_calc_list = capex_init * (maximum_learning_capex_ratio + (
                     1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
         else:
-            capex_calc_list = capex_init * np.ones(len(invest_list))
+            capex_calc_list = capex_init * np.ones(len(invests))
 
         return np.array(capex_calc_list)

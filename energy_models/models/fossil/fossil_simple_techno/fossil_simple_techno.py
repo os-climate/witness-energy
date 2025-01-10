@@ -28,8 +28,8 @@ class FossilSimpleTechno(FossilTechno):
 
     def compute_specifif_costs_of_technos(self):
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.Years}"] = self.years
-        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.ResourcesPriceValue}"] = self.inputs['techno_infos_dict']['resource_price']
-        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.inputs['techno_infos_dict']['resource_price']
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.ResourcesPriceValue}"] = self.zeros_array + self.inputs['techno_infos_dict']['resource_price']
+        self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.zeros_array + self.inputs['techno_infos_dict']['resource_price']
 
     def compute_byproducts_production(self):
         # co2_from_raw_to_net will represent the co2 emitted from the use of

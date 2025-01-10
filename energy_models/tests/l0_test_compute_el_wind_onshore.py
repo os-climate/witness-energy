@@ -154,18 +154,19 @@ class WindOnshoreTestCase(unittest.TestCase):
                                     #print(key, col , e)
                                     pass
                         else:
-                            print("missing col", key, col)
+                            #print("missing col", key, col)
                             a = 1
 
+        filters = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filters)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
         self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                              list(power_production['total_installed_capacity'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
         self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'].values),
                                 list(power_production['total_installed_capacity'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
 # if __name__ == "__main__":
 #     unittest.main()

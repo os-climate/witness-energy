@@ -34,15 +34,15 @@ class PureCarbonSS(CSTechno):
     def compute_resources_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.SolidCarbon}_needs'] = 1 / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse]
 
-    def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
+    def compute(self):
+        super().compute()
+        self.compute_constraint()
+
+    def compute_constraint(self):
         """
         Compute the constraint: consumption > carbon_quantity_to_be_stored from plasma cracking
         """
 
-        if (carbon_quantity_to_be_stored is not None) & (consumption is not None):
-            constraint = consumption[f'{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] - \
-                         carbon_quantity_to_be_stored[GlossaryEnergy.carbon_storage]
-            self.carbon_to_be_stored_constraint = pd.DataFrame(
-                {GlossaryEnergy.Years: self.years, 'carbon_to_be_stored_constraint': constraint})
-
-        return self.carbon_to_be_stored_constraint
+        constraint = self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] - self.inputs[f'carbon_quantity_to_be_stored:{GlossaryEnergy.carbon_storage}']
+        self.outputs[f'carbon_to_be_stored_constraint:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'carbon_to_be_stored_constraint:{GlossaryEnergy.Years}'] = constraint

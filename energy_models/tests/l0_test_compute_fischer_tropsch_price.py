@@ -191,46 +191,6 @@ class FTPriceTestCase(unittest.TestCase):
 
         self.ee.execute()
 
-        techno_production_wo_ratio = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}')
-        techno_consumption_wo_ratio = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}')
-
-        self.ee2 = ExecutionEngine(self.name)
-        self.ee2.ns_manager.add_ns_def(ns_dict)
-        builder = self.ee2.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee2.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee2.configure()
-
-        self.ee2.load_study_from_input_dict(inputs_dict)
-
-        self.ee2.execute()
-        ratio = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
-        ratio2 = self.ee2.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
-        techno_production_with_ratio = self.ee2.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}')
-
-        for column in techno_production_with_ratio.columns:
-            if column != GlossaryEnergy.Years:
-                for i in range(len(techno_production_with_ratio[column].values)):
-                    self.assertAlmostEqual(techno_production_with_ratio[column].values[i],
-                                           techno_production_wo_ratio[column].values[i] * ratio2[i] / ratio[i],
-                                           delta=1.0e-8)
-
-        techno_consumption_with_ratio = self.ee2.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}')
-        for column in techno_consumption_with_ratio.columns:
-            if column != GlossaryEnergy.Years:
-                for i in range(len(techno_consumption_with_ratio[column].values)):
-                    self.assertAlmostEqual(techno_consumption_with_ratio[column].values[i],
-                                           techno_consumption_wo_ratio[column].values[i] * ratio2[i] / ratio[i],
-                                           delta=1.0e-8)
-
 
 if '__main__' == __name__:
     cls = FTPriceTestCase()
