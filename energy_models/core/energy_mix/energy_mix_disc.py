@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2025/01/13 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 
 from __future__ import annotations
 
+import re
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
@@ -25,8 +26,8 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from climateeconomics.core.tools.color_map import ColorMap
 from climateeconomics.core.tools.colormaps import available_colormaps
+from climateeconomics.core.tools.plot_factories import create_sankey_with_slider
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
@@ -2254,9 +2255,12 @@ class Energy_Mix_Discipline(SoSWrapp):
             "Energy mix losses",
             "Target energy production constraint",
             GlossaryEnergy.Capital,
-            "Energy Flow",
+            "Stream Flow",
+            "Individual Stream Flow",
         ]
-        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
+        chart_filters.append(
+            ChartFilter("Charts", chart_list, chart_list[:-1], "charts")
+        )
 
         price_unit_list = ["$/MWh", "$/t"]
         chart_filters.append(
@@ -2424,9 +2428,29 @@ class Energy_Mix_Discipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-        if "Energy Flow" in charts:
-            new_chart = self.get_chart_sankey_fluxes()
+        if "Stream Flow" in charts:
+            new_chart = self.get_chart_sankey_fluxes(
+                "Stream Flow (TWh)", split_external=False
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
+
+            new_chart = self.get_chart_sankey_fluxes(
+                chart_name="Normalized Stream Flow", normalized_links=True
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
+            instanciated_charts.append(new_chart)
+
+        if "Individual Stream Flow" in charts:
+            # Get list of energy technologies
+            energy_list = self.get_sosdisc_inputs(GlossaryEnergy.EnergyListName)
+
+            for energy_stream in energy_list:
+                new_chart = self.get_chart_sankey_fluxes(
+                    f"{energy_stream} Flow", streams_filter=[energy_stream]
+                )
+                new_chart.post_processing_section_name = "Detailed Stream Flow"
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
@@ -3329,7 +3353,13 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart.series.append(serie)
         return new_chart
 
-    def get_chart_sankey_fluxes(self):
+    def get_chart_sankey_fluxes(
+        self,
+        chart_name="Energy Flow",
+        streams_filter: list | None = None,
+        normalized_links: bool = False,
+        split_external: bool = False,
+    ):
         """Create sankey chart correlating production and consumption of all actors in energy mix."""
 
         # Get list of energy technologies
@@ -3350,10 +3380,10 @@ class Energy_Mix_Discipline(SoSWrapp):
             ns_energy = self.get_ns_stream(energy)
             consumption = self.get_sosdisc_inputs(
                 f"{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}"
-            )
+            ).copy()
             production = self.get_sosdisc_inputs(
                 f"{ns_energy}.{GlossaryEnergy.EnergyProductionValue}"
-            )
+            ).copy()
 
             # Add Years to dataframes
             if GlossaryEnergy.Years not in consumption.columns:
@@ -3364,229 +3394,72 @@ class Energy_Mix_Discipline(SoSWrapp):
 
             # Update dictionary
             energy_dictionary[energy] = {
-                "consumption": consumption,
-                "production": production,
+                "input": consumption,
+                "output": production,
             }
+
+        # Get Net Production
+        production = self.get_sosdisc_outputs(
+            f"{GlossaryEnergy.StreamProductionDetailedValue}"
+        ).copy()
+        production.columns = [c.replace("production ", "") for c in production.columns]
+        consumption = pd.DataFrame({GlossaryEnergy.Years: years})
+
+        # Add Years to dataframes
+        if GlossaryEnergy.Years not in production.columns:
+            production[GlossaryEnergy.Years] = years
+
+        # Switch prod /consumption as we want the node to "consume" the available streams
+        energy_dictionary["available"] = {
+            "input": production,
+            "output": consumption,
+        }
+
+        # Get dataframe with negative productions to add as a source
+        df_negative = production.copy()
+        columns_to_process = [
+            col for col in df_negative.columns if col != GlossaryEnergy.Years
+        ]
+        df_negative[columns_to_process] = df_negative[columns_to_process].where(
+            df_negative[columns_to_process] < 0, 0
+        )
+        df_negative[columns_to_process] = df_negative[columns_to_process].abs()
+
+        energy_dictionary["neg_balance"] = {
+            "input": consumption,
+            "output": df_negative,
+        }
+
+        # Remove units from all streams, to handle inconsistent naming
+        for actor in energy_dictionary:
+            energy_dictionary[actor]["input"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in energy_dictionary[actor]["input"].columns
+            ]
+            energy_dictionary[actor]["output"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in energy_dictionary[actor]["output"].columns
+            ]
+
+        # filter streams
+        if streams_filter is not None:
+            for dfs in energy_dictionary.values():
+                existing_columns = list(set(streams_filter) & set(dfs["input"].columns))
+                dfs["input"] = dfs["input"][[GlossaryEnergy.Years] + existing_columns]
+                existing_columns = list(
+                    set(streams_filter) & set(dfs["output"].columns)
+                )
+                dfs["output"] = dfs["output"][[GlossaryEnergy.Years] + existing_columns]
 
         # Create sankey plot
         colormap = available_colormaps["energy"]
-        fig = create_sankey_with_slider(energy_dictionary, colormap=colormap)
+        fig = create_sankey_with_slider(
+            energy_dictionary,
+            colormap=colormap,
+            normalized_links=normalized_links,
+            split_external=split_external,
+            output_node="available",
+        )
 
         # return chart
-        return InstantiatedPlotlyNativeChart(fig, "Energy Flow")
-
-
-def create_sankey_diagram(
-    data_dict: dict[str, dict[str, pd.DataFrame]],
-    year: int | str,
-    colormap: ColorMap | dict | None | str = None,
-) -> go.Figure:
-    """Creates a Sankey diagram showing direct flows between actors based on their production
-    and consumption patterns for a specific year.
-
-    Args:
-        data_dict: Dictionary of dictionaries containing production and consumption dataframes for each actor.
-            Format: {
-                actor: {
-                    'production': DataFrame(index=[year1, year2, ...], columns=[prod_type1, prod_type2, ...]),
-                    'consumption': DataFrame(index=[year1, year2, ...], columns=[cons_type1, cons_type2, ...])
-                }
-            }
-        year: The specific year to visualize.
-
-    Returns:
-        A plotly Figure object containing the Sankey diagram.
-    """
-    # Create node labels and mapping
-    actors = list(data_dict.keys())
-    node_mapping = {actor: idx for idx, actor in enumerate(actors)}
-
-    # Initialize lists for Sankey diagram
-    source = []
-    target = []
-    value = []
-    labels = []
-
-    # Compute total consumption by type
-    total_consumption = {}
-    for actor in data_dict:
-        for flow_type in data_dict[actor]["consumption"].columns:
-            if flow_type == GlossaryEnergy.Years:
-                continue
-            if flow_type not in total_consumption:
-                total_consumption[flow_type] = 0.0
-
-            total_consumption[flow_type] += data_dict[actor]["consumption"][
-                data_dict[actor]["consumption"][GlossaryEnergy.Years] == year][flow_type].to_numpy()[0]
-
-    # Create flows between actors based on matching production and consumption types
-    for producer, prod_data in data_dict.items():
-        for consumer, cons_data in data_dict.items():
-            if producer != consumer:  # Avoid self-loops
-                prod_df = prod_data["production"]
-                cons_df = cons_data["consumption"]
-
-                prod_columns = [c for c in prod_df.columns if c != GlossaryEnergy.Years]
-                cons_columns = [c for c in cons_df.columns if c != GlossaryEnergy.Years]
-
-                if (
-                    year not in prod_df[GlossaryEnergy.Years].to_numpy()
-                    or year not in cons_df[GlossaryEnergy.Years].to_numpy()
-                ):
-                    continue
-
-                prod_df = prod_df[prod_df[GlossaryEnergy.Years] == year]
-                cons_df = cons_df[cons_df[GlossaryEnergy.Years] == year]
-
-                # Find matching types between producer and consumer
-                common_types = set(prod_columns) & set(cons_columns)
-
-                for flow_type in common_types:
-                    prod_value = prod_df[flow_type].to_numpy()[0]
-                    cons_value = cons_df[flow_type].to_numpy()[0]
-
-                    if prod_value > 0 and cons_value > 0:
-                        # Calculate total consumption of this type
-                        # total_consumption = sum(
-                        #     data_dict[a]["consumption"][
-                        #         data_dict[a]["consumption"][GlossaryEnergy.Years]
-                        #         == year
-                        #     ][flow_type].to_numpy()[0]
-                        #     for a in data_dict
-                        #     if flow_type in data_dict[a]["consumption"].columns
-                        #     and year
-                        #     in data_dict[a]["consumption"][
-                        #         GlossaryEnergy.Years
-                        #     ].to_numpy()
-                        # )
-
-                        # Calculate proportional flow
-                        flow_value = (prod_value * cons_value) / total_consumption[flow_type]
-
-                        if flow_value > 0:
-                            source.append(node_mapping[producer])
-                            target.append(node_mapping[consumer])
-                            value.append(flow_value)
-                            labels.append(flow_type)
-
-    # Handle colormap
-    link_data = dict(
-        source=source,
-        target=target,
-        value=value,
-        hovertemplate="From: %{source.label}<br>"
-        + "To: %{target.label}<br>"
-        + "Value: %{value:.2f}<br>"
-        + "%{customdata}<br>"
-        + "<extra></extra>",
-        customdata=labels,
-    )
-
-    if colormap is not None:
-        if isinstance(colormap, dict):
-            colormap = ColorMap(colormap)
-        if isinstance(colormap, str):
-            if colormap not in available_colormaps:
-                raise ValueError("Requestes colormap not available.")
-            colormap = available_colormaps[colormap]
-
-        link_data["color"] = [colormap.get_color(label) for label in labels]
-
-    # Create the Sankey diagram
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node=dict(
-                    pad=15,
-                    thickness=20,
-                    line=dict(color="black", width=0.5),
-                    label=actors,
-                    color="lightblue",
-                ),
-                link=link_data,
-            )
-        ]
-    )
-
-    # Update layout
-    fig.update_layout(
-        title_text=f"Resource Flows Between Actors ({year})",
-        font_size=10,
-    )
-
-    return fig
-
-
-def create_sankey_with_slider(
-    data_dict: dict[str, dict[str, pd.DataFrame]],
-    colormap: ColorMap | dict | None | str = None,
-) -> go.Figure:
-    """Creates an interactive Sankey diagram with a slider to select different years.
-
-    Args:
-        data_dict: Dictionary of dictionaries containing production and consumption dataframes for each actor.
-            Format: {
-                actor: {
-                    'production': DataFrame(index=[year1, year2, ...], columns=[prod_type1, prod_type2, ...]),
-                    'consumption': DataFrame(index=[year1, year2, ...], columns=[cons_type1, cons_type2, ...])
-                }
-            }
-
-    Returns:
-        A plotly Figure object containing the Sankey diagram with a year slider.
-    """
-    # Get all available years from the data
-    years = set()
-    for actor_data in data_dict.values():
-        years.update(set(actor_data["production"][GlossaryEnergy.Years].to_numpy()))
-        years.update(set(actor_data["consumption"][GlossaryEnergy.Years].to_numpy()))
-
-    years = sorted(list(years))
-    if not years:
-        raise ValueError("No valid years found in the data")
-
-    # Create frames for each year using the previous function
-    frames = []
-    for year in years:
-        # Get the Sankey diagram for this year
-        year_fig = create_sankey_diagram(data_dict, year, colormap=colormap)
-
-        # Create frame from the Sankey data
-        frame = go.Frame(data=[year_fig.data[0]], name=str(year))
-        frames.append(frame)
-
-    # Create the initial figure (using the first year)
-    fig = go.Figure(data=[frames[0].data[0]], frames=frames)
-
-    # Add slider
-    fig.update_layout(
-        title_text="Resource Flows Between Actors",
-        height=800,
-        font_size=10,
-        sliders=[
-            dict(
-                active=0,
-                currentvalue=dict(
-                    font=dict(size=12), prefix="Year: ", visible=True, xanchor="right"
-                ),
-                pad=dict(b=10, t=50),
-                steps=[
-                    dict(
-                        args=[
-                            [str(year)],
-                            dict(
-                                frame=dict(duration=0, redraw=True),
-                                mode="immediate",
-                                transition=dict(duration=0),
-                            ),
-                        ],
-                        label=str(year),
-                        method="animate",
-                    )
-                    for year in years
-                ],
-            )
-        ],
-    )
-
-    return fig
+        return InstantiatedPlotlyNativeChart(fig, chart_name)
