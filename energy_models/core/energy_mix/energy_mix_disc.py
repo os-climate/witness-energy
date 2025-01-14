@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2025/01/13 Copyright 2025 Capgemini
+Modifications on 2023/04/19-2025/01/14 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 )
 from climateeconomics.core.tools.colormaps import available_colormaps
 from climateeconomics.core.tools.plot_factories import create_sankey_with_slider
+from climateeconomics.core.tools.plotting import (
+    InstantiatedPlotlyNativeChart,
+)
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
@@ -44,9 +47,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
-)
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
 )
 from sostrades_core.tools.post_processing.tables.instanciated_table import (
     InstanciatedTable,
@@ -3430,6 +3430,15 @@ class Energy_Mix_Discipline(SoSWrapp):
             "output": df_negative,
         }
 
+        # Filter out resources
+        for dfs in energy_dictionary.values():
+            dfs["input"] = dfs["input"][
+                [c for c in dfs["input"].columns if "(Mt)" not in c]
+            ]
+            dfs["output"] = dfs["output"][
+                [c for c in dfs["output"].columns if "(Mt)" not in c]
+            ]
+
         # Remove units from all streams, to handle inconsistent naming
         for actor in energy_dictionary:
             energy_dictionary[actor]["input"].columns = [
@@ -3445,11 +3454,11 @@ class Energy_Mix_Discipline(SoSWrapp):
         if streams_filter is not None:
             for dfs in energy_dictionary.values():
                 existing_columns = list(set(streams_filter) & set(dfs["input"].columns))
-                dfs["input"] = dfs["input"][[GlossaryEnergy.Years] + existing_columns]
+                dfs["input"] = dfs["input"][[GlossaryEnergy.Years, *existing_columns]]
                 existing_columns = list(
                     set(streams_filter) & set(dfs["output"].columns)
                 )
-                dfs["output"] = dfs["output"][[GlossaryEnergy.Years] + existing_columns]
+                dfs["output"] = dfs["output"][[GlossaryEnergy.Years, *existing_columns]]
 
         # Create sankey plot
         colormap = available_colormaps["energy"]
