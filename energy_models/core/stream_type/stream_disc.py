@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2025/01/13 Copyright 2025 Capgemini
+Modifications on 2023/03/27-2025/01/14 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -986,6 +986,15 @@ class StreamDiscipline(SoSWrapp):
             "output": consumption,
         }
 
+        # Filter out resources
+        for dfs in techno_dictionary.values():
+            dfs["input"] = dfs["input"][
+                [c for c in dfs["input"].columns if "(Mt)" not in c]
+            ]
+            dfs["output"] = dfs["output"][
+                [c for c in dfs["output"].columns if "(Mt)" not in c]
+            ]
+
         # Remove units from all streams, to handle inconsistent naming
         for actor in techno_dictionary:
             techno_dictionary[actor]["input"].columns = [
@@ -996,25 +1005,6 @@ class StreamDiscipline(SoSWrapp):
                 re.sub(r"\s*\([^)]*\)", "", c)
                 for c in techno_dictionary[actor]["output"].columns
             ]
-
-        # Filter out resources
-        # for actor in techno_dictionary:
-        #     techno_dictionary[actor]["input"] = techno_dictionary[actor]["input"][
-        #         [GlossaryEnergy.Years]
-        #         + [
-        #             c
-        #             for c in techno_dictionary[actor]["input"].columns
-        #             if "resource" not in c
-        #         ]
-        #     ]
-        #     techno_dictionary[actor]["output"] = techno_dictionary[actor]["output"][
-        #         [GlossaryEnergy.Years]
-        #         + [
-        #             c
-        #             for c in techno_dictionary[actor]["output"].columns
-        #             if "resource" not in c
-        #         ]
-        #     ]
 
         # filter streams
         if streams_filter is not None:
