@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2025/01/14 Copyright 2025 Capgemini
+Modifications on 2023/03/27-2025/01/17 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -572,15 +572,15 @@ class StreamDiscipline(SoSWrapp):
             instanciated_charts.append(chart)
 
         if "Stream Flow" in charts or True:
-            new_chart = self.get_chart_sankey_fluxes(years_list, split_external=True)
+            new_chart = self.get_chart_sankey_fluxes(years_list, chart_name="Flow of energy streams (TWh)", split_external=True)
             new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
 
             new_chart = self.get_chart_sankey_fluxes(
                 years_list,
-                chart_name="Normalized Streams Flow",
+                chart_name="Flow of energy streams (schematic)",
                 normalized_links=True,
-                split_external=False,
+                split_external=True,
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
