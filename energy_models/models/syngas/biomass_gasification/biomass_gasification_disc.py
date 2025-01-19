@@ -121,4 +121,4 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        self.techno_model = BiomassGasification(self.techno_name)
+        self.model = BiomassGasification(self.techno_name)

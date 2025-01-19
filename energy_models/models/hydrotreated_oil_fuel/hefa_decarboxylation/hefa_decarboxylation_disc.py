@@ -106,4 +106,4 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = HefaDecarboxylation(self.techno_name)
+        self.model = HefaDecarboxylation(self.techno_name)

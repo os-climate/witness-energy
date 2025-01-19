@@ -23,6 +23,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
 class WindOffshoreTestCase(unittest.TestCase):
@@ -61,8 +62,8 @@ class WindOffshoreTestCase(unittest.TestCase):
         # increasing by almost an order of magnitude from an average of 20km for the
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
-        self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
+        self.transport = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                       'transport': transport_cost})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
@@ -73,8 +74,6 @@ class WindOffshoreTestCase(unittest.TestCase):
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == f'{GlossaryEnergy.electricity}.Wind_Offshore']
-        self.scaling_factor_techno_consumption = 1e3
-        self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict[GlossaryEnergy.Years] = self.years
@@ -82,30 +81,17 @@ class WindOffshoreTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
-    def tearDown(self):
-        pass
-
-    def test_03_wind_off_shore_discipline(self):
         self.name = 'Test'
         self.model_name = 'Wind_Electricity'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
+        self.ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_electricity': self.name,
                    'ns_resource': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
 
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
+        self.inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -115,14 +101,20 @@ class WindOffshoreTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
-        self.ee.load_study_from_input_dict(inputs_dict)
 
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[0]
-
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+    def test_model(self):
+        discipline_test_function(
+            module_path='energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.inputs_dict,
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'jacobian_{self.model_name}_autodiff.pkl',
+            override_dump_jacobian=True
+        )
         # for graph in graph_list:
         #     graph.to_plotly().show()
 # if __name__ == "__main__":

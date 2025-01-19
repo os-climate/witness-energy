@@ -33,6 +33,7 @@ from energy_models.core.stream_type.energy_models.syngas import (
 )
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class SyngasDiscipline(EnergyDiscipline):
@@ -88,8 +89,9 @@ class SyngasDiscipline(EnergyDiscipline):
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%'}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%', AutodifferentiedDisc.GRADIENTS: True,}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True,
+                                                                                      AutodifferentiedDisc.GRADIENTS: True,}
 
         return dynamic_inputs, dynamic_outputs
 

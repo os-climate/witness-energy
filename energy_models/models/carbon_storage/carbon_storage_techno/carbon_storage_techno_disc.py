@@ -79,4 +79,4 @@ class CarbonStorageTechnoDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = CarbonStorageTechno(self.techno_name)
+        self.model = CarbonStorageTechno(self.techno_name)

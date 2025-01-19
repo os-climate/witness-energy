@@ -84,4 +84,4 @@ class DepletedOilGasDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = DepletedOilGas(self.techno_name)
+        self.model = DepletedOilGas(self.techno_name)

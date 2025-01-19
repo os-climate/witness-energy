@@ -26,7 +26,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 )
 from plotly import graph_objects as go
 
-from climateeconomics.core.tools.differentiable_model import DifferentiableModel
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -44,9 +43,10 @@ from energy_models.core.stream_type.resources_data_disc import (
 )
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
-class TechnoDiscipline(SoSWrapp):
+class TechnoDiscipline(AutodifferentiedDisc):
     # ontology information
     _ontology_data = {
         'label': 'Core Technology Type Model',
@@ -111,10 +111,6 @@ class TechnoDiscipline(SoSWrapp):
 
     techno_name = 'Fill techno name'
     energy_name = 'Fill the energy name for this techno'
-
-    def __init__(self, sos_name, logger: logging.Logger):
-        super().__init__(sos_name=sos_name, logger=logger)
-        self.techno_model: DifferentiableModel = None
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
@@ -283,21 +279,6 @@ class TechnoDiscipline(SoSWrapp):
                                                       'transport': 0.0}),
                                                  GlossaryEnergy.TransportMarginValue: default_margin})
 
-    def run(self):
-        '''
-        Generic run for all technologies
-        '''
-        # -- get inputs
-        inputs_dict = self.get_sosdisc_inputs()
-        # -- configure class with inputs
-        self.techno_model.set_inputs(inputs_dict)
-        self.techno_model.compute()
-
-        outputs = self.techno_model.get_dataframes()
-        self.store_sos_outputs_values(outputs)
-
-    def compute_sos_jacobian(self):
-        pass
     def get_chart_filter_list(self):
 
         chart_filters = []

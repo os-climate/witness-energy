@@ -87,4 +87,4 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = ElectricBoilerMediumHeat(self.techno_name)
+        self.model = ElectricBoilerMediumHeat(self.techno_name)

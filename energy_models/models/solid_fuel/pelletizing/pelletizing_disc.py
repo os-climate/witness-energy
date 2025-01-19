@@ -85,4 +85,4 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        self.techno_model = Pelletizing(self.techno_name)
+        self.model = Pelletizing(self.techno_name)

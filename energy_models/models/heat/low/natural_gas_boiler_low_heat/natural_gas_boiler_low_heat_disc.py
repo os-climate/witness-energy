@@ -115,6 +115,6 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
     DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = NaturalGasLowHeat(self.techno_name)
+        self.model = NaturalGasLowHeat(self.techno_name)
 
 

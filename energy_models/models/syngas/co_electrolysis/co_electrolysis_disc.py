@@ -76,4 +76,4 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
     DESC_OUT = SyngasTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = CoElectrolysis(self.techno_name)
+        self.model = CoElectrolysis(self.techno_name)

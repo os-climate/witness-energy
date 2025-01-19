@@ -91,6 +91,6 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = GeothermalHeat(self.techno_name)
+        self.model = GeothermalHeat(self.techno_name)
 
 

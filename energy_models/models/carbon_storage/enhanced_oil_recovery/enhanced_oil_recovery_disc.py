@@ -82,4 +82,4 @@ class EnhancedOilRecoveryDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = EnhancedOilRecovery(self.techno_name)
+        self.model = EnhancedOilRecovery(self.techno_name)

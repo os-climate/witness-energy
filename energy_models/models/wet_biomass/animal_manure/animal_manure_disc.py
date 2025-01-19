@@ -85,4 +85,4 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
     DESC_OUT = WetBiomassTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = AnimalManure(self.techno_name)
+        self.model = AnimalManure(self.techno_name)

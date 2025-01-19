@@ -17,9 +17,9 @@ limitations under the License.
 import math as m
 from abc import abstractmethod
 
-import numpy as np
-from climateeconomics.core.tools.differentiable_model import DifferentiableModel
+import autograd.numpy as np
 
+from sostrades_optimization_plugins.models.differentiable_model import DifferentiableModel
 from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     smooth_maximum_vect,
     soft_maximum_vect,
@@ -300,7 +300,7 @@ class TechnoType(DifferentiableModel):
 
                 # below 1M$ investments has no influence on learning rate for capex
                 # decrease
-                if invest_sum.real < 10.0 or i == 0:
+                if invest_sum < 10.0 or i == 0:
                     # first capex calculation
                     capex_year = initial_capex
                 else:
@@ -314,7 +314,7 @@ class TechnoType(DifferentiableModel):
 
                     # Check that the ratio is always above 0.95 but no strict threshold for
                     # optim is equal to 0.92 when tends to zero:
-                    if ratio_invest.real < 0.95:
+                    if ratio_invest < 0.95:
                         ratio_invest = 0.9 + 0.05 * np.exp(ratio_invest - 0.9)
                     capex_year = capex_year * ratio_invest
 
@@ -696,10 +696,9 @@ class TechnoType(DifferentiableModel):
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity'] = newly_installed_capacity
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:total_installed_capacity'] = total_installed_capacity
-        removed_installed_capacity = self.zeros_array
 
-        for i in range(1, len(self.years)):
-            removed_installed_capacity[i] = total_installed_capacity[i - 1] - total_installed_capacity[i] + newly_installed_capacity[i]
+        removed_installed_capacity = total_installed_capacity[:-1] - total_installed_capacity[1:] + newly_installed_capacity[1:]
+        removed_installed_capacity = np.concatenate([[0.], removed_installed_capacity])
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:removed_installed_capacity'] = removed_installed_capacity
 
     def compute_new_installations_production_capacity(self):

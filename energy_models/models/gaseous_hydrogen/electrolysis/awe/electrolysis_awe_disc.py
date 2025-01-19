@@ -84,4 +84,4 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
     DESC_OUT = GaseousHydrogenTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = ElectrolysisAWE(self.techno_name)
+        self.model = ElectrolysisAWE(self.techno_name)

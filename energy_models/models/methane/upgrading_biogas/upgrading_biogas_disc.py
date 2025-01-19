@@ -86,4 +86,4 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     DESC_OUT = MethaneTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = UpgradingBiogas(self.techno_name)
+        self.model = UpgradingBiogas(self.techno_name)

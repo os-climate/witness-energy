@@ -82,4 +82,4 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = GeologicMineralization(self.techno_name)
+        self.model = GeologicMineralization(self.techno_name)

@@ -103,4 +103,4 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = FossilSimpleTechno(self.techno_name)
+        self.model = FossilSimpleTechno(self.techno_name)

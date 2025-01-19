@@ -97,7 +97,7 @@ class CHPHighHeatDiscipline(TechnoDiscipline):
     DESC_OUT = TechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = CHPHighHeat(self.techno_name)
+        self.model = CHPHighHeat(self.techno_name)
     def get_chart_filter_list(self):
         return TechnoDiscipline.get_chart_filter_list(self)
     def get_post_processing_list(self, filters=None):

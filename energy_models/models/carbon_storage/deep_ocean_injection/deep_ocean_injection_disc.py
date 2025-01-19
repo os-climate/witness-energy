@@ -82,4 +82,4 @@ class DeepOceanInjectionDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = DeepOceanInjection(self.techno_name)
+        self.model = DeepOceanInjection(self.techno_name)

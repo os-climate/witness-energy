@@ -83,4 +83,4 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     DESC_OUT = GaseousHydrogenTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = ElectrolysisSOEC(self.techno_name)
+        self.model = ElectrolysisSOEC(self.techno_name)

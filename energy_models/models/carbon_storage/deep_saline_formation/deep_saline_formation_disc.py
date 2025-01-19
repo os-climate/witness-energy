@@ -82,4 +82,4 @@ class DeepSalineFormationDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = DeepSalineFormation(self.techno_name)
+        self.model = DeepSalineFormation(self.techno_name)

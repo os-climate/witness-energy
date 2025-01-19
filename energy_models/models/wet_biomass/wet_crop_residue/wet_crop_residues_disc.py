@@ -98,4 +98,4 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     DESC_OUT = WetBiomassTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = WetCropResidues(self.techno_name)
+        self.model = WetCropResidues(self.techno_name)

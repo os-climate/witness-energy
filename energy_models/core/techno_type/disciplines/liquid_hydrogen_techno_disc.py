@@ -60,14 +60,4 @@ class LiquidHydrogenTechnoDiscipline(TechnoDiscipline):
 
     energy_name = LiquidHydrogen.name
 
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        TechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+    

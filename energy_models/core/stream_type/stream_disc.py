@@ -32,6 +32,7 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
 )
 
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class StreamDiscipline(SoSWrapp):
@@ -70,12 +71,12 @@ class StreamDiscipline(SoSWrapp):
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         # energy_production and energy_consumption stored in PetaWh for
         # coupling variables scaling
-        GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.StreamConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh'},
-        GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
+        GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
+        GlossaryEnergy.StreamConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
+        GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
         GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
-        GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha'},
+        GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha', AutodifferentiedDisc.GRADIENTS: True,},
         GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf
     }
 
@@ -97,10 +98,10 @@ class StreamDiscipline(SoSWrapp):
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'type': 'dataframe', 'unit': 'TWh or Mt', AutodifferentiedDisc.GRADIENTS: True,
                         'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'type': 'dataframe', 'unit': 'TWh or Mt', AutodifferentiedDisc.GRADIENTS: True,
                         'dynamic_dataframe_columns': True}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.energy_name, byproducts_list=GlossaryEnergy.techno_byproducts[techno])
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)

@@ -120,22 +120,4 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = CoalExtraction(self.techno_name)
-
-    def compute_sos_jacobian(self):
-        SolidFuelTechnoDiscipline.compute_sos_jacobian(self)
-
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue,
-             f'{Methane.emission_name} ({GlossaryEnergy.mass_unit})'),
-            (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (
-                        self.dprod_dinvest.T * self.techno_model.emission_factor_mt_twh * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
+        self.model = CoalExtraction(self.techno_name)

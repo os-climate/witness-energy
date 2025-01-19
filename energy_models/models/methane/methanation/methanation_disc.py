@@ -81,4 +81,4 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     DESC_OUT = MethaneTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = Methanation(self.techno_name)
+        self.model = Methanation(self.techno_name)

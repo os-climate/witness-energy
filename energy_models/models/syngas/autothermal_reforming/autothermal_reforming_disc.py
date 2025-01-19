@@ -79,4 +79,4 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        self.techno_model = AutothermalReforming(self.techno_name)
+        self.model = AutothermalReforming(self.techno_name)

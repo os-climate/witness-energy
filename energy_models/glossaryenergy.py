@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class GlossaryEnergy(GlossaryWitnessCore):
@@ -297,6 +298,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "var_name": GlossaryWitnessCore.TechnoCapitalValue,
         "type": "dataframe",
         "unit": "G$",
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Capital in G$ of the technology",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
@@ -325,12 +327,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
             GlossaryWitnessCore.InvestValue: ("float", None, True),
         },
         "dataframe_edition_locked": False,
+        AutodifferentiedDisc.GRADIENTS: True,
     }
 
     UtilisationRatioDf = {
         "var_name": GlossaryWitnessCore.UtilisationRatioValue,
         "type": "dataframe",
         "namespace": "ns_witness",
+        AutodifferentiedDisc.GRADIENTS: True,
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
@@ -356,6 +360,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         # namespace: ns_energy,
         # visibility: Shared,
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Capital in G$ of the energy type",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
@@ -1423,6 +1428,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "type": "dataframe",
             "unit": "Gha",
+            AutodifferentiedDisc.GRADIENTS: True,
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name} ({cls.surface_unit})": ("float", None, False),
@@ -1487,6 +1493,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "type": "dataframe",
             "unit": "$/MWh",
+            AutodifferentiedDisc.GRADIENTS: True,
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name}": ("float", None, False),
@@ -1501,6 +1508,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "type": "dataframe",
             "unit": cls.unit_dicts[energy_name],
+            AutodifferentiedDisc.GRADIENTS: True,
             "description": f"Production of {energy_name} by from techno {techno_name}",
             "dataframe_descriptor": {
                 cls.Years: (
@@ -1605,6 +1613,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "varname": cls.StreamPricesValue,
             "type": "dataframe",
+            AutodifferentiedDisc.GRADIENTS: True,
             "unit": "$/MWh",
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, 2100], False),

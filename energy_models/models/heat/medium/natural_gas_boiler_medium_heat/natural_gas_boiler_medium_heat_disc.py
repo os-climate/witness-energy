@@ -115,4 +115,4 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = NaturalGasMediumHeat(self.techno_name)
+        self.model = NaturalGasMediumHeat(self.techno_name)

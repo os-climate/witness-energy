@@ -90,5 +90,5 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     # -- add specific techno outputs to this
 
     def init_execution(self):
-        self.techno_model = SMR(self.techno_name)
+        self.model = SMR(self.techno_name)
 

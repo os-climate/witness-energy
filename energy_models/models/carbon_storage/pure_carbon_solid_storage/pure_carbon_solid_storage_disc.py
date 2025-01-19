@@ -123,7 +123,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                 pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
-        self.techno_model = PureCarbonSS(self.techno_name)
+        self.model = PureCarbonSS(self.techno_name)
 
     def get_chart_filter_list(self):
 

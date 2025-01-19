@@ -118,14 +118,4 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = HefaDeoxygenation(self.techno_name)
-
-    def compute_sos_jacobian(self):
-        super().compute_sos_jacobian()
-        grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()
-        for resource, value in grad_dict_resources_co2.items():
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),
-                value
-            )
+        self.model = HefaDeoxygenation(self.techno_name)

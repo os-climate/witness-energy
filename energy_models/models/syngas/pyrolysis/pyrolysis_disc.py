@@ -87,4 +87,4 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = Pyrolysis(self.techno_name)
+        self.model = Pyrolysis(self.techno_name)

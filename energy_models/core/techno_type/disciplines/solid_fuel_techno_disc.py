@@ -59,17 +59,3 @@ class SolidFuelTechnoDiscipline(TechnoDiscipline):
     _maturity = 'Research'
 
     energy_name = SolidFuel.name
-
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        TechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
-
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources)

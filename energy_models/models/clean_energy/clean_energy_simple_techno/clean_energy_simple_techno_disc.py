@@ -78,4 +78,4 @@ class CleanEnergySimpleTechnoDiscipline(CleanEnergyTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = CleanEnergySimpleTechno(self.techno_name)
+        self.model = CleanEnergySimpleTechno(self.techno_name)

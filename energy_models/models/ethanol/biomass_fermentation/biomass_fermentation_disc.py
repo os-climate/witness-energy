@@ -104,4 +104,4 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     DESC_OUT = EthanolTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = BiomassFermentation(self.techno_name)
+        self.model = BiomassFermentation(self.techno_name)

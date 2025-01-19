@@ -24,6 +24,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class EnergyDiscipline(StreamDiscipline):
@@ -66,7 +67,7 @@ class EnergyDiscipline(StreamDiscipline):
                 techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                        'type': 'dataframe', 'unit': 'kg/kWh',
+                        'type': 'dataframe', 'unit': 'kg/kWh', AutodifferentiedDisc.GRADIENTS: True,
                         "dynamic_dataframe_columns": True}
 
         return dynamic_inputs, dynamic_outputs

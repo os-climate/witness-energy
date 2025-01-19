@@ -77,4 +77,4 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = BiomassBuryingFossilization(self.techno_name)
+        self.model = BiomassBuryingFossilization(self.techno_name)

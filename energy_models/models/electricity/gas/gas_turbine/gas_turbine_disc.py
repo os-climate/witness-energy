@@ -101,7 +101,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        self.techno_model = GasElec(self.techno_name)
+        self.model = GasElec(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"

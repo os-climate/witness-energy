@@ -95,7 +95,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = HeatPump(self.techno_name)
+        self.model = HeatPump(self.techno_name)
 
 
     def get_post_processing_list(self, filters=None):

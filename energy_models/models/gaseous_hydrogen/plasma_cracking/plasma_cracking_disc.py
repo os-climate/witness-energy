@@ -123,4 +123,4 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                             pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
 
     def init_execution(self):
-        self.techno_model = PlasmaCracking(self.techno_name)
+        self.model = PlasmaCracking(self.techno_name)

@@ -65,15 +65,6 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     energy_name = GlossaryEnergy.carbon_storage
 
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        TechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-        self.set_partial_derivatives_techno(grad_dict, carbon_emissions)
-
     def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs

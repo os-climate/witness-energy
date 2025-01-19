@@ -87,7 +87,8 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        self.techno_model = WindOffshore(self.techno_name)
+        self.model = WindOffshore(self.techno_name)
+
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"

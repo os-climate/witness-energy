@@ -90,4 +90,4 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        self.techno_model = CoalGasification(self.techno_name)
+        self.model = CoalGasification(self.techno_name)

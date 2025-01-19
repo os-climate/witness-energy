@@ -83,4 +83,4 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        self.techno_model = CO2Hydrogenation(self.techno_name)
+        self.model = CO2Hydrogenation(self.techno_name)

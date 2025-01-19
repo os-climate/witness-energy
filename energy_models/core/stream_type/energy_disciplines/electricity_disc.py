@@ -25,6 +25,7 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class ElectricityDiscipline(EnergyDiscipline):
@@ -81,7 +82,8 @@ class ElectricityDiscipline(EnergyDiscipline):
                     dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2,
                                                                      'unit': 'TWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                     'namespace': GlossaryEnergy.NS_FUNCTIONS}
+                                                                     'namespace': GlossaryEnergy.NS_FUNCTIONS,
+                                                                     AutodifferentiedDisc.GRADIENTS: True,}
         return dynamic_inputs, dynamic_outputs
 
     def init_execution(self):
@@ -105,22 +107,6 @@ class ElectricityDiscipline(EnergyDiscipline):
             outputs_dict = {}
         
         self.store_sos_outputs_values(outputs_dict)
-
-    def compute_sos_jacobian(self):
-        '''
-        Overide sos jacobian to compute gradient of hydropower constraint
-        '''
-        inputs_dict = self.get_sosdisc_inputs()
-
-        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
-                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
-        if Electricity.hydropower_name in self.energy_model.subelements_list:
-            self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{GlossaryEnergy.electricity} ({Electricity.unit})'),
-                                                        - inputs_dict['scaling_factor_techno_production'] * np.identity(
-                                                            len(years)) / inputs_dict['hydropower_constraint_ref'])
-
-        EnergyDiscipline.compute_sos_jacobian(self)
 
     def get_chart_filter_list(self):
 
