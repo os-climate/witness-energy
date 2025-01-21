@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2025/01/14 Copyright 2025 Capgemini
+Modifications on 2023/04/19-2025/01/17 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -2430,13 +2430,13 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         if "Stream Flow" in charts:
             new_chart = self.get_chart_sankey_fluxes(
-                "Stream Flow (TWh)", split_external=False
+                "Flow of energy streams (TWh)", split_external=False
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
 
             new_chart = self.get_chart_sankey_fluxes(
-                chart_name="Normalized Stream Flow", normalized_links=True
+                chart_name="Flow of energy streams (schematic)", normalized_links=True
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
@@ -2447,7 +2447,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
             for energy_stream in energy_list:
                 new_chart = self.get_chart_sankey_fluxes(
-                    f"{energy_stream} Flow", streams_filter=[energy_stream]
+                    f"Production/Consumption of {energy_stream} (TWh)", streams_filter=[energy_stream]
                 )
                 new_chart.post_processing_section_name = "Detailed Stream Flow"
                 instanciated_charts.append(new_chart)
@@ -3410,7 +3410,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             production[GlossaryEnergy.Years] = years
 
         # Switch prod /consumption as we want the node to "consume" the available streams
-        energy_dictionary["available"] = {
+        energy_dictionary["available<br>for final consumption"] = {
             "input": production,
             "output": consumption,
         }
@@ -3467,7 +3467,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             colormap=colormap,
             normalized_links=normalized_links,
             split_external=split_external,
-            output_node="available",
+            output_node="available<br>for final consumption",
         )
 
         # return chart
