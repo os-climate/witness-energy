@@ -39,9 +39,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -68,9 +66,6 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000.,
                                                                                                len(self.years))})
-
-    def tearDown(self):
-        pass
 
     def test_01_demand_model_discipline_jacobian(self):
         self.name = 'Test'

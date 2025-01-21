@@ -35,9 +35,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -85,9 +83,6 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
                                                                 'carbon_capture needed by energy mix (Gt)': np.linspace(
                                                                     0.001, 0.3, len(self.years))
                                                                 })
-
-    def tearDown(self):
-        pass
 
     def test_01_ghgenergy_discipline(self):
 

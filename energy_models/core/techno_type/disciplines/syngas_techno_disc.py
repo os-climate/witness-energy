@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline

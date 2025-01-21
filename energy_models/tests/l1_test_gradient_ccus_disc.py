@@ -50,9 +50,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         launch_data_pickle_generation()
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         # self.launch_data_pickle_generation()
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
@@ -104,9 +102,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Gt)': 0.005})
         self.carbon_capture_from_energy_mix = pd.DataFrame(
             data={GlossaryEnergy.Years: years, 'carbon_capture from energy mix (Gt)': 1e-15})
-
-    def tearDown(self):
-        pass
 
     def test_01_Consumption_ccus_disciplinejacobian(self):
         '''

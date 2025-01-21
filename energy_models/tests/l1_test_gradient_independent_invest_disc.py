@@ -40,9 +40,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.energy_list = [
@@ -85,9 +83,6 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
 
         self.crop_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 0.25, year_range)})
-
-    def tearDown(self):
-        pass
 
     def test_01_analytic_grad(self):
         self.name = 'Energy'

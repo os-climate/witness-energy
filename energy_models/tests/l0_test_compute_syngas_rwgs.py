@@ -29,9 +29,7 @@ class RWGSPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
 
         # We take biomass price of methane/5.0
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
@@ -67,9 +65,6 @@ class RWGSPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, 'transport': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-
-    def tearDown(self):
-        pass
 
     def test_02_rwgs_discipline_for_other_ratio(self):
         self.name = 'Test'

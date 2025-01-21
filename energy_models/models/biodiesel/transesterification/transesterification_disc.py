@@ -16,8 +16,6 @@ limitations under the License.
 '''
 import logging
 
-import numpy as np
-
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import (
     BioDieselTechnoDiscipline,

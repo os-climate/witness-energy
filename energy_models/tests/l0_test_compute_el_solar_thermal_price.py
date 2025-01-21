@@ -41,9 +41,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -118,9 +116,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             'smooth_type': 'smooth_max',
                             'data_fuel_dict': Electricity.data_energy_dict,
                             }
-
-    def tearDown(self):
-        pass
 
     def test_03_solar_Thermal_discipline(self):
         self.name = 'Test'

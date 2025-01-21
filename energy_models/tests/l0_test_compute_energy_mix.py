@@ -33,9 +33,7 @@ class EnergyMixTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)

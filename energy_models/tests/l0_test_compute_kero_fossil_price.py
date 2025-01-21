@@ -39,9 +39,7 @@ class RefineryPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         # crude oil price : 1.3$/gallon
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
@@ -91,9 +89,6 @@ class RefineryPriceTestCase(unittest.TestCase):
                            HeatingOil.name: HeatingOil.data_energy_dict,
                            UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
                            }
-
-    def tearDown(self):
-        pass
 
     def test_03_refinery_discipline(self):
         self.name = 'Test'

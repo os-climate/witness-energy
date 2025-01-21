@@ -39,9 +39,7 @@ class TestEnergyorCCSInvest(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_invest = EnergyOrCCSInvest()

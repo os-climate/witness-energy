@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import unittest
 from os.path import dirname
 
 import numpy as np
@@ -29,22 +30,17 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class BiogasJacobianTestCase(AbstractJacobianUnittest):
-    """
-    Anaerobic Digestion prices test class
-    """
-
-    def analytic_grad_entry(self):
-        return [
-            self.test_01_biomass_gas_discipline_analytic_grad,
-        ]
-
+class BiogasJacobianTestCase(unittest.TestCase):
+    """Anaerobic Digestion prices test class"""
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        self.name = "Test"
+        self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
+                   'ns_biogas': f'{self.name}',
+                   'ns_resource': self.name}
         self.energy_name = GlossaryEnergy.biogas
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefaultValueGradientTest + 1)
 
@@ -86,29 +82,8 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         self.is_apply_resource_ratio = True
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
 
-    def tearDown(self):
-        pass
-
-    def test_01_biomass_gas_discipline_analytic_grad(self):
-        self.name = 'Test'
-        self.model_name = GlossaryEnergy.AnaerobicDigestion
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_biogas': f'{self.name}',
-                   'ns_resource': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = f'energy_models.models.{GlossaryEnergy.biogas}.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+    def get_inputs_dicts(self):
+        return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -123,24 +98,17 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
 
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
-                                    f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-                                    f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-                                    ],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-                                     ], )
+    def test_01_biomass_gas_discipline_analytic_grad(self):
+        self.model_name = GlossaryEnergy.AnaerobicDigestion
+        discipline_test_function(
+            module_path=f'energy_models.models.{GlossaryEnergy.biogas}.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dicts(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
+import autograd.numpy as np
 
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
@@ -46,13 +46,13 @@ class CoalExtraction(SolidFuelTechno):
                                                                      self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                          f'{SolidFuelTechno.energy_name} ({self.product_unit})']
         '''
-                Method to compute CH4 emissions from coal mines
-                The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
-                Equation is taken from the GAINS model
-                https://gem.wiki/Estimating_methane_emissions_from_coal_mines#Model_for_Calculating_Coal_Mine_Methane_.28MC2M.29,
-                Nazar Kholod &al Global methane emissions from coal mining to continue growing even with declining coal production,
-                 Journal of Cleaner Production, Volume 256, February 2020.
-                '''
+        Method to compute CH4 emissions from coal mines
+        The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
+        Equation is taken from the GAINS model
+        https://gem.wiki/Estimating_methane_emissions_from_coal_mines#Model_for_Calculating_Coal_Mine_Methane_.28MC2M.29,
+        Nazar Kholod &al Global methane emissions from coal mining to continue growing even with declining coal production,
+         Journal of Cleaner Production, Volume 256, February 2020.
+        '''
         emission_factor_coeff = self.inputs['techno_infos_dict']['emission_factor_coefficient']
 
         # compute gas content with surface and underground_gas_content in m3/t

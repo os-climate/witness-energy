@@ -14,10 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from functools import reduce
-from operator import mul
 
-import numpy as np
+import autograd.numpy as np
 import pandas as pd
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,

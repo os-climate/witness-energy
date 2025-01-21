@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import unittest
 from os.path import dirname
 
 import numpy as np
@@ -47,27 +47,23 @@ from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.pip
 from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import (
     PressureSwingAdsorptionDiscipline,
 )
+from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class GradientFlueGasTestCase(AbstractJacobianUnittest):
-    """
-    Flue gas gradients test class
-    """
-
-    def analytic_grad_entry(self):
-        return [
-            self.test_01_calcium_looping_discipline_analytic_grad,
-            self.test_02_pressure_swing_adsorption_analytic_grad,
-            self.test_03_piperazine_process_analytic_grad,
-            self.test_04_monoethanolamine_analytic_grad,
-            self.test_05_co2_membranes_analytic_grad,
-            self.test_06_chilled_ammonia_process_discipline_analytic_grad,
-        ]
+class GradientFlueGasTestCase(unittest.TestCase):
+    """Flue gas gradients test class"""
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
+        self.name = "Test"
+        self.ns_dict = {'ns_public': self.name,
+                   'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_flue_gas': f'{self.name}',
+                   'ns_electricity': self.name,
+                   'ns_carbon_capture': self.name,
+                   'ns_resource': f'{self.name}'}
+
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
@@ -119,385 +115,122 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-    def tearDown(self):
-        pass
-
-    def test_01_calcium_looping_discipline_analytic_grad(self):
-        self.name = 'Test'
-        self.model_name = 'CalciumLooping'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+    def get_inputs_dict(self):
+        return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
                        }
+    def test_01_calcium_looping_discipline_analytic_grad(self):
+        self.model_name = 'CalciumLooping'
 
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
+
 
     def test_02_pressure_swing_adsorption_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'pressure_swing_adsorption'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc.PressureSwingAdsorptionDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc' \
-                   '.PressureSwingAdsorptionDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = PressureSwingAdsorptionDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
 
     def test_03_piperazine_process_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'piperazine_process'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc.PiperazineProcessDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.piperazine_process' \
-                   '.piperazine_process_disc.PiperazineProcessDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = PiperazineProcessDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
 
     def test_04_monoethanolamine_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'mono_ethanol_amine'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc.MonoEthanolAmineDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc.MonoEthanolAmineDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
 
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = MonoEthanolAmineDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
 
     def test_05_co2_membranes_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'CO2_membranes'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc.CO2MembranesDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.co2_membranes' \
-                   '.co2_membranes_disc.CO2MembranesDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = CO2MembranesDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )
 
     def test_06_chilled_ammonia_process_discipline_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'chilled_ammonia_process'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_electricity': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        discipline_test_function(
+            module_path='energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc.ChilledAmmoniaProcessDiscipline',
+            model_name=self.model_name,
+            name=self.name,
+            jacobian_test=True,
+            show_graphs=False,
+            inputs_dict=self.get_inputs_dict(),
+            namespaces_dict=self.ns_dict,
+            pickle_directory=dirname(__file__),
+            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            override_dump_jacobian=False
+        )
 
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process' \
-                   '.chilled_ammonia_process_disc.ChilledAmmoniaProcessDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = ChilledAmmoniaProcessDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           self.years),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
-                                    f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                     ], )

@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
     SyngasTechnoDiscipline,

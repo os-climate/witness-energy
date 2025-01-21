@@ -40,9 +40,7 @@ class FTPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
@@ -102,9 +100,6 @@ class FTPriceTestCase(unittest.TestCase):
                           'molar_mass': 170.0,
                           'molar_mass_unit': 'g/mol',
                           }
-
-    def tearDown(self):
-        pass
 
     def test_02_FT_discipline(self):
 

@@ -14,8 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
+import autograd.numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -103,14 +102,14 @@ class PlasmaCracking(GaseousHydrogenTechno):
     def compute_percentage_resource(self):
 
         self.outputs[f'percentage_resource:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'percentage_resource:total_revenues'] = \
-            self.temp_variables[f'quantity:hydrogen_sales_revenues'] + \
-            self.temp_variables[f'quantity:carbon_sales_revenues'] + \
-            self.temp_variables[f'quantity:carbon_storage_revenues']
+        self.outputs['percentage_resource:total_revenues'] = \
+            self.temp_variables['quantity:hydrogen_sales_revenues'] + \
+            self.temp_variables['quantity:carbon_sales_revenues'] + \
+            self.temp_variables['quantity:carbon_storage_revenues']
 
         self.outputs[f'percentage_resource:{GaseousHydrogenTechno.energy_name}'] = \
-            self.temp_variables[f'quantity:hydrogen_sales_revenues'] / \
-            self.outputs[f'percentage_resource:total_revenues'] * 100.
+            self.temp_variables['quantity:hydrogen_sales_revenues'] / \
+            self.outputs['percentage_resource:total_revenues'] * 100.
 
     def compute_revenues(self):
         '''Carbon storage for carbon production higher than carbon demand'''

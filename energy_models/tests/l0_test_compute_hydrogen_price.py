@@ -29,9 +29,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -107,9 +105,6 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, f'{GlossaryEnergy.PlasmaCracking} ({GlossaryEnergy.surface_unit})': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-
-    def tearDown(self):
-        pass
 
     def test_01_hydrogen_discipline(self):
         self.name = 'Test'

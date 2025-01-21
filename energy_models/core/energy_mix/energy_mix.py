@@ -19,8 +19,6 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     smooth_maximum,
@@ -32,6 +30,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol

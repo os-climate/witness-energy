@@ -35,9 +35,7 @@ class NuclearTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.resources_price = pd.DataFrame(
@@ -84,9 +82,6 @@ class NuclearTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
-
-    def tearDown(self):
-        pass
 
     def test_01_nuclear_discipline(self):
         # TODO: test commented out bc needs to be updated with new database connector def

@@ -15,7 +15,9 @@ limitations under the License.
 '''
 
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
-from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 
 class GlossaryEnergy(GlossaryWitnessCore):
@@ -1535,6 +1537,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "type": "dataframe",
             "unit": "$/MWh or $/mass",
             "visibility": "Shared",
+            AutodifferentiedDisc.GRADIENTS: True,
             "namespace": cls.NS_ENERGY,
             "description": "Price of streams used by the technos",
             "dataframe_descriptor": {
@@ -1552,6 +1555,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "var_name": cls.StreamsCO2EmissionsValue,
             "type": "dataframe",
             "unit": "kg/kWh",
+            AutodifferentiedDisc.GRADIENTS: True,
             "visibility": "Shared",
             "namespace": cls.NS_ENERGY,
             "dataframe_descriptor": {

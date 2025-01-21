@@ -20,10 +20,12 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_optimization_plugins.tools.discipline_tester import (
+    discipline_test_function,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
 class WindOffshoreTestCase(unittest.TestCase):
@@ -32,9 +34,7 @@ class WindOffshoreTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']

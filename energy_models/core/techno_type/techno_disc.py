@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import logging
 
 import numpy as np
 import pandas as pd
@@ -25,7 +24,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from plotly import graph_objects as go
-
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -35,6 +33,9 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -43,7 +44,6 @@ from energy_models.core.stream_type.resources_data_disc import (
 )
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class TechnoDiscipline(AutodifferentiedDisc):
@@ -929,11 +929,11 @@ class TechnoDiscipline(AutodifferentiedDisc):
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed[f'production_historical_plants'], 'Initial plants production', 'bar')
+            production_detailed['production_historical_plants'], 'Initial plants production', 'bar')
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed[f'production_newly_builted_plants'], 'New plants production', 'bar')
+            production_detailed['production_newly_builted_plants'], 'New plants production', 'bar')
         )
 
         return new_chart

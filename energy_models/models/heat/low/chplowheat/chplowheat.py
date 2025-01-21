@@ -25,7 +25,6 @@ from energy_models.core.techno_type.base_techno_models.heat_techno import heatte
 from energy_models.core.techno_type.base_techno_models.low_heat_techno import (
     lowheattechno,
 )
-from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 
 

@@ -31,9 +31,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -63,9 +61,6 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
-
-    def tearDown(self):
-        pass
 
     def test_01_CO2_emissions_discipline(self):
 

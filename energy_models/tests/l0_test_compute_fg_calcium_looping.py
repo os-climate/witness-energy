@@ -30,9 +30,7 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -81,9 +79,6 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
-
-    def tearDown(self):
-        pass
 
     def test_03_calcium_looping_discipline(self):
         self.name = 'Test'

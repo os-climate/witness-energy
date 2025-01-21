@@ -65,15 +65,15 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         mol_H2 = 2.0
         oxygen_data = Dioxygen.data_energy_dict
         water_needs = mol_O2 * oxygen_data['molar_mass'] / \
-                      (mol_H2 * self.inputs['data_energy_dict']['molar_mass'] *
-                       self.inputs['data_energy_dict']['calorific_value'])
+                      (mol_H2 * self.inputs['data_fuel_dict']['molar_mass'] *
+                       self.inputs['data_fuel_dict']['calorific_value'])
 
         return water_needs
 
     def compute_byproducts_production(self):
         o2_needs = self.get_oxygen_produced()
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
-                                                             self.inputs['data_energy_dict']['calorific_value'] * \
+                                                             self.inputs['data_fuel_dict']['calorific_value'] * \
                                                              self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                                                                  f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
 

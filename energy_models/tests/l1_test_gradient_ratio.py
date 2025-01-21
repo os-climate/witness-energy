@@ -57,9 +57,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.name = 'Test_Ratio'
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
@@ -78,9 +76,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
-
-    def tearDown(self):
-        pass
 
     def test_01_ratio_hydrogen_liquefaction_discipline_jacobian(self):
         '''

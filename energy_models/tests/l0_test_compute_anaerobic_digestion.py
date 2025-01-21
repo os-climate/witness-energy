@@ -30,9 +30,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_end = GlossaryEnergy.YearEndDefault
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
@@ -72,9 +70,6 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
-
-    def tearDown(self):
-        pass
 
     def test_02_biomass_gas_discipline(self):
         self.name = 'Test'

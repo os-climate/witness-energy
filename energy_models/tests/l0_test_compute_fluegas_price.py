@@ -30,9 +30,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.electricity_CoalGen_production = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -47,9 +45,6 @@ class FlueGasRatioTestCase(unittest.TestCase):
 
         self.techno_capital = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
-
-    def tearDown(self):
-        pass
 
     def test_01_fluegas_discipline(self):
         self.name = 'Test'

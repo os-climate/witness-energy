@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
@@ -52,20 +51,3 @@ class OilGen(ElectricityTechno):
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 
-    def grad_price_vs_stream_price(self):
-        '''
-        Compute the gradient of global price vs energy prices 
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        liquid_fuel_needs = self.inputs['techno_infos_dict']['fuel_demand']
-        efficiency = self.compute_efficiency()
-        return {LiquidFuel.name: np.diag(liquid_fuel_needs / efficiency)}
-
-
-    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
-                              dcapex_list_dinvest_list):
-        dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(
-            self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list)
-        elec_needs = self.get_electricity_needs()
-
-        return dprod_dinvest * (1.0 - elec_needs)

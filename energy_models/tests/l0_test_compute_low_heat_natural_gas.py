@@ -31,9 +31,7 @@ class NaturalGasTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -77,9 +75,6 @@ class NaturalGasTestCase(unittest.TestCase):
                                                 == f'{GlossaryEnergy.methane}.{GlossaryEnergy.NaturalGas}']
         # self.technologies_list = [
         #     'natural_gas_resource']
-
-    def tearDown(self):
-        pass
 
     def test_02_natural_gas_discipline(self):
         self.name = 'Test'

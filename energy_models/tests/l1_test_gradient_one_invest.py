@@ -40,9 +40,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_list = [
@@ -73,9 +71,6 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-
-    def tearDown(self):
-        pass
 
     def test_01_one_invest_analytic_grad(self):
         self.name = 'Energy'

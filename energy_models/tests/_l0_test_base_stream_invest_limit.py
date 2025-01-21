@@ -36,9 +36,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.energy_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
@@ -81,9 +79,6 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
-
-    def tearDown(self):
-        pass
 
     def test_01_low_influence_one_techno(self):
         '''

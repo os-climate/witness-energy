@@ -44,9 +44,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         cls.dirs_to_del = []
         chain_builders = []
         cls.namespace = 'MyCase'

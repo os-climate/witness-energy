@@ -15,8 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
+import autograd.numpy as np
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
@@ -115,7 +114,7 @@ class Nuclear(ElectricityTechno):
 
                 # below 1M$ investments has no influence on learning rate for capex
                 # decrease
-                if invest_sum.real < 10.0 or i == 0.0:
+                if invest_sum < 10.0 or i == 0.0:
                     capex_year = capex_init
                     # first capex calculation
                 else:
@@ -150,7 +149,7 @@ class Nuclear(ElectricityTechno):
 
                     # Check that the ratio is always above 0.95 but no strict threshold for
                     # optim is equal to 0.92 when tends to zero:
-                    if ratio_invest.real < 0.95:
+                    if ratio_invest < 0.95:
                         ratio_invest = 0.9 + \
                                        0.05 * np.exp(ratio_invest - 0.9)
                     capex_year = capex_year * ratio_invest

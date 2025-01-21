@@ -31,9 +31,7 @@ class NaturalGasTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -75,9 +73,6 @@ class NaturalGasTestCase(unittest.TestCase):
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == f'{GlossaryEnergy.methane}.{GlossaryEnergy.NaturalGas}']
-
-    def tearDown(self):
-        pass
 
     def test_02_natural_gas_discipline(self):
         self.name = 'Test'

@@ -20,13 +20,6 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.energy_models.syngas import (
-    compute_calorific_value as compute_syngas_calorific_value,
-)
-from energy_models.core.stream_type.energy_models.syngas import (
-    compute_molar_mass as compute_syngas_molar_mass,
-)
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
 )

@@ -32,9 +32,7 @@ class CCUSDiscTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -83,9 +81,6 @@ class CCUSDiscTestCase(unittest.TestCase):
             data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Gt)': 0.005})
         self.carbon_capture_from_energy_mix = pd.DataFrame(
             data={GlossaryEnergy.Years: years, 'carbon_capture from energy mix (Gt)': 1e-15})
-
-    def tearDown(self):
-        pass
 
     def test_01_CCUS_discipline(self):
 

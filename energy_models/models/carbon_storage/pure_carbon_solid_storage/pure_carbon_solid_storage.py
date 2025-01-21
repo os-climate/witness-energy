@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
-
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
     CSTechno,

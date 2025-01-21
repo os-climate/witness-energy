@@ -18,8 +18,9 @@ import math as m
 from abc import abstractmethod
 
 import autograd.numpy as np
-
-from sostrades_optimization_plugins.models.differentiable_model import DifferentiableModel
+from sostrades_optimization_plugins.models.differentiable_model import (
+    DifferentiableModel,
+)
 from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     smooth_maximum_vect,
     soft_maximum_vect,
@@ -137,8 +138,8 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{col}'] *= ratio_values
 
         self.outputs[f'applied_ratio:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'applied_ratio:limiting_input'] = limiting_input
-        self.outputs[f'applied_ratio:applied_ratio'] = ratio_values
+        self.outputs['applied_ratio:limiting_input'] = limiting_input
+        self.outputs['applied_ratio:applied_ratio'] = ratio_values
 
     def compute_capital(self):
         '''
@@ -180,7 +181,8 @@ class TechnoType(DifferentiableModel):
         if 'decommissioning_percentage' in self.inputs['techno_infos_dict']:
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory_decommissioning'] = \
                 self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'] * self.inputs['techno_infos_dict']['decommissioning_percentage']
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory'] += self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory_decommissioning']
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory'] +\
+                                                                                              self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_factory_decommissioning']
 
         # Compute and add transport
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:transport'] = self.compute_transport()
@@ -211,10 +213,12 @@ class TechnoType(DifferentiableModel):
                                                       self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:transport'] + \
                                                       self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:energy_and_resources_costs']
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_amort'] *= self.inputs[f'{GlossaryEnergy.MarginValue}:{GlossaryEnergy.MarginValue}'] / 100.0
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_amort'] += self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory']
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_amort'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_amort'] + \
+                                                                                            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory']
 
         # Add transport and CO2 taxes
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] += self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] + \
+                                                                                  self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory']
 
         if 'CO2_taxes_factory' in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoDetailedPricesValue):
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_wotaxes'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] - \
@@ -248,7 +252,8 @@ class TechnoType(DifferentiableModel):
         for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]:
             self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{resource}_needs"] * self.inputs[f"{GlossaryEnergy.ResourcesPriceValue}:{resource}"]
-            self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:Total"] += self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"]
+            self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:Total"] = self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:Total"] +\
+                                                                               self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"]
 
 
     def compute_cost_of_other_streams_usage(self):
@@ -259,7 +264,7 @@ class TechnoType(DifferentiableModel):
         for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
             self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f"{GlossaryEnergy.StreamPricesValue}:{stream}"]
-            self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] += self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"]
+            self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] = self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] + self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"]
 
 
     @abstractmethod
@@ -782,13 +787,14 @@ class TechnoType(DifferentiableModel):
         """Computes the co2 emissions due to resources usage"""
         for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]:
             self.outputs[f'CO2_emissions_detailed:{resource}'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{resource}_needs"] * self.inputs[f'{GlossaryEnergy.RessourcesCO2EmissionsValue}:{resource}']
-            self.outputs['CO2_emissions_detailed:Scope 2'] += self.outputs[f'CO2_emissions_detailed:{resource}']
+            self.outputs['CO2_emissions_detailed:Scope 2'] = self.outputs['CO2_emissions_detailed:Scope 2'] + \
+                                                             self.outputs[f'CO2_emissions_detailed:{resource}']
 
     def compute_co2_emissions_from_streams_usage(self):
         """Computes the co2 emissions due to streams usage"""
         for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
             self.outputs[f'CO2_emissions_detailed:{stream}'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{stream}']
-            self.outputs['CO2_emissions_detailed:Scope 2'] += self.outputs[f'CO2_emissions_detailed:{stream}']
+            self.outputs['CO2_emissions_detailed:Scope 2'] = self.outputs['CO2_emissions_detailed:Scope 2'] + self.outputs[f'CO2_emissions_detailed:{stream}']
 
     def compute_newly_installed_capacity_resource_consumption(self):
         """

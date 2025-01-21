@@ -30,9 +30,7 @@ class WGSPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         
         # We take biomass price of methane/5.0
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
@@ -89,9 +87,6 @@ class WGSPriceTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
         self.is_apply_resource_ratio = True
-
-    def tearDown(self):
-        pass
 
     def test_02_wgs_discipline_forH2(self):
 

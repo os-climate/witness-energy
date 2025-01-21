@@ -28,9 +28,7 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
     Resources prices test class
     """
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.name = 'Test'
         self.model_name = 'investments profile'
         self.ee = ExecutionEngine(self.name)
@@ -66,9 +64,6 @@ class TestInvestmentProfileBuilderDisc(unittest.TestCase):
             f"{self.name}.{self.model_name}.df_{i}": df_generator(self.years) for i in range(self.n_profiles)
         })
 
-        pass
-
-    def tearDown(self):
         pass
 
     def test_01_output_invest_mix(self):

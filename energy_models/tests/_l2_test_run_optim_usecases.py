@@ -26,9 +26,7 @@ class TestUseCases(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
         self.processes_repo = 'energy_models.sos_processes'
 

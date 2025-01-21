@@ -10,7 +10,7 @@ class heattechno(TechnoType):
     def compute_heat_flux(self):
         heat_flux = self.inputs['flux_input_dict']['land_rate'] / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:energy_and_resources_costs']
         self.outputs[f'heat_flux:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'heat_flux:heat_flux'] = heat_flux
+        self.outputs['heat_flux:heat_flux'] = heat_flux
 
     def compute_transport(self):
         # Electricity has no Calorific value overload

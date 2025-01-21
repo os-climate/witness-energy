@@ -31,9 +31,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.name = 'Test'
         ee_data = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.techno_mix'
@@ -53,9 +51,6 @@ class CarbonCaptureTestCase(unittest.TestCase):
         ee_data.display_treeview_nodes()
         ee_data.execute()
         self.dm_dict = ee_data.dm.get_data_dict_values()
-
-    def tearDown(self):
-        pass
 
     def test_01_carbon_capture_discipline(self):
         self.name = 'Test'

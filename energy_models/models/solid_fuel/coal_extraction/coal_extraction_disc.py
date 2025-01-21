@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import (
     SolidFuelTechnoDiscipline,
 )

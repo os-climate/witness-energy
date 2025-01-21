@@ -31,9 +31,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.override_dump_jacobian = True # let that to True
         self.name = 'Test'
         self.model_name = 'investments profile'
@@ -65,9 +63,6 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.inputs_dict.update({
             f"{self.name}.{self.model_name}.df_{i}": df_generator(self.years) for i in range(self.n_profiles)
         })
-        pass
-
-    def tearDown(self):
         pass
 
     def analytic_grad_entry(self):

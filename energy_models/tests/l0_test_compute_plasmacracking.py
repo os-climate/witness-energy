@@ -34,9 +34,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
 
         self.hydro_techno_margin = pd.DataFrame({'H2plasmacracking': [120, 115, 110],
                                                  GlossaryEnergy.Years: [2020, 2030, 2050]})

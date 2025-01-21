@@ -35,9 +35,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         
 
         # We take biomass price of methane/5.0
@@ -84,9 +82,6 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
-
-    def tearDown(self):
-        pass
 
     def test_02_liquefaction_H2_discipline(self):
 
