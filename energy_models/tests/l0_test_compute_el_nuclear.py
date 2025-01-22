@@ -56,7 +56,7 @@ class NuclearTestCase(unittest.TestCase):
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 110})
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.zeros(len(self.years))})
+            {GlossaryEnergy.Years: self.years, 'transport': self.zeros_array})
 
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 

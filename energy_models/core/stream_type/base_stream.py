@@ -233,7 +233,7 @@ class BaseStream:
             f'{self.name} {element} ({self.unit})' for element in element_list]
         element_dict = dict(zip(element_list, full_element_list))
         if exp_min:
-            prod_element, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
+            prod_element, prod_total_for_mix_weight = self.compute_total_prod(
                 self.production_by_techno, element_dict, self.min_prod)
         else:
             prod_element, prod_total_for_mix_weight = self.compute_prod_wcutoff(
@@ -277,7 +277,7 @@ class BaseStream:
 
     def compute_prod_wcutoff(self, production_by_techno, elements_dict, min_prod):
 
-        prod_total_for_mix_weight = np.zeros(len(self.years))
+        prod_total_for_mix_weight = self.zeros_array
         prod_element_dict = {}
         for key, value in elements_dict.items():
             prod_element_dict[key] = deepcopy(production_by_techno[
@@ -290,102 +290,19 @@ class BaseStream:
 
         return prod_element_dict, prod_total_for_mix_weight
 
-    def compute_dprod_wcutoff(self, production_by_techno, elements_dict, min_prod):
 
-        prod_element_dict = {}
-        dprod_element_dict = {}
+    def compute_total_prod(self, production_by_techno, elements_dict):
 
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-            dprod_element_dict[key] = np.ones(
-                len(prod_element_dict[key]))
-            dprod_element_dict[key][prod_element_dict[key]
-                                    < min_prod] = 0.0
 
-        return dprod_element_dict
-
-    def compute_prod_with_exp_min(self, production_by_techno, elements_dict, min_prod):
-        '''
-        Compute the production of each element by minimizing them with and exponential function to reach min prod
-        Objective is to decrease gradients when prod are very low 
-        Be careful the objective is to increase the total production to
-        decrease the gradient then we have to modify the sum also
-
-        BIG WARNING : there is an issue in the handling of complex number in this function that may cause small errors 
-        in gradient tests. So far, no solution has been found. This error can be reproduced by running the test on the 
-        gradients of liquid_hydrogen stream in the case of a production of techno HydrogenLiquefaction below min_prod.
-
-        elements_dict contains {Name of the prod techno or energy: full name of the column}
-        '''
-
-        prod_total_for_mix_weight = np.zeros(len(self.years))
+        total_prod = self.zeros_array
+        self.years
         prod_element_dict = {}
         for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
+            prod_element_dict[key] = deepcopy(production_by_techno[value].values)
 
-            if prod_element_dict[key].min() < min_prod:
-                # if some values are below min_prod
-                # We use the exp smoothing only on values below self.min_prod (np.minimum(prod_element, min_prod))
-                # Then we take the maximum to take prod_element if it is higher
-                # than min_prod
-                # To avoid underflow : exp(-200) is considered to be the
-                # minimum value for the exp
-                prod_element_dict[key][prod_element_dict[key]
-                                       < -200.0 * min_prod] = -200.0 * min_prod
-                prod_element_dict[key] = np.maximum(
-                    min_prod / 10.0 * (9.0 + np.exp(np.minimum(prod_element_dict[key], min_prod) / min_prod)
-                                       * np.exp(-1)), prod_element_dict[key])
+            total_prod += prod_element_dict[key]
 
-            prod_total_for_mix_weight = prod_total_for_mix_weight + \
-                                        prod_element_dict[key]
-
-        return prod_element_dict, prod_total_for_mix_weight
-
-    def compute_dprod_with_exp_min(self, production_by_techno, elements_dict, min_prod):
-
-        prod_element_dict = {}
-        dprod_element_dict = {}
-
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-            dprod_element_dict[key] = np.ones(
-                len(prod_element_dict[key]))
-            if prod_element_dict[key].min() < min_prod:
-                # To avoid underflow : exp(-200) is considered to be the
-                # minimum value for the exp
-                prod_element_dict[key][prod_element_dict[key]
-                                       < -200.0 * min_prod] = -200.0 * min_prod
-                dprod_element_dict[key][prod_element_dict[key] < min_prod] = np.exp(
-                    prod_element_dict[key][prod_element_dict[key] < min_prod] / min_prod) * np.exp(-1) / 10.0
-
-        return dprod_element_dict
-
-    def compute_grad_element_mix_vs_prod(self, production_by_techno, elements_dict, exp_min=True, min_prod=1e-3):
-        if exp_min:
-            prod_element_dict, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
-                production_by_techno, elements_dict, min_prod)
-            dprod_element_dict = self.compute_dprod_with_exp_min(
-                production_by_techno, elements_dict, min_prod)
-        else:
-            prod_element_dict, prod_total_for_mix_weight = self.compute_prod_wcutoff(
-                production_by_techno, elements_dict, min_prod)
-            dprod_element_dict = self.compute_dprod_wcutoff(
-                production_by_techno, elements_dict, min_prod)
-        grad_element_mix_vs_prod = {}
-
-        for element in elements_dict.keys():
-            grad_element_mix_vs_prod[f'{element}'] = dprod_element_dict[element] * (
-                    prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight ** 2
-            for element_other in elements_dict.keys():
-                if element_other != element:
-                    grad_element_mix_vs_prod[f'{element} {element_other}'] = -dprod_element_dict[element] * \
-                                                                             prod_element_dict[element_other] / \
-                                                                             prod_total_for_mix_weight ** 2
-
-        return grad_element_mix_vs_prod
+        return prod_element_dict, total_prod
 
     def aggregate_land_use_required(self):
         '''

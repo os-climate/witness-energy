@@ -112,7 +112,7 @@ class ElectricityJacobianTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
 
         self.transport_nul = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.zeros(len(self.years))})
+            {GlossaryEnergy.Years: self.years, 'transport': self.zeros_array})
 
         # --- resources ---
         self.resources_price = pd.DataFrame(

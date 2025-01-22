@@ -652,7 +652,7 @@ class EnergyMix(BaseStream):
 
         element_dict = dict(zip(self.energy_list, self.energy_list))
         if exp_min:
-            prod_element, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
+            prod_element, prod_total_for_mix_weight = self.compute_total_prod(
                 self.net_positive_consumable_energy_production, element_dict, self.production_threshold)
         else:
             prod_element, prod_total_for_mix_weight = self.compute_prod_wcutoff(
@@ -745,7 +745,7 @@ class EnergyMix(BaseStream):
                                              f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values / \
                                          self.syngas_prod_ref
         else:
-            self.syngas_prod_objective = np.zeros(len(self.years))
+            self.syngas_prod_objective = self.zeros_array
 
     def compute_syngas_prod_constraint(self):
         '''
@@ -756,7 +756,7 @@ class EnergyMix(BaseStream):
                 f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) / \
                                           self.syngas_prod_ref
         else:
-            self.syngas_prod_constraint = np.zeros(len(self.years))
+            self.syngas_prod_constraint = self.zeros_array
 
     def compute_all_streams_demand_ratio(self):
         '''! Computes the demand_ratio dataframe.
@@ -774,7 +774,7 @@ class EnergyMix(BaseStream):
             # consumption without ratio
             sub_cons = self.sub_consumption_woratio_dict
 
-            energy_consumption = np.zeros(len(self.years))
+            energy_consumption = self.zeros_array
             for idx, consu in sub_cons.items():
                 if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
                     energy_consumption = np.sum([energy_consumption, consu[
