@@ -1,6 +1,6 @@
-'''
+"""
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2025/01/17 Copyright 2025 Capgemini
+Modifications on 2023/03/27-2025/01/23 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from __future__ import annotations
 
@@ -25,17 +25,23 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from climateeconomics.core.tools.colormaps import available_colormaps
-from climateeconomics.core.tools.plot_factories import create_sankey_with_slider
-from climateeconomics.core.tools.plotting import InstantiatedPlotlyNativeChart
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
-    TwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
+)
+from sostrades_optimization_plugins.tools.plot_tools.colormaps import (
+    available_colormaps,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plot_factories import (
+    create_sankey_with_slider,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    InstantiatedPlotlyNativeChart,
+    TwoAxesInstanciatedChart,
 )
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -572,7 +578,11 @@ class StreamDiscipline(SoSWrapp):
             instanciated_charts.append(chart)
 
         if "Stream Flow" in charts or True:
-            new_chart = self.get_chart_sankey_fluxes(years_list, chart_name="Flow of energy streams (TWh)", split_external=True)
+            new_chart = self.get_chart_sankey_fluxes(
+                years_list,
+                chart_name=f"Flow of energy streams for {self.sos_name.split('.')[-1]} production (TWh)",
+                split_external=True,
+            )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
             instanciated_charts.append(new_chart)
 
