@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2025/01/17 Copyright 2025 Capgemini
+Modifications on 2023/04/19-2025/01/23 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from climateeconomics.core.tools.colormaps import available_colormaps
-from climateeconomics.core.tools.plot_factories import create_sankey_with_slider
-from climateeconomics.core.tools.plotting import (
-    InstantiatedPlotlyNativeChart,
-)
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import (
     AgricultureMixDiscipline,
 )
@@ -53,6 +48,15 @@ from sostrades_core.tools.post_processing.tables.instanciated_table import (
 )
 from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     get_dsmooth_dvariable,
+)
+from sostrades_optimization_plugins.tools.plot_tools.colormaps import (
+    available_colormaps,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plot_factories import (
+    create_sankey_with_slider,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    InstantiatedPlotlyNativeChart,
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
