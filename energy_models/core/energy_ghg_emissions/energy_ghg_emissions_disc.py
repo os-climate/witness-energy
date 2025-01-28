@@ -146,7 +146,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dynamic_dataframe_columns': True}
 
-                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -166,7 +166,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'namespace': 'ns_energy',
                             'dynamic_dataframe_columns': True
                         }
-                        dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
@@ -176,7 +176,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
                 if ccs_list is not None:
                     for ccs in ccs_list:
-                        dynamic_inputs[f'{ccs}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        dynamic_inputs[f'{ccs}.{GlossaryEnergy.StreamProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
@@ -242,7 +242,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     else:
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', energy),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
@@ -259,11 +259,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
@@ -282,11 +282,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
 
         dtot_co2_emissions = self.model.compute_grad_total_co2_emissions(
@@ -321,7 +321,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if col == f'{ghg} {self.model.ghg_input_unit}':
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', col),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', col),
                             np.identity(len(years)))
 
         # ------------------------------------#
@@ -341,7 +341,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_sinks', co2_emission_column),
-                        (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                        (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', energy),
                         np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
@@ -362,11 +362,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sinks', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}', last_part_key),
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(

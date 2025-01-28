@@ -38,7 +38,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
         self.prefix_name = 'EnergyMix'
         if prefix_name is not None:
@@ -100,8 +100,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = GlossaryEnergy.carbon_storage
-        ccs_name = f'{self.prefix_name}.{self.energy_name}'
+        self.stream_name = GlossaryEnergy.carbon_storage
+        ccs_name = f'{self.prefix_name}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
@@ -173,5 +173,4 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

@@ -20,7 +20,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class BiomassDryTechno(TechnoType):
-    energy_name = BiomassDry.name
+    stream_name = BiomassDry.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
@@ -31,8 +31,8 @@ class BiomassDryTechno(TechnoType):
             density_per_ha = density_per_ha * self.techno_infos_dict['density']
 
         self.land_use[f'{self.name} (Gha)'] = \
-            self.production_detailed[f'{self.energy_name} ({self.product_unit})'] / \
-            self.data_energy_dict['calorific_value'] / \
+            self.production_detailed[f'{self.stream_name} ({self.product_unit})'] / \
+            self.inputs['data_fuel_dict']['calorific_value'] / \
             density_per_ha
 
         # if the techno has a percentage for production

@@ -69,7 +69,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = GlossaryEnergy.electricity
+    stream_name = GlossaryEnergy.electricity
     DESC_OUT = {}
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
@@ -89,35 +89,13 @@ class ElectricityDiscipline(EnergyDiscipline):
         return dynamic_inputs, dynamic_outputs
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = Electricity(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
-
-    def run(self):
-        '''
-        Run for all energy disciplines
-        '''
-
-        EnergyDiscipline.run(self)
-        # -- get inputs
-        if Electricity.hydropower_name in self.energy_model.subelements_list:
-            self.energy_model.compute_hydropower_constraint()
-
-            outputs_dict = {'prod_hydropower_constraint': self.energy_model.hydropower_constraint
-                            }
-        else:
-            outputs_dict = {}
-        
-        self.store_sos_outputs_values(outputs_dict)
+        self.model = Electricity(self.stream_name)
 
     def get_chart_filter_list(self):
 
         chart_filters = EnergyDiscipline.get_chart_filter_list(self)
-        chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
-                      'Consumption and production', 'Constraints']
-
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters[0].filter_values.append("Constraints")
+        chart_filters[0].selected_values.append("Constraints")
 
         return chart_filters
 

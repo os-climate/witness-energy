@@ -58,4 +58,4 @@ class KeroseneTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = Kerosene.name
+    stream_name = Kerosene.name

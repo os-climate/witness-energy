@@ -89,7 +89,7 @@ class CoElectrolysis(SyngasTechno):
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Dioxygen.name} ({GlossaryEnergy.mass_unit})'] = o2_production / \
                                                                           self.inputs['data_energy_dict']['calorific_value'] * \
                                                                           self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                              f'{SyngasTechno.energy_name} ({self.product_unit})']
+                                                                              f'{SyngasTechno.stream_name} ({self.product_unit})']
 
     def get_h2o_production(self):
         """

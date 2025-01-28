@@ -19,7 +19,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CSTechno(TechnoType):
-    energy_name = GlossaryEnergy.carbon_storage
+    stream_name = GlossaryEnergy.carbon_storage
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

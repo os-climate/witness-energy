@@ -56,5 +56,5 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
         # Consumption
         self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{CleanEnergy.name} ({self.energy_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] * \
                                                                                 self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
-                                                                                  f'{CCTechno.energy_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
+                                                                                  f'{CCTechno.stream_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
             self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])

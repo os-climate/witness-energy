@@ -60,4 +60,4 @@ class GaseousHydrogenTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = GaseousHydrogen.name
+    stream_name = GaseousHydrogen.name

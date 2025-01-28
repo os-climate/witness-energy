@@ -44,7 +44,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HefaDeoxygenation
-    energy_name = HydrotreatedOilFuel.name
+    stream_name = HydrotreatedOilFuel.name
     # Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017.
     # Techno-economic and resource analysis of hydroprocessed renewable jet fuel.
     # Biotechnology for biofuels, 10(1), pp.1-16.

@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -33,17 +28,24 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class LiquidHydrogenJacobianTestCase(unittest.TestCase):
+class LiquidHydrogenJacobianTestCase(GenericDisciplinesTestClass):
     """LiquidHydrogen jacobian test class"""
 
     def setUp(self):
         self.name = 'Test'
-        self.energy_name = GlossaryEnergy.liquid_hydrogen
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
+        self.stream_name = GlossaryEnergy.liquid_hydrogen
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
-
+        self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                        'ns_energy_study': f'{self.name}',
+                        'ns_hydrogen': f'{self.name}',
+                        'ns_liquid_hydrogen': f'{self.name}',
+                        'ns_resource': f'{self.name}'}
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
@@ -105,7 +107,7 @@ class LiquidHydrogenJacobianTestCase(unittest.TestCase):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-    def get_inputs_dicts(self):
+    def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
@@ -125,23 +127,5 @@ class LiquidHydrogenJacobianTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
     def test_01_hydrogen_liquefaction_jacobian(self):
-
         self.model_name = 'hydrogen_liquefaction'
-        self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_hydrogen': f'{self.name}',
-                   'ns_liquid_hydrogen': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-
-        discipline_test_function(
-            module_path='energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc.HydrogenLiquefactionDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc.HydrogenLiquefactionDiscipline'

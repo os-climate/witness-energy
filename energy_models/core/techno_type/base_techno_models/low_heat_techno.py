@@ -19,4 +19,4 @@ from energy_models.core.techno_type.base_techno_models.heat_techno import heatte
 
 
 class lowheattechno(heattechno):
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name

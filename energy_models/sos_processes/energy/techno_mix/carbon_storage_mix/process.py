@@ -41,7 +41,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
 
         carbon_storage_name = GlossaryEnergy.carbon_storage
-        carbon_storage = PureCarbonSS.energy_name
+        carbon_storage = PureCarbonSS.stream_name
         energy_mix = 'EnergyMix'
         func_manager_name = "FunctionManagerDisc"
 

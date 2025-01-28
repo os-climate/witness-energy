@@ -46,14 +46,14 @@ class MediumHeatDiscipline(EnergyDiscipline):
                                   'namespace': 'ns_heat_medium', 'default': mediumtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    energy_name = mediumtemperatureheat.name
+    stream_name = mediumtemperatureheat.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = mediumtemperatureheat(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = mediumtemperatureheat(self.stream_name)
+
 
     # def setup_sos_disciplines(self):
     #     '''

@@ -50,14 +50,14 @@ class HighHeatDiscipline(EnergyDiscipline):
                #                    'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    energy_name = hightemperatureheat.name
+    stream_name = hightemperatureheat.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = hightemperatureheat(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = hightemperatureheat(self.stream_name)
+
 
     # def setup_sos_disciplines(self):
     #     '''

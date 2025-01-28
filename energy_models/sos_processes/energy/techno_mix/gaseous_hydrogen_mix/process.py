@@ -45,7 +45,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
 
         gaseous_hydrogen_name = GaseousHydrogen.name
-        carbon_storage = PureCarbonSS.energy_name
+        carbon_storage = PureCarbonSS.stream_name
         energy_mix = 'EnergyMix'
         ns_dict = {'ns_hydrogen': f'{ns_study}.{energy_mix}.{gaseous_hydrogen_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',

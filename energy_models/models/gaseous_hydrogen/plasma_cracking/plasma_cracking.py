@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import autograd.numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -44,8 +43,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Add a percentage to the total price
         (for plasma cracking case we take only a percentage because the techno also creates graphene)
         '''
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] *= self.outputs[f'percentage_resource:{self.energy_name}'] / 100.
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_wotaxes'] *= self.outputs[f'percentage_resource:{self.energy_name}'] / 100.
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] *= self.outputs[f'percentage_resource:{self.stream_name}'] / 100.
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_wotaxes'] *= self.outputs[f'percentage_resource:{self.stream_name}'] / 100.
 
     def compute_other_streams_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
@@ -56,7 +55,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         C_per_h2 = self.get_theoretical_solid_carbon_production()
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] = \
-            C_per_h2 * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
+            C_per_h2 * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
     def get_theoretical_solid_carbon_production(self):
         ''' 
@@ -107,7 +106,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
             self.temp_variables['quantity:carbon_sales_revenues'] + \
             self.temp_variables['quantity:carbon_storage_revenues']
 
-        self.outputs[f'percentage_resource:{GaseousHydrogenTechno.energy_name}'] = \
+        self.outputs[f'percentage_resource:{GaseousHydrogenTechno.stream_name}'] = \
             self.temp_variables['quantity:hydrogen_sales_revenues'] / \
             self.outputs['percentage_resource:total_revenues'] * 100.
 
@@ -115,17 +114,17 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''Carbon storage for carbon production higher than carbon demand'''
         self.temp_variables[f'quantity:{GlossaryEnergy.Years}'] = self.years
         self.temp_variables['quantity:carbon_production'] = self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] * 1e3
-        self.temp_variables['quantity:hydrogen_production'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * 1e3
+        self.temp_variables['quantity:hydrogen_production'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{GaseousHydrogenTechno.stream_name} ({EnergyType.unit})'] * 1e3
         self.temp_variables['quantity:carbon_demand'] = self.inputs['market_demand:carbon_demand']
         self.temp_variables['quantity:CO2_credits'] = self.inputs['CO2_credits:CO2_credits']
-        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.StreamPricesValue}:{GaseousHydrogenTechno.energy_name}']
+        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.StreamPricesValue}:{GaseousHydrogenTechno.stream_name}']
         self.temp_variables['quantity:carbon_price'] = ResourceGlossary.Carbon['price']
         self.temp_variables['quantity:is_prod_inf_demand'] = False
         self.temp_variables['quantity:is_storage_inf_storage_max'] = False
 
-        self.temp_variables['quantity:carbon_sales'] = (self.temp_variables['quantity:carbon_production'] - np.maximum(
+        self.temp_variables['quantity:carbon_sales'] = (self.temp_variables['quantity:carbon_production'] - self.np.maximum(
             (self.temp_variables['quantity:carbon_production'] - self.temp_variables['quantity:carbon_demand']), 0.))
-        self.temp_variables[f'quantity:{GlossaryEnergy.carbon_storage}'] = np.maximum(
+        self.temp_variables[f'quantity:{GlossaryEnergy.carbon_storage}'] = self.np.maximum(
             (self.temp_variables['quantity:carbon_production'] - self.temp_variables['quantity:carbon_demand']), 0.)
 
         self.temp_variables['quantity:carbon_sales_revenues'] = self.temp_variables['quantity:carbon_sales'] * \

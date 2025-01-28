@@ -43,6 +43,8 @@ class EnergyDiscipline(StreamDiscipline):
         'icon': '',
         'version': '',
     }
+
+    unit = "TWh"
     DESC_IN = {GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
                }
     DESC_IN.update(StreamDiscipline.DESC_IN)
@@ -58,7 +60,7 @@ class EnergyDiscipline(StreamDiscipline):
     DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
     _maturity = 'Research'
-    energy_name = 'energy'
+    stream_name = 'energy'
 
     def add_additionnal_dynamic_variables(self):
         dynamic_inputs = {}
@@ -89,97 +91,13 @@ class EnergyDiscipline(StreamDiscipline):
             techno for techno in short_technos_list if techno in possible_technos]
         return possible_short_technos_list
 
-    def run(self):
-        '''
-        Run for all energy disciplines
-        '''
-
-        StreamDiscipline.run(self)
-        # -- get inputs
-
-        CO2_emissions = self.energy_model.compute_carbon_emissions()
-
-        ghg_per_use = self.energy_model.compute_ghg_emissions_per_use()
-
-        outputs_dict = {GlossaryEnergy.CO2EmissionsValue: CO2_emissions}
-
-        outputs_dict.update(ghg_per_use)
-        
-        self.store_sos_outputs_values(outputs_dict)
-
-    def compute_sos_jacobian(self):
-
-        StreamDiscipline.compute_sos_jacobian(self)
-
-        inputs_dict = self.get_sosdisc_inputs()
-        outputs_dict = self.get_sosdisc_outputs()
-        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
-                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
-        technos_list = inputs_dict[GlossaryEnergy.techno_list]
-        mix_weight = outputs_dict['techno_mix']
-        for techno in technos_list:
-            list_columnstechnoprod = list(
-                inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'].columns)
-
-            mix_weight_techno = mix_weight[techno].values / 100.0
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.energy_name),
-                (f'{techno}.{GlossaryEnergy.CO2EmissionsValue}', techno),
-                np.diag(outputs_dict['techno_mix'][techno].values / 100))
-
-            for column_name in list_columnstechnoprod:
-                if column_name.startswith(self.energy_name):
-                    # The mix_weight_techno is zero means that the techno is negligible else we do nothing
-                    # np.sign gives 0 if zero and 1 if value so it suits well
-                    # with our needs
-                    #                     grad_techno_mix_vs_prod = (
-                    #                         outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values -
-                    #                         inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'][column_name].values
-                    #                     ) / outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values**2
-                    grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[techno]
-                    grad_techno_mix_vs_prod = grad_techno_mix_vs_prod * \
-                                              np.sign(mix_weight_techno)
-
-                    grad_co2_vs_prod = inputs_dict[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'][techno].values * \
-                                       grad_techno_mix_vs_prod
-
-                    for techno_other in technos_list:
-                        if techno_other != techno:
-                            mix_weight_techno_other = mix_weight[techno_other].values / 100.0
-                            #                             grad_co2_vs_prod += -inputs_dict[f'{techno_other}.{GlossaryEnergy.CO2EmissionsValue}'][techno_other].values * \
-                            #                                 mix_weight_techno_other / \
-                            #                                 outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values
-                            grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[
-                                f'{techno} {techno_other}']
-                            grad_techno_mix_vs_prod = grad_techno_mix_vs_prod * \
-                                                      np.sign(mix_weight_techno_other)
-                            grad_co2_vs_prod += inputs_dict[f'{techno_other}.{GlossaryEnergy.CO2EmissionsValue}'][
-                                                    techno_other].values * grad_techno_mix_vs_prod
-                    self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.CO2EmissionsValue, self.energy_name),
-                        (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', column_name),
-                        inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_co2_vs_prod)
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Energy price',
-                      GlossaryEnergy.Capital,
-                      'Technology mix',
-                      'CO2 emissions',
-                      'Consumption and production']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = StreamDiscipline.get_chart_filter_list(self)
+        chart_filters[0].filter_values.append('CO2 emissions')
+        chart_filters[0].selected_values.append('CO2 emissions')
 
-        price_unit_list = ['$/MWh', '$/t']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
-
-        year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-        years = list(np.arange(year_start, year_end + 1, 5))
-        chart_filters.append(ChartFilter(
-            'Years for techno mix', years, [year_start, year_end], GlossaryEnergy.Years))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -210,7 +128,7 @@ class EnergyDiscipline(StreamDiscipline):
 
     def get_chart_comparison_carbon_intensity(self):
         new_charts = []
-        chart_name = f'Comparison of carbon intensity due to production<br>of {self.energy_name} technologies'
+        chart_name = f'Comparison of carbon intensity due to production<br>of {self.stream_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
@@ -219,13 +137,13 @@ class EnergyDiscipline(StreamDiscipline):
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
-            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
-            emission_list = techno_emissions[technology].values.tolist()
+            year_list = techno_emissions[GlossaryEnergy.Years]
+            emission_list = techno_emissions[technology]
             serie = InstanciatedSeries(
                 year_list, emission_list, technology, 'lines')
             new_chart.series.append(serie)
         new_charts.append(new_chart)
-        chart_name = f'Comparison of carbon intensity for {self.energy_name} technologies (production + use)'
+        chart_name = f'Comparison of carbon intensity for {self.stream_name} technologies (production + use)'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
@@ -235,11 +153,11 @@ class EnergyDiscipline(StreamDiscipline):
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
-            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
-            emission_list = techno_emissions[technology].values + \
+            year_list = techno_emissions[GlossaryEnergy.Years]
+            emission_list = techno_emissions[technology] + \
                             co2_per_use[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
-                year_list, emission_list.tolist(), technology, 'lines')
+                year_list, emission_list, technology, 'lines')
             new_chart.series.append(serie)
 
         new_charts.append(new_chart)
@@ -247,34 +165,24 @@ class EnergyDiscipline(StreamDiscipline):
 
     def get_chart_co2_emissions(self):
         new_charts = []
-        chart_name = f'Comparison of CO2 emissions due to production and use<br>of {self.energy_name} technologies'
+        chart_name = f'Comparison of CO2 emissions due to production and use<br>of {self.stream_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions (Mt)', chart_name=chart_name, stacked_bar=True)
 
         technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
-        co2_per_use = self.get_sosdisc_outputs(
-            GlossaryEnergy.CO2PerUse)
+        co2_per_use = self.get_sosdisc_outputs(GlossaryEnergy.CO2PerUse)
 
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
-            'scaling_factor_energy_production')
+        stream_production = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)
         for technology in technology_list:
-            techno_emissions = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
-            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
-            emission_list = techno_emissions[technology].values * \
-                            energy_production[self.energy_name].values * \
-                            scaling_factor_energy_production
-            serie = InstanciatedSeries(
-                year_list, emission_list.tolist(), technology, 'bar')
+            techno_emissions = self.get_sosdisc_inputs(f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
+            year_list = techno_emissions[GlossaryEnergy.Years]
+            emission_list = techno_emissions[technology] * stream_production[f"{self.stream_name} ({self.unit})"] * 1e3
+            serie = InstanciatedSeries(year_list, emission_list, technology, 'bar')
             new_chart.series.append(serie)
 
-        co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse].values * \
-                      energy_production[self.energy_name].values * \
-                      scaling_factor_energy_production
-        serie = InstanciatedSeries(
-            year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
+        co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse] * stream_production[f"{self.stream_name} ({self.unit})"] * 1e3
+        serie = InstanciatedSeries(year_list, co2_per_use, 'CO2 from use of brut production', 'bar')
         new_chart.series.append(serie)
         new_charts.append(new_chart)
 

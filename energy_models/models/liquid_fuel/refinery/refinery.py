@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import autograd.numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
@@ -73,7 +72,7 @@ class Refinery(LiquidFuelTechno):
         Configure energy data by reading the data_energy_dict in the right Energy class
         Overloaded for each energy type
         '''
-        self.data_energy_dict = self.inputs['data_fuel_dict']
+        self.inputs['data_fuel_dict'] = self.inputs['data_fuel_dict']
         self.other_energy_dict = self.inputs['other_fuel_dict']
 
     def compute_resources_needs(self):
@@ -90,7 +89,7 @@ class Refinery(LiquidFuelTechno):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
             self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{energy} ({self.product_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                     f'{self.energy_name} ({self.product_unit})'] * \
+                                                                                     f'{self.stream_name} ({self.product_unit})'] * \
                                                                                  self.inputs['techno_infos_dict'][
                                                                                      'product_break_down'][
                                                                                      energy] / 11.66 * \
@@ -102,7 +101,7 @@ class Refinery(LiquidFuelTechno):
                                                                                         self.inputs['data_fuel_dict'][
                                                                                             'calorific_value'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{LiquidFuelTechno.stream_name} ({self.product_unit})']
         '''
         Method to compute CH4 emissions from gas production
         The proposed V0 only depends on production.
@@ -117,7 +116,7 @@ class Refinery(LiquidFuelTechno):
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
                                                                                   self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                      f'{LiquidFuelTechno.energy_name} ({self.product_unit})']
+                                                                                      f'{LiquidFuelTechno.stream_name} ({self.product_unit})']
 
     def compute_new_installations_production_capacity(self):
         '''
@@ -125,15 +124,15 @@ class Refinery(LiquidFuelTechno):
         Add a delay for factory construction
         '''
 
-        years_before_year_start = np.arange(self.year_start - self.inputs[GlossaryEnergy.ConstructionDelay], self.year_start)
+        years_before_year_start = self.np.arange(self.year_start - self.inputs[GlossaryEnergy.ConstructionDelay], self.year_start)
         invest_before_year_start = self.inputs[f'{GlossaryEnergy.InvestmentBeforeYearStartValue}:{GlossaryEnergy.InvestValue}']
         capex_after_year_start = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}']
         capex_year_start = capex_after_year_start[0]
-        capexes_before_year_start = np.array([capex_year_start] * len(years_before_year_start))
+        capexes_before_year_start = self.np.array([capex_year_start] * len(years_before_year_start))
 
         invest_after_year_start = self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}']
-        invests_period_of_interest = np.concatenate([invest_before_year_start, invest_after_year_start])
-        capex_period_of_interest = np.concatenate([capexes_before_year_start, capex_after_year_start])
+        invests_period_of_interest = self.np.concatenate([invest_before_year_start, invest_after_year_start])
+        capex_period_of_interest = self.np.concatenate([capexes_before_year_start, capex_after_year_start])
         new_installations_production_capacity = invests_period_of_interest / (capex_period_of_interest + self.oil_extraction_capex)
 
         # keep only prod for years >= year_start and <= year_end

@@ -58,6 +58,6 @@ class FossilTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = Fossil.name
+    stream_name = Fossil.name
 
     

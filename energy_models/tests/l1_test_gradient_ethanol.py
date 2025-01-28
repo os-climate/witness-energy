@@ -14,35 +14,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 import warnings
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc import (
-    BiomassFermentationDiscipline,
-)
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 warnings.filterwarnings("ignore")
 
 
-class EthanolJacobianCase(unittest.TestCase):
+class EthanolJacobianCase(GenericDisciplinesTestClass):
     """Ethanol Fuel jacobian test class"""
 
     def setUp(self):
+        self.stream_name = 'ethanol'
         self.name = 'Test'
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                         'ns_energy_study': f'{self.name}',
                         'ns_ethanol': f'{self.name}',
@@ -51,7 +48,6 @@ class EthanolJacobianCase(unittest.TestCase):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.years = years
-        self.energy_name = 'ethanol'
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 135.,
              GlossaryEnergy.biomass_dry: 45.0,
@@ -88,18 +84,8 @@ class EthanolJacobianCase(unittest.TestCase):
                 f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),}
 
+
     def test_01_biomass_fermentation_discipline_analytic_grad(self):
         self.model_name = 'BiomassFermentation'
-        discipline_test_function(
-            module_path='energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc.BiomassFermentationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc.BiomassFermentationDiscipline'
 

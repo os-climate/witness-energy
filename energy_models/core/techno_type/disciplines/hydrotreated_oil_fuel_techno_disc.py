@@ -60,4 +60,4 @@ class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = HydrotreatedOilFuel.name
+    stream_name = HydrotreatedOilFuel.name

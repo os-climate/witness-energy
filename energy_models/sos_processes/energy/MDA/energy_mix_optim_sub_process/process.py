@@ -55,7 +55,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         func_manager_name = "FunctionsManager"
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
-        carbon_storage = PureCarbonSS.energy_name
+        carbon_storage = PureCarbonSS.stream_name
 
         builder_list = []
 

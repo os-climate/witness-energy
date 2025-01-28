@@ -91,7 +91,7 @@ class AutothermalReforming(SyngasTechno):
 
         # total H2O production
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
+                                                                           f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
                                                                        H2Oprod
 
     def get_h2o_production(self):

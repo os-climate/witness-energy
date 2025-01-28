@@ -42,7 +42,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.Transesterification
-    energy_name = BioDiesel.name
+    stream_name = BioDiesel.name
 
     # use biodiesel calorific value to compute co2 from production
 

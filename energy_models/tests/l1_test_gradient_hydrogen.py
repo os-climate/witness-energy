@@ -15,17 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -33,14 +27,17 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class HydrogenJacobianTestCase(unittest.TestCase):
+class HydrogenJacobianTestCase(GenericDisciplinesTestClass):
     """Hydrogen jacobian test class"""
     def setUp(self):
         
         self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
 
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -49,7 +46,7 @@ class HydrogenJacobianTestCase(unittest.TestCase):
                    GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name,
                    'ns_resource': f'{self.name}'}
-        self.energy_name = GlossaryEnergy.hydrogen
+        self.stream_name = GlossaryEnergy.hydrogen
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.years = years
@@ -180,7 +177,6 @@ class HydrogenJacobianTestCase(unittest.TestCase):
         resource_ratio_dict[GlossaryEnergy.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
-
     def get_inputs_dict(self):
         return {
             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
@@ -203,112 +199,28 @@ class HydrogenJacobianTestCase(unittest.TestCase):
                f'{self.name}.is_stream_demand': True,
                f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                }
-
     def test_01_wgs_jacobian(self):
-
         self.model_name = 'WGS'
-
-        discipline_test_function(
-            module_path='energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc.WaterGasShiftDiscipline'
 
     def test_02_plasma_cracking_jacobian(self):
-
         self.model_name = 'plasma_cracking'
-
-        discipline_test_function(
-            module_path='energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc.PlasmaCrackingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking_disc.PlasmaCrackingDiscipline'
 
 
     def test_03_electrolysis_PEMjacobian(self):
-
         self.model_name = 'PEM'
-
-        discipline_test_function(
-            module_path='energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc.ElectrolysisPEMDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc.ElectrolysisPEMDiscipline'
 
     def test_04_electrolysis_SOEC_jacobian(self):
-
         self.model_name = 'SOEC'
-
-        discipline_test_function(
-            module_path='energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc.ElectrolysisSOECDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc.ElectrolysisSOECDiscipline'
 
     def test_05_electrolysis_AWE_jacobian(self):
-
         self.model_name = 'AWE'
-
-        discipline_test_function(
-            module_path='energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc.ElectrolysisAWEDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc.ElectrolysisAWEDiscipline'
 
 
     def test_06_hydrogen_jacobian(self):
-
         self.model_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
-
-        discipline_test_function(
-            module_path='energy_models.core.stream_type.energy_disciplines.gaseous_hydrogen_disc.GaseousHydrogenDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'hydrogen_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.core.stream_type.energy_disciplines.gaseous_hydrogen_disc.GaseousHydrogenDiscipline'

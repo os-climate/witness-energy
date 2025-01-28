@@ -17,9 +17,11 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
+)
+from sostrades_optimization_plugins.tools.discipline_tester import (
+    discipline_test_function,
 )
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -28,7 +30,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
 class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
@@ -47,7 +48,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                         'ns_fossil': self.name,
                         'ns_resource': self.name}
 
-        self.energy_name = GlossaryEnergy.FossilSimpleTechno
+        self.stream_name = GlossaryEnergy.FossilSimpleTechno
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.resource_list = [
@@ -111,7 +112,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
             inputs_dict=self.get_inputs_dict(),
             namespaces_dict=self.ns_dict,
             pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
+            pickle_name=f'{self.stream_name}_{self.model_name}.pkl',
             override_dump_jacobian=False
         )
 

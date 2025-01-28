@@ -40,7 +40,7 @@ class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CHPLowHeat
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237

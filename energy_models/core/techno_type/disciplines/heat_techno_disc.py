@@ -136,7 +136,7 @@ class LowHeatTechnoDiscipline(HeatTechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name
 
 
 
@@ -176,7 +176,7 @@ class MediumHeatTechnoDiscipline(HeatTechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = mediumtemperatureheat.name
+    stream_name = mediumtemperatureheat.name
 
 
 
@@ -219,7 +219,7 @@ class HighHeatTechnoDiscipline(HeatTechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = hightemperatureheat.name
+    stream_name = hightemperatureheat.name
 
 
 

@@ -21,7 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilTechno(TechnoType):
-    energy_name = Fossil.name
+    stream_name = Fossil.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload

@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import autograd.numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -59,13 +58,13 @@ class RWGS(SyngasTechno):
         Overload the check_capex_unity for this particular model 
         '''
         data_config = self.inputs['techno_infos_dict']
-        capex_list = np.array(data_config['Capex_init_vs_CO_H2_ratio'])
+        capex_list = self.np.array(data_config['Capex_init_vs_CO_H2_ratio'])
 
         # input power was in mol/h
         # We multiply by molar mass and calorific value of the paper to get
         # input power in kW
 
-        final_syngas_ratio = np.array(data_config['CO_H2_ratio'])
+        final_syngas_ratio = self.np.array(data_config['CO_H2_ratio'])
 
         # molar mass is in g/mol !!
         syngas_molar_mass = compute_syngas_molar_mass(final_syngas_ratio)
@@ -73,7 +72,7 @@ class RWGS(SyngasTechno):
             final_syngas_ratio)
 
         # Available power is now in kW
-        self.available_power = np.array(
+        self.available_power = self.np.array(
             data_config['available_power']) * syngas_molar_mass / 1000.0 * syngas_calorific_value
         # Need to convertcapex_list in $/kWh
         capex_list = capex_list / self.available_power / \
@@ -103,7 +102,7 @@ class RWGS(SyngasTechno):
 
         elec_demand = self.inputs['techno_infos_dict']['elec_demand'] / \
                       self.available_power / self.inputs['techno_infos_dict']['full_load_hours']
-        final_syngas_ratio = np.array(self.inputs['techno_infos_dict']['CO_H2_ratio'])
+        final_syngas_ratio = self.np.array(self.inputs['techno_infos_dict']['CO_H2_ratio'])
         initial_syngas_ratio = 0.0
         delta_syngas_ratio = final_syngas_ratio - initial_syngas_ratio
 
@@ -136,7 +135,7 @@ class RWGS(SyngasTechno):
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = th_water_prod * \
                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})']
+                                                                           f'{SyngasTechno.stream_name} ({self.product_unit})']
 
     def compute_streams_consumption(self):
         """
@@ -147,7 +146,7 @@ class RWGS(SyngasTechno):
         super().compute_streams_consumption()
 
         self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
-                                                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{SyngasTechno.energy_name} ({self.product_unit})']  # in kg
+                                                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

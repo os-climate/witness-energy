@@ -39,7 +39,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HeatPumpLowHeat
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name
 
 
     # https://www.energy.gov/energysaver/heat-pump-systems

@@ -49,12 +49,12 @@ class CleanEnergyDiscipline(EnergyDiscipline):
 
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = CleanEnergy.name
+    stream_name = CleanEnergy.name
     DESC_OUT = {}
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = CleanEnergy(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = CleanEnergy(self.stream_name)
+

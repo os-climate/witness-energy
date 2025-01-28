@@ -72,7 +72,7 @@ class TradesDiscipline(SoSWrapp):
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.co2_emissions'] = {
                         'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
                     inputs[
-                        f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.StreamProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
                 self.add_inputs(inputs)
@@ -133,7 +133,7 @@ class TradesDiscipline(SoSWrapp):
                 if input.endswith('co2_emissions'):
                     CO2_emissions[input.split('.')[0]] = list(
                         value[value[GlossaryEnergy.Years] == year_end]['Total CO2 emissions'].values)[0] * 1.0e6
-                elif input.endswith(GlossaryEnergy.EnergyProductionValue):
+                elif input.endswith(GlossaryEnergy.StreamProductionValue):
                     energy_production[input.split('.')[0]] = list(
                         value[value[GlossaryEnergy.Years] == year_end]['Total production'].values)[
                                                                  0] * 1.0e6 * scaling_factor_energy_production

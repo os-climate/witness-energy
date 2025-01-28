@@ -20,7 +20,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityTechno(TechnoType):
-    energy_name = GlossaryEnergy.electricity
+    stream_name = GlossaryEnergy.electricity
 
     def compute_transport(self):
         # Electricity has no Calorific value overload

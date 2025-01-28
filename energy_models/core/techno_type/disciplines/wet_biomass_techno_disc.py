@@ -58,4 +58,4 @@ class WetBiomassTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = WetBiomass.name
+    stream_name = WetBiomass.name

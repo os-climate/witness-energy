@@ -42,7 +42,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CO2Hydrogenation
-    energy_name = Methanol.name
+    stream_name = Methanol.name
 
     # energy data
     methanol_density = Methanol.data_energy_dict['density']

@@ -231,7 +231,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamProductionValue}',
                              f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective',
                              f'{self.name}.FunctionManagerDisc.co2_emissions_objective',
@@ -395,7 +395,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamProductionValue}',
                              f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective',
                              f'{self.name}.FunctionManagerDisc.co2_emissions_objective',

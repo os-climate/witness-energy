@@ -14,14 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_optimization_plugins.tools.discipline_tester import (
-    discipline_test_function,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -32,13 +29,17 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class ElectricityJacobianTestCase(unittest.TestCase):
+class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
     """Electricity jacobian test class"""
 
     def setUp(self):
 
         self.name = "Test"
-        self.energy_name = GlossaryEnergy.electricity
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
+        self.stream_name = GlossaryEnergy.electricity
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
 
@@ -112,7 +113,7 @@ class ElectricityJacobianTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
 
         self.transport_nul = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': self.zeros_array})
+            {GlossaryEnergy.Years: self.years, 'transport': 0.})
 
         # --- resources ---
         self.resources_price = pd.DataFrame(
@@ -143,7 +144,7 @@ class ElectricityJacobianTestCase(unittest.TestCase):
                         'ns_electricity': self.name,
                         'ns_resource': f'{self.name}'}
 
-    def get_inputs_dicts(self):
+    def get_inputs_dict(self):
         return {
             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
@@ -163,257 +164,56 @@ class ElectricityJacobianTestCase(unittest.TestCase):
             f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
         }
 
-
     def test_01_combined_cycle_gas_turbine_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'cc_gas_turbine'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc.CombinedCycleGasTurbineDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc.CombinedCycleGasTurbineDiscipline'
 
 
     def test_02_geothermal_discipline_analytic_grad(self):
-        self.name = 'Test'
         self.model_name = 'geothermal_high_heat'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.geothermal.geothermal_disc.GeothermalDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.geothermal.geothermal_disc.GeothermalDiscipline'
 
 
     def test_03_hydropower_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'hydropower'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.hydropower.hydropower_disc.HydropowerDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.hydropower.hydropower_disc.HydropowerDiscipline'
 
     def test_04_coal_gen_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'coal_gen'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.coal_gen.coal_gen_disc.CoalGenDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.coal_gen.coal_gen_disc.CoalGenDiscipline'
 
     def test_05_gas_turbine_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'gas_turbine'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc.GasTurbineDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc.GasTurbineDiscipline'
 
     def test_06_wind_on_shore_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'wind_on_shore'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.wind_onshore.wind_onshore_disc.WindOnshoreDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.wind_onshore.wind_onshore_disc.WindOnshoreDiscipline'
 
     def test_07_wind_off_shore_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'wind_off_shore'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.wind_offshore.wind_offshore_disc.WindOffshoreDiscipline'
 
     def test_08_solar_thermal_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'solar_thermal'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.solar_thermal.solar_thermal_disc.SolarThermalDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.solar_thermal.solar_thermal_disc.SolarThermalDiscipline'
 
     def test_09_solar_pv_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'solar_pv'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.solar_pv.solar_pv_disc.SolarPvDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.solar_pv.solar_pv_disc.SolarPvDiscipline'
 
     def test_10_nuclear_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'nuclear'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.nuclear.nuclear_disc.NuclearDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.nuclear.nuclear_disc.NuclearDiscipline'
 
     def test_11_biogas_fired_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'biogas_fired'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.gas.biogas_fired.biogas_fired_disc.BiogasFiredDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.gas.biogas_fired.biogas_fired_disc.BiogasFiredDiscipline'
 
     def test_12_biomass_fired_discipline_analytic_grad(self):
-
         self.model_name = 'biomass_fired'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.biomass_fired.biomass_fired_disc.BiomassFiredDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.electricity.biomass_fired.biomass_fired_disc.BiomassFiredDiscipline'
 
     def test_13_oil_gen_discipline_analytic_grad(self):
-
-        self.name = 'Test'
         self.model_name = 'oil_gen'
-
-        discipline_test_function(
-            module_path='energy_models.models.electricity.oil_gen.oil_gen_disc.OilGenDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'elecricity_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
-
-
-if '__main__' == __name__:
-    cls = ElectricityJacobianTestCase()
-    cls.setUp()
-    # cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()
-    # cls.test_02_geothermal_discipline_analytic_grad()
-    # cls.test_03_hydropower_discipline_analytic_grad()
-    # cls.test_04_coal_gen_discipline_analytic_grad()
-    # cls.test_05_gas_turbine_discipline_analytic_grad()
-    # cls.test_06_wind_on_shore_discipline_analytic_grad()
-    # cls.test_07_wind_off_shore_discipline_analytic_grad()
-    # cls.test_08_solar_thermal_discipline_analytic_grad()
-    # cls.test_09_solar_pv_discipline_analytic_grad()
-    # cls.test_10_nuclear_discipline_analytic_grad()
-    # cls.test_11_biogas_fired_discipline_analytic_grad()
-    # cls.test_12_biomass_fired_discipline_analytic_grad()
-    # cls.test_13_oil_gen_discipline_analytic_grad()
-    cls.test_14_electricity_discipline_jacobian()
+        self.mod_path = 'energy_models.models.electricity.oil_gen.oil_gen_disc.OilGenDiscipline'

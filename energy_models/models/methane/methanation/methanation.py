@@ -43,7 +43,7 @@ class Methanation(MethaneTechno):
 
         # total H2O production
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                           f'{MethaneTechno.energy_name} ({self.product_unit})'] * \
+                                                                           f'{MethaneTechno.stream_name} ({self.product_unit})'] * \
                                                                        H2Oprod
 
     def get_h2o_production(self):

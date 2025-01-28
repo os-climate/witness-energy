@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -32,20 +27,23 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class MethaneJacobianTestCase(unittest.TestCase):
+class MethaneJacobianTestCase(GenericDisciplinesTestClass):
     """Methane jacobian test class"""
 
     def setUp(self):
         self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_methane': self.name,
                    'ns_resource': f'{self.name}'}
 
-        self.energy_name = GlossaryEnergy.methane
+        self.stream_name = GlossaryEnergy.methane
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -111,48 +109,12 @@ class MethaneJacobianTestCase(unittest.TestCase):
                        }
     def test_01_fossil_gas_discipline_jacobian(self):
         self.model_name = 'fossil_gas'
-        discipline_test_function(
-            module_path='energy_models.models.methane.fossil_gas.fossil_gas_disc.FossilGasDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
+        self.mod_path = 'energy_models.models.methane.fossil_gas.fossil_gas_disc.FossilGasDiscipline'
 
     def test_02_methanation_discipline_jacobian(self):
         self.model_name = 'methanation'
-
-        discipline_test_function(
-            module_path='energy_models.models.methane.methanation.methanation_disc.MethanationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.methane.methanation.methanation_disc.MethanationDiscipline'
 
     def test_03_upgrading_biogas_jacobian(self):
-
         self.model_name = 'upgrading_biogas'
-        discipline_test_function(
-            module_path='energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc.UpgradingBiogasDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc.UpgradingBiogasDiscipline'

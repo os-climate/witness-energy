@@ -57,7 +57,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ccus_name = CCUS.name
         func_manager_name = "FunctionManagerDisc"
 
-        carbon_storage = PureCarbonSS.energy_name
+        carbon_storage = PureCarbonSS.stream_name
         builder_list = []
         # use energy list to import the builders
         for energy_name in self.energy_list:

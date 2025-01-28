@@ -14,45 +14,34 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
-    CalciumPotassiumScrubbingDiscipline,
-)
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
-    DirectAirCaptureTechnoDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
-    CalciumLoopingDiscipline,
-)
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class CarbonCaptureJacobianTestCase(unittest.TestCase):
+class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
     """Carbon capture jacobian test class"""
 
     def setUp(self):
         self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
                         "ns_flue_gas": self.name,
                         'ns_carbon_capture': self.name,
                         'ns_resource': f'{self.name}'}
-        self.energy_name = GlossaryEnergy.carbon_capture
+        self.stream_name = GlossaryEnergy.carbon_capture
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
@@ -98,7 +87,7 @@ class CarbonCaptureJacobianTestCase(unittest.TestCase):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-    def get_inputs_dicts(self):
+    def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                 f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
@@ -115,48 +104,17 @@ class CarbonCaptureJacobianTestCase(unittest.TestCase):
                 f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                 }
 
+    
+
     def test_01_amine_jacobian(self):
         self.model_name = 'amine_scrubbing'
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc.AmineScrubbingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'carbon_capture_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc.AmineScrubbingDiscipline'
 
     def test_02_CaKOH_jacobian(self):
         self.model_name = 'calcium_potassium_scrubbing'
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc.CalciumPotassiumScrubbingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'carbon_capture_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc.CalciumPotassiumScrubbingDiscipline'
 
 
     def test_03_Calcium_looping_jacobian(self):
         self.model_name = 'calcium_looping'
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'carbon_capture_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'

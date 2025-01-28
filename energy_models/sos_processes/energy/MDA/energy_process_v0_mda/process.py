@@ -37,7 +37,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def get_builders(self):
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
-        carbon_storage = PureCarbonSS.energy_name
+        carbon_storage = PureCarbonSS.stream_name
         ccs_mix = GlossaryEnergy.ccus_type
         # if one invest discipline then we need to setup all subprocesses
         # before get them

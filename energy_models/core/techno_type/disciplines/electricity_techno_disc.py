@@ -59,4 +59,4 @@ class ElectricityTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = GlossaryEnergy.electricity
+    stream_name = GlossaryEnergy.electricity

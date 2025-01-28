@@ -57,6 +57,6 @@ class CleanEnergyTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = CleanEnergy.name
+    stream_name = CleanEnergy.name
 
     

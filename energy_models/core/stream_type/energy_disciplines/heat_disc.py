@@ -60,9 +60,9 @@ class HeatDiscipline(SoSWrapp):
 
     name = GlossaryEnergy.heat
     energy_name = name
-    heat_list = [HighHeatDiscipline.energy_name,
-                 MediumHeatDiscipline.energy_name,
-                 LowHeatDiscipline.energy_name
+    heat_list = [HighHeatDiscipline.stream_name,
+                 MediumHeatDiscipline.stream_name,
+                 LowHeatDiscipline.stream_name
                  ]
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -89,7 +89,7 @@ class HeatDiscipline(SoSWrapp):
     DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
+                GlossaryEnergy.StreamProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
                 }
 
@@ -125,7 +125,7 @@ class HeatDiscipline(SoSWrapp):
                                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                            'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                            }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = {'type': 'dataframe',
                                                                                           'unit': 'PWh',
                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                           'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -169,7 +169,7 @@ class HeatDiscipline(SoSWrapp):
             energy_cons = self.get_sosdisc_inputs(
                 f'{energy}.{GlossaryEnergy.StreamConsumptionValue}')
             energy_prod = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.EnergyProductionValue}')
+                f'{energy}.{GlossaryEnergy.StreamProductionValue}')
             energy_techno_prod = self.get_sosdisc_inputs(
                 f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}')
             # energy_heat_flux = self.get_sosdisc_inputs(
@@ -206,7 +206,7 @@ class HeatDiscipline(SoSWrapp):
 
         outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
-                        GlossaryEnergy.EnergyProductionValue: energy_production,
+                        GlossaryEnergy.StreamProductionValue: energy_production,
                         GlossaryEnergy.StreamConsumptionValue: energy_consumption,
                         GlossaryEnergy.StreamProductionDetailedValue: energy_production_detailed,
                         # 'energy_heat_flux_detailed': energy_heat_flux_detailed,
@@ -284,7 +284,7 @@ class HeatDiscipline(SoSWrapp):
 
     def get_chart_energy_price_in_dollar_mwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.energy_name} mix over the years'
+        chart_name = f'Detailed prices of {self.stream_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
@@ -301,7 +301,7 @@ class HeatDiscipline(SoSWrapp):
     def get_chart_techno_price_in_dollar_mwh(self):
         techno_prices = self.get_sosdisc_outputs(
             'energy_detailed_techno_prices')
-        chart_name = f'Detailed prices of {self.energy_name} technologies mix over the years'
+        chart_name = f'Detailed prices of {self.stream_name} technologies mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
@@ -321,17 +321,15 @@ class HeatDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
-        scaling_factor_energy_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_energy_consumption')
+        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)
         scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
 
         # one graph for production and one for consumption for clarity
-        chart_name = f'{self.energy_name} Production with input investments'
+        chart_name = f'{self.stream_name} Production with input investments'
         prod_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
                                               chart_name=chart_name, stacked_bar=True)
-        chart_name = f'{self.energy_name} Consumption with input investments'
+        chart_name = f'{self.stream_name} Consumption with input investments'
         cons_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
                                               chart_name=chart_name, stacked_bar=True)
 
@@ -354,7 +352,7 @@ class HeatDiscipline(SoSWrapp):
             # We do not plot technology H2 production on this graph
             # Pie charts are here to see difference of production between
             # technologies
-            if products != GlossaryEnergy.Years and products.endswith('(TWh)') and self.energy_name not in products:
+            if products != GlossaryEnergy.Years and products.endswith('(TWh)') and self.stream_name not in products:
                 energy_twh = energy_production[products].values * \
                              scaling_factor_energy_production
 
@@ -401,7 +399,7 @@ class HeatDiscipline(SoSWrapp):
 
         if kg_values_consumption == 1 and kg_values_production == 0:
             legend_title = f'{reactant_found} consumption'.replace("(Mt)", "")
-            cons_chart_name = f'{legend_title} of {self.energy_name} with input investments'
+            cons_chart_name = f'{legend_title} of {self.stream_name} with input investments'
             cons_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Gt]',
                                                   chart_name=cons_chart_name, stacked_bar=True)
         elif kg_values_production == 1 and kg_values_consumption == 0:
@@ -409,14 +407,14 @@ class HeatDiscipline(SoSWrapp):
                 ".")[-1].replace("_", " ")
             legend_title = f'{display_product_found_name} production'.replace(
                 "(Mt)", "")
-            prod_chart_name = f'{legend_title} of {self.energy_name} with input investments'
+            prod_chart_name = f'{legend_title} of {self.stream_name} with input investments'
             prod_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Gt]',
                                                   chart_name=prod_chart_name, stacked_bar=True)
         else:
-            cons_chart_name = f'{self.energy_name} mass Consumption with input investments'
+            cons_chart_name = f'{self.stream_name} mass Consumption with input investments'
             cons_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Gt]',
                                                   chart_name=cons_chart_name, stacked_bar=True)
-            prod_chart_name = f'{self.energy_name} mass Production with input investments'
+            prod_chart_name = f'{self.stream_name} mass Production with input investments'
             prod_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Gt]',
                                                   chart_name=prod_chart_name, stacked_bar=True)
 
@@ -460,7 +458,7 @@ class HeatDiscipline(SoSWrapp):
         energy_production = self.get_sosdisc_outputs(
             GlossaryEnergy.StreamProductionDetailedValue)
 
-        chart_name = f'Technology production for {self.energy_name}'
+        chart_name = f'Technology production for {self.stream_name}'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)

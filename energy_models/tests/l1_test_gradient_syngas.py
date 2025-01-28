@@ -15,34 +15,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class SyngasJacobianTestCase(unittest.TestCase):
+class SyngasJacobianTestCase(GenericDisciplinesTestClass):
     """Syngas jacobian test class"""
     def setUp(self):
         self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_syngas': f'{self.name}',
                    'ns_resource': f'{self.name}'}
-        self.energy_name = GlossaryEnergy.syngas
+        self.stream_name = GlossaryEnergy.syngas
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -119,112 +117,30 @@ class SyngasJacobianTestCase(unittest.TestCase):
                        }
     def test_01_atr_discipline_jacobian(self):
         self.model_name = 'ATR'
-        discipline_test_function(
-            module_path='energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc.AutothermalReformingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc.AutothermalReformingDiscipline'
 
     def test_02_coelectrolysis_discipline_jacobian(self):
         self.model_name = 'coelectrolysis'
-        discipline_test_function(
-            module_path='energy_models.models.syngas.co_electrolysis.co_electrolysis_disc.CoElectrolysisDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.co_electrolysis.co_electrolysis_disc.CoElectrolysisDiscipline'
 
     def test_03_smr_discipline_jac(self):
         self.model_name = GlossaryEnergy.SMR
-        discipline_test_function(
-            module_path='energy_models.models.syngas.smr.smr_disc.SMRDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.smr.smr_disc.SMRDiscipline'
 
     def test_04_rwgs_discipline_jacobian(self):
         self.model_name = GlossaryEnergy.RWGS
-        discipline_test_function(
-            module_path='energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc.ReversedWaterGasShiftDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc.ReversedWaterGasShiftDiscipline'
 
     def test_05_coal_gasification_discipline_jacobian(self):
         self.model_name = 'coal_gasification'
-        discipline_test_function(
-            module_path='energy_models.models.syngas.coal_gasification.coal_gasification_disc.CoalGasificationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.coal_gasification.coal_gasification_disc.CoalGasificationDiscipline'
 
     def test_06_biomass_gas_discipline_jacobian(self):
         self.model_name = 'biomass_gasification'
-        discipline_test_function(
-            module_path='energy_models.models.syngas.biomass_gasification.biomass_gasification_disc.BiomassGasificationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
-
+        self.mod_path = 'energy_models.models.syngas.biomass_gasification.biomass_gasification_disc.BiomassGasificationDiscipline'
 
     def test_07_pyrolysis_discipline_jacobian(self):
         self.model_name = 'pyrolysis'
-        discipline_test_function(
-            module_path='energy_models.models.syngas.pyrolysis.pyrolysis_disc.PyrolysisDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methane_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
+        self.mod_path = 'energy_models.models.syngas.pyrolysis.pyrolysis_disc.PyrolysisDiscipline'
+
 

@@ -56,4 +56,4 @@ class BiomassDryTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = BiomassDry.name
+    stream_name = BiomassDry.name

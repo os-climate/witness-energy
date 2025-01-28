@@ -31,5 +31,5 @@ class SolarPv(ElectricityTechno):
         density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
         self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{self.name} (Gha)'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{self.energy_name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{self.stream_name} ({self.product_unit})'] / \
             density_per_ha

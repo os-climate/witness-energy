@@ -38,7 +38,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -62,8 +62,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Fossil.name
-        fossil_name = f'EnergyMix.{self.energy_name}'
+        self.stream_name = Fossil.name
+        fossil_name = f'EnergyMix.{self.stream_name}'
         years = np.arange(self.year_start, self.year_end + 1)
 
         # the value for invest_level is just set as an order of magnitude

@@ -21,7 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class RenewableTechno(TechnoType):
-    energy_name = CleanEnergy.name
+    stream_name = CleanEnergy.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload

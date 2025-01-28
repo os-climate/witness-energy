@@ -52,21 +52,21 @@ class BiomassDryDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = BiomassDry.name
+    stream_name = BiomassDry.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = BiomassDry(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = BiomassDry(self.stream_name)
+
 
     def get_chart_co2_emissions(self):
         '''
         surcharged from EnergyDiscipline to have emissions from technology production
         '''
         new_charts = []
-        chart_name = f'Comparison of CO2 emissions due to production and use of {self.energy_name} technologies'
+        chart_name = f'Comparison of CO2 emissions due to production and use of {self.stream_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
@@ -82,7 +82,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
                 f'{technology}.{GlossaryEnergy.TechnoProductionValue}')
             year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
             emission_list = techno_emissions[technology].values * \
-                            techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                            techno_production[f'{self.stream_name} ({BiomassDry.unit})'].values
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'bar')
             new_chart.series.append(serie)
@@ -90,7 +90,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
             # emissions
             if technology == 'UnmanagedWood':
                 co2_per_use = co2_per_use[GlossaryEnergy.CO2PerUse].values * \
-                              techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                              techno_production[f'{self.stream_name} ({BiomassDry.unit})'].values
         serie = InstanciatedSeries(
             year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
         new_chart.series.append(serie)

@@ -41,7 +41,7 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.NaturalGasBoilerMediumHeat
-    energy_name = mediumtemperatureheat.name
+    stream_name = mediumtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237

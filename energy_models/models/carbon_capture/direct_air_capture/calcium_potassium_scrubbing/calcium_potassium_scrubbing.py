@@ -58,7 +58,7 @@ class CalciumPotassium(CCTechno):
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{CCTechno.energy_name} ({self.product_unit})'] * \
+                                                                                            f'{CCTechno.stream_name} ({self.product_unit})'] * \
                                                                                         Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
                                                                                         Methane.data_energy_dict[

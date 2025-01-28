@@ -15,16 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pickle
-import unittest
 from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -32,20 +27,23 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class SolidFuelJacobianTestCase(unittest.TestCase):
+class SolidFuelJacobianTestCase(GenericDisciplinesTestClass):
     """Solid fuel jacobian test class"""
 
     def setUp(self):
         self.name = 'Test'
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
                         'ns_solid_fuel': self.name,
                         'ns_resource': f'{self.name}'}
 
-        self.energy_name = GlossaryEnergy.solid_fuel
+        self.stream_name = GlossaryEnergy.solid_fuel
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
@@ -102,7 +100,7 @@ class SolidFuelJacobianTestCase(unittest.TestCase):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-    def get_inputs_dicts(self):
+    def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                 f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                     self.years),
@@ -121,30 +119,8 @@ class SolidFuelJacobianTestCase(unittest.TestCase):
                 }
     def test_01_coal_extraction_jacobian(self):
         self.model_name = 'coal_extraction'
-        discipline_test_function(
-            module_path='energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc.CoalExtractionDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'solid_fuel_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc.CoalExtractionDiscipline'
 
     def test_02_pelletizing_jacobian(self):
         self.model_name = 'pelletizing'
-        discipline_test_function(
-            module_path='energy_models.models.solid_fuel.pelletizing.pelletizing_disc.PelletizingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'solid_fuel_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.solid_fuel.pelletizing.pelletizing_disc.PelletizingDiscipline'

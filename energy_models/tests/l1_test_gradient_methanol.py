@@ -14,37 +14,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 import warnings
-from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import (
-    CO2HydrogenationDiscipline,
-)
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 warnings.filterwarnings("ignore")
 
 
-class MethanolJacobianCase(unittest.TestCase):
+class MethanolJacobianCase(GenericDisciplinesTestClass):
     """Methanol Fuel jacobian test class"""
 
     def setUp(self):
@@ -57,7 +47,7 @@ class MethanolJacobianCase(unittest.TestCase):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
-        self.energy_name = 'methanol'
+        self.stream_name = 'methanol'
         self.product_unit = 'TWh'
         self.land_use_unit = 'Gha'
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -113,18 +103,4 @@ class MethanolJacobianCase(unittest.TestCase):
 
     def test_01_co2_hydrogenation_discipline_analytic_grad(self):
         self.model_name = GlossaryEnergy.CO2Hydrogenation
-
-        discipline_test_function(
-            module_path='energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc.CO2HydrogenationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'methanol_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
-
+        self.mod_path = 'energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc.CO2HydrogenationDiscipline'

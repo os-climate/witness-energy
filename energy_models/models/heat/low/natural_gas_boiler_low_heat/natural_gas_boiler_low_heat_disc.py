@@ -41,7 +41,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.NaturalGasBoilerLowHeat
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237

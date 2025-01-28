@@ -51,7 +51,7 @@ class CHPMediumHeat(mediumheattechno):
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
                                                                                             f'{Methane.name} ({self.product_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
             (self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{mediumtemperatureheat.name} ({self.product_unit})'] /
              (1 - self.inputs['techno_infos_dict']['efficiency'])) - self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                 f'{mediumtemperatureheat.name} ({self.product_unit})']

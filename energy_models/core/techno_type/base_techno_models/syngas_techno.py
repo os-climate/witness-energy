@@ -25,7 +25,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SyngasTechno(TechnoType):
-    energy_name = GlossaryEnergy.syngas
+    stream_name = GlossaryEnergy.syngas
     syngas_COH2_ratio = None
 
     def compute(self):

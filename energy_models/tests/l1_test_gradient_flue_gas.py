@@ -14,48 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
-    CalciumLoopingDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc import (
-    ChilledAmmoniaProcessDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc import (
-    CO2MembranesDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc import (
-    MonoEthanolAmineDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc import (
-    PiperazineProcessDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc import (
-    PressureSwingAdsorptionDiscipline,
-)
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class GradientFlueGasTestCase(unittest.TestCase):
+class GradientFlueGasTestCase(GenericDisciplinesTestClass):
     """Flue gas gradients test class"""
 
     def setUp(self):
         
         self.name = "Test"
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -67,7 +45,7 @@ class GradientFlueGasTestCase(unittest.TestCase):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
-        self.energy_name = 'flue_gas'
+        self.stream_name = 'flue_gas'
 
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.FlueGasMean: 0.3})
@@ -133,104 +111,32 @@ class GradientFlueGasTestCase(unittest.TestCase):
                        }
     def test_01_calcium_looping_discipline_analytic_grad(self):
         self.model_name = 'CalciumLooping'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
 
 
 
     def test_02_pressure_swing_adsorption_analytic_grad(self):
         self.model_name = 'pressure_swing_adsorption'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc.PressureSwingAdsorptionDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.pressure_swing_adsorption.pressure_swing_adsorption_disc.PressureSwingAdsorptionDiscipline'
 
 
     def test_03_piperazine_process_analytic_grad(self):
         self.model_name = 'piperazine_process'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc.PiperazineProcessDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc.PiperazineProcessDiscipline'
 
 
     def test_04_monoethanolamine_analytic_grad(self):
         self.model_name = 'mono_ethanol_amine'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc.MonoEthanolAmineDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.mono_ethanol_amine.mono_ethanol_amine_disc.MonoEthanolAmineDiscipline'
 
 
 
     def test_05_co2_membranes_analytic_grad(self):
         self.model_name = 'CO2_membranes'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc.CO2MembranesDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.co2_membranes.co2_membranes_disc.CO2MembranesDiscipline'
 
 
     def test_06_chilled_ammonia_process_discipline_analytic_grad(self):
         self.model_name = 'chilled_ammonia_process'
-
-        discipline_test_function(
-            module_path='energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc.ChilledAmmoniaProcessDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.chilled_ammonia_process.chilled_ammonia_process_disc.ChilledAmmoniaProcessDiscipline'
 

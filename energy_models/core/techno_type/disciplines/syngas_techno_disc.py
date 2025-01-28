@@ -59,7 +59,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
     DESC_IN.update(TechnoDiscipline.DESC_IN)
     syngas_ratio = None
     _maturity = 'Research'
-    energy_name = GlossaryEnergy.syngas
+    stream_name = GlossaryEnergy.syngas
 
     # -- add specific techno outputs to this
     DESC_OUT = {'syngas_ratio': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor':

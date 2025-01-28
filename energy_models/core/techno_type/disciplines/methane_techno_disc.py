@@ -56,4 +56,4 @@ class MethaneTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = Methane.name
+    stream_name = Methane.name

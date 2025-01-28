@@ -42,7 +42,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.BiomassFermentation
-    energy_name = Ethanol.name
+    stream_name = Ethanol.name
 
     # Conversions
     pound_to_kg = 0.45359237

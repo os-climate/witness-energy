@@ -50,4 +50,4 @@ class CoalGasification(SyngasTechno):
                                                                                         self.inputs['data_energy_dict'][
                                                                                             'calorific_value'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{SyngasTechno.stream_name} ({self.product_unit})']

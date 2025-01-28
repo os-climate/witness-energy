@@ -71,7 +71,7 @@ class FossilGas(MethaneTechno):
         # kg/kWh corresponds to Mt/TWh
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
             self.inputs['techno_infos_dict']['CO2_from_production'] / self.inputs['data_fuel_dict']['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{MethaneTechno.energy_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{MethaneTechno.stream_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(Methane.emission_name)
         # self.production[f'{hightemperatureheat.name}] ({self.product_unit})'] = ((1 - self.inputs['techno_infos_dict']['efficiency']) * \

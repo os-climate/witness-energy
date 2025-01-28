@@ -41,7 +41,7 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.GeothermalLowHeat
-    energy_name = lowtemperatureheat.name
+    stream_name = lowtemperatureheat.name
 
 
 

@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import autograd.numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -51,7 +50,7 @@ class WGS(GaseousHydrogenTechno):
         Overload the check_capex_unity for this particular model 
         '''
         data_config = self.inputs['techno_infos_dict']
-        capex_list = np.array(data_config['Capex_init_vs_CO_conversion'])
+        capex_list = self.np.array(data_config['Capex_init_vs_CO_conversion'])
         data_config.update(self.inputs['data_fuel_dict'])
         # input power was in mol/h
         # We multiply by molar mass and calorific value of the paper to get input power in kW
@@ -79,7 +78,7 @@ class WGS(GaseousHydrogenTechno):
         capex_list = capex_list * \
                      data_config['euro_dollar'] / self.available_power
         # Need to convertcapex_list in $/kWh
-        final_sg_ratio = 1.0 - np.array(data_config['CO_conversion']) / 100.0
+        final_sg_ratio = 1.0 - self.np.array(data_config['CO_conversion']) / 100.0
         initial_sg_ratio = 0.3 / 0.3
         delta_sg_ratio = initial_sg_ratio - final_sg_ratio
 
@@ -121,12 +120,12 @@ class WGS(GaseousHydrogenTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
+        # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
         #     self.inputs['techno_infos_dict']['low_heat_production'] * \
-        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']  # in TWH
+        #     self.production[f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']  # in TWH
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

@@ -33,11 +33,11 @@ class GasElec(ElectricityTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{Methane.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{ElectricityTechno.energy_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)

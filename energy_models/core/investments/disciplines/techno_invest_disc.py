@@ -78,7 +78,7 @@ class InvestTechnoDiscipline(SoSWrapp):
         self.energy_model = None
 
     def init_execution(self):
-        self.energy_model = EnergyInvest(self.energy_name)
+        self.energy_model = EnergyInvest(self.stream_name)
 
     def setup_sos_disciplines(self):
         '''

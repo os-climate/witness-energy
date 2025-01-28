@@ -14,33 +14,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 import warnings
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 warnings.filterwarnings("ignore")
 
 
-class HydrotreatedOilFuelJacobianCase(unittest.TestCase):
+class HydrotreatedOilFuelJacobianCase(GenericDisciplinesTestClass):
     """Hydrotreated Vegetable Oil Fuel jacobian test class"""
 
     def setUp(self):
         
         self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = True
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrotreated_oil_fuel': f'{self.name}',
@@ -50,7 +49,7 @@ class HydrotreatedOilFuelJacobianCase(unittest.TestCase):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
-        self.energy_name = GlossaryEnergy.hydrotreated_oil_fuel
+        self.stream_name = GlossaryEnergy.hydrotreated_oil_fuel
         # crude oil price : 1.3$/gallon
 
         self.stream_prices = pd.DataFrame(
@@ -93,34 +92,11 @@ class HydrotreatedOilFuelJacobianCase(unittest.TestCase):
 
     def test_01_hefa_discipline_analytic_grad(self):
         self.model_name = GlossaryEnergy.HefaDecarboxylation
-        discipline_test_function(
-            module_path='energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc.HefaDecarboxylationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
+        self.mod_path = 'energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc.HefaDecarboxylationDiscipline'
 
 
     def test_02_hefa_green_discipline_analytic_grad(self):
         self.model_name = GlossaryEnergy.HefaDeoxygenation
-
-        discipline_test_function(
-            module_path='energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc.HefaDeoxygenationDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.energy_name}_{self.model_name}.pkl',
-            override_dump_jacobian=True
-        )
+        self.mod_path = 'energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc.HefaDeoxygenationDiscipline'
 
 

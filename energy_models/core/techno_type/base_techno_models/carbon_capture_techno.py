@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechno(TechnoType):
-    energy_name = GlossaryEnergy.carbon_capture
+    stream_name = GlossaryEnergy.carbon_capture
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
@@ -196,7 +196,7 @@ class CCTechno(TechnoType):
         '''
 
         dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[
-            f'{self.energy_name} ({self.product_unit})'].reshape((len(self.years), 1)) +
+            f'{self.stream_name} ({self.product_unit})'].reshape((len(self.years), 1)) +
                                    dprod_dfluegas * self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'].values.reshape(
                     (len(self.years), 1)))
 

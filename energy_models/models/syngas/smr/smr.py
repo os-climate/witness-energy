@@ -68,7 +68,7 @@ class SMR(SyngasTechno):
         return water_needs
 
     def compute_byproducts_production(self):
-        # self.production[f'{highheattechno.energy_name} ({self.product_unit})'] = \
+        # self.production[f'{highheattechno.stream_name} ({self.product_unit})'] = \
         #     self.inputs['techno_infos_dict']['high_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_unit})']
+        #     self.production[f'{SyngasTechno.stream_name} ({self.product_unit})']
         pass

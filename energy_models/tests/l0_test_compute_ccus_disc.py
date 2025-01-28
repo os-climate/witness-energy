@@ -53,14 +53,14 @@ class CCUSDiscTestCase(unittest.TestCase):
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
             self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
         for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             self.land_use_required[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
             self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
             self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
@@ -113,12 +113,12 @@ class CCUSDiscTestCase(unittest.TestCase):
         }
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
                 energy]
 
         for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
                 energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]

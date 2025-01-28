@@ -14,15 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -33,15 +29,16 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import (
     FischerTropschDiscipline,
 )
-from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
-class FTJacobianTestCase(unittest.TestCase):
+class FTJacobianTestCase(GenericDisciplinesTestClass):
     """Fischer Tropsch jacobian test class"""
 
     def setUp(self):
         self.name = "Test"
-        self.energy_name = GlossaryEnergy.liquid_fuel
+        self.override_dump_jacobian = False
+        self.pickle_directory = dirname(__file__)
+        self.stream_name = GlossaryEnergy.liquid_fuel
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_liquid_fuel': self.name,
@@ -93,7 +90,7 @@ class FTJacobianTestCase(unittest.TestCase):
         # overload value of lifetime to reduce test duration
         self.techno_infos_dict = FischerTropschDiscipline.techno_infos_dict_default
 
-    def get_inputs_dicts(self):
+    def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
@@ -117,101 +114,28 @@ class FTJacobianTestCase(unittest.TestCase):
 
     def test_01_FT_gradient_syngas_ratio_08(self):
         self.model_name = 'fischer_tropsch_WGS'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
 
 
     def test_02_FT_gradient_syngas_ratio_03(self):
         self.model_name = 'fischer_tropsch_RWGS'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
     def test_03_FT_gradient_variable_syngas_ratio(self):
         self.model_name = 'fischer_tropsch_RWGS_and_WGS'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
 
 
     def test_04_FT_gradient_variable_syngas_ratio_bis(self):
         self.model_name = 'fischer_tropsch_RWGS_and_WGS_bis'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
 
 
     def test_05_FT_gradient_ratio_available_cc(self):
         self.model_name = 'fischer_tropsch_ratio_available_cc'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
 
 
     def test_06_FT_gradient_variable_syngas_ratio_invest_negative(self):
         self.model_name = 'fischer_tropsch_RWGS_and_WGS_negative'
-        discipline_test_function(
-            module_path='energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dicts(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'fischertropsch_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
+        self.mod_path = 'energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc.FischerTropschDiscipline'
 
-
-
-
-if '__main__' == __name__:
-    cls = FTJacobianTestCase()
-    cls.setUp()
-    cls.test_05_FT_gradient_ratio_available_cc()

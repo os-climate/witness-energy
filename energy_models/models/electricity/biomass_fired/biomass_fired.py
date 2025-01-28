@@ -32,11 +32,11 @@ class BiomassFired(ElectricityTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{GlossaryEnergy.biomass_dry} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})']  # TWh
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']  # TWh
 
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):

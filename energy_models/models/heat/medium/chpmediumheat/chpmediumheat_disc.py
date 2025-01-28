@@ -40,7 +40,7 @@ class CHPMediumHeatDiscipline(TechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CHPMediumHeat
-    energy_name = mediumtemperatureheat.name
+    stream_name = mediumtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237

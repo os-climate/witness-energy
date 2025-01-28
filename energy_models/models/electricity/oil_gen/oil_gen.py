@@ -38,16 +38,16 @@ class OilGen(ElectricityTechno):
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                f'{ElectricityTechno.energy_name} ({self.product_unit})'] * (1.0 - elec_needs)
+                f'{ElectricityTechno.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{LiquidFuel.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 

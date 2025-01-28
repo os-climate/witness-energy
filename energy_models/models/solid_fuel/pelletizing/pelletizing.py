@@ -38,6 +38,6 @@ class Pelletizing(SolidFuelTechno):
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_unit})'] / \
+                                                                                            f'{SolidFuelTechno.stream_name} ({self.product_unit})'] / \
                                                                                         self.inputs['data_fuel_dict'][
                                                                                             'calorific_value']

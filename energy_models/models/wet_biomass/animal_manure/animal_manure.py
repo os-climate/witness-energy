@@ -27,4 +27,4 @@ class AnimalManure(WetBiomassTechno):
 
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.carbon_capture} (kg)'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
-                                                       self.inputs['data_energy_dict']['calorific_value'] * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{WetBiomassTechno.energy_name} (kWh)']
+                                                       self.inputs['data_energy_dict']['calorific_value'] * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{WetBiomassTechno.stream_name} (kWh)']

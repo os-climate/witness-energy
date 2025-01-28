@@ -75,11 +75,11 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
                                                              self.inputs['data_fuel_dict']['calorific_value'] * \
                                                              self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                 f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
+                                                                 f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
+        # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
         #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})'] # in TWH
+        #     - self.production[f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})'] # in TWH
 
 

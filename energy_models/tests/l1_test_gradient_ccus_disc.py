@@ -72,7 +72,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
             self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue][
                     'value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
@@ -80,7 +80,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             self.land_use_required[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
             self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue][
                     'value']
             self.energy_consumption[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
@@ -141,12 +141,12 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         }
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
                 energy]
 
         for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
                 energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
@@ -167,11 +167,11 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = [
             f'{self.name}.carbon_capture_from_energy_mix',
             f'{self.name}.co2_emissions_needed_by_energy_mix',
-            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamProductionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamConsumptionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.LandUseRequiredValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamConsumptionValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.LandUseRequiredValue}',

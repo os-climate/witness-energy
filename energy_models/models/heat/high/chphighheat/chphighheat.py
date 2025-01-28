@@ -43,7 +43,7 @@ class CHPHighHeat(highheattechno):
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
                                                                                             f'{Methane.name} ({self.product_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
             (self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] /
              (1 - self.inputs['techno_infos_dict']['efficiency'])) - self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
                 f'{hightemperatureheat.name} ({self.product_unit})']

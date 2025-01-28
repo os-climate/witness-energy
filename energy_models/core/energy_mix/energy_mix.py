@@ -24,7 +24,6 @@ from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import
     smooth_maximum,
 )
 
-from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
@@ -57,7 +56,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class EnergyMix(BaseStream):
+class EnergyMix:
     """
     Class Energy mix
     """
@@ -207,8 +206,11 @@ class EnergyMix(BaseStream):
         '''
         COnfigure parameters (variables that does not change during the run
         '''
-        self.subelements_list = inputs_dict[GlossaryEnergy.energy_list]
-        BaseStream.configure_parameters(self, inputs_dict)
+        self.inputs[GlossaryEnergy.techno_list] = inputs_dict[GlossaryEnergy.energy_list]
+        self.year_start = inputs_dict[GlossaryEnergy.YearStart]
+        self.year_end = inputs_dict[GlossaryEnergy.YearEnd]
+
+        self.reload_df()
 
         # Specific configure for energy mix
         self.co2_emitted_by_energy = {}
@@ -241,10 +243,30 @@ class EnergyMix(BaseStream):
         self.tol_constraint_non_use_capital_energy = inputs_dict['tol_constraint_non_use_capital_energy']
         self.ref_constraint_non_use_capital_energy = inputs_dict['ref_constraint_non_use_capital_energy']
         self.period_tol_power_non_use_capital_constraint = inputs_dict['period_tol_power_non_use_capital_constraint']
-        if self.subelements_list is not None:
-            for energy in self.subelements_list:
+        if self.inputs[GlossaryEnergy.techno_list] is not None:
+            for energy in self.inputs[GlossaryEnergy.techno_list]:
                 if f'{energy}.losses_percentage' in inputs_dict:
                     self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
+
+    def reload_df(self):
+        '''
+        Reload all dataframes with new year start and year end
+        '''
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.sub_prices = base_df.copy(deep=True)
+        self.sub_prices_wo_taxes = base_df.copy(deep=True)
+        self.total_prices = base_df.copy(deep=True)
+        self.total_carbon_emissions = base_df.copy(deep=True)
+        self.sub_carbon_emissions = base_df.copy(deep=True)
+        self.co2_emitted_by_energy = base_df.copy(deep=True)
+        self.mix_weights = base_df.copy(deep=True)
+        self.price_by_energy = base_df.copy(deep=True)
+        self.production = base_df.copy(deep=True)
+        self.production_raw = base_df.copy(deep=True)
+        self.production_by_techno = base_df.copy(deep=True)
+        self.consumption = base_df.copy(deep=True)
+        self.land_use_required = base_df.copy(deep=True)
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -254,7 +276,7 @@ class EnergyMix(BaseStream):
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         self.carbon_tax = inputs_dict[GlossaryEnergy.CO2TaxesValue]
-        self.subelements_list = inputs_dict[GlossaryEnergy.energy_list] + \
+        self.inputs[GlossaryEnergy.techno_list] = inputs_dict[GlossaryEnergy.energy_list] + \
                                 inputs_dict[GlossaryEnergy.ccs_list]
         self.energy_list = inputs_dict[GlossaryEnergy.energy_list]
         self.ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
@@ -264,9 +286,9 @@ class EnergyMix(BaseStream):
         # Specific configure for energy mix
         self.co2_emitted_by_energy = {}
 
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamPricesValue}'][energy]
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] * \
                                                self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
@@ -295,7 +317,7 @@ class EnergyMix(BaseStream):
                     0, 0, len(self.resources_demand.index)) * 100.
                 self.resources_demand_woratio[elements] = np.linspace(
                     0, 0, len(self.resources_demand.index)) * 100.
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
                     self.resources_demand[resource] = self.resources_demand[resource] + \
@@ -311,7 +333,7 @@ class EnergyMix(BaseStream):
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(
             {GlossaryEnergy.Years: self.stream_prices[GlossaryEnergy.Years].values})
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             self.all_streams_demand_ratio[energy] = np.ones(
                 len(self.all_streams_demand_ratio[GlossaryEnergy.Years].values)) * 100.
 
@@ -378,7 +400,7 @@ class EnergyMix(BaseStream):
     def compute_raw_production(self):
         """sum of positive energy production --> raw total production"""
 
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
             self.production_raw[column_name] = self.sub_production_dict[energy][energy].values
 
@@ -388,7 +410,7 @@ class EnergyMix(BaseStream):
     def compute_net_consumable_energy(self):
         """consumable energy = Raw energy production - Energy consumed for energy production"""
 
-        # for energy in self.subelements_list:
+        # for energy in self.inputs[GlossaryEnergy.techno_list]:
         #     column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
         #     self.production[column_name] = pd.Series(
         #         self.sub_production_dict[energy][energy].values)
@@ -514,7 +536,7 @@ class EnergyMix(BaseStream):
         after carbon tax with all technology prices and technology weights computed with energy production
         '''
 
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             if energy in self.energy_class_dict:
                 self.price_by_energy[energy] = self.sub_prices[energy].values + \
                                                self.co2_emitted_by_energy[energy][GlossaryEnergy.CO2PerUse].values * \
@@ -526,7 +548,7 @@ class EnergyMix(BaseStream):
         '''
         self.carbon_emissions_after_use = pd.DataFrame(
             {GlossaryEnergy.Years: self.total_carbon_emissions[GlossaryEnergy.Years].values})
-        for stream in self.subelements_list:
+        for stream in self.inputs[GlossaryEnergy.techno_list]:
             if stream in self.energy_class_dict:
                 self.total_carbon_emissions[stream] = self.sub_carbon_emissions[stream]
                 self.carbon_emissions_after_use[stream] = self.total_carbon_emissions[stream] + \
@@ -549,7 +571,7 @@ class EnergyMix(BaseStream):
         # Do not loop over carbon capture and carbon storage which will be
         # handled differently
 
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             self.emissions_by_energy[energy] = np.zeros_like(
                 self.production[GlossaryEnergy.Years].values)
             if energy in self.only_energy_list:
@@ -766,7 +788,7 @@ class EnergyMix(BaseStream):
         demand_ratio_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years})
 
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
 
             # Prod with ratio
             energy_production = deepcopy(
@@ -799,7 +821,7 @@ class EnergyMix(BaseStream):
 
     def compute_ratio_objective(self):
 
-        ratio_arrays = self.all_streams_demand_ratio[self.subelements_list].values
+        ratio_arrays = self.all_streams_demand_ratio[self.inputs[GlossaryEnergy.techno_list]].values
         # Objective is to minimize the difference between 100 and all ratios
         # We give as objective the highest difference to start with the max of
         # the difference
@@ -822,7 +844,7 @@ class EnergyMix(BaseStream):
         dtot_CO2_emissions = {}
         # Do not loop over carbon capture and carbon storage which will be
         # handled differently
-        for energy in self.subelements_list:
+        for energy in self.inputs[GlossaryEnergy.techno_list]:
             if energy in self.only_energy_list:
 
                 # gather all production columns with a CO2 name in it
@@ -1099,6 +1121,18 @@ class EnergyMix(BaseStream):
         d_capital = np.diag(- non_use_capital * period_tolerance / (capital ** 2) / self.ref_constraint_non_use_capital_energy / 1e3)
         return d_non_use_capital, d_capital
 
+    def aggregate_land_use_required(self):
+        '''
+        Aggregate into an unique dataframe of information of sub technology about land use required
+        '''
+
+        for element in self.sub_land_use_required_dict.values():
+
+            element_columns = list(element)
+            element_columns.remove(GlossaryEnergy.Years)
+
+            for column_df in element_columns:
+                self.land_use_required[column_df] = element[column_df]
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
     '''

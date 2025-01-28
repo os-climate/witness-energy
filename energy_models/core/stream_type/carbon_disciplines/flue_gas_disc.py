@@ -16,7 +16,6 @@ limitations under the License.
 '''
 import logging
 
-import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
@@ -29,8 +28,10 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.tables.instanciated_table import (
     InstanciatedTable,
 )
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
-from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import (
@@ -69,7 +70,7 @@ from energy_models.models.syngas.coal_gasification.coal_gasification_disc import
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 
 
-class FlueGasDiscipline(SoSWrapp):
+class FlueGasDiscipline(AutodifferentiedDisc):
     # ontology information
     _ontology_data = {
         'label': 'Flue Gas Model',
@@ -83,6 +84,8 @@ class FlueGasDiscipline(SoSWrapp):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
+    unit = "Mt"
+
     POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
@@ -105,63 +108,50 @@ class FlueGasDiscipline(SoSWrapp):
                                             'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
                                             'structuring': True, 'unit': '-'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
-                                                     'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
-                                                    'user_level': 2},
-               GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                         'possible_values': CCUS.ccs_list,
-                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                                         'editable': False,
-                                         'structuring': True,
-                                         'unit': '-'},
                }
 
-    energy_name = FlueGas.name
+    stream_name = FlueGas.name
 
     DESC_OUT = {GlossaryEnergy.FlueGasMean: {'type': 'dataframe',
                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                             'namespace': 'ns_flue_gas', 'unit': '%'},
-                'flue_gas_production': {'type': 'dataframe',
+                                             'namespace': 'ns_flue_gas', 'unit': '%',
+                                             AutodifferentiedDisc.GRADIENTS: True},
+                GlossaryEnergy.StreamProductionValue: {'type': 'dataframe',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas', 'unit': 'Mt'},
-                'flue_gas_prod_ratio': {'type': 'dataframe',
+                                        'namespace': 'ns_flue_gas', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True},
+                GlossaryEnergy.StreamProductionDetailedValue: {'type': 'dataframe',
+                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                       'namespace': 'ns_flue_gas', 'unit': 'Mt'},
+                'techno_mix': {'type': 'dataframe',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.energy_model = None
+        self.model = None
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = FlueGas(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = FlueGas(self.stream_name)
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if GlossaryEnergy.techno_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
+        if GlossaryEnergy.techno_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
 
-            if techno_list is not None and ccs_list is not None:
+            if techno_list is not None:
                 for techno in techno_list:
                     # check if techno not in ccs_list, namespace is
                     # ns_energy_mix
-                    if techno.split('.')[0] not in ccs_list:
-                        ns_variable = GlossaryEnergy.NS_ENERGY_MIX
+                    ns_variable = GlossaryEnergy.NS_ENERGY_MIX
 
-                    # techno in ccs_list, use different namespace
-                    else:
-                        ns_variable = GlossaryEnergy.NS_CCS
 
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
+                        AutodifferentiedDisc.GRADIENTS: True,
                         'dataframe_descriptor': {
                             GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                             f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
@@ -171,90 +161,11 @@ class FlueGasDiscipline(SoSWrapp):
                     # dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                      AutodifferentiedDisc.GRADIENTS: True,
                                                                       'namespace': ns_variable, 'unit': '',
                                                                       'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
 
         self.add_inputs(dynamic_inputs)
-
-    def run(self):
-        # -- get inputs
-        inputs_dict = self.get_sosdisc_inputs()
-        # -- configure class with inputs
-        self.energy_model.configure_parameters_update(inputs_dict)
-        # -- compute informations
-        flue_gas_mean = self.energy_model.compute(inputs_dict)
-
-        outputs_dict = {
-            GlossaryEnergy.FlueGasMean: flue_gas_mean,
-            'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
-            'flue_gas_prod_ratio': self.energy_model.get_total_flue_gas_prod_ratio()}
-        
-        self.store_sos_outputs_values(outputs_dict)
-
-    def compute_sos_jacobian(self):
-        '''
-             Compute gradient of coupling outputs vs coupling inputs
-        '''
-        inputs_dict = self.get_sosdisc_inputs()
-        technologies_list = inputs_dict[GlossaryEnergy.techno_list]
-        mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')
-
-        total_prod = self.get_sosdisc_outputs('flue_gas_production')[
-            self.energy_model.name].values
-        len_matrix = len(total_prod)
-        for techno in technologies_list:
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.FlueGasMean,
-                 GlossaryEnergy.FlueGasMean), (f'{techno}.flue_gas_co2_ratio',),
-                np.reshape(mix_weights[techno].values, (len_matrix, 1)))
-
-            # An array of one value because GEMS needs array
-            flue_gas_co2_ratio = self.get_sosdisc_inputs(
-                f'{techno}.flue_gas_co2_ratio')[0]
-
-            grad_prod = (
-                                total_prod - self.energy_model.production[
-                            f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values) / total_prod ** 2
-
-            self.set_partial_derivative_for_other_types(
-                ('flue_gas_prod_ratio', techno),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
-                inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_prod)
-
-            grad_fluegas_prod = flue_gas_co2_ratio * grad_prod
-            for techno_other in technologies_list:
-                if techno != techno_other:
-                    flue_gas_co2_ratio_other = self.get_sosdisc_inputs(
-                        f'{techno_other}.flue_gas_co2_ratio')[0]
-
-                    grad_flue_gas_prod_ratio = -self.energy_model.production[
-                        f'{self.energy_model.name} {techno} ({GlossaryEnergy.mass_unit})'].values / \
-                                               total_prod ** 2
-                    self.set_partial_derivative_for_other_types(
-                        ('flue_gas_prod_ratio', techno),
-                        (f'{techno_other}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
-                        inputs_dict['scaling_factor_techno_production'] * np.identity(
-                            len_matrix) * grad_flue_gas_prod_ratio)
-
-                    grad_fluegas_prod -= \
-                        flue_gas_co2_ratio_other * self.energy_model.production[
-                            f'{self.energy_model.name} {techno_other} ({GlossaryEnergy.mass_unit})'].values / \
-                        total_prod ** 2
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
-                inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_fluegas_prod)
-
-            self.set_partial_derivative_for_other_types(
-                ('flue_gas_production', self.energy_model.name),
-                (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                 f'{self.energy_model.name} ({GlossaryEnergy.mass_unit})'),
-                inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix))
 
     def get_chart_filter_list(self):
 
@@ -298,25 +209,19 @@ class FlueGasDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_flue_gas_production(self):
-        flue_gas_total = self.get_sosdisc_outputs(
-            'flue_gas_production')[self.energy_name].values
-        flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
-        technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-        years = flue_gas_prod_ratio[GlossaryEnergy.Years].values
+        flue_gas_total = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)[f'{self.stream_name} ({self.unit})']
+        flue_gas_total_prod_breakdown_df = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionDetailedValue)
+        years = flue_gas_total_prod_breakdown_df[GlossaryEnergy.Years]
         chart_name = 'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Flue gas emissions [Mt]', chart_name=chart_name, stacked_bar=True)
+            GlossaryEnergy.Years, f'Flue gas emissions [{self.unit}]', chart_name=chart_name, stacked_bar=True)
 
-        for techno in technologies_list:
-            flue_gas_prod = flue_gas_total * flue_gas_prod_ratio[techno].values
-            serie = InstanciatedSeries(
-                years.tolist(),
-                flue_gas_prod.tolist(), techno.split('.')[-1], 'bar')
+        for techno in self.get_sosdisc_inputs(GlossaryEnergy.techno_list):
+            flue_gas_prod_by_techno = flue_gas_total_prod_breakdown_df[f"{techno} ({self.unit})"]
+            serie = InstanciatedSeries(years, flue_gas_prod_by_techno, techno, 'bar')
             new_chart.series.append(serie)
 
-        serie = InstanciatedSeries(
-            years.tolist(),
-            flue_gas_total.tolist(), 'Total', 'lines')
+        serie = InstanciatedSeries(years, flue_gas_total, 'Total', 'lines')
         new_chart.series.append(serie)
 
         return new_chart
@@ -329,9 +234,8 @@ class FlueGasDiscipline(SoSWrapp):
             GlossaryEnergy.Years, 'CO2 concentration [%]', chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            flue_gas_co2_concentration[GlossaryEnergy.Years].values.tolist(),
-            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), 'CO2 concentration',
-            'lines')
+            flue_gas_co2_concentration[GlossaryEnergy.Years],
+            flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean] * 100., 'CO2 concentration', 'lines')
 
         new_chart.series.append(serie)
         return new_chart

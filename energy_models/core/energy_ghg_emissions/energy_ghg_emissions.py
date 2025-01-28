@@ -103,7 +103,7 @@ class EnergyGHGEmissions(BaseStream):
                         f'{AgricultureMixDiscipline.name}.{ghg}_per_use'][f'{ghg}_per_use'].values
 
                 self.sub_production_dict[energy] = inputs_dict[
-                                                       f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] * \
+                                                       f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamProductionValue}'] * \
                                                    self.scaling_factor_energy_production
                 self.sub_consumption_dict[energy] = inputs_dict[
                                                         f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] * \
@@ -113,13 +113,13 @@ class EnergyGHGEmissions(BaseStream):
                     self.ghg_per_use_dict[ghg][energy] = inputs_dict[
                         f'{energy}.{ghg}_per_use'][f'{ghg}_per_use'].values
 
-                self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
+                self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] * \
                                                    self.scaling_factor_energy_production
                 self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] * \
                                                     self.scaling_factor_energy_consumption
 
         for energy in self.ccs_list:
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] * \
                                                self.scaling_factor_energy_production
 
         self.energy_production_detailed = inputs_dict[GlossaryEnergy.StreamProductionDetailedValue]

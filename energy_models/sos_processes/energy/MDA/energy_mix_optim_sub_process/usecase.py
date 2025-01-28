@@ -200,7 +200,7 @@ class Study(EnergyStudyManager):
         for study in instanciated_studies:
             if study is not None:
                 invest_techno = study.get_investments()
-                energy = study.energy_name
+                energy = study.stream_name
                 if energy in energy_mix.columns:
                     pass
                 elif energy in ccs_mix.columns:
@@ -490,7 +490,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionValue}": energy_consumption,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}": energy_consumption,
-            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamProductionValue}": energy_production,
             f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,

@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import autograd.numpy as np
 
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
@@ -34,7 +33,7 @@ class CoalExtraction(SolidFuelTechno):
 
     def compute_resources_needs(self):
         # calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.COAL_RESOURCE_NAME}_needs'] = self.np.ones(len(
             self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
 
     def compute_other_streams_needs(self):
@@ -44,7 +43,7 @@ class CoalExtraction(SolidFuelTechno):
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
                                                                      self.inputs['data_fuel_dict']['high_calorific_value'] * \
                                                                      self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                         f'{SolidFuelTechno.energy_name} ({self.product_unit})']
+                                                                         f'{SolidFuelTechno.stream_name} ({self.product_unit})']
         '''
         Method to compute CH4 emissions from coal mines
         The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
@@ -70,6 +69,6 @@ class CoalExtraction(SolidFuelTechno):
         # and add ch4 from abandoned mines
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Methane.emission_name} ({GlossaryEnergy.mass_unit})'] = self.emission_factor_mt_twh * \
                                                                                   self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                      f'{SolidFuelTechno.energy_name} ({self.product_unit})'] + \
+                                                                                      f'{SolidFuelTechno.stream_name} ({self.product_unit})'] + \
                                                                                   self.inputs['techno_infos_dict'][
                                                                                       'ch4_from_abandoned_mines']

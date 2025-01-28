@@ -58,6 +58,6 @@ class LiquidHydrogenTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = LiquidHydrogen.name
+    stream_name = LiquidHydrogen.name
 
     

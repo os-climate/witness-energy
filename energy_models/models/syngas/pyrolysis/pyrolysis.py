@@ -42,14 +42,14 @@ class Pyrolysis(SyngasTechno):
                                                                                         self.inputs['data_energy_dict'][
                                                                                             'calorific_value'] * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{SyngasTechno.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:char ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                   f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
+                                                                   f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
                                                                self.inputs['techno_infos_dict']['char_yield'] / \
                                                                self.inputs['techno_infos_dict']['syngas_yield']
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:bio_oil ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                      f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
+                                                                      f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
                                                                   self.inputs['techno_infos_dict']['bio_oil_yield'] / \
                                                                   self.inputs['techno_infos_dict']['syngas_yield']

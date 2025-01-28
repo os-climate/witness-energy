@@ -58,4 +58,4 @@ class SolidFuelTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = SolidFuel.name
+    stream_name = SolidFuel.name

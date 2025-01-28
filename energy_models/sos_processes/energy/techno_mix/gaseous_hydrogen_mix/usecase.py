@@ -44,7 +44,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -82,9 +82,9 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = GaseousHydrogen.name
+        self.stream_name = GaseousHydrogen.name
 
-        energy_name = f'{energy_mix_name}.{self.energy_name}'
+        energy_name = f'{energy_mix_name}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'

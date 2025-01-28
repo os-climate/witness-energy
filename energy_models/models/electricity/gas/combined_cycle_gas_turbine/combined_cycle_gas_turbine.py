@@ -33,11 +33,11 @@ class CCGasT(ElectricityTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
+                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{Methane.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.energy_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.compute_ch4_emissions()
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)

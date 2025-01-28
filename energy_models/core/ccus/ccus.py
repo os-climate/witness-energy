@@ -67,7 +67,7 @@ class CCUS:
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
 
     def compute_carbon_storage_capacity(self):
-        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][ GlossaryEnergy.carbon_storage].values * self.inputs_dict['scaling_factor_energy_production']
+        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}"][ GlossaryEnergy.carbon_storage].values * self.inputs_dict['scaling_factor_energy_production']
 
         self.outputs_dict['carbon_storage_capacity (Gt)'] = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -82,8 +82,8 @@ class CCUS:
         co2_for_food_mt = self.co2_for_food[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values
 
         # production of CCS technos are in Mt
-        carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_capture].values
-        carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_storage].values
+        carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamProductionValue}"][GlossaryEnergy.carbon_capture].values
+        carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}"][GlossaryEnergy.carbon_storage].values
         scaling_factor_energy_prod = self.inputs_dict['scaling_factor_energy_production']
 
         # Outputs are in Gt (for automatic differentiation purpose : coupling output var is in Gt)
@@ -130,8 +130,8 @@ class CCUS:
         co2_for_food_mt = self.co2_for_food[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values
 
         # production of CCS technos are in Mt
-        carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_capture].values
-        carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_storage].values
+        carbon_capture_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamProductionValue}"][GlossaryEnergy.carbon_capture].values
+        carbon_storage_prod_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}"][GlossaryEnergy.carbon_storage].values
         scaling_factor_energy_prod = self.inputs_dict['scaling_factor_energy_production']
 
         jac_carbon_capture_from_cc_prod, jac_carbon_capture_from_cs_prod, jac_carbon_capture_from_energy_mix, jac_co2_emissions_needed_by_energy_mix =\
@@ -147,8 +147,8 @@ class CCUS:
         out = {
             'carbon_capture_from_energy_mix': [(f'{GlossaryEnergy.carbon_capture} from energy mix (Gt)', jac_carbon_capture_from_energy_mix)],
             'co2_emissions_needed_by_energy_mix': [(f'{GlossaryEnergy.carbon_capture} needed by energy mix (Gt)', jac_co2_emissions_needed_by_energy_mix)],
-            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}': [(GlossaryEnergy.carbon_storage, jac_carbon_capture_from_cs_prod)],
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyProductionValue}': [(GlossaryEnergy.carbon_capture, jac_carbon_capture_from_cc_prod)]
+            f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}': [(GlossaryEnergy.carbon_storage, jac_carbon_capture_from_cs_prod)],
+            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamProductionValue}': [(GlossaryEnergy.carbon_capture, jac_carbon_capture_from_cc_prod)]
         }
 
         return out

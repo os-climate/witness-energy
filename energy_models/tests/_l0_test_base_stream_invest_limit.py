@@ -37,7 +37,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
 
     def setUp(self):
 
-        self.energy_name = GlossaryEnergy.hydrogen
+        self.stream_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.years = years

@@ -63,7 +63,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = GlossaryEnergy.carbon_storage
+    stream_name = GlossaryEnergy.carbon_storage
 
     def get_post_processing_list(self, filters=None):
 
@@ -146,9 +146,9 @@ class CSTechnoDiscipline(TechnoDiscipline):
             percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {
-                'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
+                'Percentage of total price at starting year': f'{percentage_resource[self.stream_name][0]} %'}
             tot_price = techno_detailed_prices[self.techno_name].values / \
-                        (percentage_resource[self.energy_name] / 100.)
+                        (percentage_resource[self.stream_name] / 100.)
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 tot_price.tolist(), 'Total price without percentage', 'lines')
@@ -256,15 +256,15 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
         study_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'World {self.energy_name} capture via {self.techno_name}<br>with 2020 factories distribution'
+        chart_name = f'World {self.stream_name} capture via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} capture (Mt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_name} capture (Mt)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
             initial_prod['cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
-        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.mass_unit})'].values
+        study_prod = study_production[f'{self.stream_name} ({GlossaryEnergy.mass_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)

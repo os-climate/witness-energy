@@ -41,7 +41,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HeatPumpHighHeat
-    energy_name = hightemperatureheat.name
+    stream_name = hightemperatureheat.name
 
 
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.

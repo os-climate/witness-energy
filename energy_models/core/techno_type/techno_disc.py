@@ -110,7 +110,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
     _maturity = 'Research'
 
     techno_name = 'Fill techno name'
-    energy_name = 'Fill the energy name for this techno'
+    stream_name = 'Fill the energy name for this techno'
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
@@ -189,10 +189,10 @@ class TechnoDiscipline(AutodifferentiedDisc):
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name,
-                                                                                    energy_name=self.energy_name,
+                                                                                    energy_name=self.stream_name,
                                                                                     byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.TechnoDetailedProductionValue: GlossaryEnergy.get_techno_prod_df(techno_name=self.techno_name,
-                                                                                            energy_name=self.energy_name,
+                                                                                            energy_name=self.stream_name,
                                                                                             byproducts_list=GlossaryEnergy.techno_byproducts[self.techno_name]),
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
@@ -307,7 +307,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
-        self.stream_unit = GlossaryEnergy.unit_dicts[self.energy_name]
+        self.stream_unit = GlossaryEnergy.unit_dicts[self.stream_name]
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
@@ -425,9 +425,9 @@ class TechnoDiscipline(AutodifferentiedDisc):
         if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs('percentage_resource')
             new_chart.annotation_upper_left = {
-                'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
+                'Percentage of total price at starting year': f'{percentage_resource[self.stream_name][0]} %'}
             tot_price = techno_detailed_prices[self.techno_name].values / \
-                        (percentage_resource[self.energy_name] / 100.)
+                        (percentage_resource[self.stream_name] / 100.)
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years],
                 tot_price, 'Total price without percentage', 'lines')
@@ -491,9 +491,9 @@ class TechnoDiscipline(AutodifferentiedDisc):
         if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs('percentage_resource')
             new_chart.annotation_upper_left = {
-                'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
+                'Percentage of total price at starting year': f'{percentage_resource[self.stream_name][0]} %'}
             tot_price = techno_detailed_prices[self.techno_name].values / \
-                        (percentage_resource[self.energy_name] / 100.)
+                        (percentage_resource[self.stream_name] / 100.)
 
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years],
@@ -684,16 +684,16 @@ class TechnoDiscipline(AutodifferentiedDisc):
         initial_production = self.get_sosdisc_outputs(GlossaryEnergy.InitialPlantsTechnoProductionValue)
 
         study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with {year_start} factories distribution'
+        chart_name = f'{self.stream_name} World Production via {self.techno_name}<br>with {year_start} factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} production [TWh]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_name} production [TWh]',
                                              chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
             initial_production[GlossaryEnergy.Years],
             initial_production['cum energy (TWh)'], f'Initial production by {year_start} factories', 'lines')
 
-        study_prod = study_production[f'{self.energy_name} ({GlossaryEnergy.energy_unit})'].values
+        study_prod = study_production[f'{self.stream_name} ({GlossaryEnergy.energy_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
@@ -725,7 +725,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
     def get_chart_carbon_intensity_kwh(self):
 
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions_detailed')
-        chart_name = f'Carbon intensity of {self.energy_name} via {self.techno_name}'
+        chart_name = f'Carbon intensity of {self.stream_name} via {self.techno_name}'
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions [kgCO2/kWh]',
@@ -743,7 +743,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
             serie = InstanciatedSeries(
                 carbon_emissions[GlossaryEnergy.Years],
-                CO2_per_use, f'if {self.energy_name} used', 'bar')
+                CO2_per_use, f'if {self.stream_name} used', 'bar')
 
             new_chart.series.append(serie)
 
@@ -790,7 +790,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                   'high_calorific_value']
             serie = InstanciatedSeries(
                 carbon_emissions[GlossaryEnergy.Years],
-                CO2_per_use, f'if {self.energy_name} used', 'bar')
+                CO2_per_use, f'if {self.stream_name} used', 'bar')
 
             new_chart.series.append(serie)
 
@@ -919,13 +919,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
     def get_chart_production(self):
         production_detailed = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'Production of {self.energy_name} by {self.techno_name}'
+        chart_name = f'Production of {self.stream_name} by {self.techno_name}'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_unit}', chart_name=chart_name, stacked_bar=True)
 
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed[f'{self.energy_name} ({self.stream_unit})'], 'Total', 'lines')
+            production_detailed[f'{self.stream_name} ({self.stream_unit})'], 'Total', 'lines')
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],

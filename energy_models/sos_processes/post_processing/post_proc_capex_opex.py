@@ -32,7 +32,7 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].discipline_wrapp.wrapper.energy_name
+        0].discipline_wrapp.wrapper.stream_name
     chart_list += [f'{energy} Capex value']
 
     # The filters are set to False by default since the graphs are not yet
@@ -144,19 +144,19 @@ def post_processings(execution_engine, namespace, filters):
 
     split_title = namespace.split('.')
     title = split_title[len(split_title) - 1] + ' Capex Price'
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
     if f'{energy} Capex value' in graphs_list:
         capex_bar_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'CAPEX_Part', 'Capex')
         instanciated_charts.append(capex_bar_slider_graph)
 
     title = split_title[len(split_title) - 1] + ' Opex Price'
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
     if f'{energy} Capex value' in graphs_list:
         opex_bar_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'OPEX_Part', 'Opex')
         instanciated_charts.append(opex_bar_slider_graph)
 
     title = split_title[len(split_title) - 1] + ' Total Price'
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
     if f'{energy} Capex value' in graphs_list:
         total_price_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'Total_Price', 'Price')
         instanciated_charts.append(total_price_slider_graph)

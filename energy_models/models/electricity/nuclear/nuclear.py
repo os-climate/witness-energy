@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import autograd.numpy as np
 
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
@@ -43,7 +42,7 @@ class Nuclear(ElectricityTechno):
                                                                                                    f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
 
         # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
-        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_unit})']) / \
+        #       self.production[f'{ElectricityTechno.stream_name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']
 
 
@@ -102,9 +101,9 @@ class Nuclear(ElectricityTechno):
             capacity_factor_list = None
             if 'capacity_factor_at_year_end' in self.inputs['techno_infos_dict'] \
                     and 'capacity_factor' in self.inputs['techno_infos_dict']:
-                capacity_factor_list = np.linspace(self.inputs['techno_infos_dict']['capacity_factor'],
-                                                   self.inputs['techno_infos_dict']['capacity_factor_at_year_end'],
-                                                   len(invests))
+                capacity_factor_list = self.np.linspace(self.inputs['techno_infos_dict']['capacity_factor'],
+                                                         self.inputs['techno_infos_dict']['capacity_factor_at_year_end'],
+                                                         len(invests))
 
             capex_calc_list = []
             invest_sum = self.inputs['initial_production'] * capex_init
@@ -118,7 +117,7 @@ class Nuclear(ElectricityTechno):
                     capex_year = capex_init
                     # first capex calculation
                 else:
-                    np.seterr('raise')
+                    self.np.seterr('raise')
                     if capacity_factor_list is not None:
                         try:
                             ratio_invest = ((invest_sum + invest) / invest_sum *
@@ -130,7 +129,7 @@ class Nuclear(ElectricityTechno):
                                 f'invest is {invest} and invest sum {invest_sum} on techno {self.name}')
 
                     else:
-                        np.seterr('raise')
+                        self.np.seterr('raise')
                         try:
                             # try to calculate capex_year "normally"
                             ratio_invest = ((invest_sum + invest) /
@@ -141,17 +140,17 @@ class Nuclear(ElectricityTechno):
                         except FloatingPointError:
                             # set invest as a complex to calculate capex_year as a
                             # complex
-                            ratio_invest = ((invest_sum + np.complex128(invest)) /
+                            ratio_invest = ((invest_sum + self.np.complex128(invest)) /
                                             invest_sum) ** (-expo_factor)
 
                             pass
-                        np.seterr('warn')
+                        self.np.seterr('warn')
 
                     # Check that the ratio is always above 0.95 but no strict threshold for
                     # optim is equal to 0.92 when tends to zero:
                     if ratio_invest < 0.95:
                         ratio_invest = 0.9 + \
-                                       0.05 * np.exp(ratio_invest - 0.9)
+                                       0.05 * self.np.exp(ratio_invest - 0.9)
                     capex_year = capex_year * ratio_invest
 
                 capex_calc_list.append(capex_year)
@@ -166,8 +165,8 @@ class Nuclear(ElectricityTechno):
                 maximum_learning_capex_ratio = 0.9
 
             capex_calc_list = capex_init * (maximum_learning_capex_ratio + (
-                    1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
+                    1.0 - maximum_learning_capex_ratio) * self.np.array(capex_calc_list) / capex_init)
         else:
-            capex_calc_list = capex_init * np.ones(len(invests))
+            capex_calc_list = capex_init * self.np.ones(len(invests))
 
-        return np.array(capex_calc_list)
+        return self.np.array(capex_calc_list)

@@ -56,4 +56,4 @@ class BioDieselTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = BioDiesel.name
+    stream_name = BioDiesel.name

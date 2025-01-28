@@ -41,7 +41,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.GeothermalHighHeat
-    energy_name = hightemperatureheat.name
+    stream_name = hightemperatureheat.name
 
 
 

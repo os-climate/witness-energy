@@ -41,12 +41,12 @@ class UpgradingBiogas(MethaneTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                   f'{MethaneTechno.energy_name} ({self.product_unit})']
+                                                                                   f'{MethaneTechno.stream_name} ({self.product_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
+        # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
         #     self.inputs['techno_infos_dict']['low_heat_production'] * \
-        #     self.production[f'{MethaneTechno.energy_name} ({self.product_unit})']  # in TWH
+        #     self.production[f'{MethaneTechno.stream_name} ({self.product_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''
