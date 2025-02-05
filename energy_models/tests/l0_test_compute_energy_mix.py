@@ -166,7 +166,7 @@ class EnergyMixTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryEnergy.energy_list}': [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane, GlossaryEnergy.biomass_dry],
+                       f'{name}.{GlossaryEnergy.energy_list}': [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane],
                        f'{name}.{GlossaryEnergy.ccs_list}': [],
                        f'{name}.is_dev': True,
                        f'{name}.{model_name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(

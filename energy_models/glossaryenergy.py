@@ -775,7 +775,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
         f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
         solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
-        biomass_dry: {stream_type: agriculture_type, value: []},
         electricity: {
             stream_type: energy_type,
             value: [
@@ -1061,6 +1060,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         Geothermal: [],
         Crop: [],
         Forest: [],
+        GlossaryWitnessCore.Forestry: [],
         RWGS: [WaterResource],
     }
 
