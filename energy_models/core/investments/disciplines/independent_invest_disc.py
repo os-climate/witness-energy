@@ -55,6 +55,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_invest',
                                     'dynamic_dataframe_columns': True
                                     },
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
@@ -66,12 +67,6 @@ class IndependentInvestDiscipline(SoSWrapp):
                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                   'editable': False,
                                   'structuring': True},
-        GlossaryEnergy.ReforestationInvestmentValue: {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                                               'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                                        GlossaryEnergy.ReforestationInvestmentValue: (
-                                                                        'float', None, False)},
-                                               'namespace': 'ns_invest',
-                                               'dataframe_edition_locked': False},
         GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
         GlossaryEnergy.MaxBudgetConstraintRefValue: GlossaryEnergy.MaxBudgetConstraintRef
     }
@@ -114,21 +109,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
-                        dynamic_inputs['managed_wood_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_forest', 'dataframe_edition_locked': False, }
-                        dynamic_inputs['deforestation_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_forest', 'dataframe_edition_locked': False}
-                        dynamic_inputs['crop_investment'] = {
-                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
-                            'namespace': 'ns_crop', 'dataframe_edition_locked': False}
+                        pass
                     else:
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
@@ -224,39 +205,6 @@ class IndependentInvestDiscipline(SoSWrapp):
                 (GlossaryEnergy.invest_mix, techno),
                 np.identity(len(years)))
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
-            identity * 1e-3)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
-            (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
-            ones * 1e-3)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
-            (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
-            identity / max_budget_constraint_ref)
-
-        energy_list = inputs_dict[GlossaryEnergy.energy_list]
-        if BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-                    (techno, GlossaryEnergy.InvestmentsValue),
-                    identity * 1e-3)
-
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
-                    (techno, GlossaryEnergy.InvestmentsValue),
-                    ones * 1e-3)
-
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.MaxBudgetConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue),
-                    (techno, GlossaryEnergy.InvestmentsValue),
-                    identity / max_budget_constraint_ref)
-
     def get_chart_filter_list(self):
 
         chart_filters = []
@@ -331,39 +279,6 @@ class IndependentInvestDiscipline(SoSWrapp):
 
                 new_chart_energy.series.append(serie)
 
-            reforestation_investment = self.get_sosdisc_inputs(GlossaryEnergy.ReforestationInvestmentValue)
-            chart_name = 'Distribution of reforestation investments'
-            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                         chart_name=chart_name, stacked_bar=True)
-            serie_agriculture = InstanciatedSeries(
-                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
-                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].values.tolist(), 'Reforestation', 'bar')
-            agriculture_chart.series.append(serie_agriculture)
-            instanciated_charts.append(agriculture_chart)
-            serie = InstanciatedSeries(
-                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
-                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].tolist(), 'Reforestation', 'bar')
-
-            new_chart_energy.series.append(serie)
-
-            if BiomassDry.name in energy_list:
-                chart_name = 'Distribution of agriculture sector investments'
-                agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                             chart_name=chart_name, stacked_bar=True)
-
-                for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                    invest = self.get_sosdisc_inputs(techno)
-                    serie_agriculture = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""),
-                        'bar')
-                    agriculture_chart.series.append(serie_agriculture)
-                    serie = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
-                    new_chart_energy.series.append(serie)
-                instanciated_charts.append(agriculture_chart)
-                instanciated_charts.insert(0, new_chart_energy)
 
             instanciated_charts.insert(0, new_chart_energy)
 
