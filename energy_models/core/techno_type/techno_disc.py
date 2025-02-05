@@ -197,14 +197,15 @@ class TechnoDiscipline(AutodifferentiedDisc):
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
-        self.add_inputs(dynamic_inputs)
-        d = self.add_additionnal_dynamic_output()
-        d.update(dynamic_outputs)
-        self.add_outputs(d)
+        di, do = self.add_additionnal_dynamic_variables()
+        do.update(dynamic_outputs)
+        di.update(dynamic_inputs)
+        self.add_inputs(di)
+        self.add_outputs(do)
 
-    def add_additionnal_dynamic_output(self):
+    def add_additionnal_dynamic_variables(self):
         """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
-        return {}
+        return {}, {}
 
     def update_default_values(self):
         '''

@@ -52,6 +52,7 @@ class BaseStream(DifferentiableModel):
         self.configure_parameters()
         self.compute_productions()
         self.compute_consumptions()
+        self.compute_consumptions_wo_ratios()
         self.compute_techno_mix()
         self.compute_price()
         self.aggregate_land_use_required()
@@ -69,7 +70,7 @@ class BaseStream(DifferentiableModel):
             for techno_product in techno_products:
                 output_path = f"{GlossaryEnergy.StreamProductionValue}:{techno_product}"
                 if output_path in self.outputs:
-                    self.outputs[output_path] += self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
+                    self.outputs[output_path] = self.outputs[output_path] + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
                 else:
                     self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
 
@@ -101,8 +102,14 @@ class BaseStream(DifferentiableModel):
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             self.outputs[f'energy_detailed_techno_prices:{techno}'] = self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}']
             techno_share_of_total_stream_prod = self.outputs[f'techno_mix:{techno}'] / 100.
-            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] += self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}'] * techno_share_of_total_stream_prod
-            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] += self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}_wotaxes'] * techno_share_of_total_stream_prod
+
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}']  + \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}'] * techno_share_of_total_stream_prod
+
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes']  + \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}_wotaxes'] * techno_share_of_total_stream_prod
 
     def aggregate_land_use_required(self):
         '''
@@ -122,9 +129,14 @@ class BaseStream(DifferentiableModel):
             for techno_consumed_product in techno_consumed_products:
                 output_path = f"{GlossaryEnergy.StreamConsumptionValue}:{techno_consumed_product}"
                 if output_path in self.outputs:
-                    self.outputs[output_path] += self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}:{techno_consumed_product}']
+                    self.outputs[output_path] = \
+                        self.outputs[output_path] + \
+                        self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}:{techno_consumed_product}']
+
                 else:
-                    self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}:{techno_consumed_product}']
+                    self.outputs[output_path] = \
+                        self.zeros_array + \
+                        self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}:{techno_consumed_product}']
 
     def compute_techno_mix(self):
         """Compute the contribution of each techno for the production of the main stream (in %) [0, 100]"""
@@ -133,4 +145,22 @@ class BaseStream(DifferentiableModel):
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             techno_share_of_total_stream_prod = self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] / stream_total_prod
             self.outputs[f'techno_mix:{techno}'] = techno_share_of_total_stream_prod * 100.
+
+    def compute_consumptions_wo_ratios(self):
+        self.outputs[f"{GlossaryEnergy.StreamConsumptionWithoutRatioValue}:{GlossaryEnergy.Years}"] = self.years
+
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            techno_consumed_products = self.get_colnames_input_dataframe(
+                df_name=f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}', expect_years=True)
+            for techno_consumed_product in techno_consumed_products:
+                output_path = f"{GlossaryEnergy.StreamConsumptionWithoutRatioValue}:{techno_consumed_product}"
+                if output_path in self.outputs:
+                    self.outputs[output_path] = \
+                        self.outputs[output_path] + \
+                        self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{techno_consumed_product}']
+
+                else:
+                    self.outputs[output_path] = \
+                        self.zeros_array + \
+                        self.inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{techno_consumed_product}']
 

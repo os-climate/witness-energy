@@ -87,8 +87,8 @@ class FlueGasDiscipline(AutodifferentiedDisc):
     unit = "Mt"
 
     POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 #f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 #f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}': FischerTropschDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}': RefineryDiscipline.FLUE_GAS_RATIO,

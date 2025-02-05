@@ -93,6 +93,9 @@ class TechnoType(DifferentiableModel):
             self.ratios_name_list.extend([f'all_resource_ratio_usable_demand:{resource}' for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]])
             self.ratios_name_list.extend([f'all_resource_ratio_usable_demand:{resource}' for resource in self.inputs[GlossaryEnergy.ResourcesUsedForBuildingValue]])
 
+        if f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.biomass_dry}' in self.ratios_name_list:
+            self.ratios_name_list.remove(f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.biomass_dry}')
+
 
     def apply_limiting_ratio(self):
         """! Select the most constraining ratio and apply it to production and consumption.
@@ -259,8 +262,11 @@ class TechnoType(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] = self.zeros_array
         for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
-            self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = \
-                self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f"{GlossaryEnergy.StreamPricesValue}:{stream}"]
+            if stream == GlossaryEnergy.biomass_dry:
+                self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = self.zeros_array
+            else:
+                self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = \
+                    self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f"{GlossaryEnergy.StreamPricesValue}:{stream}"]
             self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] = self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] + self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"]
 
 
@@ -790,7 +796,10 @@ class TechnoType(DifferentiableModel):
     def compute_co2_emissions_from_streams_usage(self):
         """Computes the co2 emissions due to streams usage"""
         for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
-            self.outputs[f'CO2_emissions_detailed:{stream}'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{stream}']
+            if stream == GlossaryEnergy.biomass_dry:
+                self.outputs[f'CO2_emissions_detailed:{stream}'] = self.zeros_array
+            else:
+                self.outputs[f'CO2_emissions_detailed:{stream}'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{stream}']
             self.outputs['CO2_emissions_detailed:Scope 2'] = self.outputs['CO2_emissions_detailed:Scope 2'] + self.outputs[f'CO2_emissions_detailed:{stream}']
 
     def compute_newly_installed_capacity_resource_consumption(self):

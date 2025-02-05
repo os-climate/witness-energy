@@ -24,24 +24,12 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
+from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import FlueGasDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}',
-                         f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}',
-                         f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}',
-                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}',
-                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}',
-                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}',
-                         f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}',
-                         f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}',
-                         f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}',
-                         f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}']
 
 
 class Study(EnergyMixStudyManager):
@@ -191,7 +179,7 @@ class Study(EnergyMixStudyManager):
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': DEFAULT_FLUE_GAS_LIST,
+                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': FlueGasDiscipline.POSSIBLE_FLUE_GAS_TECHNOS,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,

@@ -19,6 +19,7 @@ import pandas as pd
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
+from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import FlueGasDiscipline
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -62,9 +63,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
-    DEFAULT_FLUE_GAS_LIST,
-)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -545,7 +543,7 @@ class Study(EnergyStudyManager):
         resources_prices = get_default_resources_prices(self.years)
 
         all_streams_demand_ratio = {GlossaryEnergy.Years: self.years}
-        all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})
+        all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list + self.ccs_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
         all_resource_ratio_usable_demand = {GlossaryEnergy.Years: self.years}
@@ -643,7 +641,7 @@ class Study(EnergyStudyManager):
             for techno in tech_dict[GlossaryEnergy.value]
         ]
         flue_gas_list = [
-            techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
+            techno for techno in FlueGasDiscipline.POSSIBLE_FLUE_GAS_TECHNOS if techno in possible_technos
         ]
 
         if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:

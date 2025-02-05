@@ -105,10 +105,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def setup_sos_disciplines(self):
-
-        super().setup_sos_disciplines()
-
+    def add_additionnal_dynamic_variables(self):
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -121,6 +118,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                             self.update_default_value(
                                 'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
                                 pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
+        return {}, {}
 
     def init_execution(self):
         self.model = PureCarbonSS(self.techno_name)

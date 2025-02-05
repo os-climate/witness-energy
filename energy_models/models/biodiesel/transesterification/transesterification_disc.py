@@ -78,18 +78,15 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     def init_execution(self):
         self.model = Transesterification(self.techno_name)
 
-    def setup_sos_disciplines(self):
+    def add_additionnal_dynamic_variables(self):
         '''
         Compute techno_infos_dict with updated data_fuel_dict
         '''
-        super().setup_sos_disciplines()
-        dynamic_inputs = self.get_inst_desc_in()
+        dynamic_inputs = {}
         if self.get_data_in() is not None:
             if 'data_fuel_dict' in self.get_data_in():
-                biodiesel_calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
-                    'calorific_value']
-                biodiesel_density = self.get_sosdisc_inputs('data_fuel_dict')[
-                    'density']
+                biodiesel_calorific_value = self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+                biodiesel_density = self.get_sosdisc_inputs('data_fuel_dict')['density']
 
                 # Source for initial production: IEA 2022, Renewables 2021, https://www.iea.org/reports/renewables-2021, License: CC BY 4.0.
                 # 43 billion liters from IEA in 2020
@@ -99,5 +96,5 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                     'type': 'dict', 'default': self.techno_infos_dict_default, 'unit': 'defined in dict'}
                 dynamic_inputs['initial_production'] = {
                     'type': 'float', 'unit': 'TWh', 'default': initial_production}
-        self.add_inputs(dynamic_inputs)
+        return dynamic_inputs, {}
 

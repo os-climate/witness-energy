@@ -103,9 +103,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                                  'visibility': 'Shared'}}
     DESC_OUT.update(GaseousHydrogenTechnoDiscipline.DESC_OUT)
 
-    def setup_sos_disciplines(self):
-
-        super().setup_sos_disciplines()
+    def add_additionnal_dynamic_variables(self):
 
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
@@ -121,6 +119,8 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                         self.update_default_value(
                             'market_demand', self.IO_TYPE_IN,
                             pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
+
+        return {}, {}
 
     def init_execution(self):
         self.model = PlasmaCracking(self.techno_name)

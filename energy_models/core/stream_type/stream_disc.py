@@ -56,6 +56,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     DESC_OUT = {
         GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
+        GlossaryEnergy.StreamConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
         GlossaryEnergy.StreamProductionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, },
         GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
