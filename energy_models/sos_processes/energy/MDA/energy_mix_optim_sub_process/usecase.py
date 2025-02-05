@@ -570,7 +570,7 @@ class Study(EnergyStudyManager):
         co2_land_emissions = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             "Crop": 0.,
-            "Forest": 0.,
+            "Forestry": 0.,
         })
 
         CO2_indus_emissions_df = pd.DataFrame({

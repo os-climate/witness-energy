@@ -188,6 +188,8 @@ class TechnoType:
         self.resources_used_for_production = inputs_dict[GlossaryEnergy.ResourcesUsedForProductionValue]
         self.resources_used_for_building = inputs_dict[GlossaryEnergy.ResourcesUsedForBuildingValue]
         self.streams_used_for_production = inputs_dict[GlossaryEnergy.StreamsUsedForProductionValue]
+        if GlossaryEnergy.biomass_dry in self.streams_used_for_production:
+            self.streams_used_for_production.remove(GlossaryEnergy.biomass_dry)
         self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def configure_parameters_update(self, inputs_dict):

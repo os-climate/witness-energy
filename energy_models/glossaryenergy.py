@@ -683,10 +683,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{fuel}.{biodiesel}": {stream_type: energy_type, value: [Transesterification]},
         f"{fuel}.{ethanol}": {stream_type: energy_type, value: [BiomassFermentation]},
         solid_fuel: {stream_type: energy_type, value: [CoalExtraction, Pelletizing]},
-        biomass_dry: {
-            stream_type: agriculture_type,
-            value: [ManagedWood, UnmanagedWood, CropEnergy],
-        },
         electricity: {stream_type: energy_type, value: [WindOffshore]},
         f"{hydrogen}.{liquid_hydrogen}": {
             stream_type: energy_type,
@@ -789,7 +785,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 BiogasFired,
                 CoalGen,
                 OilGen,
-                BiomassFired,
+                #BiomassFired,
             ],
         },
         carbon_capture: {

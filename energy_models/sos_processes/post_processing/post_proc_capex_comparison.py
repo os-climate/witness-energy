@@ -42,7 +42,7 @@ def post_processings(execution_engine, namespace, filters):
                     execution_engine, namespace, energy)
                 if chart is not None:
                     chart_results.append(chart)
-        if not namespace.endswith('AgricultureMix'):
+        if not namespace.endswith('Agriculture'):
             chart_energy = create_chart_factory_comparison_energy(
                 execution_engine, namespace, energy_list)
             chart_results.append(chart_energy)

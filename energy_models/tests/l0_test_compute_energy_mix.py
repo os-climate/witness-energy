@@ -142,7 +142,7 @@ class EnergyMixTestCase(unittest.TestCase):
 
         name = 'Test'
         model_name = 'EnergyMix'
-        agriculture_mix = 'AgricultureMix'
+        agriculture_mix = 'Agriculture'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
