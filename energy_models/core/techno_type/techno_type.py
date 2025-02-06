@@ -188,6 +188,8 @@ class TechnoType:
         self.resources_used_for_production = inputs_dict[GlossaryEnergy.ResourcesUsedForProductionValue]
         self.resources_used_for_building = inputs_dict[GlossaryEnergy.ResourcesUsedForBuildingValue]
         self.streams_used_for_production = inputs_dict[GlossaryEnergy.StreamsUsedForProductionValue]
+        if GlossaryEnergy.biomass_dry in self.streams_used_for_production:
+            self.streams_used_for_production.remove(GlossaryEnergy.biomass_dry)
         self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def configure_parameters_update(self, inputs_dict):
@@ -485,7 +487,10 @@ class TechnoType:
             GlossaryEnergy.Years: self.years,
         }
         for stream in self.streams_used_for_production:
-            cost_of_streams_usage[stream] = self.cost_details[f"{stream}_needs"].values * self.stream_prices[stream].values
+            if stream == GlossaryEnergy.biomass_dry:
+                cost_of_streams_usage[stream] = 0.
+            else:
+                cost_of_streams_usage[stream] = self.cost_details[f"{stream}_needs"].values * self.stream_prices[stream].values
 
         self.cost_of_streams_usage = pd.DataFrame(cost_of_streams_usage)
 
@@ -1146,7 +1151,10 @@ class TechnoType:
     def compute_co2_emissions_from_streams_usage(self):
         """Computes the co2 emissions due to streams usage"""
         for stream in self.streams_used_for_production:
-            self.carbon_intensity_generic[stream] = self.cost_details[f"{stream}_needs"].values * self.streams_CO2_emissions[stream].values
+            if stream == GlossaryEnergy.biomass_dry:
+                self.carbon_intensity_generic[stream] = 0
+            else:
+                self.carbon_intensity_generic[stream] = self.cost_details[f"{stream}_needs"].values * self.streams_CO2_emissions[stream].values
 
     def compute_new_power_production_resource_consumption(self):
         """

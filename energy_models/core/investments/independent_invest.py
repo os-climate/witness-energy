@@ -17,7 +17,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 from .base_invest import BaseInvest
@@ -55,13 +54,6 @@ class IndependentInvest(BaseInvest):
         techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        techno_invest_sum += inputs_dict[GlossaryEnergy.ReforestationInvestmentValue][
-            GlossaryEnergy.ReforestationInvestmentValue].values
-        energy_list = inputs_dict[GlossaryEnergy.energy_list]
-
-        if BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                techno_invest_sum += inputs_dict[techno][GlossaryEnergy.InvestmentsValue].values
         energy_investment_wo_tax = pd.DataFrame(
             {GlossaryEnergy.Years: inputs_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years],
              GlossaryEnergy.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$
