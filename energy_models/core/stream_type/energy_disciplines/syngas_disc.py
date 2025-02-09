@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from copy import deepcopy
 
 import numpy as np
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -29,11 +28,7 @@ from sostrades_optimization_plugins.models.autodifferentiated_discipline import 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import (
     Syngas,
-    compute_calorific_value,
-    compute_high_calorific_value,
-    compute_molar_mass,
 )
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 
 

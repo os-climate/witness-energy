@@ -82,7 +82,7 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
+            zip(EnergyMix.resource_list, np.linspace(1.0, 1.0, len(years))))
         resource_ratio_dict[GlossaryEnergy.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
@@ -91,7 +91,7 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                 f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
                 f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                 f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                 f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

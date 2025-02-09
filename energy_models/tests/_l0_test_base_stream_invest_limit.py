@@ -119,14 +119,14 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisPEM],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
@@ -137,7 +137,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
         # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
@@ -196,14 +196,14 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisPEM],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
@@ -214,7 +214,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
 

@@ -118,8 +118,8 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                             f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
         # production

@@ -69,11 +69,11 @@ class FossilGas(MethaneTechno):
 
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
             self.inputs['techno_infos_dict']['CO2_from_production'] / self.inputs['data_fuel_dict']['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{MethaneTechno.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{MethaneTechno.stream_name} ({self.product_unit})']
 
-        self.compute_ghg_emissions(Methane.emission_name)
+        self.compute_ghg_emissions(GlossaryEnergy.CH4)
         # self.production[f'{hightemperatureheat.name}] ({self.product_unit})'] = ((1 - self.inputs['techno_infos_dict']['efficiency']) * \
         #      self.production[f'{Methane.name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']

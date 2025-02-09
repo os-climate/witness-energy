@@ -133,20 +133,20 @@ class RWGS(SyngasTechno):
     def compute_byproducts_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = th_water_prod * \
-                                                                       self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = th_water_prod * \
+                                                                                                                  self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                            f'{SyngasTechno.stream_name} ({self.product_unit})']
 
-    def compute_streams_consumption(self):
+    def compute_energies_demand(self):
         """
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
 
-        super().compute_streams_consumption()
+        super().compute_energies_demand()
 
-        self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
-                                                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
+                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

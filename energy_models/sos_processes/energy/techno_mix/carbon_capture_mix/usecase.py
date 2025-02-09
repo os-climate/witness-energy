@@ -24,12 +24,13 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import FlueGasDiscipline
+from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import (
+    FlueGasDiscipline,
+)
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
-
 
 
 class Study(EnergyMixStudyManager):
@@ -201,7 +202,7 @@ class Study(EnergyMixStudyManager):
             values_dict.update(
                 {
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.flue_gas_co2_ratio': np.array([0.035]),

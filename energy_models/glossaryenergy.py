@@ -131,14 +131,49 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
     TechnoDetailedProductionValue = "techno_detailed_production"
     TechnoDetailedPricesValue = "techno_detailed_prices"
-    TechnoConsumptionValue = "techno_consumption"
-    TechnoProductionWithoutRatioValue = "techno_production_woratio"
+    TechnoEnergyConsumptionValue = "techno_consumption"
+    TechnoResourceConsumptionValue = "techno_consumption"
+    TechnoTargetProductionValue = "techno_production_target"
     RessourcesCO2EmissionsValue = "resources_CO2_emissions"
     TransportCostValue = "transport_cost"
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ReforestationInvestmentValue = "reforestation_investment"
     CarbonCapturedValue = "carbon_captured_type"
+
+    TechnoEnergyConsumption = {'type': 'dataframe', 'unit': 'TWh',
+                               "description": "Different energies consumed by the techno",
+                               "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+    TechnoResourceConsumption = {'type': 'dataframe', 'unit': 'Mt',
+                                 "description": "Different resources consumed by the techno",
+                                 "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoResourceDemands = {'type': 'dataframe', 'unit': 'Mt',
+                             "description": "Demand of resource to achieve techno target production",
+                             "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+    TechnoEnergyDemands = {'type': 'dataframe', 'unit': 'TWh',
+                           "description": "Demand of other energy to achieve techno target production",
+                           "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoScope1GHGEmissionsValue = "techno_scope_1_emissions"
+    TechnoScope1GHGEmissions = {'type': 'dataframe', 'unit': 'Mt', "description": "Scope 1 emissions of the techno",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
+
+    StreamScope1GHGEmissionsValue = "stream_scope_1_emissions"
+    StreamScope1GHGEmissions = {'type': 'dataframe', 'unit': 'Mt', "description": "Scope 1 emissions of the stream",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
 
     InstalledCapacity = "installed_capacity"
     InstalledCapacityDf = {
@@ -169,6 +204,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     AllStreamsDemandRatio = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "-",
         "visibility": "Shared",
         "namespace": "ns_energy",
@@ -524,12 +560,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoProductionDf = {
         "var_name": TechnoProductionValue,
         "type": "dataframe",
-        "unit": "TWh or Mt",
+        "unit": "TWh",
         "dynamic_dataframe_columns": True,
     }
 
     EnergyPricesDf = {
-        "var_name": GlossaryWitnessCore.StreamPricesValue,
+        "var_name": GlossaryWitnessCore.EnergyPricesValue,
         "type": "dataframe",
         "unit": "$/MWh",
         "dynamic_dataframe_columns": True,
@@ -1504,36 +1540,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
         }
 
     @classmethod
-    def get_techno_prod_df(
-        cls, energy_name: str, techno_name: str, byproducts_list: list[str]
-    ):
+    def get_techno_prod_df(cls, energy_name: str):
         return {
             "type": "dataframe",
             "unit": cls.unit_dicts[energy_name],
-            AutodifferentiedDisc.GRADIENTS: True,
-            "description": f"Production of {energy_name} by from techno {techno_name}",
-            "dataframe_descriptor": {
-                cls.Years: (
-                    "int",
-                    [1900, GlossaryWitnessCore.YearEndDefault],
-                    False,
-                ),
-                f"{energy_name} ({cls.unit_dicts[energy_name]})": (
-                    "float",
-                    None,
-                    False,
-                ),
-                **{
-                    f"{bp} ({cls.unit_dicts[bp]})": ("float", None, False)
-                    for bp in byproducts_list
-                },
-            },
-        }
+            AutodifferentiedDisc.GRADIENTS: True,}
 
     @classmethod
     def get_stream_prices_df(cls, stream_used_for_production: list[str]):
         return {
-            "varname": cls.StreamPricesValue,
+            "varname": cls.EnergyPricesValue,
             "type": "dataframe",
             "unit": "$/MWh or $/mass",
             "visibility": "Shared",
@@ -1615,7 +1631,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     @classmethod
     def get_one_stream_price_df(cls, stream_name: str):
         return {
-            "varname": cls.StreamPricesValue,
+            "varname": cls.EnergyPricesValue,
             "type": "dataframe",
             AutodifferentiedDisc.GRADIENTS: True,
             "unit": "$/MWh",

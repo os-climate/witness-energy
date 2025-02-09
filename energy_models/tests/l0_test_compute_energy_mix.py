@@ -23,7 +23,6 @@ from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
 
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -118,7 +117,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.ones((len(self.years), len(self.years)))))
+            zip(GlossaryEnergy.unit_dicts.keys(), np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
@@ -128,7 +127,7 @@ class EnergyMixTestCase(unittest.TestCase):
             GlossaryEnergy.TargetEnergyProductionValue: 280000
         })
 
-    def test_02_energy_mix_discipline(self):
+    def test_01_energy_mix_discipline(self):
         """
         Test energy mix discipline
 
@@ -167,33 +166,31 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{GlossaryEnergy.energy_list}': [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane],
                        f'{name}.{GlossaryEnergy.ccs_list}': [],
                        f'{name}.is_dev': True,
-                       f'{name}.{model_name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
+                       f'{name}.{model_name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
                            {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': self.prices_hydro[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
                             GlossaryEnergy.methane: self.cost_details[GlossaryEnergy.methane]}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption_hydro,
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamEnergyConsumptionValue}': self.consumption_hydro,
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionDemandsValue}': self.consumption_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamPricesValue}': self.prices_hydro,
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamConsumptionValue}': self.energy_consumption_biomass,
-                       f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamEnergyConsumptionValue}': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamConsumptionDemandsValue}': self.energy_consumption_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamProductionValue}': self.energy_production_biomass,
                        f'{name}.{model_name}.{agriculture_mix}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{agriculture_mix}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices_biomass,
+                       f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2PerUse}': self.CO2_per_use_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption,
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamEnergyConsumptionValue}': self.consumption,
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionDemandsValue}': self.consumption,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamPricesValue}': self.cost_details,
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
@@ -218,173 +215,11 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        #for graph in graph_list:
-            #graph.to_plotly().show()
-
-    def test_03_energy_mix_discipline_exponential_limit(self):
-        """
-        Test energy mix discipline
-
-        Returns
-        -------
-        None.
-
-        """
-
-        name = 'Test'
-        model_name = 'EnergyMix'
-        ee = ExecutionEngine(name)
-        ns_dict = {'ns_public': f'{name}',
-                   'ns_hydrogen': f'{name}',
-                   GlossaryEnergy.NS_WITNESS: f'{name}',
-                   'ns_methane': f'{name}',
-                   'ns_energy_study': f'{name}',
-                   GlossaryEnergy.NS_ENERGY_MIX: f'{name}.{model_name}',
-                   GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
-                   'ns_resource': f'{name}.{model_name}.resource',
-                   GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
-                   'ns_energy': f'{name}.{model_name}'}
-
-        ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
-        builder = ee.factory.get_builder_from_module(model_name, mod_path)
-
-        ee.factory.set_builders_to_coupling_builder(builder)
-
-        ee.configure()
-        ee.display_treeview_nodes()
-
-        inputs_dict = {f'{name}.{GlossaryEnergy.YearStart}': self.year_start,
-                       f'{name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryEnergy.energy_list}': self.energy_list,
-                       f'{name}.{GlossaryEnergy.ccs_list}': [],
-                       f'{name}.{model_name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
-                           {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': self.prices_hydro[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
-                            GlossaryEnergy.methane: self.cost_details[GlossaryEnergy.methane]}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamPricesValue}': self.prices_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamPricesValue}': self.cost_details,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
-                       f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production,
-                       }
-
-        ee.load_study_from_input_dict(inputs_dict)
-
-        ee.execute()
-
-        ppf = PostProcessingFactory()
-
-        disc = ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}')[0]
-        filters = ppf.get_post_processing_filters_by_discipline(disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
         for graph in graph_list:
+            #graph.to_plotly().show()
             pass
-            # graph.to_plotly().show()
 
-    def test_04_energy_mix_resource(self):
-        """
-        Test energy mix resource
 
-        Returns
-        -------
-        None.
-
-        """
-
-        name = 'Test'
-        model_name = 'EnergyMix'
-        ee = ExecutionEngine(name)
-        ns_dict = {'ns_public': f'{name}',
-                   'ns_hydrogen': f'{name}',
-                   GlossaryEnergy.NS_WITNESS: f'{name}',
-                   'ns_methane': f'{name}',
-                   'ns_energy_study': f'{name}',
-                   GlossaryEnergy.NS_ENERGY_MIX: f'{name}.{model_name}',
-                   GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
-                   'ns_resource': f'{name}.{model_name}.resource',
-                   GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
-                   'ns_energy': f'{name}.{model_name}'}
-        ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
-        builder = ee.factory.get_builder_from_module(model_name, mod_path)
-
-        ee.factory.set_builders_to_coupling_builder(builder)
-
-        ee.configure()
-        ee.display_treeview_nodes()
-
-        inputs_dict = {f'{name}.{GlossaryEnergy.YearStart}': self.year_start,
-                       f'{name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryEnergy.energy_list}': self.energy_list,
-                       f'{name}.{GlossaryEnergy.ccs_list}': [],
-                       f'{name}.{model_name}.{GlossaryEnergy.StreamPricesValue}': pd.DataFrame(
-                           {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': self.prices_hydro[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
-                            GlossaryEnergy.methane: self.cost_details[GlossaryEnergy.methane]}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamPricesValue}': self.prices_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionValue}': self.consumption,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}': self.consumption,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionWithoutRatioValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamPricesValue}': self.cost_details,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2PerUse}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
-                       f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
-                       f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production
-                       }
-
-        ee.load_study_from_input_dict(inputs_dict)
-
-        ee.execute()
-
-        disc = ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}')[0]
-        all_demand = ee.dm.get_value(
-            f'{name}.{model_name}.resource.resources_demand')
-        scaling_factor = 1000
-        zero_line = np.linspace(0, 0, len(all_demand.index))
-        self.assertListEqual(list(self.consumption['oil_resource (Mt)'].values), list(
-            all_demand['oil_resource'].values / scaling_factor))  # in (Mt)
-        self.assertListEqual(list(zero_line), list(
-            all_demand['coal_resource'].values))
 
 
 if '__main__' == __name__:

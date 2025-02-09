@@ -54,8 +54,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
     def compute_byproducts_production(self):
         C_per_h2 = self.get_theoretical_solid_carbon_production()
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] = \
-            C_per_h2 * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] = \
+            C_per_h2 * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
     def get_theoretical_solid_carbon_production(self):
         ''' 
@@ -117,7 +117,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.temp_variables['quantity:hydrogen_production'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{GaseousHydrogenTechno.stream_name} ({EnergyType.unit})'] * 1e3
         self.temp_variables['quantity:carbon_demand'] = self.inputs['market_demand:carbon_demand']
         self.temp_variables['quantity:CO2_credits'] = self.inputs['CO2_credits:CO2_credits']
-        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.StreamPricesValue}:{GaseousHydrogenTechno.stream_name}']
+        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.EnergyPricesValue}:{GaseousHydrogenTechno.stream_name}']
         self.temp_variables['quantity:carbon_price'] = ResourceGlossary.Carbon['price']
         self.temp_variables['quantity:is_prod_inf_demand'] = False
         self.temp_variables['quantity:is_storage_inf_storage_max'] = False

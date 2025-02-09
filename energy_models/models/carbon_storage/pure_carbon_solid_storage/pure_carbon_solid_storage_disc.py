@@ -164,7 +164,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         carbon_quantity_to_be_stored = inputs_dict.pop(
             'carbon_quantity_to_be_stored')
-        consumption = outputs_dict.pop(GlossaryEnergy.TechnoConsumptionValue)
+        consumption = outputs_dict.pop(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         constraint = self.techno_model.compute_constraint(
             carbon_quantity_to_be_stored, consumption)

@@ -43,11 +43,11 @@ class NaturalGasMediumHeat(mediumheattechno):
 
     def compute_byproducts_production(self):
         # CO2 production
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
                                                                                             GlossaryEnergy.CO2PerUse] / \
-                                                                                        Methane.data_energy_dict[
+                                                                                                                                   Methane.data_energy_dict[
                                                                                             'calorific_value'] * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
+                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:'
                                                                                             f'{Methane.name} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):

@@ -31,15 +31,13 @@ class CCGasT(ElectricityTechno):
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
-                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            co2_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{Methane.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
-        self.compute_ch4_emissions()
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -56,18 +54,3 @@ class CCGasT(ElectricityTechno):
         co2_prod = methane_co2 / calorific_value * methane_need
         return co2_prod
 
-    def compute_ch4_emissions(self):
-        '''
-        Method to compute CH4 emissions from methane consumption
-        The proposed V0 only depends on consumption.
-        Equation and emission factor are taken from the GAINS model
-        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-
-        emission_factor is in Mt/TWh
-        '''
-        ghg_type = Methane.emission_name
-        emission_factor = self.inputs['techno_infos_dict'][f'{ghg_type}_emission_factor']
-
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                     self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
-                                                                         f'{Methane.name} ({self.product_unit})']

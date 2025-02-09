@@ -44,12 +44,6 @@ from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_t
     DirectAirCaptureTechnoDiscipline,
 )
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
-from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import (
-    CombinedCycleGasTurbineDiscipline,
-)
-from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
-    GasTurbineDiscipline,
-)
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
 )

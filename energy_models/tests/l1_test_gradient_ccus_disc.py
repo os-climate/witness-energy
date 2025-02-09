@@ -75,7 +75,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue][
                     'value']
             self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamEnergyConsumptionValue]['value']
         for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             self.land_use_required[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
@@ -83,16 +83,16 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue][
                     'value']
             self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
-            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamEnergyConsumptionValue]['value']
+            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
                 'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
-                f'{energy}'][GlossaryEnergy.StreamConsumptionWithoutRatioValue]['value']
+                f'{energy}'][GlossaryEnergy.StreamConsumptionDemandsValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
-        years = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value'][GlossaryEnergy.Years]
+        years = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamEnergyConsumptionValue]['value'][GlossaryEnergy.Years]
         self.CO2_taxes = pd.DataFrame(data={GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 150.})
         self.co2_emissions = pd.DataFrame(
             data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
@@ -142,16 +142,16 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
 
         for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.stream_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = \
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionDemandsValue}'] = \
                 self.energy_consumption_woratio[energy]
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'] = self.CO2_taxes
@@ -168,12 +168,12 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.carbon_capture_from_energy_mix',
             f'{self.name}.co2_emissions_needed_by_energy_mix',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamProductionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamConsumptionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamEnergyConsumptionValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.LandUseRequiredValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamConsumptionValue}',
-            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamEnergyConsumptionValue}',
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyPricesValue}',
             f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.LandUseRequiredValue}',
         ]
         coupled_outputs = [f'{self.name}.co2_emissions_ccus_Gt',

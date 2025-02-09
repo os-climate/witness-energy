@@ -36,10 +36,10 @@ class GasElec(ElectricityTechno):
                                                                                             f'{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{Methane.name} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})'] - \
             self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
 
-        self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
+        self.compute_ghg_emissions(GlossaryEnergy.CH4, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -65,9 +65,9 @@ class GasElec(ElectricityTechno):
 
         emission_factor is in Mt/TWh
         '''
-        ghg_type = Methane.emission_name
+        ghg_type = GlossaryEnergy.CH4
         emission_factor = self.inputs['techno_infos_dict'][f'{ghg_type}_emission_factor']
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                     self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ghg_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
+                                                                                                                self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:'
                                                                          f'{Methane.name} ({self.product_unit})']

@@ -46,7 +46,7 @@ class Amine(CCTechno):
     def compute_resources_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.AmineResource}_needs'] = self.compute_amine_need() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_scope_2_emissions(self):
+    def compute_scope_2_ghg_intensity(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''
@@ -60,9 +60,9 @@ class Amine(CCTechno):
         self.outputs['CO2_emissions_detailed:Scope 2'] = self.outputs[f'CO2_emissions_detailed:{Methane.name}'] + self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.electricity}'] + self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.AmineResource}'] - 1.0
 
     def compute_byproducts_production(self):
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CCTechno.stream_name} ({self.product_unit})'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] * \
             Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / Methane.data_energy_dict['calorific_value']
 
     def compute_amine_need(self):

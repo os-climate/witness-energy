@@ -30,13 +30,13 @@ class BiomassFired(ElectricityTechno):
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                             f'{ElectricityTechno.stream_name} ({self.product_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{GlossaryEnergy.biomass_dry} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']  # TWh
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.biomass_dry} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']  # TWh
 
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):

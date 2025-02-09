@@ -65,7 +65,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
             self.energy_production[f'{energy}'] = \
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamEnergyConsumptionValue]['value']
 
         for i, energy in enumerate(self.ccs_list):
             self.energy_production[f'{energy}'] = \
@@ -126,7 +126,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamProductionValue}'] = \
                     self.energy_production[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
 
@@ -135,7 +135,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[
                     energy]
-                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = self.energy_consumption[
                     energy]
 
         for energy in self.ccs_list:

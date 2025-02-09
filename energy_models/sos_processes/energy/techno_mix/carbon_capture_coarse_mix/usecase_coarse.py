@@ -128,7 +128,7 @@ class Study(EnergyMixStudyManager):
                 {
 
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.flue_gas_co2_ratio': np.array(
                         [0.13]),

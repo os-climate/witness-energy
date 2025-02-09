@@ -97,8 +97,8 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_platinum = None
         for product in techno_consumption.columns:

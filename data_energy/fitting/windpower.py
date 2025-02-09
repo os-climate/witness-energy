@@ -94,7 +94,7 @@ f.close()
 inputs_dict = deepcopy(dm)
 inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
 inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.EnergyPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')})
 inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
 inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.TransportCostValue}')})
 

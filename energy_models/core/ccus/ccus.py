@@ -117,8 +117,8 @@ class CCUS:
         '''
         Compute CCS_price 
         '''
-        ccs_price = self.inputs_dict[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}'][GlossaryEnergy.carbon_capture].values +\
-                                               self.inputs_dict[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}'][GlossaryEnergy.carbon_storage].values
+        ccs_price = self.inputs_dict[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyPricesValue}'][GlossaryEnergy.carbon_capture].values + \
+                    self.inputs_dict[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyPricesValue}'][GlossaryEnergy.carbon_storage].values
         self.outputs_dict['CCS_price'] = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             'ccs_price_per_tCO2': ccs_price

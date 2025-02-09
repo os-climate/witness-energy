@@ -38,16 +38,16 @@ class OilGen(ElectricityTechno):
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                 f'{ElectricityTechno.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                             f'{ElectricityTechno.stream_name} ({self.product_unit})']
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:{LiquidFuel.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{LiquidFuel.name} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 

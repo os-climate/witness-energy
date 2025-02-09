@@ -38,7 +38,7 @@ class Nuclear(ElectricityTechno):
 
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
-                                                                                               self.outputs[f'{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}:'
+                                                                                               self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:'
                                                                                                    f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
 
         # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \

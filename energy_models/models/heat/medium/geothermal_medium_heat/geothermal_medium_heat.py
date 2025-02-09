@@ -36,10 +36,10 @@ class GeothermalHeat(mediumheattechno):
     def compute_byproducts_production(self):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                               self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
+                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                    f'{mediumtemperatureheat.name} ({self.product_unit})'] / \
-                                                                               self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']

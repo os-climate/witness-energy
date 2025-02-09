@@ -141,7 +141,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                          GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True)}}
-                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] = {
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dynamic_dataframe_columns': True}
@@ -160,7 +160,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                          GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True),}
                             }
-                        dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {
+                        dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
@@ -247,11 +247,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamEnergyConsumptionValue}'].columns)
                         if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_sources', co2_emission_column),
-                                (f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
+                                (f'{energy_df}.{GlossaryEnergy.StreamEnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
 
                 else:
@@ -268,11 +268,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
 
             elif co2_emission_column in CO2_emissions_sources.columns and energy in ccs_list:
@@ -346,11 +346,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamEnergyConsumptionValue}'].columns)
                         if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_sinks', co2_emission_column),
-                                (f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
+                                (f'{energy_df}.{GlossaryEnergy.StreamEnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -371,11 +371,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sinks', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}', last_part_key),
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         self.set_partial_derivative_for_other_types(
             ('GHG_total_energy_emissions', 'Total CO2 emissions'),

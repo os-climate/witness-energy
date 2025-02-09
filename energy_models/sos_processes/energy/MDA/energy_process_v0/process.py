@@ -15,11 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import (
-    EnergyGHGEmissionsDiscipline,
-)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
@@ -47,14 +42,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
-        self.techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT
+        self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
 
     def get_builders(self):
 
         ns_study = self.ee.study_name
 
         energy_mix = EnergyMix.name
-        ccus_name = CCUS.name
         func_manager_name = "FunctionManagerDisc"
 
         carbon_storage = PureCarbonSS.stream_name
@@ -85,20 +79,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
         }
 
-        emissions_mod_dict = {
-            EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'
-        }
-        # else:
-        #     emissions_mod_dict = {
-        #         'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
-        builder_emission_list = self.create_builder_list(emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
-        builder_list.extend(builder_emission_list)
-
         # Add demand, energymix and resources discipline
 
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-            ccus_name: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
         }
 
         builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
@@ -151,6 +135,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'Wrong option for invest_discipline : {self.invest_discipline} should be in {INVEST_DISCIPLINE_OPTIONS}'
             )
 
+        """
         for ccs_name in self.ccs_list:
             dot_list = ccs_name.split('.')
             short_name = dot_list[-1]
@@ -166,6 +151,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 )
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
+        """
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_energy_mix'
 
@@ -277,13 +263,4 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             builder_heat = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_heat)
 
-        # For now only electricity demand constraint is available in the energy
-        # demand discipline
-        if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
-            mods_dict = {
-                EnergyDemandDiscipline.name: 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline',
-            }
-
-            builder_demand = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_demand)
         return builder_list

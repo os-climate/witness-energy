@@ -86,11 +86,11 @@ class HeatDiscipline(SoSWrapp):
                                             'editable': False, 'structuring': True},
                }
 
-    DESC_OUT = {GlossaryEnergy.StreamPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+    DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
-                GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
+                GlossaryEnergy.StreamEnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.StreamProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
-                GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+                GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.StreamProductionDetailedDf,
                 }
 
     def __init__(self, sos_name, logger: logging.Logger):
@@ -110,7 +110,7 @@ class HeatDiscipline(SoSWrapp):
                 self.energy_list = list(
                     set(HeatDiscipline.heat_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
                                                                                       'unit': '$/MWh',
                                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                       'namespace': GlossaryEnergy.NS_ENERGY_MIX
@@ -120,11 +120,11 @@ class HeatDiscipline(SoSWrapp):
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {'type': 'dataframe',
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = {'type': 'dataframe',
                                                                                            'unit': 'PWh',
                                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                            'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                                           }
+                                                                                                 }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = {'type': 'dataframe',
                                                                                           'unit': 'PWh',
                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -163,11 +163,11 @@ class HeatDiscipline(SoSWrapp):
 
         # loop over heat energies
         for energy in self.energy_list:
-            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.StreamPricesValue}')
+            energy_price = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.EnergyPricesValue}')
             energy_techno_prices = self.get_sosdisc_inputs(
                 f'{energy}.energy_detailed_techno_prices')
             energy_cons = self.get_sosdisc_inputs(
-                f'{energy}.{GlossaryEnergy.StreamConsumptionValue}')
+                f'{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}')
             energy_prod = self.get_sosdisc_inputs(
                 f'{energy}.{GlossaryEnergy.StreamProductionValue}')
             energy_techno_prod = self.get_sosdisc_inputs(
@@ -204,10 +204,10 @@ class HeatDiscipline(SoSWrapp):
             level=0, axis=1).sum()
         # energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
 
-        outputs_dict = {GlossaryEnergy.StreamPricesValue: energy_prices,
+        outputs_dict = {GlossaryEnergy.EnergyPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         GlossaryEnergy.StreamProductionValue: energy_production,
-                        GlossaryEnergy.StreamConsumptionValue: energy_consumption,
+                        GlossaryEnergy.StreamEnergyConsumptionValue: energy_consumption,
                         GlossaryEnergy.StreamProductionDetailedValue: energy_production_detailed,
                         # 'energy_heat_flux_detailed': energy_heat_flux_detailed,
                         }
@@ -283,7 +283,7 @@ class HeatDiscipline(SoSWrapp):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_mwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
         chart_name = f'Detailed prices of {self.stream_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -320,7 +320,7 @@ class HeatDiscipline(SoSWrapp):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamEnergyConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)
         scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')

@@ -95,11 +95,11 @@ class CCUS_Discipline(SoSWrapp):
         dynamic_outputs = {}
 
         for ccs_name in self.ccs_list:
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionValue}'] = {
+            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = {
                 'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 "dynamic_dataframe_columns": True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = {
+            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionDemandsValue}'] = {
                 'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 "dynamic_dataframe_columns": True}
@@ -107,7 +107,7 @@ class CCUS_Discipline(SoSWrapp):
                 'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 'dynamic_dataframe_columns': True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamPricesValue}'] = {
+            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                 'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 'dynamic_dataframe_columns': True}
@@ -153,12 +153,12 @@ class CCUS_Discipline(SoSWrapp):
         if GlossaryEnergy.carbon_capture in self.ccs_list:
             self.set_partial_derivative_for_other_types(
                 ('CCS_price', 'ccs_price_per_tCO2'),
-                (f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}', GlossaryEnergy.carbon_capture),
+                (f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyPricesValue}', GlossaryEnergy.carbon_capture),
                 np.identity(len(years)))
         if GlossaryEnergy.carbon_storage in self.ccs_list:
             self.set_partial_derivative_for_other_types(
                 ('CCS_price', 'ccs_price_per_tCO2'),
-                (f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}', GlossaryEnergy.carbon_storage),
+                (f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyPricesValue}', GlossaryEnergy.carbon_storage),
                 np.identity(len(years)))
 
     def get_chart_filter_list(self):
@@ -214,9 +214,9 @@ class CCUS_Discipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '[$/tCO2]', chart_name=chart_name, stacked_bar=True)
         visible_line = True
 
-        carbon_capture_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}')[
+        carbon_capture_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.EnergyPricesValue}')[
             GlossaryEnergy.carbon_capture].values
-        carbon_storage_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}')[
+        carbon_storage_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyPricesValue}')[
             GlossaryEnergy.carbon_storage].values
 
         new_series = InstanciatedSeries(years, carbon_capture_price, 'Capture', 'bar', visible_line)

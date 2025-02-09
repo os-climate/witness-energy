@@ -46,7 +46,7 @@ class DirectAirCaptureTechno(CCTechno):
 
     def compute_byproducts_production(self):
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Fossil.name}_needs'] * self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CCTechno.stream_name} ({self.product_unit})'] * \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Fossil.name}_needs'] * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] * \
             Fossil.data_energy_dict[GlossaryEnergy.CO2PerUse] / Fossil.data_energy_dict[
                                                                                             'calorific_value']

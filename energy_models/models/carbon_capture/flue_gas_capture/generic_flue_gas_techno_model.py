@@ -31,9 +31,9 @@ class GenericFlueGasTechnoModel(CCTechno):
 
         return capex
 
-    def compute_streams_consumption(self):
+    def compute_energies_demand(self):
         # Consumption
-        self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{GlossaryEnergy.electricity} ({self.energy_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] * \
-                                                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{GlossaryEnergy.electricity} ({self.energy_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] * \
+                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
             self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
 

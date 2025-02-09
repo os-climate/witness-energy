@@ -35,4 +35,4 @@ class BiomassGasification(SyngasTechno):
 
 
     def compute_byproducts_production(self):
-        self.compute_ghg_emissions(Methane.emission_name)
+        self.compute_ghg_emissions(GlossaryEnergy.CH4)

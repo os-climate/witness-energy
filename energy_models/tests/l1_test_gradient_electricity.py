@@ -134,7 +134,7 @@ class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(50.0, 50.0, len(self.years))))
+            zip(EnergyMix.resource_list, np.linspace(50.0, 50.0, len(self.years))))
         resource_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
@@ -158,7 +158,7 @@ class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
             f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-            f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+            f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
             f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
             f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
             f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,

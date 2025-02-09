@@ -153,7 +153,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             if techno != GlossaryEnergy.Years:
                 techno_model = FischerTropsch(self.techno_name)
                 # Update init values syngas price and syngas_ratio
-                inputs_dict[GlossaryEnergy.StreamPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
+                inputs_dict[GlossaryEnergy.EnergyPricesValue][GlossaryEnergy.syngas] = inputs_dict['energy_detailed_techno_prices'][
                     techno]
                 inputs_dict['syngas_ratio'] = np.ones(
                     len(years)) * inputs_dict['syngas_ratio_technos'][techno]

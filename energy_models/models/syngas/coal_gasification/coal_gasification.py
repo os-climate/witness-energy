@@ -45,9 +45,9 @@ class CoalGasification(SyngasTechno):
 
     def compute_byproducts_production(self):
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
                                                                                             'CO2_from_production'] / \
-                                                                                        self.inputs['data_energy_dict'][
+                                                                                                                                   self.inputs['data_energy_dict'][
                                                                                             'calorific_value'] * \
-                                                                                        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                             f'{SyngasTechno.stream_name} ({self.product_unit})']

@@ -41,6 +41,6 @@ class PureCarbonSS(CSTechno):
         Compute the constraint: consumption > carbon_quantity_to_be_stored from plasma cracking
         """
 
-        constraint = self.outputs[f'{GlossaryEnergy.TechnoConsumptionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] - self.inputs[f'carbon_quantity_to_be_stored:{GlossaryEnergy.carbon_storage}']
+        constraint = self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] - self.inputs[f'carbon_quantity_to_be_stored:{GlossaryEnergy.carbon_storage}']
         self.outputs[f'carbon_to_be_stored_constraint:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'carbon_to_be_stored_constraint:{GlossaryEnergy.Years}'] = constraint

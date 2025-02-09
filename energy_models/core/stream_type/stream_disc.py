@@ -55,12 +55,19 @@ class StreamDiscipline(AutodifferentiedDisc):
     }
 
     DESC_OUT = {
-        GlossaryEnergy.StreamConsumptionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
-        GlossaryEnergy.StreamConsumptionWithoutRatioValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True,},
+        GlossaryEnergy.StreamEnergyConsumptionValue: GlossaryEnergy.StreamEnergyConsumption,
+        GlossaryEnergy.StreamResourceConsumptionValue: GlossaryEnergy.StreamResourceConsumption,
+        GlossaryEnergy.StreamEnergyDemandValue: GlossaryEnergy.StreamEnergyDemand,
+        GlossaryEnergy.StreamResourceDemandValue: GlossaryEnergy.StreamResourceDemand,
+
         GlossaryEnergy.StreamProductionValue: {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, },
-        GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.EnergyProductionDetailedDf,
+        GlossaryEnergy.StreamProductionDetailedValue: GlossaryEnergy.StreamProductionDetailedDf,
+
+        GlossaryEnergy.StreamScope1GHGEmissionsValue: GlossaryEnergy.StreamScope1GHGEmissions,
+
         'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
+
         GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha', AutodifferentiedDisc.GRADIENTS: True,},
         GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf
     }
@@ -73,23 +80,29 @@ class StreamDiscipline(AutodifferentiedDisc):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if GlossaryEnergy.techno_list in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-            if techno_list is not None:
-                for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt', AutodifferentiedDisc.GRADIENTS: True,
-                        'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt', AutodifferentiedDisc.GRADIENTS: True,
-                        'dynamic_dataframe_columns': True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_techno_prod_df(techno_name=techno, energy_name=self.stream_name, byproducts_list=GlossaryEnergy.techno_byproducts[techno])
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
+        values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.techno_list])
+        if go:
+            for techno in values_dict[GlossaryEnergy.techno_list]:
+                # consumptions
+                dynamic_inputs[f"{techno}.{GlossaryEnergy.TechnoEnergyConsumptionValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoEnergyConsumption)
+                dynamic_inputs[f"{techno}.{GlossaryEnergy.TechnoResourceConsumptionValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoResourceConsumption)
+
+                # demands:
+                dynamic_inputs[f"{techno}.{GlossaryEnergy.TechnoResourceDemandsValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoResourceDemands)
+                dynamic_inputs[f"{techno}.{GlossaryEnergy.TechnoEnergyDemandsValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoEnergyDemands)
+
+                # production
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoProductionDf)
+
+                # emissions
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoScope1GHGEmissions}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoScope1GHGEmissions)
+
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.get_land_use_df(techno)
 
         dynamic_outputs.update({
-            GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_one_stream_price_df(stream_name=self.stream_name)
+            GlossaryEnergy.EnergyPricesValue: GlossaryEnergy.get_one_stream_price_df(stream_name=self.stream_name)
         })
         add_di, add_do = self.add_additionnal_dynamic_variables()
         dynamic_inputs.update(add_di)
@@ -99,10 +112,10 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def init_execution(self):  # type: (...) -> None
         self.unit = GlossaryEnergy.unit_dicts[self.stream_name]
+
     def add_additionnal_dynamic_variables(self):
         """Temporary method to be able to do multiple add_outputs in setup_sos_disciplines before it is done generically in sostradescore"""
         return {}, {}
-
 
     def get_chart_filter_list(self):
 
@@ -167,7 +180,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
         chart_name = f'Detailed prices of {self.stream_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
@@ -192,7 +205,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         return new_chart
 
     def get_chart_energy_price_in_dollar_kg(self):
-        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
+        energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
         chart_name = f'Detailed prices of {self.stream_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
@@ -318,7 +331,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         instanciated_charts = []
 
         # Productions of main stream
-        consumptions_df = self.get_sosdisc_outputs(GlossaryEnergy.StreamConsumptionValue)
+        consumptions_df = self.get_sosdisc_outputs(GlossaryEnergy.StreamEnergyConsumptionValue)
 
         consumptions_list = list(consumptions_df.columns)
         consumptions_list.remove(GlossaryEnergy.Years)

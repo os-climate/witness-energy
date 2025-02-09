@@ -85,7 +85,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 biomass_energy_prod = biomass_energy_prod.rename(
                     columns={GlossaryEnergy.biogas: GlossaryEnergy.biomass_dry})
                 self.energy_production[f'{energy}'] = biomass_energy_prod
-                biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.StreamConsumptionValue][
+                biomass_cons_prod = streams_outputs_dict[GlossaryEnergy.biogas][GlossaryEnergy.StreamEnergyConsumptionValue][
                     'value'].copy()
                 biomass_cons_prod = biomass_cons_prod.drop(columns=[f'{GlossaryEnergy.WetBiomassResource} ({GlossaryEnergy.mass_unit})'])
 
@@ -99,7 +99,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                     streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamProductionValue][
                         'value']
                 self.energy_consumption[f'{energy}'] = \
-                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
+                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamEnergyConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
@@ -156,7 +156,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
 
@@ -165,7 +165,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.N2OPerUse}'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}'] = self.energy_production[
                     energy]
-                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}'] = self.energy_consumption[
                     energy]
 
         for energy in self.ccs_list:
@@ -221,10 +221,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs.extend([
             f'{self.name}.{energy}.{GlossaryEnergy.StreamProductionValue}' for energy in self.ccs_list])
         coupled_inputs.extend(
-            [f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in energy_list_wobiomass_dry])
+            [f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}' for energy in energy_list_wobiomass_dry])
 
         coupled_inputs.extend([f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamProductionValue}',
-                               f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'])
+                               f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamEnergyConsumptionValue}'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',

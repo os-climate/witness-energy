@@ -447,7 +447,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # elec plants needs
         elec_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamEnergyConsumptionValue}')[
             f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_coal_IEA = 20194.44  # TWh
@@ -463,7 +463,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # syngas plants needs
         syngas_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamEnergyConsumptionValue}')[
             f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_coal_IEA = 264.72  # TWh
@@ -529,7 +529,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # elec plants needs
         elec_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamEnergyConsumptionValue}')[
             f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_gas_IEA = 10833.33  # TWh
@@ -552,7 +552,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               ' TWh')
         # syngas plants needs
         syngas_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamEnergyConsumptionValue}')[
             f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_methane_IEA = 202.74  # TWh
@@ -987,7 +987,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # These emissions are in Gt
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.StreamPricesValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.EnergyPricesValue}')
 
         '''
         Energy prices

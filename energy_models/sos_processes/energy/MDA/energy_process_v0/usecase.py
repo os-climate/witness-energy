@@ -19,7 +19,6 @@ import pandas as pd
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import FlueGasDiscipline
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -27,7 +26,6 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
     FunctionManagerDisc,
 )
 
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
@@ -35,6 +33,9 @@ from energy_models.core.energy_process_builder import (
 )
 from energy_models.core.energy_study_manager import (
     EnergyStudyManager,
+)
+from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import (
+    FlueGasDiscipline,
 )
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
@@ -217,20 +218,6 @@ class Study(EnergyStudyManager):
             list_weight.extend([-1.0])
             list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
-
-        if set(EnergyDemandDiscipline.energy_constraint_list).issubset(
-                self.energy_list
-        ):
-            list_var.extend(
-                ["electricity_demand_constraint", "transport_demand_constraint"]
-            )
-            list_parent.extend(["demand_constraint", "demand_constraint"])
-            list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT])
-            list_weight.extend([-1.0, -1.0])
-            list_aggr_type.extend([FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM])
-            list_namespaces.extend(
-                [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS]
-            )
 
         func_df["variable"] = list_var
         func_df["parent"] = list_parent
@@ -543,11 +530,11 @@ class Study(EnergyStudyManager):
         resources_prices = get_default_resources_prices(self.years)
 
         all_streams_demand_ratio = {GlossaryEnergy.Years: self.years}
-        all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list + self.ccs_list})
+        all_streams_demand_ratio.update({energy: 0.0 for energy in self.energy_list + self.ccs_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
         all_resource_ratio_usable_demand = {GlossaryEnergy.Years: self.years}
-        all_resource_ratio_usable_demand.update({resource: 100.0 for resource in EnergyMix.RESOURCE_LIST})
+        all_resource_ratio_usable_demand.update({resource: 0.0 for resource in EnergyMix.resource_list})
         all_resource_ratio_usable_demand = pd.DataFrame(all_resource_ratio_usable_demand)
 
         invest_df = pd.DataFrame({
@@ -605,7 +592,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
+            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
@@ -736,11 +723,11 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
             f"{self.study_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
             f"{self.study_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}": energy_consumption,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamEnergyConsumptionValue}": energy_consumption,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionDemandsValue}": energy_consumption,
             f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamProductionValue}": energy_production,
             f"{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
             f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
         }
@@ -752,3 +739,5 @@ if "__main__" == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
+
+    a = 1

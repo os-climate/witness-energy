@@ -209,7 +209,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoConsumptionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
         techno_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Capture & consumption<br>with input investments'
 

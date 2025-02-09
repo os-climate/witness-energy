@@ -31,7 +31,7 @@ class SolarThermal(ElectricityTechno):
         density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
         self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{self.name} (Gha)'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{self.stream_name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] / \
             density_per_ha
 
     def compute_byproducts_production(self):
@@ -40,10 +40,10 @@ class SolarThermal(ElectricityTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:{hightemperatureheat.name} ({self.product_unit})'] = ((1 -
-                                                                                                 self.inputs['techno_infos_dict'][
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = ((1 -
+                                                                                                                           self.inputs['techno_infos_dict'][
                                                                                                      'efficiency']) *
-                                                                                                self.outputs[f'{GlossaryEnergy.TechnoProductionWithoutRatioValue}:'
+                                                                                                                          self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                                     f'{ElectricityTechno.stream_name} ({self.product_unit})']) / \
-                                                                                               self.inputs['techno_infos_dict'][
+                                                                                                                         self.inputs['techno_infos_dict'][
                                                                                                    'efficiency']
