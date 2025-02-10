@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2025/01/23 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,30 +30,42 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
     AutodifferentiedDisc,
 )
+from sostrades_optimization_plugins.tools.plot_tools.colormaps import (
+    available_colormaps,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plot_factories import (
+    create_sankey_with_slider,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    InstantiatedPlotlyNativeChart,
+)
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
+
+if TYPE_CHECKING:
+    import logging
 
 
 class Energy_Mix_Discipline(AutodifferentiedDisc):
     # ontology information
     _ontology_data = {
-        'label': 'Energy Mix Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': "fa-solid fa-bolt",
-        'version': '',
+        "label": "Energy Mix Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fa-solid fa-bolt",
+        "version": "",
     }
     # All values used to calibrate heat loss percentage
     heat_tfc_2019 = 3561.87
     # + heat losses for transmission,distrib and transport
-    heat_use_energy_2019 = 14181. + 232.59
-    total_raw_prod_2019 = 183316.
+    heat_use_energy_2019 = 14181.0 + 232.59
+    total_raw_prod_2019 = 183316.0
     # total_losses_2019 = 2654.
     heat_losses_percentage_default = (heat_use_energy_2019 - heat_tfc_2019) / total_raw_prod_2019 * 100
 
@@ -131,7 +143,6 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         self.add_outputs(dynamic_outputs)
 
     def get_chart_filter_list(self):
-
         chart_filters = []
         chart_list = [
             'Production',
@@ -147,7 +158,6 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
@@ -157,7 +167,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     charts = chart_filter.selected_values
 
         df_prod_brut = self.get_sosdisc_outputs('energy_production_brut')
@@ -237,13 +247,22 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             target_energy_production = target_energy_production_df[GlossaryEnergy.TargetEnergyProductionValue]
             years = target_energy_production_df[GlossaryEnergy.Years]
             if target_energy_production.max() > 0:
-                chart_target_energy_production = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetEnergyProductionDf['unit'],
-                                                            chart_name=GlossaryEnergy.TargetProductionConstraintValue,
-                                                            stacked_bar=True)
+                chart_target_energy_production = TwoAxesInstanciatedChart(
+                    GlossaryEnergy.Years,
+                    GlossaryEnergy.TargetEnergyProductionDf["unit"],
+                    chart_name=GlossaryEnergy.TargetProductionConstraintValue,
+                    stacked_bar=True,
+                )
 
-                serie_target_energy_production = InstanciatedSeries(list(years), list(target_energy_production), 'Minimal energy production required',
-                                                      'dash_lines')
-                chart_target_energy_production.add_series(serie_target_energy_production)
+                serie_target_energy_production = InstanciatedSeries(
+                    list(years),
+                    list(target_energy_production),
+                    "Minimal energy production required",
+                    "dash_lines",
+                )
+                chart_target_energy_production.add_series(
+                    serie_target_energy_production
+                )
 
                 energy_production = self.get_sosdisc_outputs('net_energy_production')["Total"]
                 serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
@@ -327,11 +346,14 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         return instanciated_charts
 
     def get_chart_energy_mean_price_in_dollar_mwh(self):
-        energy_mean_price = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMeanPriceValue)
+        energy_mean_price = self.get_sosdisc_outputs(
+            GlossaryEnergy.EnergyMeanPriceValue
+        )
 
-        chart_name = 'Mean price out of energy mix'
+        chart_name = "Mean price out of energy mix"
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+            GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name
+        )
 
         serie = InstanciatedSeries(
             energy_mean_price[GlossaryEnergy.Years],
@@ -343,9 +365,12 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
     def get_chart_capital(self):
         capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCapitalDfValue)
 
-        chart_name = 'Capital'
+        chart_name = "Capital"
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, f"[{GlossaryEnergy.EnergyCapitalDf['unit']}]", chart_name=chart_name)
+            GlossaryEnergy.Years,
+            f"[{GlossaryEnergy.EnergyCapitalDf['unit']}]",
+            chart_name=chart_name,
+        )
 
         serie = InstanciatedSeries(
             capital_df[GlossaryEnergy.Years],
@@ -358,3 +383,123 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         new_chart.series.append(serie)
         new_chart.post_processing_section_name = "Capital"
         return new_chart
+
+    def get_chart_sankey_fluxes(
+        self,
+        chart_name="Energy Flow",
+        streams_filter: list | None = None,
+        normalized_links: bool = False,
+        split_external: bool = False,
+    ):
+        """Create sankey chart correlating production and consumption of all actors in energy mix."""
+
+        # Get list of energy technologies
+        energy_list = self.get_sosdisc_inputs(GlossaryEnergy.EnergyListName)
+
+        # Get dataframe that has Years column for sure
+        target_energy_production_df = self.get_sosdisc_inputs(
+            GlossaryEnergy.TargetEnergyProductionValue
+        )
+        years = list(target_energy_production_df[GlossaryEnergy.Years])
+
+        # Initialize dictionary with all consumptions / productions
+        energy_dictionary = {}
+
+        # Get dataframes and put them in dictionary format
+        for energy in energy_list:
+            # Gets dataframes
+            ns_energy = self.get_ns_stream(energy)
+            consumption = self.get_sosdisc_inputs(
+                f"{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}"
+            ).copy()
+            production = self.get_sosdisc_inputs(
+                f"{ns_energy}.{GlossaryEnergy.EnergyProductionValue}"
+            ).copy()
+
+            # Add Years to dataframes
+            if GlossaryEnergy.Years not in consumption.columns:
+                consumption[GlossaryEnergy.Years] = years
+
+            if GlossaryEnergy.Years not in production.columns:
+                production[GlossaryEnergy.Years] = years
+
+            # Update dictionary
+            energy_dictionary[energy] = {
+                "input": consumption,
+                "output": production,
+            }
+
+        # Get Net Production
+        production = self.get_sosdisc_outputs(
+            f"{GlossaryEnergy.StreamProductionDetailedValue}"
+        ).copy()
+        production.columns = [c.replace("production ", "") for c in production.columns]
+        consumption = pd.DataFrame({GlossaryEnergy.Years: years})
+
+        # Add Years to dataframes
+        if GlossaryEnergy.Years not in production.columns:
+            production[GlossaryEnergy.Years] = years
+
+        # Switch prod /consumption as we want the node to "consume" the available streams
+        energy_dictionary["available<br>for final consumption"] = {
+            "input": production,
+            "output": consumption,
+        }
+
+        # Get dataframe with negative productions to add as a source
+        df_negative = production.copy()
+        columns_to_process = [
+            col for col in df_negative.columns if col != GlossaryEnergy.Years
+        ]
+        df_negative[columns_to_process] = df_negative[columns_to_process].where(
+            df_negative[columns_to_process] < 0, 0
+        )
+        df_negative[columns_to_process] = df_negative[columns_to_process].abs()
+
+        energy_dictionary["neg_balance"] = {
+            "input": consumption,
+            "output": df_negative,
+        }
+
+        # Filter out resources
+        for dfs in energy_dictionary.values():
+            dfs["input"] = dfs["input"][
+                [c for c in dfs["input"].columns if "(Mt)" not in c]
+            ]
+            dfs["output"] = dfs["output"][
+                [c for c in dfs["output"].columns if "(Mt)" not in c]
+            ]
+
+        # Remove units from all streams, to handle inconsistent naming
+        for actor in energy_dictionary:
+            energy_dictionary[actor]["input"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in energy_dictionary[actor]["input"].columns
+            ]
+            energy_dictionary[actor]["output"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in energy_dictionary[actor]["output"].columns
+            ]
+
+        # filter streams
+        if streams_filter is not None:
+            for dfs in energy_dictionary.values():
+                existing_columns = list(set(streams_filter) & set(dfs["input"].columns))
+                dfs["input"] = dfs["input"][[GlossaryEnergy.Years, *existing_columns]]
+                existing_columns = list(
+                    set(streams_filter) & set(dfs["output"].columns)
+                )
+                dfs["output"] = dfs["output"][[GlossaryEnergy.Years, *existing_columns]]
+
+        # Create sankey plot
+        colormap = available_colormaps["energy"]
+        fig = create_sankey_with_slider(
+            energy_dictionary,
+            colormap=colormap,
+            normalized_links=normalized_links,
+            split_external=split_external,
+            output_node="available<br>for final consumption",
+        )
+
+        # return chart
+        return InstantiatedPlotlyNativeChart(fig, chart_name)

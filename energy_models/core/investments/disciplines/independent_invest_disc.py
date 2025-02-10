@@ -54,6 +54,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_invest',
                                     'dynamic_dataframe_columns': True
                                     },
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
@@ -65,12 +66,6 @@ class IndependentInvestDiscipline(SoSWrapp):
                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                   'editable': False,
                                   'structuring': True},
-        GlossaryEnergy.ReforestationInvestmentValue: {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                                               'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                                        GlossaryEnergy.ReforestationInvestmentValue: (
-                                                                        'float', None, False)},
-                                               'namespace': 'ns_invest',
-                                               'dataframe_edition_locked': False},
         GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
         GlossaryEnergy.MaxBudgetConstraintRefValue: GlossaryEnergy.MaxBudgetConstraintRef
     }

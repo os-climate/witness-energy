@@ -824,7 +824,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 BiogasFired,
                 CoalGen,
                 OilGen,
-                BiomassFired,
+                #BiomassFired,
             ],
         },
         carbon_capture: {
@@ -1091,6 +1091,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         Geothermal: [],
         Crop: [],
         Forest: [],
+        GlossaryWitnessCore.Forestry: [],
         RWGS: [WaterResource],
     }
 

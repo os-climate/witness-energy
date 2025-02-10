@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2024/06/26 Copyright 2023 Capgemini
+Modifications on 2023/03/27-2025/01/23 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
-    TwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
@@ -33,20 +32,23 @@ from sostrades_optimization_plugins.models.autodifferentiated_discipline import 
 
 from energy_models.glossaryenergy import GlossaryEnergy
 
+if TYPE_CHECKING:
+    import logging
+
 
 class StreamDiscipline(AutodifferentiedDisc):
     # ontology information
     _ontology_data = {
-        'label': 'Core Stream Type Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': '',
-        'version': '',
+        "label": "Core Stream Type Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "",
+        "version": "",
     }
 
     DESC_IN = {
@@ -118,7 +120,6 @@ class StreamDiscipline(AutodifferentiedDisc):
         return {}, {}
 
     def get_chart_filter_list(self):
-
         chart_filters = []
         chart_list = ['Energy price',
                       "Production",
@@ -127,19 +128,26 @@ class StreamDiscipline(AutodifferentiedDisc):
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
-        price_unit_list = ['$/MWh', '$/t']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
+        price_unit_list = ["$/MWh", "$/t"]
+        chart_filters.append(
+            ChartFilter("Price unit", price_unit_list, price_unit_list, "price_unit")
+        )
 
         year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd]
+        )
         years = list(np.arange(year_start, year_end + 1, 5))
-        chart_filters.append(ChartFilter(
-            'Years for techno mix', years, [year_start, year_end], GlossaryEnergy.Years))
+        chart_filters.append(
+            ChartFilter(
+                "Years for techno mix",
+                years,
+                [year_start, year_end],
+                GlossaryEnergy.Years,
+            )
+        )
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
@@ -150,19 +158,22 @@ class StreamDiscipline(AutodifferentiedDisc):
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     charts = chart_filter.selected_values
-                if chart_filter.filter_key == 'price_unit':
+                if chart_filter.filter_key == "price_unit":
                     price_unit_list = chart_filter.selected_values
                 if chart_filter.filter_key == GlossaryEnergy.Years:
                     years_list = chart_filter.selected_values
 
-        if 'Energy price' in charts and '$/MWh' in price_unit_list:
+        if "Energy price" in charts and "$/MWh" in price_unit_list:
             new_chart = self.get_chart_energy_price_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-        if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in self.get_sosdisc_inputs(
-                'data_fuel_dict'):
+        if (
+            "Energy price" in charts
+            and "$/t" in price_unit_list
+            and "calorific_value" in self.get_sosdisc_inputs("data_fuel_dict")
+        ):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -177,13 +188,33 @@ class StreamDiscipline(AutodifferentiedDisc):
         if GlossaryEnergy.Capital in charts:
             chart = self.get_capital_breakdown_by_technos()
             instanciated_charts.append(chart)
+
+        if "Stream Flow" in charts or True:
+            new_chart = self.get_chart_sankey_fluxes(
+                years_list,
+                chart_name=f"Flow of energy streams for {self.sos_name.split('.')[-1]} production (TWh)",
+                split_external=True,
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
+            instanciated_charts.append(new_chart)
+
+            new_chart = self.get_chart_sankey_fluxes(
+                years_list,
+                chart_name="Flow of energy streams (schematic)",
+                normalized_links=True,
+                split_external=True,
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
         chart_name = f'Detailed prices of {self.stream_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+            GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name
+        )
 
         serie = InstanciatedSeries(
             energy_prices[GlossaryEnergy.Years],
@@ -195,7 +226,8 @@ class StreamDiscipline(AutodifferentiedDisc):
 
         for technology in technology_list:
             techno_price = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
+                f"{technology}.{GlossaryEnergy.TechnoPricesValue}"
+            )
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years],
                 techno_price[technology], f'{technology} price', 'lines')
@@ -306,14 +338,17 @@ class StreamDiscipline(AutodifferentiedDisc):
         return instanciated_charts
 
     def get_capital_breakdown_by_technos(self):
-        energy_type_capital = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDfValue)
+        energy_type_capital = self.get_sosdisc_outputs(
+            GlossaryEnergy.EnergyTypeCapitalDfValue
+        )
         techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         years = energy_type_capital[GlossaryEnergy.Years]
         chart_name = 'Breakdown of capital by technos'
 
-        chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'G$',
-                                         chart_name=chart_name, stacked_bar=True)
+        chart = TwoAxesInstanciatedChart(
+            GlossaryEnergy.Years, "G$", chart_name=chart_name, stacked_bar=True
+        )
 
         for techno in techno_list:
             ordonate_data = self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalValue}")[GlossaryEnergy.Capital]

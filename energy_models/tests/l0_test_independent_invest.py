@@ -196,7 +196,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                               f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                                                                                       GlossaryEnergy.GeologicMineralization],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
+                       f'{self.name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.Forest.deforestation_investment': self.deforestation_invest_df,
