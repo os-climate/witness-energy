@@ -94,18 +94,22 @@ class TechnoDiscipline(AutodifferentiedDisc):
         GlossaryEnergy.TechnoResourceConsumptionValue: GlossaryEnergy.TechnoResourceConsumption,
 
         # demands:
-        GlossaryEnergy.TechnoResourceDemandsValue: GlossaryEnergy.TechnoResourceDemands,
         GlossaryEnergy.TechnoEnergyDemandsValue: GlossaryEnergy.TechnoEnergyDemands,
+        GlossaryEnergy.TechnoResourceDemandsValue: GlossaryEnergy.TechnoResourceDemands,
 
 
         GlossaryEnergy.TechnoTargetProductionValue: {'type': 'dataframe', 'unit': 'TWh',
                                                      'description': "The techno target production is the maximum theoritical production multiplied by the utilisation ratio"},
         # emissions
-        GlossaryEnergy.TechnoEnergyDemandsValue: GlossaryEnergy.TechnoEnergyDemands,
+        GlossaryEnergy.TechnoScope1GHGEmissionsValue: GlossaryEnergy.TechnoScope1GHGEmissions,
+        'ghg_intensity_scope_1': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity for techno production (scope 1)"},
+        'ghg_intensity_scope_2': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity for techno production (scope 2), related to external energies and resources usage"},
+        'techno_scope_2_ghg_emissions': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity for techno production (scope 2), related to external energies and resources usage"},
+        'ghg_intensity_scope_2_details_CO2': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity scope 2 details for CO2 (composition of the CO2 intensity)"},
+        'ghg_intensity_scope_2_details_CH4': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity scope 2 details for CH4 (composition of the CH4 intensity)"},
+        'ghg_intensity_scope_2_details_N2O': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': "GHG intensity scope 2 details for N2O (composition of the N2O intensity)"},
 
         'mean_age_production': GlossaryEnergy.MeanAgeProductionDf,
-        GlossaryEnergy.CO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%',
                                 'dataframe_descriptor': {
@@ -294,12 +298,16 @@ class TechnoDiscipline(AutodifferentiedDisc):
                       'Initial Production',
                       "Production",
                       'Factory Mean Age',
-                      'CO2 emissions',
                       GlossaryEnergy.UtilisationRatioValue,
                       'Non-Use Capital',
                       'Power production',
                       'Power plants initial age distribution',
                       'Capex']
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            chart_list.append(f"{ghg} intensity")
+            chart_list.append(f"{ghg} emissions")
+            pass
+
         if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyRatio):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -365,14 +373,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-        if 'CO2 emissions' in charts:
-            new_chart = self.get_chart_carbon_intensity_kwh()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-            if 'calorific_value' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
-                new_chart = self.get_chart_carbon_intensity_kg()
-                if new_chart is not None:
-                    instanciated_charts.append(new_chart)
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            if f'{ghg} intensity' in charts:
+                instanciated_charts.extend(self.get_chart_ghg_intensity_kwh(ghg))
+
+            if f'{ghg} intensity' in charts:
+                instanciated_charts.extend(self.get_chart_ghg_intensity_kwh(ghg))
+
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
             if new_chart is not None:
@@ -628,51 +635,60 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
             return new_chart
 
-    def get_chart_carbon_intensity_kwh(self):
+    def get_chart_ghg_intensity_kwh(self, ghg):
+        instanciated_charts = []
+        ghg_intensity_scope_1 = self.get_sosdisc_outputs('ghg_intensity_scope_1')
+        ghg_intensity_scope_2 = self.get_sosdisc_outputs('ghg_intensity_scope_2')
+        ghg_intensity_scope_2_details = self.get_sosdisc_outputs(f'ghg_intensity_scope_2_details_{ghg}')
 
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions_detailed')
-        chart_name = f'Carbon intensity of {self.stream_name} via {self.techno_name}'
-        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
+        chart_name = f'{ghg} intensity of {self.stream_name} via {self.techno_name} (Scope 1 & 2)'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions [kgCO2/kWh]',
-                                             chart_name=chart_name, stacked_bar=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt/TWh', chart_name=chart_name, stacked_bar=True)
 
-        CO2_per_use = np.zeros(
-            len(carbon_emissions[GlossaryEnergy.Years]))
-        if GlossaryEnergy.CO2PerUse in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
-            if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
-                CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse] / data_fuel_dict[
-                                  'high_calorific_value']
-            elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
-                CO2_per_use = np.ones(
-                    len(carbon_emissions[GlossaryEnergy.Years])) * data_fuel_dict[GlossaryEnergy.CO2PerUse]
-            serie = InstanciatedSeries(
-                carbon_emissions[GlossaryEnergy.Years],
-                CO2_per_use, f'if {self.stream_name} used', 'bar')
+        serie = InstanciatedSeries(ghg_intensity_scope_1[GlossaryEnergy.Years], ghg_intensity_scope_1[ghg],'Scope 1', 'bar')
+        new_chart.series.append(serie)
 
+        serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_2[ghg], 'Scope 2', 'bar')
+        new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "GHG intensity"
+        instanciated_charts.append(new_chart)
+
+        # Scope 2 details
+        if ghg_intensity_scope_2[ghg].max() > 0:
+            chart_name = f'Scope 2 {ghg} intensity breakdown of {self.stream_name}'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt/TWh', chart_name=chart_name, stacked_bar=True)
+
+            for col in ghg_intensity_scope_2_details.columns:
+                if col != GlossaryEnergy.Years:
+                    serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_2[ghg], col, 'bar')
+                    new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_2[ghg], 'Scope 2', 'lines')
             new_chart.series.append(serie)
+            new_chart.post_processing_section_name = "GHG intensity"
+            instanciated_charts.append(new_chart)
 
-        for emission_type in carbon_emissions:
-            if emission_type == self.techno_name:
-                total_carbon_emissions = CO2_per_use + \
-                                         carbon_emissions[self.techno_name].values
-                serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years],
-                    carbon_emissions[self.techno_name], 'Total w/o use', 'lines')
-                new_chart.series.append(serie)
+        return instanciated_charts
 
-                serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years],
-                    total_carbon_emissions, 'Total if used', 'lines')
-                new_chart.series.append(serie)
-            elif emission_type != GlossaryEnergy.Years and not (carbon_emissions[emission_type] == 0).all():
-                serie = InstanciatedSeries(
-                    carbon_emissions[GlossaryEnergy.Years],
-                    carbon_emissions[emission_type], emission_type, 'bar')
-                new_chart.series.append(serie)
+    def get_chart_ghg_emissions(self, ghg):
+        instanciated_charts = []
+        scope_1_emissions = self.get_sosdisc_outputs(GlossaryEnergy.TechnoScope1GHGEmissionsValue)
+        techno_scope_2_ghg_emissions = self.get_sosdisc_outputs('techno_scope_2_ghg_emissions')
 
-        return new_chart
+        chart_name = f'{ghg} emissions of {self.stream_name} via {self.techno_name} (Scope 1 & 2)'
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt', chart_name=chart_name, stacked_bar=True)
+
+        serie = InstanciatedSeries(scope_1_emissions[GlossaryEnergy.Years], scope_1_emissions[ghg], 'Scope 1', 'bar')
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(techno_scope_2_ghg_emissions[GlossaryEnergy.Years], techno_scope_2_ghg_emissions[ghg], 'Scope 2', 'bar')
+        new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "GHG emissions"
+        instanciated_charts.append(new_chart)
+
+        return instanciated_charts
 
     def get_chart_carbon_intensity_kg(self):
 

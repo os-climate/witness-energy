@@ -153,7 +153,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.techno_list}'] = {
                         'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
                         'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS,
-                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                        'possible_values': EnergyMix.energy_list}
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(

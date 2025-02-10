@@ -93,15 +93,11 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                         # Add technologies_list to inputs
                         techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
                         # update informations of technologies list with specific ones (namespace, default and possible values)
-                        techno_list_desc_dict.update(
-                            {'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                             'namespace': 'ns_energy',
-                             'default': EnergyMix.stream_class_dict[energy].default_techno_list})
+                        techno_list_desc_dict.update({'namespace': 'ns_energy',})
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = techno_list_desc_dict
                         # Add all invest_level outputs
                         if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
-                            technology_list = self.get_sosdisc_inputs(
-                                f'{energy}.{GlossaryEnergy.techno_list}')
+                            technology_list = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.techno_list}')
                             if technology_list is not None:
                                 for techno in technology_list:
                                     # update dataframe descriptor with used technologies
@@ -114,25 +110,13 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                                     dynamic_outputs[
                                         f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_desc_dict
 
-                    else:
-                        # if Biomass dry energy then add relevant variables
-                        dynamic_inputs[GlossaryEnergy.ManagedWoodInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.ManagedWoodInvestment)
-                        dynamic_inputs[
-                            GlossaryEnergy.DeforestationInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.DeforestationInvestment)
-                        dynamic_inputs[GlossaryEnergy.CropInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.CropInvestment)
-
         if GlossaryEnergy.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             if ccs_list is not None:
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
                     techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
-                    techno_list_desc_dict.update(
-                        {'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                         'namespace': GlossaryEnergy.NS_CCS})
+                    techno_list_desc_dict.update({'namespace': GlossaryEnergy.NS_CCS})
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.TechnoListName}'] = techno_list_desc_dict
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():

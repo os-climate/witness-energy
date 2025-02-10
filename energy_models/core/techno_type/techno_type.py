@@ -604,6 +604,8 @@ class TechnoType(DifferentiableModel):
     def compute_scope_1_ghg_intensity(self):
         """Compute scope 1 ghg intensity (Mt/TWh): due to production"""
 
+        self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.Years}'] = self.zeros_array
+
         # CO2
         if 'CO2_from_production' not in self.inputs['techno_infos_dict']:
             self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'] = self.get_theoretical_co2_prod(unit='kg/kWh') + self.zeros_array
@@ -655,8 +657,9 @@ class TechnoType(DifferentiableModel):
         Only CO2 emitted from the technology is here taken into account to compute CO2 taxes
         If carbon emissions are negative then no negative CO2 taxes (use a clip on the column)
         '''
-        CO2_taxes_kwh = self.inputs[f'{GlossaryEnergy.CO2TaxesValue}:{GlossaryEnergy.CO2Tax}'] * self.pseudo_max(self.outputs[f'carbon_intensity_detailed:{self.name}'], 0)
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory'] = CO2_taxes_kwh
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory'] = \
+            self.inputs[f'{GlossaryEnergy.CO2TaxesValue}:{GlossaryEnergy.CO2Tax}'] * \
+            self.pseudo_max(self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'], 0.)
 
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh') -> float:
@@ -689,7 +692,7 @@ class TechnoType(DifferentiableModel):
             mask_prod[i, i: min(n_years, i + lifetime)] = 1
 
         utilisation_ratio = self.inputs[f'{GlossaryEnergy.UtilisationRatioValue}:{GlossaryEnergy.UtilisationRatioValue}'] / 100.
-        max_theoritical_new_plant_production = self.pseudo_max(mask_prod.T @ new_installations_production_capacity, 1e-3)
+        max_theoritical_new_plant_production = mask_prod.T @ new_installations_production_capacity
         max_theoritical_production = max_theoritical_historical_plants_production + max_theoritical_new_plant_production
         target_production = utilisation_ratio * max_theoritical_production
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.Years}'] = self.years
