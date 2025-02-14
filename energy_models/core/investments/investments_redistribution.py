@@ -40,8 +40,6 @@ class InvestmentsRedistribution:
         self.ccs_list = None
         self.techno_list_dict = None
         self.total_investments_in_energy = None
-        self.total_investments_in_energy_w_biomass_dry = None
-        self.reforestation_investment_df = None
         self.inputs_dict = None
 
     def configure_parameters(self, inputs_dict: dict):
@@ -57,7 +55,6 @@ class InvestmentsRedistribution:
         self.ccs_list = self.inputs_dict[GlossaryEnergy.CCSListName]
         self.techno_list_dict = {energy: self.inputs_dict[f'{energy}.{GlossaryEnergy.TechnoListName}'] for energy in
                                  self.energy_list + self.ccs_list if energy != GlossaryEnergy.biomass_dry}
-        self.reforestation_investment_df = self.inputs_dict[GlossaryEnergy.ReforestationInvestmentValue]
 
     def compute(self):
         """compute investment per technology and total energy investments"""
@@ -66,20 +63,11 @@ class InvestmentsRedistribution:
 
     def compute_total_energy_investment_wo_tax(self):
         """computes investments in the energy sector (without tax)"""
+        # compute sum of all investments (energy investments)
 
-        # compute sum of all investments (energy investments + forest investments + biomass_dry investments
-        # if used in model )
-        self.total_investments_in_energy_w_biomass_dry = (self.total_investments_in_energy +
-                                                          self.reforestation_investment_df[
-                                                              GlossaryEnergy.ReforestationInvestmentValue].values)
-
-        if GlossaryEnergy.biomass_dry in self.energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
-                    GlossaryEnergy.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             GlossaryEnergy.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
+             GlossaryEnergy.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy / 1e3})  # G$ to T$
 
     def compute_investment_per_technology(self):
         """

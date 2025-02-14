@@ -126,7 +126,7 @@ class Study(EnergyMixStudyManager):
                 {f'{self.study_name}.land_surface_for_food_df': land_surface_for_food,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                  })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

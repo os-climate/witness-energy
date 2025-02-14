@@ -14,15 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from __future__ import annotations
+
 import math as m
 from abc import abstractmethod
 
 from sostrades_optimization_plugins.models.differentiable_model import (
     DifferentiableModel,
-)
-from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
-    smooth_maximum_vect,
-    soft_maximum_vect,
 )
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -66,6 +64,8 @@ class TechnoType(DifferentiableModel):
         self.configure_parameters_update()
 
         self.compute_initial_age_distribution()
+        self.compute_efficiency()
+        self.compute_external_resources_and_streams_needs()
         self.compute_ghg_intensity()
         self.compute_price()
         self.compute_initial_plants_historical_prod()
@@ -155,9 +155,11 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{col}'] * ratio_values
 
         # limit energy & resource consumption with ratio :
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{GlossaryEnergy.Years}'] = self.years
         for col in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoEnergyDemandsValue, expect_years=True):
             self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{col}'] * ratio_values
 
+        self.outputs[f'{GlossaryEnergy.TechnoResourceConsumptionValue}:{GlossaryEnergy.Years}'] = self.years
         for col in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoResourceDemandsValue, expect_years=True):
             self.outputs[f'{GlossaryEnergy.TechnoResourceConsumptionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{col}'] * ratio_values
 
@@ -193,7 +195,6 @@ class TechnoType(DifferentiableModel):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'] = self.compute_capex() # $ / MWh
 
         capital_recovery_factor = self.compute_capital_recovery_factor()
-        self.compute_efficiency()
         self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
@@ -298,12 +299,15 @@ class TechnoType(DifferentiableModel):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
-        self.compute_resources_needs()
-        self.compute_cost_of_resources_usage()
-        self.compute_other_streams_needs()
         self.compute_cost_of_other_streams_usage()
+        self.compute_cost_of_resources_usage()
         self.compute_specifif_costs_of_technos()
         self.compute_streams_and_resources_costs()
+
+    def compute_external_resources_and_streams_needs(self):
+        """Compute needs of external energies and resources by unit of production"""
+        self.compute_resources_needs()
+        self.compute_other_streams_needs()
 
     def compute_capex(self):
         """
@@ -620,7 +624,7 @@ class TechnoType(DifferentiableModel):
 
         # CH4 + N2O
         for ghg in [GlossaryEnergy.CH4, GlossaryEnergy.N2O]:
-            if f'{GlossaryEnergy.CH4}_emission_factor' not in self.inputs['techno_infos_dict']:
+            if f'{ghg}_emission_factor' not in self.inputs['techno_infos_dict']:
                 ghg_intensity = self.zeros_array
             else:
                 ghg_intensity = self.inputs['techno_infos_dict'][f'{ghg}_emission_factor'] + self.zeros_array
@@ -638,11 +642,18 @@ class TechnoType(DifferentiableModel):
         self.compute_ghg_intensity_from_energies_usage()
 
     def compute_resources_needs(self):
-        """To be overloaded when techno relies on resources"""
+        """
+        To be overloaded when techno relies on resources
+        Compute needs of external resources by unit of production
+        """
+
         pass
 
     def compute_other_streams_needs(self):
-        """To be overloaded when techno uses other technos productions to produce its energy"""
+        """
+        To be overloaded when techno relies on other streams to produce
+        Compute needs of external resources by unit of production
+        """
         pass
 
     def compute_specifif_costs_of_technos(self):
@@ -659,7 +670,7 @@ class TechnoType(DifferentiableModel):
         '''
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:CO2_taxes_factory'] = \
             self.inputs[f'{GlossaryEnergy.CO2TaxesValue}:{GlossaryEnergy.CO2Tax}'] * \
-            self.pseudo_max(self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'], 0.)
+            self.np.maximum(self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'], 0.)
 
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh') -> float:
@@ -686,7 +697,7 @@ class TechnoType(DifferentiableModel):
         max_theoritical_historical_plants_production[:min(lifetime, n_years)] += self.inputs['initial_production'] * fraction_of_historical_plants_still_active[:min(lifetime, n_years)]
 
         # production from newly builted plants (construction delay already taken into account into prod from invests)
-        new_installations_production_capacity = self.outputs[f'techno_production_infos:new_installations_production_capacity']
+        new_installations_production_capacity = self.outputs['techno_production_infos:new_installations_production_capacity']
         mask_prod = self.np.zeros((n_years, n_years)).astype(int)
         for i in range(n_years):
             mask_prod[i, i: min(n_years, i + lifetime)] = 1
@@ -699,15 +710,15 @@ class TechnoType(DifferentiableModel):
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = target_production
 
         self.outputs[f'techno_production_infos:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'techno_production_infos:target_production'] = target_production
-        self.outputs[f'techno_production_infos:max_theoritical_historical_plants_production'] = max_theoritical_historical_plants_production
-        self.outputs[f'techno_production_infos:max_theoritical_new_plant_production'] = max_theoritical_new_plant_production
-        self.outputs[f'techno_production_infos:max_theoritical_production'] = max_theoritical_production
+        self.outputs['techno_production_infos:target_production'] = target_production
+        self.outputs['techno_production_infos:max_theoritical_historical_plants_production'] = max_theoritical_historical_plants_production
+        self.outputs['techno_production_infos:max_theoritical_new_plant_production'] = max_theoritical_new_plant_production
+        self.outputs['techno_production_infos:max_theoritical_production'] = max_theoritical_production
 
     def compute_mean_age_of_production(self):
         """Computes the average age of the producing plants"""
         lifetime = self.inputs[GlossaryEnergy.LifetimeName]
-        max_theoritical_historical_plants_production = self.outputs[f'techno_production_infos:max_theoritical_historical_plants_production']
+        max_theoritical_historical_plants_production = self.outputs['techno_production_infos:max_theoritical_historical_plants_production']
         initial_age_distrib = self.outputs['initial_age_distrib:distrib']
         bb = self.np.flip(self.np.tril(initial_age_distrib))
         bb = (bb.T / bb.sum(axis=1)).T
@@ -722,13 +733,17 @@ class TechnoType(DifferentiableModel):
         for i in range(n_years):
             mask_age[i, i:] = ages[:n_years - i]
 
-        new_installations_production_capacity = self.outputs[f'techno_production_infos:new_installations_production_capacity']
-        mean_age_of_new_producing_plants = (mask_age.T @ new_installations_production_capacity) / self.outputs[f'techno_production_infos:max_theoritical_new_plant_production']
+        new_installations_production_capacity = self.outputs['techno_production_infos:new_installations_production_capacity']
+        # minimum to avoid division by zero, no impact on gradients as mean age of production is strictly for information purpose, and not a coupling variable
+        mean_age_of_new_producing_plants = (mask_age.T @ new_installations_production_capacity) / \
+                                           self.np.maximum(self.outputs['techno_production_infos:max_theoritical_new_plant_production'], 1e-3)
         target_total_production = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
-        max_theoritical_new_plant_production = self.outputs[f'techno_production_infos:max_theoritical_new_plant_production']
+        max_theoritical_new_plant_production = self.outputs['techno_production_infos:max_theoritical_new_plant_production']
 
+        # minimum to avoid division by zero, no impact on gradients as mean age of production is strictly for
+        # information purpose, and not a coupling variable
         mean_age_of_production = (mean_age_historical_prod_complete * max_theoritical_historical_plants_production +
-                                  mean_age_of_new_producing_plants * max_theoritical_new_plant_production) / target_total_production
+                                  mean_age_of_new_producing_plants * max_theoritical_new_plant_production) / self.np.maximum(target_total_production, 1e-3)
         self.outputs[f'mean_age_production:{GlossaryEnergy.Years}'] = self.years
         self.outputs['mean_age_production:mean age'] = mean_age_of_production
 
@@ -740,8 +755,8 @@ class TechnoType(DifferentiableModel):
             full_load_hours = 8760.0
 
         # Conversion from TWh to MW : divide by hours and multiply by 1000
-        newly_installed_capacity = self.outputs[f'techno_production_infos:new_installations_production_capacity'] / full_load_hours * 1e3
-        total_installed_capacity =  self.outputs[f'techno_production_infos:target_production'] / full_load_hours * 1e3
+        newly_installed_capacity = self.outputs['techno_production_infos:new_installations_production_capacity'] / full_load_hours * 1e3
+        total_installed_capacity =  self.outputs['techno_production_infos:target_production'] / full_load_hours * 1e3
         
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity'] = newly_installed_capacity
@@ -751,11 +766,12 @@ class TechnoType(DifferentiableModel):
         removed_installed_capacity = self.np.concatenate([[0.], removed_installed_capacity])
         self.outputs[f'{GlossaryEnergy.InstalledCapacity}:removed_installed_capacity'] = removed_installed_capacity
 
-    def compute_new_installations_production_capacity(self):
-        '''
+    def compute_new_installations_production_capacity(self, additionnal_capex: float = 0.):
+        """
         Compute the newly installed (from investments) power production in TWh
         Add a delay for factory construction
-        '''
+        If any, additionnal_capex should be in ($/MWh)
+        """
 
         years_before_year_start = self.np.arange(self.year_start - self.inputs[GlossaryEnergy.ConstructionDelay], self.year_start)
         invest_before_year_start = self.inputs[f'{GlossaryEnergy.InvestmentBeforeYearStartValue}:{GlossaryEnergy.InvestValue}'] # G$
@@ -766,12 +782,12 @@ class TechnoType(DifferentiableModel):
         invest_after_year_start = self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}'] # in G$
         invests_period_of_interest = self.np.concatenate([invest_before_year_start, invest_after_year_start])
         capex_period_of_interest = self.np.concatenate([capexes_before_year_start, capex_after_year_start])
-        new_installations_production_capacity = invests_period_of_interest / capex_period_of_interest * 1e3 # G$ / ($/ MWh) = (G * MWh) = 10^9 * 10^6 Wh = 10^15 Wh = k TWh so multiply by 1e3 to get TWh
+        new_installations_production_capacity = invests_period_of_interest / (capex_period_of_interest + additionnal_capex) * 1e3 # G$ / ($/ MWh) = (G * MWh) = 10^9 * 10^6 Wh = 10^15 Wh = k TWh so multiply by 1e3 to get TWh
 
         # keep only prod for years >= year_start and <= year_end
         new_installations_production_capacity = new_installations_production_capacity[:len(self.years)]
 
-        self.outputs[f'techno_production_infos:new_installations_production_capacity'] = new_installations_production_capacity
+        self.outputs['techno_production_infos:new_installations_production_capacity'] = new_installations_production_capacity
 
 
     def compute_land_use(self):
@@ -831,7 +847,7 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.zeros_array
             for energy in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
                 if ghg == GlossaryEnergy.CO2:
-                    ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{energy}']
+                    ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] *self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{energy}']
                 else:
                     ghg_intensity = self.zeros_array # TODO : add other GHG inputs
                 self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
@@ -866,8 +882,9 @@ class TechnoType(DifferentiableModel):
         energy = self.outputs['initial_age_distrib:distrib'] / 100.0 * self.inputs['initial_production']
 
         self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:{GlossaryEnergy.Years}'] = self.np.flip(self.year_start - 1 - self.outputs['initial_age_distrib:age'])
-        self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:energy ({self.product_unit})'] = self.np.flip(energy)
-        self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:cum energy ({self.product_unit})'] = self.np.cumsum(self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:energy ({self.product_unit})'])
+        self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:production ({self.product_unit})'] = self.np.flip(energy)
+        self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:cumulative production ({self.product_unit})'] = \
+            self.np.cumsum(self.outputs[f'{GlossaryEnergy.InitialPlantsTechnoProductionValue}:production ({self.product_unit})'])
 
     def compute_consumption_demand(self):
         """Consumption is theoritical consumption based on target production"""

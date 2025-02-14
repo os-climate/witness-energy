@@ -27,18 +27,6 @@ class EnergyType(BaseStream):
     unit = 'TWh'
     data_energy_dict = {}
 
-    def compute_carbon_emissions(self):
-        '''
-        Compute the CO2 emissions in kg/kWh of the total depending on its subelements
-        '''
-        
-        self.outputs[f"{GlossaryEnergy.CO2EmissionsValue}:{GlossaryEnergy.Years}"] = self.years
-        self.outputs[f"{GlossaryEnergy.CO2EmissionsValue}:{self.name}"] = self.zeros_array
-        for techno in self.inputs[GlossaryEnergy.techno_list]:
-            self.outputs[f"{GlossaryEnergy.CO2EmissionsValue}:{self.name}"] += self.inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}:{techno}'] *\
-                                                                               self.outputs[f'techno_mix:{techno}'] / 100.0
-
-
     def compute_ghg_emissions_per_use(self):
         for ghg_type in GlossaryEnergy.GreenHouseGases:
             self.outputs[f'{ghg_type}_per_use:{GlossaryEnergy.Years}'] = self.years
@@ -57,8 +45,3 @@ class EnergyType(BaseStream):
         else :
             raise Exception("ghg per use unit is not handled")
         return ghg_type_per_use
-
-    def compute(self):
-        super().compute()
-        self.compute_carbon_emissions()
-        self.compute_ghg_emissions_per_use()

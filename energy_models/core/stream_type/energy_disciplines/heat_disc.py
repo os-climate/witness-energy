@@ -68,18 +68,6 @@ class HeatDiscipline(SoSWrapp):
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
-               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                    'namespace': 'ns_public'},
-               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                     'namespace': 'ns_public'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                     'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                    'namespace': 'ns_public', 'user_level': 2},
                GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': EnergyMix.energy_list,
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -322,9 +310,7 @@ class HeatDiscipline(SoSWrapp):
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.StreamEnergyConsumptionValue)
         energy_production = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
-            'scaling_factor_energy_production')
-
+        
         # one graph for production and one for consumption for clarity
         chart_name = f'{self.stream_name} Production with input investments'
         prod_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
@@ -337,7 +323,7 @@ class HeatDiscipline(SoSWrapp):
             if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
                 energy_twh = - \
                                  energy_consumption[reactant].values * \
-                             scaling_factor_energy_consumption
+                             1e3
                 display_reactant_name = reactant.split(
                     ".")[-1].replace("_", " ")
                 legend_title = f'{display_reactant_name} consumption'.replace(
@@ -354,7 +340,7 @@ class HeatDiscipline(SoSWrapp):
             # technologies
             if products != GlossaryEnergy.Years and products.endswith('(TWh)') and self.stream_name not in products:
                 energy_twh = energy_production[products].values * \
-                             scaling_factor_energy_production
+                             1e3
 
                 display_products_name = products.split(
                     ".")[-1].replace("_", " ")
@@ -372,7 +358,7 @@ class HeatDiscipline(SoSWrapp):
             legend_title = f'{display_energy_name} production'.replace(
                 "(TWh)", "")
             energy_prod_twh = energy_production[f'{energy}'].values * \
-                              scaling_factor_energy_production
+                              1e3
             serie = InstanciatedSeries(energy_production[GlossaryEnergy.Years].values.tolist(),
                                        energy_prod_twh.tolist(),
                                        legend_title,
@@ -425,7 +411,7 @@ class HeatDiscipline(SoSWrapp):
                 legend_title = f'{display_reactant_name} consumption'.replace(
                     "(Mt)", "")
                 mass = -energy_consumption[reactant].values / \
-                       1.0e3 * scaling_factor_energy_consumption
+                       1.0e3 * 1e3
                 serie = InstanciatedSeries(energy_consumption[GlossaryEnergy.Years].values.tolist(),
                                            mass.tolist(),
                                            legend_title,
@@ -438,7 +424,7 @@ class HeatDiscipline(SoSWrapp):
                 legend_title = f'{display_product_name} production'.replace(
                     "(Mt)", "")
                 mass = energy_production[product].values / \
-                       1.0e3 * scaling_factor_energy_production
+                       1.0e3 * 1e3
                 serie = InstanciatedSeries(energy_production[GlossaryEnergy.Years].values.tolist(),
                                            mass.tolist(),
                                            legend_title,

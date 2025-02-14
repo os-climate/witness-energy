@@ -22,7 +22,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -73,7 +72,7 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.stream_name = hightemperatureheat.name
+        self.stream_name = GlossaryEnergy.hightemperatureheat_energyname
         energy_name = f'EnergyMix.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)

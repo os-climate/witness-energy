@@ -57,8 +57,10 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']
         water_prod_factor = self.get_theoretical_water_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = water_prod_factor * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-            f'{HydrotreatedOilFuel.name} ({self.product_unit})'] / water_calorific_value
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = \
+            water_prod_factor * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{HydrotreatedOilFuel.name} ({self.product_unit})'] \
+            / water_calorific_value
 
     def get_theoretical_natural_oil_needs(self):
         """

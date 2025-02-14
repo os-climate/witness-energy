@@ -244,7 +244,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         if len(set(HeatDiscipline.heat_list).intersection(set(self.energy_list))) > 0:
             # heat = 'Heat'
-            # heat_name = hightemperatureheat.name
+            # heat_name = GlossaryEnergy.hightemperatureheat_energyname
             # ns_dict1 = {'ns_heat': f'{ns_study}.{energy_mix}.{heat}.{heat_name}'}
             ns_dict = {
                 'ns_heat_high': f'{ns_study}.{energy_mix}.{GlossaryEnergy.heat}.hightemperatureheat',

@@ -107,8 +107,7 @@ class OneInvestDiscipline(SoSWrapp):
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
                             'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                            'visibility': 'Shared', 'namespace': 'ns_energy',
-                            'possible_values': EnergyMix.energy_list,}
+                            'visibility': 'Shared', 'namespace': 'ns_energy',}
                         if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                             technology_list = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.techno_list}')
                             # Add all invest_level outputs

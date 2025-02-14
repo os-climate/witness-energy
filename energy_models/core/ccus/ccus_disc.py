@@ -99,7 +99,7 @@ class CCUS_Discipline(SoSWrapp):
                 'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 "dynamic_dataframe_columns": True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionDemandsValue}'] = {
+            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamEnergyDemandValue}'] = {
                 'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                 'namespace': GlossaryEnergy.NS_CCS,
                 "dynamic_dataframe_columns": True}

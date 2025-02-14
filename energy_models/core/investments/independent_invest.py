@@ -54,13 +54,6 @@ class IndependentInvest(BaseInvest):
         techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        techno_invest_sum += inputs_dict[GlossaryEnergy.ReforestationInvestmentValue][
-            GlossaryEnergy.ReforestationInvestmentValue].values
-        energy_list = inputs_dict[GlossaryEnergy.energy_list]
-
-        if GlossaryEnergy.biomass_dry in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                techno_invest_sum += inputs_dict[techno][GlossaryEnergy.InvestmentsValue].values
         energy_investment_wo_tax = pd.DataFrame(
             {GlossaryEnergy.Years: inputs_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years],
              GlossaryEnergy.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$

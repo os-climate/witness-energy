@@ -36,6 +36,7 @@ class GeothermalHeat(lowheattechno):
     def compute_byproducts_production(self):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
+        # TODO : geothermal produces carbon capture ?
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                    f'{lowtemperatureheat.name} ({self.product_unit})'] / \

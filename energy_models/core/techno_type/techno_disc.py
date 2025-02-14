@@ -68,8 +68,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
         GlossaryEnergy.MarginValue: GlossaryEnergy.MarginDf,
         GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2TaxesValue: GlossaryEnergy.CO2Taxes,
-        'smooth_type': {'type': 'string', 'default': 'smooth_max',
-                        'possible_values': ['smooth_max', 'soft_max', 'cons_smooth_max' ],
+        'smooth_type': {'type': 'string', 'default': 'cons_smooth_max',
+                        'possible_values': ['cons_smooth_max' ],
                         'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_public'},
         GlossaryEnergy.BoolApplyRatio: {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True,
@@ -339,15 +339,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         if 'Detailed prices' in charts and '$/MWh' in price_unit_list:
             new_chart = self.get_chart_detailed_price_in_dollar_kwh()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
 
         if 'Detailed prices' in charts \
                 and '$/t' in price_unit_list \
                 and 'calorific_value' in data_fuel_dict:
             new_chart = self.get_chart_detailed_price_in_dollar_kg()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
 
         if "Production":
             new_chart = self.get_chart_production()
@@ -355,23 +353,19 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         if 'Applied Ratio' in charts:
             new_chart = self.get_chart_applied_ratio()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
 
         if GlossaryEnergy.UtilisationRatioValue in charts:
             new_chart = self.get_utilisation_ratio_chart()
             instanciated_charts.append(new_chart)
 
         if 'Initial Production' in charts:
-            if 'initial_production' in self.get_data_in():
-                new_chart = self.get_chart_initial_production()
-                if new_chart is not None:
-                    instanciated_charts.append(new_chart)
+            new_chart = self.get_chart_initial_production()
+            instanciated_charts.append(new_chart)
 
         if 'Factory Mean Age' in charts:
             new_chart = self.get_chart_factory_mean_age()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
 
         for ghg in GlossaryEnergy.GreenHouseGases:
             if f'{ghg} intensity' in charts:
@@ -382,16 +376,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
         if 'Power production' in charts:
             new_chart = self.get_chart_installed_capacity(technos_info_dict)
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
         if 'Power plants initial age distribution' in charts:
             new_chart = self.get_chart_initial_age_distrib()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+            instanciated_charts.append(new_chart)
 
         if 'Capex' in charts:
             new_chart = self.get_chart_capex()
@@ -599,21 +590,22 @@ class TechnoDiscipline(AutodifferentiedDisc):
         study_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoTargetProductionValue)
         chart_name = f'{self.stream_name} World Production via {self.techno_name}<br>with {year_start} factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_name} production [TWh]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_name} production [{self.stream_unit}]',
                                              chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
             initial_production[GlossaryEnergy.Years],
-            initial_production['cum energy (TWh)'], f'Initial production by {year_start} factories', 'lines')
+            initial_production[f'cumulative production ({self.stream_unit})'], f'Initial production by {year_start} factories', 'lines')
 
-        study_prod = study_production[f'{self.stream_name} ({GlossaryEnergy.energy_unit})'].values
+        study_prod = study_production[f'{self.stream_name} ({self.stream_unit})'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
-        study_prod_l.insert(0, initial_production['cum energy (TWh)'].values[-1])
+        study_prod_l.insert(0, initial_production[f'cumulative production ({self.stream_unit})'].values[-1])
         serie = InstanciatedSeries(years_study, study_prod_l, 'Predicted production', 'lines')
         new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "Production"
 
         return new_chart
 
@@ -632,6 +624,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
                 mean_age_production['mean age'], '', 'lines')
 
             new_chart.series.append(serie)
+            new_chart.post_processing_section_name = "Production"
 
             return new_chart
 
@@ -780,6 +773,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             'Unused capital (utilisation ratio + limitation from energy and resources)', 'bar')
 
         new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "Capital"
 
         return new_chart
 
@@ -812,6 +806,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             installed_capacity['removed_installed_capacity'], 'Newly dismantled', 'lines')
 
         new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "Production"
 
         return new_chart
 
@@ -826,6 +821,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             age_distrib['distrib'], '', 'bar')
 
         new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "Production"
         return new_chart
 
     def get_chart_capex(self):

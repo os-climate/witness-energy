@@ -44,6 +44,7 @@ class CHPLowHeat(lowheattechno):
 
     def compute_byproducts_production(self):
         # CO2 production
+        # TODO
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
             Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / Methane.data_energy_dict['calorific_value'] *\
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})']

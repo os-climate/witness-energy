@@ -15,7 +15,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     HighHeatTechnoDiscipline,
 )
@@ -41,7 +40,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HeatPumpHighHeat
-    stream_name = hightemperatureheat.name
+    stream_name = GlossaryEnergy.hightemperatureheat_energyname
 
 
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.

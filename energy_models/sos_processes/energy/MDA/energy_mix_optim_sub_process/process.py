@@ -17,9 +17,6 @@ from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissi
     GHGemissionsDiscipline,
 )
 
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import (
-    EnergyGHGEmissionsDiscipline,
-)
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -127,7 +124,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         emissions_mod_dict = {
             GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
-            EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'
         }
         builder_emission_list = self.create_builder_list(emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_emission_list)

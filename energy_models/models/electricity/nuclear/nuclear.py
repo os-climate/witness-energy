@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -24,10 +23,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Nuclear(ElectricityTechno):
-    URANIUM_RESOURCE_NAME = GlossaryEnergy.UraniumResource
 
     def compute_resources_needs(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.URANIUM_RESOURCE_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.UraniumResource}_needs'] = self.get_theoretical_uranium_fuel_needs()
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()
 
     def compute_specifif_costs_of_technos(self):
@@ -37,12 +35,11 @@ class Nuclear(ElectricityTechno):
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.zeros_array + waste_disposal_cost
 
     def compute_byproducts_production(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = 24000000.00 * \
-                                                                                               self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:'
-                                                                                                   f'{self.URANIUM_RESOURCE_NAME} ({GlossaryEnergy.mass_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] =\
+            24000000.00 * self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{GlossaryEnergy.UraniumResource} ({GlossaryEnergy.mass_unit})']
 
-        # self.production[f'{hightemperatureheat.name} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
-        #       self.production[f'{ElectricityTechno.stream_name} ({self.product_unit})']) / \
+        # self.production[f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
+        #       self.production[f'{self.stream_name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']
 
 

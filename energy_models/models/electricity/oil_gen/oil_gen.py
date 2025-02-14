@@ -17,7 +17,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -38,16 +37,17 @@ class OilGen(ElectricityTechno):
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                f'{ElectricityTechno.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
-                                                                                            'CO2_from_production'] * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
+
+        # TODO
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            self.inputs['techno_infos_dict']['CO2_from_production'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{LiquidFuel.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 

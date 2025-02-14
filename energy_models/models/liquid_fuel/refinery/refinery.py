@@ -19,7 +19,6 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import (
     LiquidFuelTechno,
 )
@@ -34,8 +33,6 @@ class Refinery(LiquidFuelTechno):
     def __init__(self, name):
         super().__init__(name)
         self.other_energy_dict = None
-        self.dprod_dinvest = None
-        self.dprod_list_dcapex_list = None
 
     def compute_cost_of_resources_usage(self):
         """
@@ -118,24 +115,9 @@ class Refinery(LiquidFuelTechno):
                                                                                                                              self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                       f'{LiquidFuelTechno.stream_name} ({self.product_unit})']
 
-    def compute_new_installations_production_capacity(self):
+    def compute_new_installations_production_capacity(self, additionnal_capex: float = 0.):
         '''
         Compute the energy production of a techno from investment in TWh
         Add a delay for factory construction
         '''
-
-        years_before_year_start = self.np.arange(self.year_start - self.inputs[GlossaryEnergy.ConstructionDelay], self.year_start)
-        invest_before_year_start = self.inputs[f'{GlossaryEnergy.InvestmentBeforeYearStartValue}:{GlossaryEnergy.InvestValue}']
-        capex_after_year_start = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}']
-        capex_year_start = capex_after_year_start[0]
-        capexes_before_year_start = self.np.array([capex_year_start] * len(years_before_year_start))
-
-        invest_after_year_start = self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}']
-        invests_period_of_interest = self.np.concatenate([invest_before_year_start, invest_after_year_start])
-        capex_period_of_interest = self.np.concatenate([capexes_before_year_start, capex_after_year_start])
-        new_installations_production_capacity = invests_period_of_interest / (capex_period_of_interest + self.oil_extraction_capex)
-
-        # keep only prod for years >= year_start and <= year_end
-        new_installations_production_capacity = new_installations_production_capacity[:len(self.years)]
-
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:new_installations_production_capacity'] = new_installations_production_capacity
+        super().compute_new_installations_production_capacity(additionnal_capex=self.oil_extraction_capex)

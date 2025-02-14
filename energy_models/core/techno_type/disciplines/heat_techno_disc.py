@@ -219,7 +219,7 @@ class HighHeatTechnoDiscipline(HeatTechnoDiscipline):
 
     _maturity = 'Research'
 
-    stream_name = hightemperatureheat.name
+    stream_name = GlossaryEnergy.hightemperatureheat_energyname
 
 
 

@@ -87,7 +87,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
                 'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
-                f'{energy}'][GlossaryEnergy.StreamConsumptionDemandsValue]['value']
+                f'{energy}'][GlossaryEnergy.StreamEnergyDemandValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
@@ -151,7 +151,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                 energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.stream_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionDemandsValue}'] = \
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamEnergyDemandValue}'] = \
                 self.energy_consumption_woratio[energy]
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'] = self.CO2_taxes

@@ -43,7 +43,6 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
 from energy_models.core.stream_type.energy_models.heat import (
-    hightemperatureheat,
     lowtemperatureheat,
     mediumtemperatureheat,
 )
@@ -135,7 +134,7 @@ class Study(EnergyStudyManager):
             Methane.name: [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
             GaseousHydrogen.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             LiquidFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            hightemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            GlossaryEnergy.hightemperatureheat_energyname: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             mediumtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             lowtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             SolidFuel.name: [0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
@@ -489,7 +488,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamEnergyConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionDemandsValue}": energy_consumption,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamEnergyDemandValue}": energy_consumption,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamProductionValue}": energy_production,
             f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
@@ -514,7 +513,7 @@ class Study(EnergyStudyManager):
                 SolidFuel.name: 8.6,
                 GaseousHydrogen.name: 90.0,
                 LiquidFuel.name: 70.0,
-                hightemperatureheat.name: 71.0,
+                GlossaryEnergy.hightemperatureheat_energyname: 71.0,
                 mediumtemperatureheat.name: 71.0,
                 lowtemperatureheat.name: 71.0,
                 GlossaryEnergy.syngas: 40.0,
@@ -540,7 +539,7 @@ class Study(EnergyStudyManager):
                 SolidFuel.name: 0.64 / 4.86,
                 GaseousHydrogen.name: 0.0,
                 LiquidFuel.name: 0.0,
-                hightemperatureheat.name: 0.0,
+                GlossaryEnergy.hightemperatureheat_energyname: 0.0,
                 mediumtemperatureheat.name: 0.0,
                 lowtemperatureheat.name: 0.0,
                 GlossaryEnergy.syngas: 0.0,

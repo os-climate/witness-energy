@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import (
     highheattechno,
 )
@@ -36,9 +35,10 @@ class GeothermalHeat(highheattechno):
 
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
+        # TODO : ask valentin ?? geothermal high heat produces carbon capture ??
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                   f'{hightemperatureheat.name} ({self.product_unit})'] / \
+                                                                                   f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] / \
                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):

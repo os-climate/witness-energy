@@ -16,7 +16,6 @@ limitations under the License.
 '''
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -38,6 +37,7 @@ class FossilSimpleTechno(FossilTechno):
         co2_from_raw_to_net = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                   f'{FossilTechno.stream_name} ({self.product_unit})'] * (1.0 - Fossil.raw_to_net_production) * co2_per_use
 
+        # TODO :
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
             self.inputs['techno_infos_dict']['CO2_from_production'] / self.inputs['data_fuel_dict']['calorific_value'] * \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'f'{FossilTechno.stream_name} ({self.product_unit})'] + \

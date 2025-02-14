@@ -34,7 +34,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_02_redistribution_invest_disc_gradient,
-            self.test_02_redistribution_invest_disc_gradient_wih_biomass_dry
         ]
 
     def setUp(self):
@@ -68,18 +67,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                                                         GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(10.,
                                                                                                                   20.,
                                                                                                                   len(self.years))})
-        forest_invest = np.linspace(5, 8, len(self.years))
-        self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: forest_invest})
-        managed_wood_invest = np.linspace(0.5, 2, len(self.years))
-        self.managed_wood_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": managed_wood_invest})
-        deforestation_invest = np.linspace(1.0, 0.1, len(self.years))
-        self.deforestation_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": deforestation_invest})
-        crop_invest = np.linspace(0.5, 0.25, len(self.years))
-        self.crop_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": crop_invest})
 
     def test_01_redistribution_invest_disc(self):
         self.name = 'Energy'
@@ -116,7 +103,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -189,7 +175,6 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -204,74 +189,9 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}'
                                     ],
                             outputs=[f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
                                      all_technos_list] + [
                                         f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'], )
 
-    def test_02_redistribution_invest_disc_gradient_wih_biomass_dry(self):
-        self.name = 'Energy'
-        self.model_name = 'Invest'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
-                   'ns_public': self.name,
-                   'ns_energy_study': self.name,
-                   GlossaryEnergy.NS_CCS: f'{self.name}',
-                   'ns_energy': self.name,
-                   GlossaryEnergy.NS_FUNCTIONS: self.name,
-                   'ns_invest': f'{self.name}.{self.model_name}',
-                   'ns_forest': self.name,
-                   'ns_crop': self.name
-                   }
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.investments.disciplines.investments_redistribution_disc.InvestmentsRedistributionDisicpline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list + [GlossaryEnergy.biomass_dry],
-                       f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
-                       f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
-                       f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
-                       f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
-                       f'{self.name}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.TechnoListName}': [],
-                       f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
-                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
-                       f'{self.name}.deforestation_investment': self.deforestation_invest_df,
-                       f'{self.name}.crop_investment': self.crop_invest_df
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        all_technos_list = [
-            f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
-
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_redistribution_invest_disc_w_biomass.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc.local_data,
-                            inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}',
-                                    f'{self.name}.managed_wood_investment',
-                                    f'{self.name}.deforestation_investment',
-                                    f'{self.name}.crop_investment'],
-                            outputs=[f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
-                                     all_technos_list] + [
-                                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'], )

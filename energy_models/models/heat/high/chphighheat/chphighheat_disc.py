@@ -15,7 +15,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     HighHeatTechnoDiscipline,
 )
@@ -40,7 +39,7 @@ class CHPHighHeatDiscipline(TechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CHPHighHeat
-    stream_name = hightemperatureheat.name
+    stream_name = GlossaryEnergy.hightemperatureheat_energyname
 
     # Conversions
     pound_to_kg = 0.45359237

@@ -14,14 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from __future__ import annotations
+
+import re
 
 import numpy as np
+import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
+    TwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
@@ -29,11 +34,17 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
 from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
     AutodifferentiedDisc,
 )
+from sostrades_optimization_plugins.tools.plot_tools.colormaps import (
+    available_colormaps,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plot_factories import (
+    create_sankey_with_slider,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    InstantiatedPlotlyNativeChart,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-
-if TYPE_CHECKING:
-    import logging
 
 
 class StreamDiscipline(AutodifferentiedDisc):
@@ -54,6 +65,7 @@ class StreamDiscipline(AutodifferentiedDisc):
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
+        GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True, 'unit': '-'},
     }
 
     DESC_OUT = {
@@ -71,7 +83,8 @@ class StreamDiscipline(AutodifferentiedDisc):
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
 
         GlossaryEnergy.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha', AutodifferentiedDisc.GRADIENTS: True,},
-        GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf
+        GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf,
+        'ghg_intensity_scope_1': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': 'GHG intensity (emissions by production unit) for stream'},
     }
 
     _maturity = 'Research'
@@ -97,7 +110,7 @@ class StreamDiscipline(AutodifferentiedDisc):
                 dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoProductionDf)
 
                 # emissions
-                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoScope1GHGEmissions}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoScope1GHGEmissions)
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoScope1GHGEmissionsValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoScope1GHGEmissions)
 
                 dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                 dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = GlossaryEnergy.get_techno_price_df(techno)
@@ -401,3 +414,121 @@ class StreamDiscipline(AutodifferentiedDisc):
         val = val.replace("_", ' ')
         val = val.capitalize()
         return val
+
+
+    def get_chart_sankey_fluxes(
+        self,
+        years_list,
+        chart_name="Energy Flow",
+        streams_filter: list | None = None,
+        normalized_links: bool = False,
+        split_external: bool = False,
+    ):
+        """Create sankey chart correlating production and consumption of all technos in stream disc."""
+
+        # Get list of energy technologies
+        techno_list = self.get_sosdisc_inputs(GlossaryEnergy.TechnoListName)
+        year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+        years = np.arange(year_start, year_end + 1)
+
+        # Initialize dictionary with all consumptions / productions
+        techno_dictionary = {}
+
+        # Get dataframes and put them in dictionary format
+        for techno in techno_list:
+            consumption = self.get_sosdisc_inputs(
+                f"{techno}.{GlossaryEnergy.TechnoEnergyConsumptionValue}"
+            ).copy()
+            production = self.get_sosdisc_inputs(
+                f"{techno}.{GlossaryEnergy.TechnoProductionValue}"
+            ).copy()
+
+            # Add Years to dataframes
+            if GlossaryEnergy.Years not in consumption.columns:
+                consumption[GlossaryEnergy.Years] = years
+
+            if GlossaryEnergy.Years not in production.columns:
+                production[GlossaryEnergy.Years] = years
+
+            # Update dictionary
+            techno_dictionary[techno] = {
+                "input": consumption,
+                "output": production,
+            }
+
+        # Get Net Production
+        production = self.get_sosdisc_outputs(
+            f"{GlossaryEnergy.StreamProductionValue}"
+        ).copy()
+        production.columns = [c.replace("production ", "") for c in production.columns]
+        consumption = pd.DataFrame({GlossaryEnergy.Years: years})
+
+        # Add Years to dataframes
+        if GlossaryEnergy.Years not in production.columns:
+            production[GlossaryEnergy.Years] = years
+
+        # Switch prod /consumption as we want the node to "consume" the available streams
+        techno_dictionary["available"] = {
+            "input": production,
+            "output": consumption,
+        }
+
+        # Get Consumption
+        consumption = self.get_sosdisc_outputs(
+            f"{GlossaryEnergy.StreamEnergyConsumptionValue}"
+        ).copy()
+        production = pd.DataFrame({GlossaryEnergy.Years: years})
+
+        # Add Years to dataframes
+        if GlossaryEnergy.Years not in consumption.columns:
+            consumption[GlossaryEnergy.Years] = years
+
+        # Switch prod /consumption as we want the node to "consume" the available streams
+        techno_dictionary["requested"] = {
+            "input": production,
+            "output": consumption,
+        }
+
+        # Filter out resources
+        for dfs in techno_dictionary.values():
+            dfs["input"] = dfs["input"][
+                [c for c in dfs["input"].columns if "(Mt)" not in c]
+            ]
+            dfs["output"] = dfs["output"][
+                [c for c in dfs["output"].columns if "(Mt)" not in c]
+            ]
+
+        # Remove units from all streams, to handle inconsistent naming
+        for actor in techno_dictionary:
+            techno_dictionary[actor]["input"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in techno_dictionary[actor]["input"].columns
+            ]
+            techno_dictionary[actor]["output"].columns = [
+                re.sub(r"\s*\([^)]*\)", "", c)
+                for c in techno_dictionary[actor]["output"].columns
+            ]
+
+        # filter streams
+        if streams_filter is not None:
+            for dfs in techno_dictionary.values():
+                existing_columns = list(set(streams_filter) & set(dfs["input"].columns))
+                dfs["input"] = dfs["input"][[GlossaryEnergy.Years] + existing_columns]
+                existing_columns = list(
+                    set(streams_filter) & set(dfs["output"].columns)
+                )
+                dfs["output"] = dfs["output"][[GlossaryEnergy.Years] + existing_columns]
+
+        # Create sankey plot
+        colormap = available_colormaps["energy"]
+        fig = create_sankey_with_slider(
+            techno_dictionary,
+            colormap=colormap,
+            normalized_links=normalized_links,
+            split_external=split_external,
+            output_node="available",
+            input_node="requested",
+        )
+
+        # return chart
+        return InstantiatedPlotlyNativeChart(fig, chart_name)

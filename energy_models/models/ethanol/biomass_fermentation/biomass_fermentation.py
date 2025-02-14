@@ -41,13 +41,12 @@ class BiomassFermentation(EthanolTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs'] = self.get_theoretical_biomass_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                   f'{Ethanol.name} ({self.product_unit})'] / \
-                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] =\
+            carbon_production_factor * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Ethanol.name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_biomass_needs(self):
         """

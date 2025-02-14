@@ -59,10 +59,8 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyListName: energy_list_desc_dict,
         GlossaryEnergy.CCSListName: ccs_list_desc_dict,
-        GlossaryEnergy.ReforestationInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
         GlossaryEnergy.EconomicsDfValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EconomicsDf),
-        GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(
-            GlossaryEnergy.EnergyInvestPercentageGDP)
+        GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyInvestPercentageGDP)
     }
 
     DESC_OUT = {
@@ -215,17 +213,6 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             (GlossaryEnergy.EnergyInvestPercentageGDPName, GlossaryEnergy.EnergyInvestPercentageGDPName),
             economics_df[GlossaryEnergy.OutputNetOfDamage].values * identity / 100.)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryEnergy.ReforestationInvestmentValue, GlossaryEnergy.ReforestationInvestmentValue),
-            identity * 1e-3)
-
-        if GlossaryEnergy.biomass_dry in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-                    (techno, GlossaryEnergy.InvestmentsValue),
-                    identity * 1e-3)
 
     def get_chart_filter_list(self):
 
@@ -288,39 +275,6 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
                     new_chart_energy.series.append(serie)
 
-            reforestation_investment = self.get_sosdisc_inputs(GlossaryEnergy.ReforestationInvestmentValue)
-            chart_name = 'Distribution of reforestation investments '
-            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                         chart_name=chart_name, stacked_bar=True)
-            serie_agriculture = InstanciatedSeries(
-                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
-                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].values.tolist(), 'Reforestation', 'bar')
-            agriculture_chart.series.append(serie_agriculture)
-            instanciated_charts.append(agriculture_chart)
-            serie = InstanciatedSeries(
-                reforestation_investment[GlossaryEnergy.Years].values.tolist(),
-                reforestation_investment[GlossaryEnergy.ReforestationInvestmentValue].tolist(), 'Reforestation', 'bar')
-
-            new_chart_energy.series.append(serie)
-
-            if GlossaryEnergy.biomass_dry in energy_list:
-                chart_name = 'Distribution of agriculture sector investments '
-                agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                             chart_name=chart_name, stacked_bar=True)
-
-                for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                    invest = self.get_sosdisc_inputs(techno)
-                    serie_agriculture = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""),
-                        'bar')
-                    agriculture_chart.series.append(serie_agriculture)
-                    serie = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
-                    new_chart_energy.series.append(serie)
-                instanciated_charts.append(agriculture_chart)
-                instanciated_charts.insert(0, new_chart_energy)
 
             instanciated_charts.insert(0, new_chart_energy)
 

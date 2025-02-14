@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import (
     highheattechno,
 )
@@ -31,11 +30,6 @@ class HeatPump(highheattechno):
     def compute_other_streams_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_byproducts_production(self):
-        # Production
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] / \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']

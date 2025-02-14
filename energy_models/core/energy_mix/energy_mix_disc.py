@@ -14,7 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import logging
+import re
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -42,9 +43,6 @@ from sostrades_optimization_plugins.tools.plot_tools.plotting import (
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-
-if TYPE_CHECKING:
-    import logging
 
 
 class Energy_Mix_Discipline(AutodifferentiedDisc):
@@ -82,22 +80,23 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
     DESC_OUT = {
         GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
         GlossaryEnergy.TargetProductionConstraintValue: GlossaryEnergy.TargetProductionConstraint,
-        'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt', 'description': 'co2 emissions of each energy'},
-        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'Mt', 'description': 'Total CO2 emissions of energy sector'},
         'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True},
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'net_energy_production_details': {'type': 'dataframe', 'unit': 'TWh', 'description': 'net energy production for each energy'},
         'net_energy_production': {'type': 'dataframe', 'unit': 'TWh', 'description': 'Total net energy production of energy sector'},
-        'demands_df': {'type': 'dataframe', 'unit': 'TWh', 'description': 'Total demand from energy sector for each stream'},
-        'energy_consumption': {'type': 'dataframe', 'unit': 'TWh'},
+        GlossaryEnergy.EnergyMixAllDemandsDfValue: GlossaryEnergy.EnergyMixAllDemandsDf,
+        GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue: GlossaryEnergy.EnergyMixEnergiesConsumptionDf,
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha', AutodifferentiedDisc.GRADIENTS: True},
         GlossaryEnergy.EnergyMeanPriceValue: GlossaryEnergy.EnergyMeanPrice,
-        GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf,
-        GlossaryEnergy.AllStreamsDemandRatioValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.AllStreamsDemandRatio)
+        GlossaryEnergy.EnergyMixCapitalDfValue: GlossaryEnergy.EnergyMixCapitalDf,
+        GlossaryEnergy.AllStreamsDemandRatioValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.AllStreamsDemandRatio),
+        GlossaryEnergy.GHGEnergyEmissionsDfValue: GlossaryEnergy.GHGEnergyEmissionsDf
     }
+    for ghg in GlossaryEnergy.GreenHouseGases:
+        DESC_OUT.update({f'{ghg}_emissions_by_energy': {'type': 'dataframe', 'unit': 'Gt', 'description': f'{ghg} emissions of each energy'},})
 
-    def __init__(self, sos_name, logger: logging.Logger):
+    def __init__(self, sos_name, logger):
         super().__init__(sos_name, logger)
         self.model = None
 
@@ -174,7 +173,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         years = df_prod_brut[GlossaryEnergy.Years]
         if "Production" in charts:
             df_prod_net = self.get_sosdisc_outputs('net_energy_production')
-            df_conso = self.get_sosdisc_outputs('energy_consumption')
+            df_conso = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue)
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [TWh]', chart_name='Energy sector production')
 
             serie = InstanciatedSeries(years, df_prod_brut["Total"], 'Raw production', 'lines')
@@ -218,8 +217,10 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             instanciated_charts.append(new_chart)
 
         if "Production" in charts:
-            df_consumption = self.get_sosdisc_outputs('energy_consumption')
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '[TWh]', chart_name='Energy consumption within the energy sector', stacked_bar=True)
+            df_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
+                                                 GlossaryEnergy.EnergyMixEnergiesConsumptionDf['unit'],
+                                                 chart_name='Energy consumption within the energy sector', stacked_bar=True)
             for col in df_consumption.columns:
                 if col != GlossaryEnergy.Years and col != "Total":
                     serie = InstanciatedSeries(years, df_consumption[col], col, 'bar')
@@ -265,8 +266,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                 )
 
                 energy_production = self.get_sosdisc_outputs('net_energy_production')["Total"]
-                serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
-                                                   'bar')
+                serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production", 'bar')
                 chart_target_energy_production.add_series(serie_production)
                 chart_target_energy_production.post_processing_section_name = "Production"
                 instanciated_charts.append(chart_target_energy_production)
@@ -290,31 +290,9 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                 instanciated_charts.append(new_chart)
 
         if "Emissions" in charts:
-            df_emissions_by_energy = self.get_sosdisc_outputs("co2_emissions_by_energy")
-            df_emissions_co2_total = self.get_sosdisc_outputs("energy_CO2_emissions")
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Gt', chart_name='CO2 emissions', stacked_bar=True)
-            for col in df_emissions_by_energy.columns:
-                if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_emissions_by_energy[col], col, 'bar')
-                    new_chart.series.append(serie)
-
-            serie = InstanciatedSeries(years, df_emissions_co2_total["Total"], "Total", 'lines')
-            new_chart.series.append(serie)
-
-            new_chart.post_processing_section_name= "Emissions"
-            instanciated_charts.append(new_chart)
-
-        if "Emissions" in charts:
-            df_emissions_by_energy = self.get_sosdisc_outputs("co2_emissions_by_energy")
-            df_emissions_co2_total = self.get_sosdisc_outputs("energy_CO2_emissions")
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '%', chart_name='CO2 emissions share', stacked_bar=True)
-            for col in df_emissions_by_energy.columns:
-                if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_emissions_by_energy[col] / df_emissions_co2_total["Total"] * 100., col, 'bar' )
-                    new_chart.series.append(serie)
-
-            new_chart.post_processing_section_name = "Emissions"
-            instanciated_charts.append(new_chart)
+            instanciated_charts.append(self.get_ghg_equivalent_charts())
+            for ghg in GlossaryEnergy.GreenHouseGases:
+                instanciated_charts.extend(self.get_ghg_charts(ghg))
 
         if "Demands" in charts:
             df_demands_ratio = self.get_sosdisc_outputs(GlossaryEnergy.AllStreamsDemandRatioValue)
@@ -328,8 +306,8 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             instanciated_charts.append(new_chart)
 
         if "Demands" in charts:
-            df_demands = self.get_sosdisc_outputs("demands_df")
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'TWh', chart_name='Demands for each energy within the energy sector', stacked_bar=True)
+            df_demands = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixAllDemandsDfValue)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixAllDemandsDf['unit'], chart_name='Demands for each energy within the energy sector', stacked_bar=True)
             for col in df_demands.columns:
                 if col != GlossaryEnergy.Years:
                     serie = InstanciatedSeries(years, df_demands[col], col, 'bar' )
@@ -363,12 +341,12 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         return new_chart
 
     def get_chart_capital(self):
-        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyCapitalDfValue)
+        capital_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixCapitalDfValue)
 
         chart_name = "Capital"
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years,
-            f"[{GlossaryEnergy.EnergyCapitalDf['unit']}]",
+            f"[{GlossaryEnergy.EnergyMixCapitalDf['unit']}]",
             chart_name=chart_name,
         )
 
@@ -387,7 +365,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
     def get_chart_sankey_fluxes(
         self,
         chart_name="Energy Flow",
-        streams_filter: list | None = None,
+        streams_filter: Union[list, None] = None,
         normalized_links: bool = False,
         split_external: bool = False,
     ):
@@ -503,3 +481,62 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
 
         # return chart
         return InstantiatedPlotlyNativeChart(fig, chart_name)
+
+    def get_ghg_charts(self, ghg: str):
+        instanciated_charts = []
+        df_total_emissions = self.get_sosdisc_outputs(GlossaryEnergy.GHGEnergyEmissionsDfValue)
+        years = df_total_emissions[GlossaryEnergy.Years]
+        df_emissions_by_energy = self.get_sosdisc_outputs(f"{ghg}_emissions_by_energy")
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.GHGEnergyEmissionsDf['unit'], chart_name=f'{ghg} breakdown by energy',
+                                             stacked_bar=True)
+        for col in df_emissions_by_energy.columns:
+            if col != GlossaryEnergy.Years:
+                serie = InstanciatedSeries(years, df_emissions_by_energy[col], col, 'bar')
+                new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(years, df_total_emissions[ghg], f"Total {ghg} emissions of energy sector", 'lines')
+        new_chart.series.append(serie)
+
+        new_chart.post_processing_section_name = "Emissions"
+        instanciated_charts.append(new_chart)
+
+        # CO2 eq
+        if ghg in [GlossaryEnergy.CH4, GlossaryEnergy.N2O]:
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.GHGEnergyEmissionsDf['unit'] + 'CO2 eq',
+                                                 chart_name=f'{ghg} breakdown by energy (CO2 eq, 100-year basis)',
+                                                 stacked_bar=True)
+
+            for col in df_emissions_by_energy.columns:
+                if col != GlossaryEnergy.Years:
+                    serie = InstanciatedSeries(years, df_emissions_by_energy[col] * ClimateEcoDiscipline.GWP_100_default[ghg], col, 'bar')
+                    new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(years, df_total_emissions[ghg] * ClimateEcoDiscipline.GWP_100_default[ghg], f"Total {ghg} emissions of energy sector (CO2 equivalent, 100-year basis)",
+                                       'lines')
+            new_chart.series.append(serie)
+
+            new_chart.post_processing_section_name = "Emissions"
+            instanciated_charts.append(new_chart)
+        return instanciated_charts
+
+    def get_ghg_equivalent_charts(self,):
+        instanciated_charts = []
+        df_total_emissions = self.get_sosdisc_outputs(GlossaryEnergy.GHGEnergyEmissionsDfValue)
+        years = df_total_emissions[GlossaryEnergy.Years]
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.GHGEnergyEmissionsDf['unit'],
+                                             chart_name=f'GHG emissions of energy sector (CO2 equivalent, 100-year basis)',
+                                             stacked_bar=True)
+        total = np.zeros_like(df_total_emissions[GlossaryEnergy.CO2])
+
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            serie = InstanciatedSeries(years, df_total_emissions[ghg], ghg, 'bar')
+            total += df_total_emissions[ghg] * ClimateEcoDiscipline.GWP_100_default[ghg]
+            new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(years, total, f"Total", 'lines')
+        new_chart.series.append(serie)
+
+        new_chart.post_processing_section_name = "Emissions"
+        instanciated_charts.append(new_chart)
+
+        return instanciated_charts

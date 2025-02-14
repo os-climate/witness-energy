@@ -18,8 +18,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.syngas import (
     compute_calorific_value as compute_syngas_calorific_value,
 )
@@ -45,17 +43,9 @@ class WGS(GaseousHydrogenTechno):
         self.inputs['syngas_ratio'] /= 100.
         self.inputs['needed_syngas_ratio'] /= 100.0
 
-    def capex_unity_harmonizer(self):
-        '''
-        Overload the check_capex_unity for this particular model 
-        '''
+    def compute_available_power(self):
         data_config = self.inputs['techno_infos_dict']
-        capex_list = self.np.array(data_config['Capex_init_vs_CO_conversion'])
-        data_config.update(self.inputs['data_fuel_dict'])
-        # input power was in mol/h
-        # We multiply by molar mass and calorific value of the paper to get input power in kW
-        # in the paper 0.3 H2 0.3 of CO 0.25 of CO2 0.1 of CH4 and 0.05 of N2
-
+        """
         nitrogen_molar_mass = 2 * 14
         input_molar_mass = 0.3 * data_config['molar_mass'] + 0.3 * CO.data_energy_dict['molar_mass'] + \
                            0.25 * CO2.data_energy_dict['molar_mass'] + 0.1 * Methane.data_energy_dict['molar_mass'] \
@@ -72,8 +62,16 @@ class WGS(GaseousHydrogenTechno):
 
         syngas_needs = self.get_theoretical_syngas_needs(1.0)
 
-        self.available_power = input_power * data_config['full_load_hours'] / \
-                               syngas_needs * data_config['efficiency']
+        self.available_power = input_power * data_config['full_load_hours'] / syngas_needs * data_config['efficiency']
+        """
+
+    def capex_unity_harmonizer(self):
+        '''
+        Overload the check_capex_unity for this particular model 
+        '''
+        data_config = self.inputs['techno_infos_dict']
+        capex_list = self.np.array(data_config['Capex_init_vs_CO_conversion'])
+        data_config.update(self.inputs['data_fuel_dict'])
 
         capex_list = capex_list * \
                      data_config['euro_dollar'] / self.available_power
@@ -98,11 +96,9 @@ class WGS(GaseousHydrogenTechno):
         return capex_init * 1000.0
 
     def get_electricity_needs(self):
-
+        self.compute_available_power()
         elec_power = self.inputs['techno_infos_dict']['elec_demand']
-
-        elec_demand = elec_power * \
-                      self.inputs['techno_infos_dict']['full_load_hours'] / self.available_power
+        elec_demand = elec_power * self.inputs['techno_infos_dict']['full_load_hours'] / self.available_power
 
         return elec_demand
 
@@ -117,10 +113,11 @@ class WGS(GaseousHydrogenTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs'] = self.get_theoretical_syngas_needs(self.inputs['syngas_ratio']) / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
+        # TODO
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            co2_prod * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
 
         # production
         # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \

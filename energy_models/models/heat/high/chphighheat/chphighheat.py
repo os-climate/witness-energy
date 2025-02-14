@@ -16,7 +16,6 @@ limitations under the License.
 
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -36,17 +35,16 @@ class CHPHighHeat(highheattechno):
 
     def compute_byproducts_production(self):
         # CO2 production
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = Methane.data_energy_dict[
-                                                                                            GlossaryEnergy.CO2PerUse] / \
-                                                                                                                                   Methane.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:'
-                                                                                            f'{Methane.name} ({self.product_unit})']
+        # TODO
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+            Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
+            Methane.data_energy_dict['calorific_value'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
-            (self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] /
+            (self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] /
              (1 - self.inputs['techno_infos_dict']['efficiency'])) - self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                f'{hightemperatureheat.name} ({self.product_unit})']
+                f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

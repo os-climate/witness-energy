@@ -17,7 +17,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -31,13 +30,12 @@ class BiogasFired(ElectricityTechno):
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{ElectricityTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] =\
+            co2_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{hightemperatureheat.name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{BioGas.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

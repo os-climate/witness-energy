@@ -17,10 +17,6 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import (
@@ -129,81 +125,3 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         chart_filters[0].extend('Constraint')
 
         return chart_filters
-
-    def get_post_processing_list(self, filters=None):
-
-        # For the outputs, making a graph for block fuel vs range and blocktime vs
-        # range
-
-        instanciated_charts = CSTechnoDiscipline.get_post_processing_list(
-            self, filters)
-        charts = []
-        # Overload default value with chart filter
-        if filters is not None:
-            for chart_filter in filters:
-                if chart_filter.filter_key == 'charts':
-                    charts = chart_filter.selected_values
-
-        if 'Constraint' in charts:
-            new_chart = self.get_chart_constraint()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-        return instanciated_charts
-
-    def get_chart_constraint(self):
-        # -- get inputs
-        inputs = list(self.DESC_IN.keys())
-        inputs += list(self.inst_desc_in.keys())
-        inputs_dict = self.get_sosdisc_inputs()  # inputs, in_dict=True)
-
-        outputs_dict = self.get_sosdisc_outputs()  # outputs, in_dict=True)
-
-        # -- configure class with inputs
-        self.techno_model.configure_parameters_update(inputs_dict)
-
-        carbon_quantity_to_be_stored = inputs_dict.pop(
-            'carbon_quantity_to_be_stored')
-        consumption = outputs_dict.pop(GlossaryEnergy.TechnoEnergyConsumptionValue)
-
-        constraint = self.techno_model.compute_constraint(
-            carbon_quantity_to_be_stored, consumption)
-
-        output_var = pd.merge(constraint, carbon_quantity_to_be_stored,
-                              how="right", left_on=GlossaryEnergy.Years, right_on=GlossaryEnergy.Years)
-        all_var = pd.merge(output_var, consumption, how="right",
-                           left_on=GlossaryEnergy.Years, right_on=GlossaryEnergy.Years)
-
-        var_list = list(all_var.keys())
-        var_list.remove(GlossaryEnergy.Years)
-
-        chart_name = 'Carbon to be stored from cracking constraint'
-        max_value = 0
-        min_value = 0
-        for var in var_list:
-            max_value = max(
-                max(all_var[var].values.tolist()), max_value)
-            min_value = min(min(all_var[var].values.tolist()), min_value)
-
-        new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'carbon storage [Mt]', primary_ordinate_axis_range=[min_value, max_value],
-            chart_name=chart_name)
-
-        for var in var_list:
-            type = 'bar'
-            if var == GlossaryEnergy.carbon_storage:
-                title = 'Plasmacracking_carbon_to_be_stored'
-            elif var == 'carbon (Mt)':
-                title = 'Consumption'
-            elif var == 'carbon_to_be_stored_constraint':
-                title = 'Constraint: Consumption - Plasmacracking_carbon_to_be_stored'
-                type = 'lines'
-            else:
-                title = 'Plasmacracking_carbon_to_be_stored'
-
-            serie = InstanciatedSeries(
-                all_var[GlossaryEnergy.Years].values.tolist(),
-                all_var[var].values.tolist(), title, type)
-            new_chart.series.append(serie)
-
-        return new_chart
