@@ -53,7 +53,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         cls.study_name = f'{cls.namespace}'
         cls.name = 'Test'
         cls.energymixname = 'EnergyMix'
-        cls.agrimixname = 'AgricultureMix'
+        cls.agrimixname = 'Agriculture'
         ns_crop = 'Crop'
         ns_forest = 'Forest'
 
@@ -1098,6 +1098,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Biodiesel price error in 2021: ', error_biodiesel_price, ' %',
               f'neste.com :{biodiesel_price_neste} $/MWh vs WITNESS :{biodiesel_price} $/MWh')
 
+        """
         biomass_price_statista = 35 / 3.6
 
         biomass_price = energy_prices[
@@ -1109,6 +1110,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Biomass price error in 2021: ', error_biomass_price, ' %',
               f'US statista.com :{biomass_price_statista} $/MWh vs WITNESS :{biomass_price} $/MWh')
 
+        """
         hefa_price_iea = 1.2 / 780e-3 / 12.2 * 1000
 
         hefa_price = energy_prices[

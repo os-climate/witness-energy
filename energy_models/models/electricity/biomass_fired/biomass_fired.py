@@ -17,7 +17,6 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
@@ -34,9 +33,11 @@ class BiomassFired(ElectricityTechno):
                                                                                         self.production_detailed[
                                                                                             f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
+        """
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
             self.consumption_detailed[f'{BiomassDry.name} ({self.product_unit})'] - \
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']  # TWh
+        """
 
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
