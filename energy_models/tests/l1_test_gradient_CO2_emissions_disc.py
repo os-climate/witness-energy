@@ -62,7 +62,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{GlossaryEnergy.heat}.lowtemperatureheat', f'{GlossaryEnergy.heat}.mediumtemperatureheat',
             f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry]]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
-        self.agriculture_mix_name = 'AgricultureMix'
+        self.agriculture_mix_name = 'Agriculture'
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)

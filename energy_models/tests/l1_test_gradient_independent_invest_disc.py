@@ -71,25 +71,11 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-        self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: np.linspace(5, 8, year_range)})
-
-        self.managed_wood_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 2, year_range)})
-
-        self.unmanaged_wood_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": np.linspace(2, 3, year_range)})
-
-        self.deforestation_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": np.linspace(1.0, 0.1, year_range)})
-
-        self.crop_invest_df = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 0.25, year_range)})
-
     def tearDown(self):
         pass
 
     def test_01_analytic_grad(self):
+        self.override_dump_jacobian = 1
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
@@ -134,11 +120,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                                                                          f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                          GlossaryEnergy.GeologicMineralization],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
-                       f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
-                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
-                       f'{self.name}.deforestation_investment': self.deforestation_invest_df,
-                       f'{self.name}.crop_investment': self.crop_invest_df}
+                       f'{self.name}.{GlossaryEnergy.invest_mix}': self.energy_mix,}
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -148,11 +130,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
         self.check_jacobian(derr_approx='complex_step',
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}',
-                                    f'{self.name}.{GlossaryEnergy.ReforestationInvestmentValue}',
-                                    f'{self.name}.managed_wood_investment',
-                                    f'{self.name}.deforestation_investment',
-                                    f'{self.name}.crop_investment'],
+                            inputs=[f'{self.name}.{GlossaryEnergy.invest_mix}',],
                             outputs=[
                                         f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno
                                         in
