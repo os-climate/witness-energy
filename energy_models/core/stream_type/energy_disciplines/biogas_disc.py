@@ -45,7 +45,7 @@ class BiogasDiscipline(EnergyDiscipline):
                                   'namespace': 'ns_biogas', 'default': BioGas.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    stream_name = BioGas.name
+    stream_name = GlossaryEnergy.biogas
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 

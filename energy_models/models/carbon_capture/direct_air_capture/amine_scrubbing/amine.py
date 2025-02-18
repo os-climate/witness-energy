@@ -39,25 +39,13 @@ class Amine(CCTechno):
 
         return heat_need
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs"] = self.get_heat_needs()
         
     def compute_resources_needs(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.AmineResource}_needs'] = self.compute_amine_need() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
-
-    def compute_scope_2_ghg_intensity(self):
-        '''
-        Need to take into account  CO2 from Methane and electricity consumption
-        '''
-
-        self.outputs[f'CO2_emissions_detailed:{Methane.name}'] = self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{Methane.name}'] * self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs"]
-
-        self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.electricity}'] = self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{GlossaryEnergy.electricity}'] * self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs']
-
-        self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.AmineResource}'] = self.inputs[f'{GlossaryEnergy.RessourcesCO2EmissionsValue}:{GlossaryEnergy.AmineResource}'] * \
-                                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.AmineResource}_needs']
-        self.outputs['CO2_emissions_detailed:Scope 2'] = self.outputs[f'CO2_emissions_detailed:{Methane.name}'] + self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.electricity}'] + self.outputs[f'CO2_emissions_detailed:{GlossaryEnergy.AmineResource}'] - 1.0
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.AmineResource}_needs'] =\
+            self.compute_amine_need() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \

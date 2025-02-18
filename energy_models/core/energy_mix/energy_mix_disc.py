@@ -78,7 +78,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                                           'range': [0., 100.]}, }
 
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+        GlossaryEnergy.EnergyPricesValue: GlossaryEnergy.EnergyPrices,
         GlossaryEnergy.TargetProductionConstraintValue: GlossaryEnergy.TargetProductionConstraint,
         'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True},
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
@@ -524,7 +524,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         df_total_emissions = self.get_sosdisc_outputs(GlossaryEnergy.GHGEnergyEmissionsDfValue)
         years = df_total_emissions[GlossaryEnergy.Years]
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.GHGEnergyEmissionsDf['unit'],
-                                             chart_name=f'GHG emissions of energy sector (CO2 equivalent, 100-year basis)',
+                                             chart_name='GHG emissions of energy sector (CO2 equivalent, 100-year basis)',
                                              stacked_bar=True)
         total = np.zeros_like(df_total_emissions[GlossaryEnergy.CO2])
 
@@ -533,7 +533,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             total += df_total_emissions[ghg] * ClimateEcoDiscipline.GWP_100_default[ghg]
             new_chart.series.append(serie)
 
-        serie = InstanciatedSeries(years, total, f"Total", 'lines')
+        serie = InstanciatedSeries(years, total, "Total", 'lines')
         new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Emissions"

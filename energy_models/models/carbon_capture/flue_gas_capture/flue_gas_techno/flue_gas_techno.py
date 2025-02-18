@@ -48,13 +48,15 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
 
         return elec_need + heat_need
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] = self.get_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency'] * self.compute_electricity_variation_from_fg_ratio(
             self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
 
     def compute_energies_demand(self):
         # Consumption
-        self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{CleanEnergy.name} ({self.energy_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] * \
-                                                                                                                 self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
-                                                                                  f'{CCTechno.stream_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
-            self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CleanEnergy.name} ({self.ENERGY_UNIT})'] =\
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] / \
+            self.compute_electricity_variation_from_fg_ratio(
+                self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])

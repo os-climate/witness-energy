@@ -35,7 +35,6 @@ from energy_models.core.energy_study_manager import (
 )
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
@@ -130,7 +129,7 @@ class Study(EnergyStudyManager):
         invest_energy_mix_dict = {
             GlossaryEnergy.Years: years,
             GlossaryEnergy.electricity: [4.49, 35, 35, 35, 35, 35, 35, 35],
-            BioGas.name: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
+            GlossaryEnergy.biogas: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
             Methane.name: [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
             GaseousHydrogen.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             LiquidFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -508,7 +507,7 @@ class Study(EnergyStudyManager):
             {
                 GlossaryEnergy.Years: self.years,
                 GlossaryEnergy.electricity: 9.0,
-                BioGas.name: 90,
+                GlossaryEnergy.biogas: 90,
                 Methane.name: 34.0,
                 SolidFuel.name: 8.6,
                 GaseousHydrogen.name: 90.0,
@@ -534,7 +533,7 @@ class Study(EnergyStudyManager):
             {
                 GlossaryEnergy.Years: self.years,
                 GlossaryEnergy.electricity: 0.0,
-                BioGas.name: -0.618,
+                GlossaryEnergy.biogas: -0.618,
                 Methane.name: 0.123 / 15.4,
                 SolidFuel.name: 0.64 / 4.86,
                 GaseousHydrogen.name: 0.0,

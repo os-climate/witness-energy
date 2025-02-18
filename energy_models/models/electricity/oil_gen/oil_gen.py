@@ -31,7 +31,7 @@ class OilGen(ElectricityTechno):
         # need in kg/kWh
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.inputs['techno_infos_dict']['water_demand']
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # in kwh of fuel by kwh of electricity
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{LiquidFuel.name}_needs'] = self.inputs['techno_infos_dict']['fuel_demand'] / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 

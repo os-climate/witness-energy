@@ -37,7 +37,7 @@ class BiomassFermentation(EthanolTechno):
     def compute_resources_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Water.name}_needs'] = self.get_theoretical_water_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs'] = self.get_theoretical_biomass_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 

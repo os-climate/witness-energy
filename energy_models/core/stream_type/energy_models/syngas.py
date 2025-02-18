@@ -51,7 +51,6 @@ class Syngas(EnergyType):
     def compute(self):
         super().compute()
         self.compute_syngas_ratio()
-        self.compute_carbon_emissions()
         self.update_data_energy_dict()
         self.compute_ghg_emissions_per_use()
 

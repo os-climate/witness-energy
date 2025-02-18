@@ -15,12 +15,12 @@ limitations under the License.
 
 '''
 
-from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BioGasTechno(TechnoType):
-    stream_name = BioGas.name
+    stream_name = GlossaryEnergy.biogas
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

@@ -26,7 +26,7 @@ class BiomassGasification(SyngasTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs'] = self.inputs['techno_infos_dict']['kgH20_perkgSyngas'] / \
                                                                         self.inputs['data_energy_dict']['calorific_value']
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of syngas
 

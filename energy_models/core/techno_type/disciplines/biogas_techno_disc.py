@@ -56,4 +56,4 @@ class BiogasTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    stream_name = BioGas.name
+    stream_name = GlossaryEnergy.biogas

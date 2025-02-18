@@ -19,7 +19,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -66,7 +65,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'Capex_init_unit': '$/kW',
                                  # IRENA (value from Figure 7.1, page 111)
                                  'capacity_factor': 0.70,
-                                 f'{BioGas.name}_needs': biogas_needs,
+                                 f'{GlossaryEnergy.biogas}_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,

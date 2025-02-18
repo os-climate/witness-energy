@@ -30,7 +30,7 @@ class NaturalGasMediumHeat(mediumheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_methane_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
 

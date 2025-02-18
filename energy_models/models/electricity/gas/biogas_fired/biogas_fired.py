@@ -25,8 +25,8 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class BiogasFired(ElectricityTechno):
 
-    def compute_other_streams_needs(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{BioGas.name}_needs'] = self.inputs['techno_infos_dict'][f'{BioGas.name}_needs']
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biogas}_needs'] = self.inputs['techno_infos_dict'][f'{GlossaryEnergy.biogas}_needs']
 
     def compute_byproducts_production(self):
         co2_prod = self.get_theoretical_co2_prod()
@@ -34,7 +34,7 @@ class BiogasFired(ElectricityTechno):
             co2_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{BioGas.name} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.biogas} ({self.product_unit})'] - \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -45,7 +45,7 @@ class BiogasFired(ElectricityTechno):
         # kg of C02 per kWh of biogas burnt
         biogas_co2 = biogas_data[GlossaryEnergy.CO2PerUse]
         # Amount of biogas in kwh for 1 kwh of elec
-        biogas_need = self.inputs['techno_infos_dict'][f'{BioGas.name}_needs']
+        biogas_need = self.inputs['techno_infos_dict'][f'{GlossaryEnergy.biogas}_needs']
 
         co2_prod = biogas_co2 * biogas_need
         return co2_prod

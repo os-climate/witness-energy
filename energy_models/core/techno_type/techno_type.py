@@ -30,13 +30,14 @@ class TechnoType(DifferentiableModel):
     """Class for energy production technology type"""
 
     stream_name = 'energy'
+    product_unit = "TWh"
+    ENERGY_UNIT = "TWh"
 
     def __init__(self, name):
         super().__init__()
         self.years = None
         self.ratios_name_list = []
         self.name = name
-        self.product_unit = 'TWh'
 
 
     def configure_parameters_update(self):
@@ -109,26 +110,41 @@ class TechnoType(DifferentiableModel):
         """
         pass
 
+    def aggregate_ratios(self):
+        pass
+        
     def compute_limiting_ratio(self):
         """
         Select the ratios that are meaningfull to consider to modulate the techno production (and therefore consumptions).
         Finally computes the most constraining ratio (pseudo-minimium of all ratios)
         """
         self.ratios_name_list = []
-        if self.inputs[GlossaryEnergy.BoolApplyRatio] and self.inputs[GlossaryEnergy.BoolApplyStreamRatio]:
-            self.ratios_name_list.extend([f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream}' for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]])
-
+        
+        # resources
         if self.inputs[GlossaryEnergy.BoolApplyRatio] and self.inputs[GlossaryEnergy.BoolApplyResourceRatio]:
             self.ratios_name_list.extend([f'all_resource_ratio_usable_demand:{resource}' for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]])
             self.ratios_name_list.extend([f'all_resource_ratio_usable_demand:{resource}' for resource in self.inputs[GlossaryEnergy.ResourcesUsedForBuildingValue]])
+        
+        # energies (whether current techno is for Energy Mix or CCUS)
+        if self.inputs[GlossaryEnergy.BoolApplyRatio] and self.inputs[GlossaryEnergy.BoolApplyStreamRatio]:
+            if not self.inputs['techno_is_ccus']:
+                self.ratios_name_list.extend([f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream}' for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]])
+            else:
+                self.ratios_name_list.extend([f'energy_market_ratios:{stream}' for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]])
+                self.ratios_name_list.extend(['carbon_storage_availability_ratio:ratio'])
+
 
         if f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.biomass_dry}' in self.ratios_name_list:
             self.ratios_name_list.remove(f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.biomass_dry}')
 
         ratio_values = self.np.ones(len(self.years))
         limiting_input = self.np.array([''] * len(self.years))
-        if len(self.ratios_name_list) > 0:
-            ratios_array = self.np.vstack([self.inputs[col] for col in self.ratios_name_list]).T
+        valid_cols = list(filter(lambda col: col in self.inputs, self.ratios_name_list))
+        invalid_cols = list(set(self.ratios_name_list) - set(valid_cols))
+        if invalid_cols:
+            a = 1
+        if len(valid_cols) > 0:
+            ratios_array = self.np.vstack([self.inputs[col] for col in valid_cols]).T
             if self.inputs['smooth_type'] == 'cons_smooth_max':
                 ratio_values = - self.cons_smooth_maximum_vect(-ratios_array)
             else:
@@ -307,7 +323,8 @@ class TechnoType(DifferentiableModel):
     def compute_external_resources_and_streams_needs(self):
         """Compute needs of external energies and resources by unit of production"""
         self.compute_resources_needs()
-        self.compute_other_streams_needs()
+        self.compute_energies_needs()
+        self.compute_carbon_storage_needs()
 
     def compute_capex(self):
         """
@@ -649,10 +666,16 @@ class TechnoType(DifferentiableModel):
 
         pass
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         """
         To be overloaded when techno relies on other streams to produce
         Compute needs of external resources by unit of production
+        """
+        pass
+
+    def compute_carbon_storage_needs(self):
+        """
+        Overloaded for carbon capture technos
         """
         pass
 
@@ -860,13 +883,13 @@ class TechnoType(DifferentiableModel):
         Resource R consumption (year) = Newly installed Power Production in MW (year) * Resource R needs (in Mt) for building 1 MW of installed power.
         """
         for resource in self.inputs[GlossaryEnergy.ResourcesUsedForBuildingValue]:
-            self.outputs[f"{GlossaryEnergy.TechnoEnergyDemandsValue}:{resource} ({GlossaryEnergy.mass_unit})"] =\
-                self.inputs['techno_infos_dict'][f"{resource}_needs"] * self.outputs[f"{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity"]
+            self.outputs[f"{GlossaryEnergy.TechnoResourceDemandsValue}:{resource} ({GlossaryEnergy.mass_unit})"] =\
+                self.inputs['techno_infos_dict'][f"{resource}_needs"] * \
+                self.outputs[f"{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity"]
 
-            self.outputs[
-                f"{GlossaryEnergy.TechnoEnergyConsumptionValue}:{resource} ({GlossaryEnergy.mass_unit})"] = \
-                self.inputs['techno_infos_dict'][f"{resource}_needs"] * self.outputs[
-                    f"{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity"]
+            self.outputs[f"{GlossaryEnergy.TechnoResourceDemandsValue}:{resource} ({GlossaryEnergy.mass_unit})"] = \
+                self.inputs['techno_infos_dict'][f"{resource}_needs"] * \
+                self.outputs[f"{GlossaryEnergy.InstalledCapacity}:newly_installed_capacity"]
     def compute_initial_age_distribution(self):
         initial_value = 1
         decay_rate = self.inputs[GlossaryEnergy.InitialPlantsAgeDistribFactor]

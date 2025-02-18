@@ -38,7 +38,7 @@ class CoalGasification(SyngasTechno):
 
         return fuel_need
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # in kwh of fuel by kwh of syngas
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = self.get_fuel_needs()
 

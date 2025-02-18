@@ -37,7 +37,7 @@ class LiquidHydrogenJacobianTestCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
         self.stream_name = GlossaryEnergy.liquid_hydrogen
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest

@@ -25,7 +25,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class GasElec(ElectricityTechno):
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.inputs['techno_infos_dict']['kwh_methane/kwh']
 
     def compute_byproducts_production(self):

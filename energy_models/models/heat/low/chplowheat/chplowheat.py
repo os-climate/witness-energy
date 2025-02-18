@@ -32,7 +32,7 @@ class CHPLowHeat(lowheattechno):
 
     def compute(self):
         super(heattechno, self).compute()
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
         # methane_needs

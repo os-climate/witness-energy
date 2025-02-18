@@ -80,23 +80,3 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
 
     def init_execution(self):
         self.model = HydrogenLiquefaction(self.techno_name)
-
-    # def compute_sos_jacobian(self):
-    #     inputs_dict = self.get_sosdisc_inputs()
-    #     self.techno_model.configure_parameters(inputs_dict)
-    #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
-
-    # # the generic gradient for production column is not working because of
-    # # abandoned mines not proportional to production
-    #
-    # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-    #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-    # applied_ratio = self.get_sosdisc_outputs(
-    #     'applied_ratio')['applied_ratio'].values
-    #
-    # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    # production_gradient = self.techno_consumption_derivative[f'{GlossaryEnergy.electricity} ({self.techno_model.product_unit})']
-    # m = self.set_partial_derivative_for_other_types(
-    #     (GlossaryEnergy.TechnoProductionValue,
-    #      f'{lowtemperatureheat.name} ({self.techno_model.product_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-    #     (production_gradient - dprod_name_dinvest))

@@ -30,7 +30,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # methane_needs
 
         # output needed in this method is in $/kwh of heat

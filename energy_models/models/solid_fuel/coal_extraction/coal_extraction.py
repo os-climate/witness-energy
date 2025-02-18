@@ -36,7 +36,7 @@ class CoalExtraction(SolidFuelTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.COAL_RESOURCE_NAME}_needs'] = self.np.ones(len(
             self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):

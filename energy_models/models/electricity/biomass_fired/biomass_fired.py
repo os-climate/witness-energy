@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassFired(ElectricityTechno):
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs'] = self.inputs['techno_infos_dict']['biomass_needs']
 
     def compute_byproducts_production(self):

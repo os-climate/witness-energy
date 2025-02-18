@@ -31,7 +31,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
     def compute_resources_needs(self):
         # Cost of water for 1 kWH of H2
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = 1.0 / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']

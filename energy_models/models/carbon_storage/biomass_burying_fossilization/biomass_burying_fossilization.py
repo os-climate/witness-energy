@@ -22,6 +22,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassBuryingFossilization(CSTechno):
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs"] = BiomassDry.data_energy_dict['calorific_value'] /\
                                                                    BiomassDry.data_energy_dict[GlossaryEnergy.CO2PerUse]

@@ -34,7 +34,7 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.name = "Test"
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
@@ -87,6 +87,8 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
+        self.carbon_storage_availability_ratio = pd.DataFrame({GlossaryEnergy.Years: years, 'ratio': 100.})
+
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                 f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
@@ -102,9 +104,8 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
                 f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                 f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
                 f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                f'{self.name}.carbon_storage_availability_ratio': self.carbon_storage_availability_ratio,
                 }
-
-    
 
     def test_01_amine_jacobian(self):
         self.model_name = 'amine_scrubbing'
@@ -114,7 +115,9 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.model_name = 'calcium_potassium_scrubbing'
         self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc.CalciumPotassiumScrubbingDiscipline'
 
-
     def test_03_Calcium_looping_jacobian(self):
         self.model_name = 'calcium_looping'
         self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
+    def test_04_direct_air_capture(self):
+        self.model_name = "direct_air_capture"
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'

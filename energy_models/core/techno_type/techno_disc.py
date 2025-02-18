@@ -84,6 +84,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
         'initial_production': {'type': 'float', 'unit': 'TWh'},
+        'techno_is_ccus': {'type': 'bool', "default": False, 'description': 'False for techno of energy production, true for CCUS technos'},
+        'techno_is_carbon_capture': {'type': 'bool', "default": False, 'description': 'Says if techno is for carbon capture'},
         GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "description": "lifetime of a plant of the techno"},
         GlossaryEnergy.InitialPlantsAgeDistribFactor: {'type': 'float', 'unit': 'years', "description": "lifetime of a plant of the techno"},
     }
@@ -172,33 +174,43 @@ class TechnoDiscipline(AutodifferentiedDisc):
                         GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=streams_used_for_production)
                     })
 
-            if GlossaryEnergy.BoolApplyRatio in self.get_data_in():
-                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                if year_start is not None and year_end is not None:
-                    years = np.arange(year_start, year_end + 1)
-                    if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyStreamRatio):
-                        demand_ratio_dict = dict(
-                            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
-                        demand_ratio_dict[GlossaryEnergy.Years] = years
-                        all_streams_demand_ratio_default = pd.DataFrame(
-                            demand_ratio_dict)
+            # ratios inputs:
+            values_dict, go = self.collect_var_for_dynamic_setup([
+                GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
+                GlossaryEnergy.BoolApplyRatio, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd, 'techno_is_ccus'])
+            if go:
+                years = np.arange(values_dict[GlossaryEnergy.YearStart], values_dict[GlossaryEnergy.YearEnd] + 1)
+                if values_dict[GlossaryEnergy.BoolApplyStreamRatio]: 
+                    if not values_dict['techno_is_ccus']:
+                        # Energy techno
+                        all_streams_demand_ratio_default = pd.DataFrame({GlossaryEnergy.Years: years})
                         dynamic_inputs[GlossaryEnergy.AllStreamsDemandRatioValue] = {'type': 'dataframe', 'unit': '-',
                                                                                      'default': all_streams_demand_ratio_default,
                                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                      'namespace': 'ns_energy',
-                                                                                     "dynamic_dataframe_columns": True
+                                                                                     "dynamic_dataframe_columns": True,
+                                                                                     self.GRADIENTS: True,
                                                                                      }
-                    if self.get_sosdisc_inputs(GlossaryEnergy.BoolApplyResourceRatio):
-                        resource_ratio_dict = dict(
-                            zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
-                        resource_ratio_dict[GlossaryEnergy.Years] = years
-                        all_resource_ratio_usable_demand_default = pd.DataFrame(
-                            resource_ratio_dict)
-                        dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
-                                                                                'default': all_resource_ratio_usable_demand_default,
-                                                                                'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                                'namespace': 'ns_resource',
-                                                                                "dynamic_dataframe_columns": True}
+                    
+                    else:
+                        # CCUS techno
+                        all_streams_demand_ratio_default = pd.DataFrame({GlossaryEnergy.Years: years})
+                        dynamic_inputs['energy_market_ratios'] = {'type': 'dataframe', 'unit': '-',
+                                                                  'default': all_streams_demand_ratio_default,
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                  'namespace': 'ns_energy',
+                                                                  "dynamic_dataframe_columns": True,
+                                                                  self.GRADIENTS: True,
+                                                                  }
+                if values_dict[GlossaryEnergy.BoolApplyResourceRatio]:
+                    resource_ratio_dict = dict(zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
+                    resource_ratio_dict[GlossaryEnergy.Years] = years
+                    all_resource_ratio_usable_demand_default = pd.DataFrame(resource_ratio_dict)
+                    dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
+                                                                            'default': all_resource_ratio_usable_demand_default,
+                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                            'namespace': 'ns_resource',
+                                                                            "dynamic_dataframe_columns": True}
 
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),

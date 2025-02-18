@@ -30,7 +30,7 @@ class GeothermalHeat(lowheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):

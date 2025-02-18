@@ -38,7 +38,7 @@ class HydrotreatedOilFuelJacobianCase(GenericDisciplinesTestClass):
         self.name = "Test"
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

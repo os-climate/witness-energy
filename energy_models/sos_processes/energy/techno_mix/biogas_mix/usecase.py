@@ -23,7 +23,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
@@ -62,8 +61,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix = 'EnergyMix'
-        self.stream_name = BioGas.name
-        energy_name = f'{energy_mix}.{BioGas.name}'
+        self.stream_name = GlossaryEnergy.biogas
+        energy_name = f'{energy_mix}.{GlossaryEnergy.biogas}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,

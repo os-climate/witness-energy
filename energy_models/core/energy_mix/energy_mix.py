@@ -157,12 +157,12 @@ class EnergyMix(DifferentiableModel):
         return (1.0 - self.raw_to_net_dict[energy]) if energy in self.raw_to_net_dict else 0.
 
     def compute_price_by_energy(self):
-        '''
+        """
         Compute the price of each energy.
-        Energy price (techno, year) = Raw energy price (techno, year) + CO2 emitted(techno, year) * carbon tax ($/tEqCO2)
+        Energy price (energy type, year) in $/MWh = Raw energy price (techno, year) + CO2 emitted(techno, year) * carbon tax ($/tEqCO2)
         after carbon tax with all technology prices and technology weights computed with energy production
-        '''
-
+        """
+        output_unit = GlossaryEnergy.EnergyPrices['unit']
         self.outputs[f"{GlossaryEnergy.EnergyPricesValue}:{GlossaryEnergy.Years}"] = self.years
 
         for energy in self.inputs[GlossaryEnergy.energy_list]:

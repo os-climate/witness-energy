@@ -46,7 +46,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}'] *= self.outputs[f'percentage_resource:{self.stream_name}'] / 100.
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.name}_wotaxes'] *= self.outputs[f'percentage_resource:{self.stream_name}'] / 100.
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.methane}_needs'] = self.get_theoretical_methane_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 

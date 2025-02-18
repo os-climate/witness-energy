@@ -25,6 +25,9 @@ class FlueGas(BaseStream):
     node_name = 'flue_gas_capture'
     unit = 'Mt'
 
+    def configure_parameters(self):
+        super().configure_parameters()
+        self.inputs[GlossaryEnergy.techno_list] = self.inputs['energy_techno_list'] + self.inputs['dac_techno_list']
     def compute(self):
         """Compute function which compute flue gas production and flue gas mean ratio"""
         self.configure_parameters()

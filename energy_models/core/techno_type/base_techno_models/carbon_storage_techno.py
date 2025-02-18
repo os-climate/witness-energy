@@ -20,10 +20,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CSTechno(TechnoType):
     stream_name = GlossaryEnergy.carbon_storage
-
-    def __init__(self, name):
-        TechnoType.__init__(self, name)
-        self.product_unit = 'Mt'
+    product_unit = "Mt"
 
     def compute_capital_recovery_factor(self):
         return 1

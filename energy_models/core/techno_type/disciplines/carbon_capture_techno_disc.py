@@ -54,9 +54,19 @@ class CCTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict,
                                   'unit': 'defined in dict'},
-
-               }
+               'carbon_storage_availability_ratio': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': GlossaryEnergy.NS_CCS,
+                                        "description": "Availability ratio for carbon storage usage",
+                                                     'dataframe_descriptor': {
+                                                         GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
+                                                         "ratio": ('float', None, True)},}
+                    }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
+    DESC_IN.update({
+        'techno_is_ccus': {'type': 'bool', "default": True, 'description': 'True for techno of energy production, false for CCUS technos'},
+        'techno_is_carbon_capture': {'type': 'bool', "default": True, 'description': 'True for techno of energy production, false for CCUS technos'},
+    })
+
 
     _maturity = 'Research'
 

@@ -173,4 +173,5 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

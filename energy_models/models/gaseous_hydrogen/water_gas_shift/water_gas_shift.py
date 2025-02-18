@@ -106,7 +106,7 @@ class WGS(GaseousHydrogenTechno):
         # need in kg
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()/ self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
 

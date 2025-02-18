@@ -78,7 +78,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix'
             )
-            proc_builder.prefix_name = GlossaryEnergy.ccus_type
+            proc_builder.ccus_name = GlossaryEnergy.ccus_type
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'],

@@ -24,7 +24,7 @@ from sostrades_core.tools.post_processing.post_processing_factory import (
 )
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from copy import copy
+
 
 class EnergyMixTestCase(unittest.TestCase):
     """

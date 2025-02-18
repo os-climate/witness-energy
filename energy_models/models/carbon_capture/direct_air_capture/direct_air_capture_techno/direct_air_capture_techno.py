@@ -40,7 +40,7 @@ class DirectAirCaptureTechno(CCTechno):
 
         return heat_need
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] = self.get_electricity_needs()
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Fossil.name}_needs'] = self.get_heat_needs()
 

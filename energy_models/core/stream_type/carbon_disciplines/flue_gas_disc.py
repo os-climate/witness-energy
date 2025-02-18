@@ -44,6 +44,12 @@ from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_t
     DirectAirCaptureTechnoDiscipline,
 )
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import (
+    CombinedCycleGasTurbineDiscipline,
+)
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import (
+    GasTurbineDiscipline,
+)
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
 )
@@ -80,9 +86,9 @@ class FlueGasDiscipline(AutodifferentiedDisc):
     }
     unit = "Mt"
 
-    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 #f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 #f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+    POSSIBLE_FLUE_GAS_ENERGY_TECHNOS = {f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}': FischerTropschDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}': RefineryDiscipline.FLUE_GAS_RATIO,
@@ -91,17 +97,24 @@ class FlueGasDiscipline(AutodifferentiedDisc):
                                  f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}': CoalGasificationDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.{GlossaryEnergy.Pyrolysis}': PyrolysisDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
-                                 }
+    }
+
+    POSSIBLE_FLUE_GAS_DAC_TECHNOS = {
+        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+    }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
-               GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                            'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
+               "energy_techno_list": {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                            'possible_values': list(POSSIBLE_FLUE_GAS_ENERGY_TECHNOS.keys()),
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
-                                            'structuring': True, 'unit': '-'},
+                                            'structuring': True, 'unit': '-', 'description': 'energy technos that emits co2 from flue gas'},
+               "dac_techno_list": {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                      'possible_values': list(POSSIBLE_FLUE_GAS_DAC_TECHNOS.keys()),
+                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas', 'description': 'direct air carbon capture technos that emits co2 from flue gas',
+                                      'structuring': True, 'unit': '-'},
                }
 
     stream_name = FlueGas.name
@@ -131,33 +144,41 @@ class FlueGasDiscipline(AutodifferentiedDisc):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if GlossaryEnergy.techno_list in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+        values_dict, go = self.collect_var_for_dynamic_setup(['energy_techno_list', 'dac_techno_list'])
+        if go:
+            for techno in values_dict['energy_techno_list']:
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
+                    'type': 'dataframe', 'unit': 'TWh or Mt',
+                    'visibility': SoSWrapp.SHARED_VISIBILITY,
+                    'namespace': GlossaryEnergy.NS_ENERGY_MIX,
+                    AutodifferentiedDisc.GRADIENTS: True,
+                    'dataframe_descriptor': {
+                        GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
+                        f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
+                        }
+                }
 
-            if techno_list is not None:
-                for techno in techno_list:
-                    # check if techno not in ccs_list, namespace is
-                    # ns_energy_mix
-                    ns_variable = GlossaryEnergy.NS_ENERGY_MIX
+                dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX, 'unit': '',
+                                                                  'default': self.POSSIBLE_FLUE_GAS_ENERGY_TECHNOS[techno]}
+            for techno in values_dict['dac_techno_list']:
+                dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
+                    'type': 'dataframe', 'unit': 'TWh or Mt',
+                    'visibility': SoSWrapp.SHARED_VISIBILITY,
+                    'namespace': GlossaryEnergy.NS_CCS,
+                    AutodifferentiedDisc.GRADIENTS: True,
+                    'dataframe_descriptor': {
+                        GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
+                        f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
+                        }
+                }
 
+                dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                  'namespace': GlossaryEnergy.NS_CCS, 'unit': '',
+                                                                  'default': self.POSSIBLE_FLUE_GAS_DAC_TECHNOS[techno]}
 
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': ns_variable,
-                        AutodifferentiedDisc.GRADIENTS: True,
-                        'dataframe_descriptor': {
-                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                            f"{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})": ('float', None, False),
-                            }
-                    }
-
-                    # dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
-                    dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
-                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                      AutodifferentiedDisc.GRADIENTS: True,
-                                                                      'namespace': ns_variable, 'unit': '',
-                                                                      'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
 
         self.add_inputs(dynamic_inputs)
 
