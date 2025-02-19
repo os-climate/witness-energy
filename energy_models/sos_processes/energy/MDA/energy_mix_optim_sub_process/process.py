@@ -78,7 +78,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix'
             )
-            proc_builder.ccus_name = GlossaryEnergy.ccus_type
+            proc_builder.ccus_name = GlossaryEnergy.CCUS
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'],
@@ -96,14 +96,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # ---------------------------------------------
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-            GlossaryEnergy.ccus_type: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+            GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
         }
 
         ns_dict = {
             GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
-            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
+            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
         }
@@ -116,7 +116,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
-            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}.{carbon_storage}.PureCarbonSolidStorage',
+            'ns_carb': f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
             GlossaryEnergy.NS_GHGEMISSIONS: f'{self.ee.study_name}.{coupling_name}.{GHGemissionsDiscipline.name}',
@@ -135,7 +135,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy_study': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
                 'ns_energy': f'{ns_study}.{energy_mix}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
             }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
@@ -151,7 +151,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_emissions': f'{ns_study}',
                 'ns_energy': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.ccus_type}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
                 GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                 'ns_forest': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
                 'ns_crop': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",

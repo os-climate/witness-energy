@@ -99,7 +99,7 @@ class TechnoType(DifferentiableModel):
     def compute_energies_demand(self):
         """Compute the demand of consumption for other energy"""
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
-        for energy in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
+        for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{energy} ({GlossaryEnergy.energy_unit})'] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * \
                 self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
@@ -128,10 +128,10 @@ class TechnoType(DifferentiableModel):
         # energies (whether current techno is for Energy Mix or CCUS)
         if self.inputs[GlossaryEnergy.BoolApplyRatio] and self.inputs[GlossaryEnergy.BoolApplyStreamRatio]:
             if not self.inputs['techno_is_ccus']:
-                self.ratios_name_list.extend([f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream}' for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]])
+                self.ratios_name_list.extend([f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream}' for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]])
             else:
-                self.ratios_name_list.extend([f'energy_market_ratios:{stream}' for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]])
-                self.ratios_name_list.extend(['carbon_storage_availability_ratio:ratio'])
+                self.ratios_name_list.extend([f'energy_market_ratios:{stream}' for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]])
+                self.ratios_name_list.extend([f'{GlossaryEnergy.CCUSAvailabilityRatiosValue}:ratio'])
 
 
         if f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.biomass_dry}' in self.ratios_name_list:
@@ -143,7 +143,10 @@ class TechnoType(DifferentiableModel):
         invalid_cols = list(set(self.ratios_name_list) - set(valid_cols))
         if invalid_cols:
             a = 1
-        if len(valid_cols) > 0:
+        if len(valid_cols) == 1:
+            limiting_input = valid_cols[0]
+            ratio_values = self.inputs[limiting_input]
+        elif len(valid_cols) > 1:
             ratios_array = self.np.vstack([self.inputs[col] for col in valid_cols]).T
             if self.inputs['smooth_type'] == 'cons_smooth_max':
                 ratio_values = - self.cons_smooth_maximum_vect(-ratios_array)
@@ -179,6 +182,10 @@ class TechnoType(DifferentiableModel):
         for col in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoResourceDemandsValue, expect_years=True):
             self.outputs[f'{GlossaryEnergy.TechnoResourceConsumptionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{col}'] * ratio_values
 
+        self.outputs[f'{GlossaryEnergy.TechnoCCSConsumptionValue}:{GlossaryEnergy.Years}'] = self.years
+        for col in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoCCSDemandsValue, expect_years=True):
+            self.outputs[f'{GlossaryEnergy.TechnoCCSConsumptionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoCCSDemandsValue}:{col}'] * ratio_values
+
 
 
     def compute_capital(self):
@@ -208,7 +215,7 @@ class TechnoType(DifferentiableModel):
         """
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.Years}'] = self.years
 
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'] = self.compute_capex() # $ / MWh
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'] = self.compute_capex() # $ / MWh (or $/tCO2)
 
         capital_recovery_factor = self.compute_capital_recovery_factor()
         self.compute_other_primary_energy_costs()
@@ -301,12 +308,12 @@ class TechnoType(DifferentiableModel):
         Need of stream S by unit of production of current stream * Price per unit of production of stream S"""
         self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] = self.zeros_array
-        for stream in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
-            if stream == GlossaryEnergy.biomass_dry:
+        for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
+            if stream == GlossaryEnergy.biomass_dry or stream == GlossaryEnergy.carbon_captured:
                 self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = self.zeros_array
             else:
                 self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"] = \
-                    self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f"{GlossaryEnergy.EnergyPricesValue}:{stream}"]
+                    self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * self.inputs[f"{GlossaryEnergy.StreamPricesValue}:{stream}"]
             self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] = self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:Total"] + self.outputs[f"{GlossaryEnergy.CostOfStreamsUsageValue}:{stream}"]
 
 
@@ -331,12 +338,12 @@ class TechnoType(DifferentiableModel):
         Compute Capital expenditures (immobilisations)
         depending on the demand on the technology
 
-        unit : $ / MWh
+        unit : $ / MWh or ($/tCO2 for CCUS technos)
         """
         invests = self.inputs[f'{GlossaryEnergy.InvestLevelValue}:{GlossaryEnergy.InvestValue}'] * 1e3  # G$ to M$
         self.inputs['techno_infos_dict'] = self.inputs['techno_infos_dict']
         expo_factor = self.compute_expo_factor()
-        initial_capex = self.capex_unity_harmonizer()
+        initial_capex = self.capex_unity_harmonizer() # $/MWh (or $/tCO2 for CCUS technos)
         if expo_factor != 0.0:
             capacity_factor = None
             if 'capacity_factor_at_year_end' in self.inputs['techno_infos_dict'] and 'capacity_factor' in self.inputs['techno_infos_dict']:
@@ -677,7 +684,9 @@ class TechnoType(DifferentiableModel):
         """
         Overloaded for carbon capture technos
         """
-        pass
+        if self.inputs['techno_is_carbon_capture']:
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_storage}_needs'] = self.zeros_array + 1
+
 
     def compute_specifif_costs_of_technos(self):
         """To be overloaded when techno relies on resources"""
@@ -820,7 +829,7 @@ class TechnoType(DifferentiableModel):
         '''
 
         self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{self.name} (Gha)'] = self.zeros_array
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = self.zeros_array
 
     def compute_ghg_emissions(self, GHG_type, related_to='prod'):
         '''
@@ -868,13 +877,14 @@ class TechnoType(DifferentiableModel):
         """Computes the GHG intensity (Mt/TWh) due to other energies usage"""
         for ghg in GlossaryEnergy.GreenHouseGases:
             self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.zeros_array
-            for energy in self.inputs[GlossaryEnergy.StreamsUsedForProductionValue]:
-                if ghg == GlossaryEnergy.CO2:
-                    ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] *self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{energy}']
-                else:
-                    ghg_intensity = self.zeros_array # TODO : add other GHG inputs
-                self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
-                self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.outputs[f'ghg_intensity_scope_2:{ghg}'] + ghg_intensity
+            for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
+                if energy != GlossaryEnergy.biomass_dry:
+                    if ghg == GlossaryEnergy.CO2:
+                        ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{energy}']
+                    else:
+                        ghg_intensity = self.zeros_array # TODO : add other GHG inputs
+                    self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
+                    self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.outputs[f'ghg_intensity_scope_2:{ghg}'] + ghg_intensity
 
     def compute_newly_installed_capacity_resource_consumption(self):
         """
@@ -913,6 +923,7 @@ class TechnoType(DifferentiableModel):
         """Consumption is theoritical consumption based on target production"""
         self.compute_resources_demand()
         self.compute_energies_demand()
+        self.compute_ccs_streams_demands()
 
     def compute_scope_1_ghg_emissions(self):
         """Scope 1 emissions are production (TWh) multiplied by Scope 1 GHG intensity (Mt/TWh)"""
@@ -929,3 +940,10 @@ class TechnoType(DifferentiableModel):
             self.outputs[f"techno_scope_2_ghg_emissions:{ghg}"] = \
                 self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name} ({self.product_unit})'] * \
                 self.outputs[f'ghg_intensity_scope_2:{ghg}']
+
+    def compute_ccs_streams_demands(self):
+        self.outputs[f'{GlossaryEnergy.TechnoCCSDemandsValue}:{GlossaryEnergy.Years}'] = self.years
+        for stream in self.inputs[GlossaryEnergy.CCSUsedForProductionValue]:
+            self.outputs[f'{GlossaryEnergy.TechnoCCSDemandsValue}:{stream} ({GlossaryEnergy.energy_unit})'] = \
+                self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * \
+                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']

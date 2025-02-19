@@ -100,10 +100,12 @@ class FlueGasDiscipline(AutodifferentiedDisc):
     }
 
     POSSIBLE_FLUE_GAS_DAC_TECHNOS = {
-        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+        f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+        f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+        f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
     }
+
+    POSSIBLE_FLUE_GAS_TECHNOS = {** POSSIBLE_FLUE_GAS_DAC_TECHNOS, ** POSSIBLE_FLUE_GAS_ENERGY_TECHNOS}
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
@@ -144,7 +146,7 @@ class FlueGasDiscipline(AutodifferentiedDisc):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        values_dict, go = self.collect_var_for_dynamic_setup(['energy_techno_list', 'dac_techno_list'])
+        values_dict, go = self.collect_var_for_dynamic_setup(['energy_techno_list', 'dac_techno_list',])
         if go:
             for techno in values_dict['energy_techno_list']:
                 dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {

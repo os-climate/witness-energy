@@ -49,7 +49,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane]
 
         self.ccs_list = [
-            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+            GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
         self.energy_mix = pd.DataFrame({
@@ -61,8 +61,8 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}': 50.0,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': 60.0,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}': 70.0,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 80.0,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 90.0,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 80.0,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 90.0,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}': 100.0,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}': 110.0})
 
@@ -126,7 +126,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.technologies_list}': [],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                       f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                                                                          f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                          GlossaryEnergy.GeologicMineralization],

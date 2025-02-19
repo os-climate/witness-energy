@@ -113,7 +113,7 @@ class NuclearTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{model_name_US}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,

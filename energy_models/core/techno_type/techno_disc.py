@@ -80,7 +80,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
         GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
-        GlossaryEnergy.StreamsUsedForProductionValue: GlossaryEnergy.StreamsUsedForProduction,
+        GlossaryEnergy.EnergiesUsedForProductionValue: GlossaryEnergy.EnergiesUsedForProduction,
+        GlossaryEnergy.CCSUsedForProductionValue: GlossaryEnergy.CCSUsedForProduction,
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
         'initial_production': {'type': 'float', 'unit': 'TWh'},
@@ -95,9 +96,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
         GlossaryEnergy.TechnoEnergyConsumptionValue: GlossaryEnergy.TechnoEnergyConsumption,
         GlossaryEnergy.TechnoResourceConsumptionValue: GlossaryEnergy.TechnoResourceConsumption,
 
-        # demands:
+        # demands for energy:
         GlossaryEnergy.TechnoEnergyDemandsValue: GlossaryEnergy.TechnoEnergyDemands,
         GlossaryEnergy.TechnoResourceDemandsValue: GlossaryEnergy.TechnoResourceDemands,
+
+        # demands for CCS (certain technos):
+        GlossaryEnergy.TechnoCCSDemandsValue: GlossaryEnergy.TechnoCCSDemands,
+        GlossaryEnergy.TechnoCCSConsumptionValue: GlossaryEnergy.TechnoCCSConsumption,
 
 
         GlossaryEnergy.TechnoTargetProductionValue: {'type': 'dataframe', 'unit': 'TWh',
@@ -162,17 +167,17 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     resources_prices["default"] = default_resources_prices
                     dynamic_inputs.update({GlossaryEnergy.ResourcesPriceValue: resources_prices})
 
-            if GlossaryEnergy.StreamsUsedForProductionValue in self.get_data_in():
-                streams_used_for_production = self.get_sosdisc_inputs(GlossaryEnergy.StreamsUsedForProductionValue)
-                if streams_used_for_production is not None:
-                    cost_of_streams_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfStreamsUsageDf)
-                    cost_of_streams_usage_var["dataframe_descriptor"].update({stream: ("float", [0., 1e30], False) for stream in streams_used_for_production})
-                    dynamic_outputs[GlossaryEnergy.CostOfStreamsUsageValue] = cost_of_streams_usage_var
+            values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.EnergiesUsedForProductionValue])
+            if go:
+                energies_used_for_production = values_dict[GlossaryEnergy.EnergiesUsedForProductionValue]
+                cost_of_streams_usage_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CostOfStreamsUsageDf)
+                cost_of_streams_usage_var["dataframe_descriptor"].update({stream: ("float", [0., 1e30], False) for stream in energies_used_for_production})
+                dynamic_outputs[GlossaryEnergy.CostOfStreamsUsageValue] = cost_of_streams_usage_var
 
-                    dynamic_inputs.update({
-                        GlossaryEnergy.EnergyPricesValue: GlossaryEnergy.get_stream_prices_df(stream_used_for_production=streams_used_for_production),
-                        GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=streams_used_for_production)
-                    })
+                dynamic_inputs.update({
+                    GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_stream_prices_df(stream_used_for_production=energies_used_for_production),
+                    GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=energies_used_for_production)
+                })
 
             # ratios inputs:
             values_dict, go = self.collect_var_for_dynamic_setup([
@@ -180,7 +185,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
                 GlossaryEnergy.BoolApplyRatio, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd, 'techno_is_ccus'])
             if go:
                 years = np.arange(values_dict[GlossaryEnergy.YearStart], values_dict[GlossaryEnergy.YearEnd] + 1)
-                if values_dict[GlossaryEnergy.BoolApplyStreamRatio]: 
+                if values_dict[GlossaryEnergy.BoolApplyStreamRatio]:
+                    default_ccs_ratios = pd.DataFrame({
+                        GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 100., GlossaryEnergy.carbon_storage: 100.,
+                    })
+                    ccus_availability_ratios_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCUSAvailabilityRatios)
+                    ccus_availability_ratios_var["default"] = default_ccs_ratios
+                    dynamic_inputs[GlossaryEnergy.CCUSAvailabilityRatiosValue] = ccus_availability_ratios_var
                     if not values_dict['techno_is_ccus']:
                         # Energy techno
                         all_streams_demand_ratio_default = pd.DataFrame({GlossaryEnergy.Years: years})
@@ -216,7 +227,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(energy_name=self.stream_name),
             'techno_production_infos': {'type': 'dataframe', 'unit': '-', "dynamic_dataframe_columns": True},
-            GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.get_land_use_df(techno_name=self.techno_name),
+            GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.TechnoLandUseDf,
             GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         di, do = self.add_additionnal_dynamic_variables()
@@ -278,29 +289,31 @@ class TechnoDiscipline(AutodifferentiedDisc):
                 resource_used_for_building = GlossaryEnergy.TechnoBuildingResourceDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoBuildingResourceDict else []
                 self.update_default_value(GlossaryEnergy.ResourcesUsedForBuildingValue, 'in', resource_used_for_building)
 
-        if GlossaryEnergy.StreamsUsedForProductionValue in self.get_data_in():
-            energies_used_for_prod = self.get_sosdisc_inputs(GlossaryEnergy.StreamsUsedForProductionValue)
-            if energies_used_for_prod is None:
-                energies_used_for_prod = GlossaryEnergy.TechnoStreamsUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoStreamsUsedDict else []
-                self.update_default_value(GlossaryEnergy.StreamsUsedForProductionValue, 'in', energies_used_for_prod)
+        values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.EnergiesUsedForProductionValue])
+        if not go:
+            streams_used_for_prod = GlossaryEnergy.TechnoStreamsUsedDict[self.techno_name] if self.techno_name in GlossaryEnergy.TechnoStreamsUsedDict else []
+            ccs_streams = [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
+            energies_used_for_prod = list(set(streams_used_for_prod) - set(ccs_streams))
+            ccs_streams_used_for_prod = list(set(streams_used_for_prod).intersection(set(ccs_streams)))
+            self.update_default_value(GlossaryEnergy.EnergiesUsedForProductionValue, 'in', energies_used_for_prod)
+            self.update_default_value(GlossaryEnergy.CCSUsedForProductionValue, 'in', ccs_streams_used_for_prod)
 
-        if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            if year_start is not None and year_end is not None:
-                years = np.arange(year_start, year_end + 1)
-                default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
-                                               GlossaryEnergy.MarginValue: 110.0})
+        values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+        if go:
+            years = np.arange(values_dict[GlossaryEnergy.YearStart], values_dict[GlossaryEnergy.YearEnd] + 1)
+            default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
+                                           GlossaryEnergy.MarginValue: 110.0})
 
-                default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                          GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
-                                                              years)})
+            default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                      GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
+                                                          years)})
 
-                self.set_dynamic_default_values({GlossaryEnergy.MarginValue: default_margin,
-                                                 GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
-                                                 GlossaryEnergy.TransportCostValue: pd.DataFrame(
-                                                     {GlossaryEnergy.Years: years,
-                                                      'transport': 0.0}),
-                                                 GlossaryEnergy.TransportMarginValue: default_margin})
+            self.set_dynamic_default_values({GlossaryEnergy.MarginValue: default_margin,
+                                             GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
+                                             GlossaryEnergy.TransportCostValue: pd.DataFrame(
+                                                 {GlossaryEnergy.Years: years,
+                                                  'transport': 0.0}),
+                                             GlossaryEnergy.TransportMarginValue: default_margin})
 
     def get_chart_filter_list(self):
 

@@ -184,7 +184,7 @@ class HydrogenJacobianTestCase(GenericDisciplinesTestClass):
                    self.years),
                f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                    self.years),
-               f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+               f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

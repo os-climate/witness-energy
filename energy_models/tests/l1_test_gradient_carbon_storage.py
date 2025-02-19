@@ -52,10 +52,10 @@ class CarbonStorageJacobianTestCase(GenericDisciplinesTestClass):
 
 
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_capture: 12.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry: 2.43, GlossaryEnergy.carbon_captured: 12.})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_capture: 7.23})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2: 0, GlossaryEnergy.biomass_dry : 2.43, GlossaryEnergy.carbon_captured: 7.23})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.0325})
@@ -89,7 +89,7 @@ class CarbonStorageJacobianTestCase(GenericDisciplinesTestClass):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
          f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
              np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-         f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+         f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
          f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
          f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
          f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

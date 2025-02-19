@@ -53,14 +53,16 @@ class BaseStream(DifferentiableModel):
         self.compute_productions()
 
         self.compute_energy_consumptions()
+        self.compute_ccs_consumptions()
         self.compute_resources_consumptions()
 
         self.compute_energy_demand()
+        self.compute_ccs_demand()
         self.compute_resource_demand()
 
         self.compute_techno_mix()
         self.compute_price()
-        self.aggregate_land_use_required()
+        self.compute_land_use()
         self.compute_energy_type_capital()
 
         self.compute_scope_1_emissions()
@@ -75,6 +77,8 @@ class BaseStream(DifferentiableModel):
                 self.outputs[output_path] = \
                     self.outputs[output_path] + \
                     self.inputs[f'{techno}.{input_techno_varname}:{column_name}']
+            else:
+                self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{input_techno_varname}:{column_name}']
 
     def _aggregate_from_all_technos(self, output_varname: str, input_techno_varname: str):
         self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
@@ -129,32 +133,34 @@ class BaseStream(DifferentiableModel):
         '''
         Compute the price with all sub_prices and sub weights computed with total production 
         '''
-        self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'energy_detailed_techno_prices:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}'] = self.zeros_array
-        self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}_wotaxes'] = self.zeros_array
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] = self.zeros_array
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] = self.zeros_array
 
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             self.outputs[f'energy_detailed_techno_prices:{techno}'] = self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}']
             techno_share_of_total_stream_prod = self.outputs[f'techno_mix:{techno}'] / 100.
 
-            self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}'] = \
-                self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}'] + \
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] + \
                 self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}'] * techno_share_of_total_stream_prod
 
-            self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}_wotaxes'] = \
-                self.outputs[f'{GlossaryEnergy.EnergyPricesValue}:{self.name}_wotaxes'] + \
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] + \
                 self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}_wotaxes'] * techno_share_of_total_stream_prod
 
-    def aggregate_land_use_required(self):
-        '''
-        Aggregate into an unique dataframe of information of sub technology about land use required
-        '''
-
+    def compute_land_use(self):
+        """Sum the land uses of the technos to obtain land use of the stream"""
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = self.zeros_array
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoLandUseDf['unit']][GlossaryEnergy.StreamLandUseDf['unit']]
         for techno in self.inputs[GlossaryEnergy.techno_list]:
-            for column in self.get_colnames_input_dataframe(df_name=f'{techno}.{GlossaryEnergy.LandUseRequiredValue}', expect_years=True):
-                self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{column}'] = \
-                    self.inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}:{column}']
+                self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
+                    self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] + \
+                    self.inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}:Land use'] \
+                    * conversion_factor
+
 
     def compute_techno_mix(self):
         """Compute the contribution of each techno for the production of the main stream (in %) [0, 100]"""
@@ -194,7 +200,7 @@ class BaseStream(DifferentiableModel):
         for ghg in GlossaryEnergy.GreenHouseGases:
             self._aggregate_column_from_all_technos(
                 output_varname=GlossaryEnergy.StreamScope1GHGEmissionsValue,
-                input_techno_varname=GlossaryEnergy.TechnoScope1GHGEmissions,
+                input_techno_varname=GlossaryEnergy.TechnoScope1GHGEmissionsValue,
                 column_name=ghg)
 
     def compute_scope_1_ghg_intensity(self):
@@ -207,3 +213,12 @@ class BaseStream(DifferentiableModel):
                                                                self.outputs[f'techno_mix:{techno}'] / 100. * \
                                                                self.inputs[f"{techno}.{GlossaryEnergy.TechnoScope1GHGEmissionsValue}:{ghg}"]
 
+    def compute_ccs_demand(self):
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamCCSDemandValue,
+            input_techno_varname=GlossaryEnergy.TechnoCCSDemandsValue)
+
+    def compute_ccs_consumptions(self):
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamCCSConsumptionValue,
+            input_techno_varname=GlossaryEnergy.TechnoCCSConsumptionValue)

@@ -27,7 +27,7 @@ class CSTechno(TechnoType):
 
     def capex_unity_harmonizer(self):
         """
-        Put all capex in $/kgCO2
+        Put all capex in $/t
         """
         data_tocheck = self.inputs['techno_infos_dict']
         if data_tocheck['Capex_init_unit'] == '$/kgCO2':

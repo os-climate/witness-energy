@@ -29,7 +29,7 @@ class SolarThermal(ElectricityTechno):
         self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
         density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
-        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{self.name} (Gha)'] = \
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] / \
             density_per_ha
 

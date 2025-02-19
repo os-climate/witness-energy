@@ -107,7 +107,7 @@ class Study(EnergyMixStudyManager):
             values_dict.update({
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
              })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

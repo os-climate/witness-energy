@@ -52,13 +52,13 @@ class MethanolJacobianCase(GenericDisciplinesTestClass):
         self.land_use_unit = 'Gha'
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GaseousHydrogen.name: 300.0,
-                                           GlossaryEnergy.carbon_capture: 150.0,
+                                           GlossaryEnergy.carbon_captured: 150.0,
                                            GlossaryEnergy.electricity: 10,
                                            })
 
         self.stream_co2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                      GaseousHydrogen.name: 10.0,
-                                                     GlossaryEnergy.carbon_capture: 0.0,
+                                                     GlossaryEnergy.carbon_captured: 0.0,
                                                      GlossaryEnergy.electricity: 0.0,
                                                      })
 
@@ -89,7 +89,7 @@ class MethanolJacobianCase(GenericDisciplinesTestClass):
 
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

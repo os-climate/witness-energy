@@ -83,7 +83,7 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.methane: 80.0,
                                       GlossaryEnergy.biomass_dry: 50.0,
                                       GlossaryEnergy.solid_fuel: 50.0,
-                                      GlossaryEnergy.carbon_capture: 70.})
+                                      GlossaryEnergy.carbon_captured: 70.})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -116,7 +116,7 @@ class Study(EnergyMixStudyManager):
             GlossaryEnergy.syngas: 0.0,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
             'crude oil': 0.02533,
-            GlossaryEnergy.carbon_capture: -4.
+            GlossaryEnergy.carbon_captured: -4.
         })
 
         # define invest mix
@@ -139,7 +139,7 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
 
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })

@@ -71,7 +71,7 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_capture: 70.})
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 70.})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -91,7 +91,7 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.carbon_capture: -12.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: -12.})
         investment_mix = self.get_investments()
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -107,7 +107,7 @@ class Study(EnergyMixStudyManager):
             values_dict.update(
                 {
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

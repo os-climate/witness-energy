@@ -38,7 +38,7 @@ class TestIndependentInvest(unittest.TestCase):
             GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
 
         self.ccs_list = [
-            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+            GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
         energy_mix_invest_dic = {}
@@ -52,9 +52,9 @@ class TestIndependentInvest(unittest.TestCase):
             len(self.years)) * 60.0
         energy_mix_invest_dic[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}'] = np.ones(
             len(self.years)) * 70.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}'] = np.ones(
             len(self.years)) * 80.0
-        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
+        energy_mix_invest_dic[f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'] = np.ones(
             len(self.years)) * 90.0
         energy_mix_invest_dic[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}'] = np.ones(
             len(self.years)) * 100.0
@@ -115,10 +115,10 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift,
                                                                                     GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                                                                               f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
-                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
-                                                                                                                                      GlossaryEnergy.GeologicMineralization],
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
+                                                                                                                                 GlossaryEnergy.GeologicMineralization],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ReforestationInvestmentValue}': self.reforestation_investment_df,
                        }
@@ -131,9 +131,9 @@ class TestIndependentInvest(unittest.TestCase):
             if column != GlossaryEnergy.Years:
                 invest_techno_in = self.energy_mix[column].values
 
-                if GlossaryEnergy.carbon_capture in column or GlossaryEnergy.carbon_storage in column:
+                if GlossaryEnergy.carbon_captured in column or GlossaryEnergy.carbon_storage in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.{GlossaryEnergy.ccus_type}.{column}.{GlossaryEnergy.InvestLevelValue}')[
+                        f'{self.name}.{GlossaryEnergy.CCUS}.{column}.{GlossaryEnergy.InvestLevelValue}')[
                         GlossaryEnergy.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(

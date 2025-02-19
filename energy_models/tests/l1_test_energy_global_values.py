@@ -987,7 +987,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # These emissions are in Gt
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.StreamPricesValue}')
 
         '''
         Energy prices

@@ -78,14 +78,16 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                                           'range': [0., 100.]}, }
 
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: GlossaryEnergy.EnergyPrices,
+        GlossaryEnergy.StreamPricesValue: GlossaryEnergy.StreamPrices,
         GlossaryEnergy.TargetProductionConstraintValue: GlossaryEnergy.TargetProductionConstraint,
         'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True},
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'net_energy_production_details': {'type': 'dataframe', 'unit': 'TWh', 'description': 'net energy production for each energy'},
         'net_energy_production': {'type': 'dataframe', 'unit': 'TWh', 'description': 'Total net energy production of energy sector'},
-        GlossaryEnergy.EnergyMixAllDemandsDfValue: GlossaryEnergy.EnergyMixAllDemandsDf,
+        GlossaryEnergy.EnergyMixEnergiesDemandsDfValue: GlossaryEnergy.EnergyMixEnergiesDemandsDf,
         GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue: GlossaryEnergy.EnergyMixEnergiesConsumptionDf,
+        GlossaryEnergy.EnergyMixCCSDemandsDfValue: GlossaryEnergy.EnergyMixCCSDemandsDf,
+        GlossaryEnergy.EnergyMixCCSConsumptionDfValue: GlossaryEnergy.EnergyMixCCSConsumptionDf,
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha', AutodifferentiedDisc.GRADIENTS: True},
         GlossaryEnergy.EnergyMeanPriceValue: GlossaryEnergy.EnergyMeanPrice,
@@ -121,22 +123,18 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                 # consumptions :
                 dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamEnergyConsumption)
                 dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamResourceConsumptionValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamResourceConsumption)
+                dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamCCSConsumptionValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamCCSConsumption)
                 # demands :
                 dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamEnergyDemandValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamEnergyDemand)
                 dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamResourceDemandValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamResourceDemand)
+                dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamCCSDemandValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamCCSDemand)
 
                 dynamic_inputs[f"{energy}.{GlossaryEnergy.StreamScope1GHGEmissionsValue}"] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamScope1GHGEmissions)
 
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = {'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe', 'unit': '$/MWh', "dynamic_dataframe_columns": True}
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = {'type': 'dataframe', 'unit': 'Gha', "dynamic_dataframe_columns": True}
+                dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = GlossaryEnergy.StreamProductionDf
+                dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe', 'unit': '$/MWh', "dynamic_dataframe_columns": True}
+                dynamic_inputs[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.StreamLandUseDf,
                 dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyTypeCapitalDf)
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.CO2PerUse}'] = {
-                    'type': 'dataframe', 'unit': 'kg/kWh',
-                    'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                             GlossaryEnergy.CO2PerUse: ('float', None, True),},
-                }
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -273,7 +271,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
 
 
         if "Price" in charts:
-            df_price = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
+            df_price = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name='Energy prices')
             for col in df_price.columns:
                 if col != GlossaryEnergy.Years:
@@ -306,8 +304,8 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             instanciated_charts.append(new_chart)
 
         if "Demands" in charts:
-            df_demands = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixAllDemandsDfValue)
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixAllDemandsDf['unit'], chart_name='Demands for each energy within the energy sector', stacked_bar=True)
+            df_demands = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixEnergiesDemandsDfValue)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixEnergiesDemandsDf['unit'], chart_name='Demands for each energy within the energy sector', stacked_bar=True)
             for col in df_demands.columns:
                 if col != GlossaryEnergy.Years:
                     serie = InstanciatedSeries(years, df_demands[col], col, 'bar' )

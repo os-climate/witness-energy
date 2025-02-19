@@ -40,9 +40,9 @@ class CoalExtraction(SolidFuelTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
-                                                                                                                                     self.inputs['data_fuel_dict']['high_calorific_value'] * \
-                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
+                                                                                                                                      self.inputs['data_fuel_dict']['high_calorific_value'] * \
+                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                          f'{SolidFuelTechno.stream_name} ({self.product_unit})']
         '''
         Method to compute CH4 emissions from coal mines

@@ -86,8 +86,6 @@ class SyngasDiscipline(EnergyDiscipline):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%', AutodifferentiedDisc.GRADIENTS: True,}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True,
-                                                                                      AutodifferentiedDisc.GRADIENTS: True,}
 
         return dynamic_inputs, dynamic_outputs
 

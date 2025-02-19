@@ -52,7 +52,7 @@ class EnergyStudyManager(ClimateEconomicsStudyManager):
         ]
         self.coarse_mode: bool = set(self.techno_dict.keys()) == set(GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys())
         self.ccs_list = [
-            key for key, value in self.techno_dict.items() if value[GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type
+            key for key, value in self.techno_dict.items() if value[GlossaryEnergy.stream_type] == GlossaryEnergy.CCUS
         ]
 
     def get_energy_mix_study_cls(self, energy_name, add_name=None):

@@ -120,7 +120,7 @@ class LiquidHydrogenJacobianTestCase(GenericDisciplinesTestClass):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
                            [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
                            axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,

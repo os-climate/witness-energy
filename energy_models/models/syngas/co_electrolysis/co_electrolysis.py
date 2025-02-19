@@ -32,7 +32,7 @@ class CoElectrolysis(SyngasTechno):
 
     def compute_energies_needs(self):
         # need in kg to produce 1kwh of syngas
-        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_captured}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 

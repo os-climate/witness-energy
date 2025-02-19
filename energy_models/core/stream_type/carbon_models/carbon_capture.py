@@ -21,7 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CarbonCapture(BaseStream):
-    name = GlossaryEnergy.carbon_capture
+    name = GlossaryEnergy.carbon_captured
     flue_gas_name = GlossaryEnergy.CO2FromFlueGas
     unit = 'Mt'
     default_techno_list = [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}', f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}',

@@ -35,7 +35,7 @@ class AutothermalReforming(SyngasTechno):
     def compute_energies_needs(self):
         # need in kwh to produce 1kwh of syngas
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
-        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_captured}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_CH4_needs(self):
         """

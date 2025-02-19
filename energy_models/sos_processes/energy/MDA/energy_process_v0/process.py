@@ -88,6 +88,15 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_other_list)
 
+        if self.ccs_list:
+            mods_dict = {
+                GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+            }
+
+            builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+            builder_list.extend(builder_other_list)
+
+
         if self.use_resources_bool:
             chain_builders_resource = self.ee.factory.get_builder_from_process(
                 'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
@@ -99,7 +108,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'ns_energy_study': f'{ns_study}',
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                 'ns_energy': f'{ns_study}.{energy_mix}',
-                GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.ccus_type}',
+                GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
             }
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
@@ -135,14 +144,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'Wrong option for invest_discipline : {self.invest_discipline} should be in {INVEST_DISCIPLINE_OPTIONS}'
             )
 
-        """
         for ccs_name in self.ccs_list:
             dot_list = ccs_name.split('.')
             short_name = dot_list[-1]
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix'
             )
-            proc_builder.prefix_name = GlossaryEnergy.ccus_type
+            proc_builder.prefix_name = GlossaryEnergy.CCUS
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'],
@@ -151,7 +159,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 )
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
-        """
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_energy_mix'
 

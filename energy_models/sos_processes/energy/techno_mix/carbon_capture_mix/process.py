@@ -31,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = self.techno_list = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.carbon_capture]['value']
+        self.techno_list = self.techno_list = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.carbon_captured]['value']
         self.ccus_name = 'CCUS'
         self.associate_namespace = True
 
@@ -39,7 +39,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
         energy_mix = 'EnergyMix'
         flue_gas_name = FlueGas.node_name
-        carbon_capture_name = GlossaryEnergy.carbon_capture
+        carbon_capture_name = GlossaryEnergy.carbon_captured
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.ccus_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    GlossaryEnergy.NS_CCS: f'{ns_study}.CCUS',

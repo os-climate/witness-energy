@@ -23,7 +23,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechno(TechnoType):
-    stream_name = GlossaryEnergy.carbon_capture
+    stream_name = GlossaryEnergy.carbon_captured
     product_unit = "Mt"
 
     def compute_scope_1_ghg_intensity(self):
@@ -40,13 +40,9 @@ class CCTechno(TechnoType):
             ghg_intensity = self.zeros_array
 
             self.outputs[f'ghg_intensity_scope_1:{ghg}'] = ghg_intensity
-    def compute_carbon_storage_needs(self):
-        """1 ton of carbon storage capacity required per ton of CO2 captured"""
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.zeros_array + 1
-
     def capex_unity_harmonizer(self):
         """
-        Put all capex in $/kgCO2
+        Put all capex in $/tCO2
         """
         data_tocheck = self.inputs['techno_infos_dict']
         if data_tocheck['Capex_init_unit'] == '$/kgCO2':

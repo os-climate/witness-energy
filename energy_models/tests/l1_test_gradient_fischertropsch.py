@@ -49,7 +49,7 @@ class FTJacobianTestCase(GenericDisciplinesTestClass):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 20,
-                                           GlossaryEnergy.syngas: 34, GlossaryEnergy.carbon_capture: 12.4
+                                           GlossaryEnergy.syngas: 34, GlossaryEnergy.carbon_captured: 12.4
                                            })
         self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                     GlossaryEnergy.SMR: 34,
@@ -61,7 +61,7 @@ class FTJacobianTestCase(GenericDisciplinesTestClass):
                                      GlossaryEnergy.BiomassGasification: 200.0
                                      }
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.carbon_capture: -2.})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.carbon_captured: -2.})
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                           GlossaryEnergy.InvestValue: np.linspace(4., 5.0, len(self.years))})
 
@@ -96,7 +96,7 @@ class FTJacobianTestCase(GenericDisciplinesTestClass):
                            self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,

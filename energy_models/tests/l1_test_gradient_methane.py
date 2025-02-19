@@ -48,7 +48,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                           GlossaryEnergy.carbon_capture: 70,
+                                           GlossaryEnergy.carbon_captured: 70,
                                            GlossaryEnergy.electricity: 90.,
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 120.,
                                            GlossaryEnergy.biogas: 63.
@@ -56,7 +56,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0,
-             GlossaryEnergy.carbon_capture: -2,f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
+             GlossaryEnergy.carbon_captured: -2, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
 
         self.invest_level_methanation = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -82,7 +82,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
         demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
-        self.all_streams_demand_ratio[GlossaryEnergy.carbon_capture] = 1.0
+        self.all_streams_demand_ratio[GlossaryEnergy.carbon_captured] = 1.0
 
         resource_ratio_dict = dict(
             zip(EnergyMix.resource_list, np.linspace(0.8, 0.1, len(self.years))))
@@ -96,7 +96,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
                            self.years),
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_default_resources_prices(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

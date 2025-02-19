@@ -137,7 +137,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
         # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
@@ -214,7 +214,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}')
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamPricesValue}')
         co2_emissions = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}')
 

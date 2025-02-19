@@ -79,7 +79,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
 
         self.ee2 = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.MDA'
@@ -93,7 +93,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
         values_dict = usecase.setup_usecase()
         years = np.arange(self.year_start, self.year_end + 1)
 
-        values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'] = pd.DataFrame(
+        values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}'] = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 90.,
              GlossaryEnergy.biomass_dry: 0.0,
              GlossaryEnergy.biogas: 0.0,
@@ -102,7 +102,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              GlossaryEnergy.liquid_fuel: 0.0,
              GlossaryEnergy.syngas: 0.0,
-             GlossaryEnergy.carbon_capture: 0.0,
+             GlossaryEnergy.carbon_captured: 0.0,
              GlossaryEnergy.carbon_storage: 0.0,
              'BioDiesel': 0.0})
 
@@ -113,7 +113,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee2.execute()
 
-        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
+        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
         tolerance = full_values_dict[f'{self.name}.tolerance']
         for column in energy_prices0:
             for value1, value2 in zip(list(energy_prices0[column].values), list(energy_prices1[column].values)):

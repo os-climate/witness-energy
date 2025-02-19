@@ -45,7 +45,7 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            GlossaryEnergy.methane: 0.034,
-                                           GlossaryEnergy.carbon_capture: 0.034,
+                                           GlossaryEnergy.carbon_captured: 0.034,
                                            GlossaryEnergy.electricity: 90.,
                                            GlossaryEnergy.syngas: 90.,
                                            GlossaryEnergy.solid_fuel: 48,
@@ -59,7 +59,7 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.electricity: 0.03,
              GlossaryEnergy.syngas: 0.2,
-             GlossaryEnergy.carbon_capture: -2.,
+             GlossaryEnergy.carbon_captured: -2.,
              GlossaryEnergy.solid_fuel: 0.02,
              GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
 
@@ -103,7 +103,7 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

@@ -39,8 +39,8 @@ class UpgradingBiogas(MethaneTechno):
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                    f'{MethaneTechno.stream_name} ({self.product_unit})']
 
         # production

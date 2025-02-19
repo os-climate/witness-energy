@@ -42,7 +42,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.year_end = GlossaryEnergy.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [GlossaryEnergy.fossil, GlossaryEnergy.clean_energy]
-        self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+        self.ccs_list = [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
         self.economics_df = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.GrossOutput,
                                                   GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption])
         self.economics_df[GlossaryEnergy.Years] = self.years
@@ -98,8 +98,8 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
-                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
-                       f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
@@ -121,7 +121,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
         self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = \
-            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.direct_air_capture'
+            self.ee.dm.get_value(f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.direct_air_capture'
                                  f'.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}')[
                 GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
@@ -170,7 +170,7 @@ class TestEnergyInvest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.{GlossaryEnergy.clean_energy}.{GlossaryEnergy.TechnoListName}': self.techno_list_clean_energy,
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
+                       f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,

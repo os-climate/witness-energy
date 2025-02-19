@@ -36,7 +36,7 @@ class GeothermalHeat(mediumheattechno):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
         # TODO
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
             carbon_production_factor * \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 

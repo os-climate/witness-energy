@@ -114,10 +114,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
         '''Carbon storage for carbon production higher than carbon demand'''
         self.temp_variables[f'quantity:{GlossaryEnergy.Years}'] = self.years
         self.temp_variables['quantity:carbon_production'] = self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{GlossaryEnergy.SolidCarbon} ({GlossaryEnergy.mass_unit})'] * 1e3
-        self.temp_variables['quantity:hydrogen_production'] = self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{GaseousHydrogenTechno.stream_name} ({EnergyType.unit})'] * 1e3
+        self.temp_variables['quantity:hydrogen_production'] = self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{GaseousHydrogenTechno.stream_name} ({EnergyType.unit})'] * 1e3
         self.temp_variables['quantity:carbon_demand'] = self.inputs['market_demand:carbon_demand']
         self.temp_variables['quantity:CO2_credits'] = self.inputs['CO2_credits:CO2_credits']
-        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.EnergyPricesValue}:{GaseousHydrogenTechno.stream_name}']
+        self.temp_variables['quantity:hydrogen_price'] = self.inputs[f'{GlossaryEnergy.StreamPricesValue}:{GaseousHydrogenTechno.stream_name}']
         self.temp_variables['quantity:carbon_price'] = ResourceGlossary.Carbon['price']
         self.temp_variables['quantity:is_prod_inf_demand'] = False
         self.temp_variables['quantity:is_storage_inf_storage_max'] = False

@@ -97,7 +97,7 @@ class GradientFlueGasTestCase(GenericDisciplinesTestClass):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.stream_prices,
+                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
                        f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,

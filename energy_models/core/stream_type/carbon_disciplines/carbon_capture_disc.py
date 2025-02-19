@@ -51,7 +51,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
-    stream_name = GlossaryEnergy.carbon_capture
+    stream_name = GlossaryEnergy.carbon_captured
 
     def init_execution(self):
         super().init_execution()

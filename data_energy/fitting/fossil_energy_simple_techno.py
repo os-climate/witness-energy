@@ -81,7 +81,7 @@ def run_model(x: list, year_end: int = year_end_fitting):
     inputs_dict = {
         f'{name}.{GlossaryEnergy.YearStart}': year_start_fitting,
         f'{name}.{GlossaryEnergy.YearEnd}': year_end,
-        f'{name}.{GlossaryEnergy.EnergyPricesValue}': stream_prices,
+        f'{name}.{GlossaryEnergy.StreamPricesValue}': stream_prices,
         f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years_fitting}),
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
         f'{name}.{GlossaryEnergy.TransportMarginValue}': margin,

@@ -18,6 +18,8 @@ limitations under the License.
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
+from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.syngas import (
     compute_calorific_value as compute_syngas_calorific_value,
 )
@@ -44,8 +46,7 @@ class WGS(GaseousHydrogenTechno):
         self.inputs['needed_syngas_ratio'] /= 100.0
 
     def compute_available_power(self):
-        data_config = self.inputs['techno_infos_dict']
-        """
+        data_config = self.inputs['data_fuel_dict']
         nitrogen_molar_mass = 2 * 14
         input_molar_mass = 0.3 * data_config['molar_mass'] + 0.3 * CO.data_energy_dict['molar_mass'] + \
                            0.25 * CO2.data_energy_dict['molar_mass'] + 0.1 * Methane.data_energy_dict['molar_mass'] \
@@ -57,13 +58,13 @@ class WGS(GaseousHydrogenTechno):
                                 0.1 * Methane.data_energy_dict['calorific_value']
 
         # molar mass is in g/mol
-        input_power = data_config['input_power'] * \
+        input_power = self.inputs['techno_infos_dict']['input_power'] * \
                       input_molar_mass / 1000.0 * input_calorific_value
 
         syngas_needs = self.get_theoretical_syngas_needs(1.0)
 
-        self.available_power = input_power * data_config['full_load_hours'] / syngas_needs * data_config['efficiency']
-        """
+        self.available_power = input_power * self.inputs['techno_infos_dict']['full_load_hours'] / syngas_needs * self.inputs['techno_infos_dict']['efficiency']
+
 
     def capex_unity_harmonizer(self):
         '''
