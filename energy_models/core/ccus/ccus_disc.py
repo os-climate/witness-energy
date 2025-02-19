@@ -22,19 +22,17 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
     AutodifferentiedDisc,
 )
 
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
-
 
 
 class CCUS_Discipline(AutodifferentiedDisc):
@@ -206,7 +204,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
 
             # consumption
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyConsumptionDf["unit"],
-                                                 chart_name=f'CCUS energy consumption', stacked_bar=True)
+                                                 chart_name='CCUS energy consumption', stacked_bar=True)
             for stream in df_energies_demand.columns:
                 if stream != GlossaryEnergy.Years:
                     serie = InstanciatedSeries(years, df_energies_consumption[stream], self.pimp_string(stream), 'bar')
@@ -215,7 +213,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
             instanciated_charts.append(new_chart)
 
             # demand
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyDemandDf["unit"], chart_name=f'CCUS energy demand', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyDemandDf["unit"], chart_name='CCUS energy demand', stacked_bar=True)
             for stream in df_energies_demand.columns:
                 if stream != GlossaryEnergy.Years:
                     serie = InstanciatedSeries(years, df_energies_demand[stream], self.pimp_string(stream), 'bar')
@@ -230,7 +228,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
                 GlossaryEnergy.carbon_captured: 'Carbon capture price component',
             }
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.CCUSPrice["unit"], chart_name=f'CCUS price', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.CCUSPrice["unit"], chart_name='CCUS price', stacked_bar=True)
             serie = InstanciatedSeries(years, df_price["Captured and stored"], "Price per CO2 ton captured and stored", 'lines')
             new_chart.series.append(serie)
             for stream in self.ccs_list:

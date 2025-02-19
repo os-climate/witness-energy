@@ -21,9 +21,6 @@ from sostrades_optimization_plugins.models.differentiable_model import (
 from energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc import (
     CarbonCaptureDiscipline,
 )
-from energy_models.core.stream_type.carbon_disciplines.carbon_storage_disc import (
-    CarbonStorageDiscipline,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
