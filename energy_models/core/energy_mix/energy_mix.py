@@ -209,13 +209,9 @@ class EnergyMix(DifferentiableModel):
                 stream_raw_production = self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionDetailedValue}:{stream_consumption}']
                 demand_for_stream = self.outputs[f"{GlossaryEnergy.EnergyMixEnergiesDemandsDfValue}:{stream_consumption}"]
 
-                # pseudo min(1, raw_prod / demand) :
-                array_for_min = self.np.array([
-                    self.np.ones_like(self.years),
-                    stream_raw_production / demand_for_stream,
-                ]).T
-                self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = \
-                    self.cons_smooth_minimum_vect(array_for_min)
+                # min(1, raw_prod / demand) :
+                self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = self.np.maximum(
+                    self.np.minimum(stream_raw_production / (demand_for_stream + 1e-6), 1), 0)
             else:
                 #self.logger.warning(f"{stream_consumption} is consumed but not produced in current study. No limiting ratio assumed.")
                 self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = self.zeros_array + 1.

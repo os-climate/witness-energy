@@ -182,16 +182,19 @@ class TechnoDiscipline(AutodifferentiedDisc):
             # ratios inputs:
             values_dict, go = self.collect_var_for_dynamic_setup([
                 GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
-                GlossaryEnergy.BoolApplyRatio, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd, 'techno_is_ccus'])
+                GlossaryEnergy.BoolApplyRatio, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+                GlossaryEnergy.CCSUsedForProductionValue, 'techno_is_ccus'
+            ])
             if go:
                 years = np.arange(values_dict[GlossaryEnergy.YearStart], values_dict[GlossaryEnergy.YearEnd] + 1)
                 if values_dict[GlossaryEnergy.BoolApplyStreamRatio]:
-                    default_ccs_ratios = pd.DataFrame({
-                        GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 100., GlossaryEnergy.carbon_storage: 100.,
-                    })
-                    ccus_availability_ratios_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCUSAvailabilityRatios)
-                    ccus_availability_ratios_var["default"] = default_ccs_ratios
-                    dynamic_inputs[GlossaryEnergy.CCUSAvailabilityRatiosValue] = ccus_availability_ratios_var
+                    if len(values_dict[GlossaryEnergy.CCSUsedForProductionValue]) > 0:
+                        default_ccs_ratios = pd.DataFrame({
+                            GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 100., GlossaryEnergy.carbon_storage: 100.,
+                        })
+                        ccus_availability_ratios_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCUSAvailabilityRatios)
+                        ccus_availability_ratios_var["default"] = default_ccs_ratios
+                        dynamic_inputs[GlossaryEnergy.CCUSAvailabilityRatiosValue] = ccus_availability_ratios_var
                     if not values_dict['techno_is_ccus']:
                         # Energy techno
                         all_streams_demand_ratio_default = pd.DataFrame({GlossaryEnergy.Years: years})

@@ -133,7 +133,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
 
                 dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}'] = GlossaryEnergy.StreamProductionDf
                 dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamPricesValue}'] = {'type': 'dataframe', 'unit': '$/MWh', "dynamic_dataframe_columns": True}
-                dynamic_inputs[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.StreamLandUseDf,
+                dynamic_inputs[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = GlossaryEnergy.StreamLandUseDf
                 dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyTypeCapitalDf)
 
         self.add_inputs(dynamic_inputs)
@@ -288,7 +288,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                 instanciated_charts.append(new_chart)
 
         if "Emissions" in charts:
-            instanciated_charts.append(self.get_ghg_equivalent_charts())
+            instanciated_charts.extend(self.get_ghg_equivalent_charts())
             for ghg in GlossaryEnergy.GreenHouseGases:
                 instanciated_charts.extend(self.get_ghg_charts(ghg))
 

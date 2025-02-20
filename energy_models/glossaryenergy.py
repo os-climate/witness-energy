@@ -216,7 +216,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         AutodifferentiedDisc.GRADIENTS: True,
         "unit": "-",
         "visibility": "Shared",
-        "namespace": "ns_energy",
+        "namespace": GlossaryWitnessCore.NS_ENERGY_MIX,
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("int", [1900, YearEndDefaultCore], False),
         },
