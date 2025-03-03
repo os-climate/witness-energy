@@ -47,9 +47,8 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / naturaloil_data['calorific_value']
 
     def compute_other_streams_needs(self):
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.cost_details['efficiency']
+        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs() / self.cost_details['efficiency']
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
-
 
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()

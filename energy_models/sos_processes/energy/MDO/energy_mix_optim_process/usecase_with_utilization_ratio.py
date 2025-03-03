@@ -33,6 +33,7 @@ class Study(subStudy):
         )
         self.test_post_procs = True
 
+
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()

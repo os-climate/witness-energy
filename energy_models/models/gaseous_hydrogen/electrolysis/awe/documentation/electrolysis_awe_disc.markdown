@@ -4,9 +4,9 @@ AWE is the most established technology for electrolysis with relatively low capi
 
 
 
-At the cathode side, two molecules of water reacts with electrons to form the hydrogen and hydroxyl ions ($OH^-$) .Hydroxyl ions transfer through the porous diaphragm to the anode,resulting in half molecule of oxygen (O2) and one molecule of water (H2O). 
+At the cathode side, two molecules of water reacts with electrons to form the hydrogen and hydroxyl ions ($OH^-$) .Hydroxyl ions transfer through the porous diaphragm to the anode,resulting in half molecule of oxygen (O2) and one molecule of water (H2O).
 
-![](alkaline_electrolysis.PNG) 
+![](alkaline_electrolysis.PNG)
 (Image Credit: S.Shiva Kumar & V.Himabindu [^2])
 
 
@@ -30,7 +30,7 @@ The lifetime of an alkaline electrolyser is around 25 years and the construction
 
 
 
-As alkaline electrolysers are the most mature electrolysis technology, they dominate the market, especially for large-scale projects. In 2020, the global electrolysis capacity is 200 MW [^6]. Assuming 8000 yearly load hours, the global production of electrolysis is around 1.6 TWh. The PEM hydrogen production is of 0.24TWh per year (see PEM documentation) and others electrolysis technologies are not yet commercialized. Then we assume that AWE world production in 2020 is 0.76 TWh. 
+As alkaline electrolysers are the most mature electrolysis technology, they dominate the market, especially for large-scale projects. In 2020, the global electrolysis capacity is 200 MW [^6]. Assuming 8000 yearly load hours, the global production of electrolysis is around 1.6 TWh. The PEM hydrogen production is of 0.24TWh per year (see PEM documentation) and others electrolysis technologies are not yet commercialized. Then we assume that AWE world production in 2020 is 0.76 TWh.
 
 
 Alkakine electrolysers is the lowest efficient electrolysis technology we assume that no investments have been made during the past years.

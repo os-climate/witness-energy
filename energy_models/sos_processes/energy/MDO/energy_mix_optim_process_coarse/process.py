@@ -27,6 +27,7 @@ class ProcessBuilder(ProccesEnergyMixOptimFull):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         super().__init__(ee)
         self.sub_process_name = "energy_mix_optim_sub_process_coarse"

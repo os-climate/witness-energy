@@ -109,7 +109,7 @@ class EnergyDemand(object):
 
     def compute_elec_demand_constraint(self):
         '''
-        The constraint is the difference between the prod of electricity computed by the energy mix and the actual demand computed in this model 
+        The constraint is the difference between the prod of electricity computed by the energy mix and the actual demand computed in this model
         '''
         self.elec_demand['elec_demand (TWh)'] = self.compute_elec_demand_with_efficiency(
         )
@@ -135,10 +135,10 @@ class EnergyDemand(object):
 
     def compute_improved_efficiency_factor(self):
         '''
-        Compute the effect of efficiency improvement based on a S-curve 
+        Compute the effect of efficiency improvement based on a S-curve
         Electrical machine efficiency started at y_min =0.7
         and long term efficiency is planned to be 0.985
-        coeff and x0 have been tuned to fit y[2020]=0.95 and y[2025]=0.98 
+        coeff and x0 have been tuned to fit y[2020]=0.95 and y[2025]=0.98
         '''
 
         elec_machine_efficiency = self.electrical_machine_efficiency(

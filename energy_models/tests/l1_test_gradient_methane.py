@@ -63,7 +63,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0,
-             GlossaryEnergy.carbon_capture: -2,f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
+             GlossaryEnergy.carbon_capture: -2, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
 
         self.invest_level_methanation = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -71,7 +71,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                           GlossaryEnergy.InvestValue: np.linspace(4., 5.0, len(self.years))})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
@@ -331,7 +330,6 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
-
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

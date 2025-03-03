@@ -43,7 +43,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
 
     techno_name = GlossaryEnergy.BiomassFired
 
-
     # Source for Initial prod in TWh (2019):
     # IEA 2022, Data Tables
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019,
@@ -79,7 +78,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9 #No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9  # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW,
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -131,4 +130,3 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         instanciated_chart.append(new_chart_copper)
 
         return instanciated_chart
-

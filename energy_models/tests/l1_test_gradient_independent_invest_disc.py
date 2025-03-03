@@ -120,7 +120,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                                                                          f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                          GlossaryEnergy.GeologicMineralization],
-                       f'{self.name}.{GlossaryEnergy.invest_mix}': self.energy_mix,}
+                       f'{self.name}.{GlossaryEnergy.invest_mix}': self.energy_mix, }
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()

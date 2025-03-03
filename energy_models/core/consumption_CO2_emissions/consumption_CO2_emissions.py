@@ -40,7 +40,7 @@ class ConsumptionCO2Emissions(BaseStream):
 
     def __init__(self, name):
         '''
-        Constructor 
+        Constructor
         '''
         super(ConsumptionCO2Emissions, self).__init__(name)
         self.energy_list = None
@@ -61,7 +61,7 @@ class ConsumptionCO2Emissions(BaseStream):
 
     def configure(self, inputs_dict):
         '''
-        Configure method 
+        Configure method
         '''
         self.configure_parameters(inputs_dict)
         self.configure_parameters_update(inputs_dict)
@@ -134,9 +134,9 @@ class ConsumptionCO2Emissions(BaseStream):
             for col, production in self.sub_production_dict[energy].items():
                 if col in self.CO2_list:
                     self.CO2_production[f'{energy} {col}'] = production.values
-        ''' CO2 from energy mix    
-         CO2 expelled by energy mix technologies during the process 
-         i.e. for machinery or tractors 
+        ''' CO2 from energy mix
+         CO2 expelled by energy mix technologies during the process
+         i.e. for machinery or tractors
         '''
         energy_producing_co2 = self.CO2_production[[
             col for col in self.CO2_production if col.endswith(f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})')]]
@@ -167,7 +167,7 @@ class ConsumptionCO2Emissions(BaseStream):
                 f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'] = 0.0
 
         ''' CO2 removed by energy mix
-         CO2 removed by energy mix technologies during the process 
+         CO2 removed by energy mix technologies during the process
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = self.CO2_consumption[[
@@ -181,13 +181,13 @@ class ConsumptionCO2Emissions(BaseStream):
             self.CO2_sinks[
                 f'{GlossaryEnergy.carbon_capture} removed by energy mix (Mt)'] = 0.0
 
-        '''Total CO2 by use 
+        '''Total CO2 by use
         which is the sum of all CO2 emissions emitted by use of net energy production
         '''
         self.CO2_sources['Total CO2 by use (Mt)'] = self.CO2_production[[
             col for col in self.CO2_production if col.endswith('CO2 by use (Mt)')]].sum(axis=1)
 
-        ''' Total C02 from Flue gas 
+        ''' Total C02 from Flue gas
             sum of all production of flue gas
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
@@ -279,9 +279,9 @@ class ConsumptionCO2Emissions(BaseStream):
         #             self.total_co2_emissions[
         #                 f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'] = 0.0
 
-        ''' CO2 from energy mix       
-         CO2 expelled by energy mix technologies during the process 
-         i.e. for machinery or tractors 
+        ''' CO2 from energy mix
+         CO2 expelled by energy mix technologies during the process
+         i.e. for machinery or tractors
         '''
         energy_producing_co2 = co2_production[[
             col for col in co2_production if col.endswith(f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})')]]
@@ -298,8 +298,8 @@ class ConsumptionCO2Emissions(BaseStream):
         #             self.total_co2_emissions[
         #                 f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'] = 0.0
 
-        ''' CO2 removed by energy mix       
-         CO2 removed by energy mix technologies during the process 
+        ''' CO2 removed by energy mix
+         CO2 removed by energy mix technologies during the process
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[
@@ -317,7 +317,7 @@ class ConsumptionCO2Emissions(BaseStream):
         #                 f'{GlossaryEnergy.carbon_capture} removed energy mix (Mt)'] = 0.0
 
         ''' Total C02 from Flue gas
-            sum of all production of flue gas 
+            sum of all production of flue gas
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
         #         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.co2_production[[
@@ -361,8 +361,8 @@ class ConsumptionCO2Emissions(BaseStream):
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
 
-        ''' CO2 removed by energy mix       
-         CO2 removed by energy mix technologies during the process 
+        ''' CO2 removed by energy mix
+         CO2 removed by energy mix technologies during the process
          i.e. biomass processes as managed wood or crop energy
         '''
         energy_removing_co2 = co2_consumption[[

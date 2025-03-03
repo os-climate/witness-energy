@@ -46,7 +46,6 @@ class WindOnshoreTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(22., 31., len(self.years))})
 
-        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 
@@ -127,7 +126,7 @@ class WindOnshoreTestCase(unittest.TestCase):
         drop_pickle = True
         if drop_pickle:
             import pickle
-            with open('windtest.pkl','wb') as f:
+            with open('windtest.pkl', 'wb') as f:
                 pickle.dump(self.ee.dm.get_data_dict_values(), f)
                 pass
 
@@ -140,7 +139,7 @@ class WindOnshoreTestCase(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 # if __name__ == "__main__":
 #     unittest.main()

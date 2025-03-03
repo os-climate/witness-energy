@@ -70,7 +70,7 @@ class BaseStream:
 
     def reload_df(self):
         '''
-        Reload all dataframes with new year start and year end 
+        Reload all dataframes with new year start and year end
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
         base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
@@ -131,11 +131,11 @@ class BaseStream:
                                                                      inputs_dict['scaling_factor_techno_consumption']
             self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
 
-        #print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}'].columns) for element in self.subelements_list])
+        # print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}'].columns) for element in self.subelements_list])
 
     def compute(self, inputs, exp_min=True):
         '''
-        Compute all energy variables with its own technologies 
+        Compute all energy variables with its own technologies
         '''
 
         _, self.consumption_woratio, _ = self.compute_production(
@@ -150,7 +150,7 @@ class BaseStream:
 
         self.compute_energy_type_capital(inputs)
 
-        #print(self.name, list(self.production.columns))
+        # print(self.name, list(self.production.columns))
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 
     def compute_production(self, sub_production_dict, sub_consumption_dict):
@@ -176,8 +176,8 @@ class BaseStream:
             production, consumption = self.compute_byproducts_consumption_and_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption)
 
-        #print(self.name, "&&#", self.unit)
-        #print(self.name, list(production_by_techno.columns))
+        # print(self.name, "&&#", self.unit)
+        # print(self.name, list(production_by_techno.columns))
         return production, consumption, production_by_techno
 
     def compute_byproducts_consumption_and_production(self, element, sub_production_dict, sub_consumption_dict, production,
@@ -222,7 +222,7 @@ class BaseStream:
 
     def compute_price(self, exp_min=True):
         '''
-        Compute the price with all sub_prices and sub weights computed with total production 
+        Compute the price with all sub_prices and sub weights computed with total production
         '''
 
         self.total_prices[self.name] = 0.
@@ -308,12 +308,12 @@ class BaseStream:
     def compute_prod_with_exp_min(self, production_by_techno, elements_dict, min_prod):
         '''
         Compute the production of each element by minimizing them with and exponential function to reach min prod
-        Objective is to decrease gradients when prod are very low 
+        Objective is to decrease gradients when prod are very low
         Be careful the objective is to increase the total production to
         decrease the gradient then we have to modify the sum also
 
-        BIG WARNING : there is an issue in the handling of complex number in this function that may cause small errors 
-        in gradient tests. So far, no solution has been found. This error can be reproduced by running the test on the 
+        BIG WARNING : there is an issue in the handling of complex number in this function that may cause small errors
+        in gradient tests. So far, no solution has been found. This error can be reproduced by running the test on the
         gradients of liquid_hydrogen stream in the case of a production of techno HydrogenLiquefaction below min_prod.
 
         elements_dict contains {Name of the prod techno or energy: full name of the column}

@@ -1,4 +1,4 @@
-__As a__ type_of_user 
+__As a__ type_of_user
 __I want to__ some_goal
 __So that__ some_reason
 

@@ -290,9 +290,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-
         disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.override_dump_jacobian = True # Test seems KO in server, regenerate pickle at each test
+        self.override_dump_jacobian = True  # Test seems KO in server, regenerate pickle at each test
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',

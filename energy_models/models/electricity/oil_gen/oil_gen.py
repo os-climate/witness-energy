@@ -54,13 +54,12 @@ class OilGen(ElectricityTechno):
 
     def grad_price_vs_stream_price(self):
         '''
-        Compute the gradient of global price vs energy prices 
+        Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         liquid_fuel_needs = self.techno_infos_dict['fuel_demand']
         efficiency = self.compute_efficiency()
         return {LiquidFuel.name: np.diag(liquid_fuel_needs / efficiency)}
-
 
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                               dcapex_list_dinvest_list):
