@@ -48,7 +48,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
 
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.024,
                                  # Fixed 1.9 and recurrent 0.5 %
@@ -72,7 +71,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'decommissioning_cost_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1473/ 1e9, # According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented. Computing the need in Mt/MW
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1473 / 1e9,  # According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented. Computing the need in Mt/MW
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 

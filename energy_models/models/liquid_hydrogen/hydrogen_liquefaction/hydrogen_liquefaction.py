@@ -39,7 +39,6 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = 1 / \
                                               self.cost_details['efficiency']
 
-
     def compute_byproducts_production(self):
         pass
         # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \

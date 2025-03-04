@@ -30,4 +30,4 @@ class ProcessBuilder(EnergyMixFullProcessBuilder):
 
     def __init__(self, ee):
         super().__init__(ee)
-        self.techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT

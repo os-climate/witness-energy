@@ -100,7 +100,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': GaseousHydrogenTechnoDiscipline.SHARED_VISIBILITY,
                                 'namespace': 'ns_syngas'},

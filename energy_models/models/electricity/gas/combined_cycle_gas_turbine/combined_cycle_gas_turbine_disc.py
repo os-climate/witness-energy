@@ -84,7 +84,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  # 'efficiency': 0.55,       #https://www.ipieca.org/resources/energy-efficiency-solutions/combined-cycle-gas-turbines-2022#:~:text=The%20overall%20efficiency%20of%20an,drops%20significantly%20at%20partial%20load.
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW.
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9,  # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW.
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -100,7 +100,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

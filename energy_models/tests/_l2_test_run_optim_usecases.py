@@ -34,6 +34,6 @@ class TestUseCases(unittest.TestCase):
 
     def test_01_run_optim_usecases(self):
         '''
-        Run all usecases in this repository.    
+        Run all usecases in this repository.
         '''
         run_optim_usecases(self.processes_repo)

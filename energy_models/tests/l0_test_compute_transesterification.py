@@ -50,7 +50,6 @@ class TransesterificationPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        
         # We take biomass price of methane/5.0
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 90.
                                            })
@@ -73,8 +72,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             GlossaryEnergy.InvestValue: np.linspace(.88,1.05, len(years))})
-        
+             GlossaryEnergy.InvestValue: np.linspace(.88, 1.05, len(years))})
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

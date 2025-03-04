@@ -126,7 +126,7 @@ class ResourceGlossary:
 
     SolidCarbon = {'name': GlossaryEnergy.SolidCarbon,
                    GlossaryEnergy.CO2EmissionsValue: 0.0,
-                   'price': 1180.} # https://www.made-in-china.com/price/solid-carbon-price.html
+                   'price': 1180.}  # https://www.made-in-china.com/price/solid-carbon-price.html
 
     GlossaryDict = {
         'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, GlossaryEnergy.CO2: CO2, 'BiomassDry': BiomassDry,

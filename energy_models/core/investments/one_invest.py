@@ -23,7 +23,7 @@ from .base_invest import BaseInvest
 
 class OneInvest(BaseInvest):
     '''
-        Model to split global investment into investment for each technology 
+        Model to split global investment into investment for each technology
     '''
 
     def __init__(self, name='Invest'):
@@ -60,7 +60,7 @@ class OneInvest(BaseInvest):
 
     def set_invest_mix(self, mix_df):
         '''
-        Set the invest mix of the energy mix 
+        Set the invest mix of the energy mix
         '''
         if not isinstance(self.distribution_list, list):
             raise TypeError('energy_list must be defined as a list')

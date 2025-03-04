@@ -455,7 +455,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
-        #self.override_dump_jacobian = True
+        # self.override_dump_jacobian = True
         disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
@@ -463,8 +463,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             inputs=self.get_checked_inputs(),
                             outputs=self.get_checked_outputs(), )
 
-        #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
-        #self.override_dump_jacobian = False
+        # os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
+        # self.override_dump_jacobian = False
 
     def _test_06_direct_air_capture_techno_discipline_gradient(self):
         self.name = 'Test'
@@ -486,7 +486,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         # overload value of lifetime to reduce test duration
         import pickle
-        with open("DACinputict.pkl",'rb') as f:
+        with open("DACinputict.pkl", 'rb') as f:
             inputs_dict = pickle.load(f)
         inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
         inputs_dict2[f"{self.name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}"] = inputs_dict[GlossaryEnergy.InvestLevelValue]
@@ -506,8 +506,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             inputs=self.get_checked_inputs(),
                             outputs=self.get_checked_outputs(), )
 
-        #os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
-        #self.override_dump_jacobian = False
+        # os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
+        # self.override_dump_jacobian = False
 
 
 if '__main__' == __name__:

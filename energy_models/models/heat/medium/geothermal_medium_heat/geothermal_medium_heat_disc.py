@@ -47,8 +47,6 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.GeothermalMediumHeat
     energy_name = mediumtemperatureheat.name
 
-
-
     techno_infos_dict_default = {
         'Capex_init': 3830,
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
@@ -81,7 +79,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     flux_input_dict = {'land_rate': 15000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
@@ -117,7 +115,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     @staticmethod

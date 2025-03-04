@@ -34,6 +34,7 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.energy_invest_input_in_abs_value = True
         self.use_resources_bool = True
         self.associate_namespace = None
+
     @property
     def techno_dict(self):
         return self._techno_dict

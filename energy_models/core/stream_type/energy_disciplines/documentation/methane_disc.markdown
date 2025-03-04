@@ -1,6 +1,6 @@
 **Definition ([^1]):**
 
-Methane is the simplest gaseous hydrocarbon, consisting of one carbon and four hydrogen atoms. It is also a powerful greenhouse gas that is found in small quantities in Earth's atmosphere. 
+Methane is the simplest gaseous hydrocarbon, consisting of one carbon and four hydrogen atoms. It is also a powerful greenhouse gas that is found in small quantities in Earth's atmosphere.
 
 Significant datas for methane [^2]:
 
@@ -13,7 +13,7 @@ Significant datas for methane [^2]:
   * Density, Liquid at -161 °C, 422.62 kg/m^3
   * Density, Gas at 15 °C, 1 atm, 0.6709 kg/m^3
   * CH4 leakage at consumption : 0.08 kt/PJ [^6]
-  * CH4 leakage at transport,distribution : 0.195 kt/PJ [^6]  
+  * CH4 leakage at transport,distribution : 0.195 kt/PJ [^6]
   * N2O after use : 0.0001 kt/PJ [^5]
 
 Methane is mostly used as a fuel, it produce carbon dioxide and water vapor when burned with oxygen:
@@ -34,7 +34,7 @@ Although the concentration of methane in Earth's atmosphere is small (around 1.8
 
 The following figure shows the balance between CH4 emissions and sinks, and the main sectors:
 
-![](1200px-The_Global_Methane_Budget_2008–2017.PNG) 
+![](1200px-The_Global_Methane_Budget_2008–2017.PNG)
 (Image credit: The Global Carbon Project, taken from [^3])
 
 
