@@ -25,7 +25,9 @@
   ],
   "files_to_ignore": [
     ".readthedocs",
-    "docs/Makefile"
+    "docs/Makefile",
+    "LICENSE",
+    "NOTICE"
   ],
   "airbus_rev_commit": "37fb4ae"
 }
