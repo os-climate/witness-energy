@@ -78,7 +78,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9# According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9  # According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -95,7 +95,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

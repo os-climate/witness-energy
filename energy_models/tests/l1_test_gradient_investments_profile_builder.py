@@ -34,7 +34,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.override_dump_jacobian = True # let that to True
+        self.override_dump_jacobian = True  # let that to True
         self.name = 'Test'
         self.model_name = 'investments profile'
         self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]

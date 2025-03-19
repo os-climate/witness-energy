@@ -8,24 +8,24 @@ Offshore electricity production, through wind farms can be split in two contruct
 - offshore floating
 
 Fixed bottom foundations and floating offshore concepts[^2]
-![](Fixed-bottom-foundations-and-floating-offshore-concepts-9.png) 
-  
+![](Fixed-bottom-foundations-and-floating-offshore-concepts-9.png)
+
 Wind is split into 14 class (speed class m/s).
 
 A wind farm is not producing electricity full time, in order to model yearly production a variable is set : **Capacity Factor (%)**.
 
-**Capacity factor[^3] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.  
+**Capacity factor[^3] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.
 
-Wind offshore energy production, like wind onshore energy production, does not directly produce heat in the form of thermal energy. Instead, it generates electricity from the kinetic energy of moving air (wind). 
-## Data     
-Most of the data used for this model is extracted from International Energy Agency (IEA)[^4], 
-International Renewable Energy Agency (IRENA)[^5], Global Wind Energy Council (GWEC)[^6] and National Renewable Energy Laboratory (NREL)[^7]. 
+Wind offshore energy production, like wind onshore energy production, does not directly produce heat in the form of thermal energy. Instead, it generates electricity from the kinetic energy of moving air (wind).
+## Data
+Most of the data used for this model is extracted from International Energy Agency (IEA)[^4],
+International Renewable Energy Agency (IRENA)[^5], Global Wind Energy Council (GWEC)[^6] and National Renewable Energy Laboratory (NREL)[^7].
 
 Some IRENA data
-![](irena-offshore.png) 
+![](irena-offshore.png)
 ## Some insight on Wind offshore evolution
 IEA Offshore power generation prediction
-![](IEA-offshore-prediction.PNG) 
+![](IEA-offshore-prediction.PNG)
 
 [^1]: https://en.wikipedia.org/wiki/Offshore_wind_power
 [^2]: IOPscience, 2016,  Wind turbines: current status, obstacles, trends and technologies, https://iopscience.iop.org/article/10.1088/1757-899X/161/1/012079

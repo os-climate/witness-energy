@@ -40,8 +40,8 @@ class BiogasFired(ElectricityTechno):
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get co2 needs in kg co2 /kWh 
+        '''
+        Get co2 needs in kg co2 /kWh
         '''
         biogas_data = BioGas.data_energy_dict
         # kg of C02 per kWh of biogas burnt

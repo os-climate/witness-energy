@@ -71,7 +71,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               
+
                }
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 

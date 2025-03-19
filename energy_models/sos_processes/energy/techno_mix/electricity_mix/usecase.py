@@ -28,14 +28,15 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                              GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine, 'BiogasFired',
-                             #'Geothermal',todo : removed because was using medium heat temperature
-                             GlossaryEnergy.CoalGen, 'OilGen', #'BiomassFired'
+                             # 'Geothermal',todo : removed because was using medium heat temperature
+                             GlossaryEnergy.CoalGen, 'OilGen',  # 'BiomassFired'
                              ]
 TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                      GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine,
                      'BiogasFired',
-                     #'Geothermal',todo : removed because was using medium heat temperature
+                     # 'Geothermal',todo : removed because was using medium heat temperature
                      GlossaryEnergy.CoalGen, 'OilGen', 'BiomassFired']
+
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,

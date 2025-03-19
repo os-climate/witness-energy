@@ -70,7 +70,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':
                 i_disc_to_pop = i
-        if i_disc_to_pop is None :
+        if i_disc_to_pop is None:
             raise Exception("variable i_disc_to_pop was not defined during the loop")
         builder.pop(i_disc_to_pop)
         chain_builders.extend(builder)
@@ -182,7 +182,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             computed_coal_production, coal_production * 0.9)
 
         '''
-        Biomass production , the value is traditional biomass consumption , but we know that we do not consume all the biomass that we can produce 
+        Biomass production , the value is traditional biomass consumption , but we know that we do not consume all the biomass that we can produce
         Waiting for a specific value to compare
         '''
         #
@@ -371,7 +371,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print(
             f'Coal CO2 emissions : ourworldindata {coal_co2_emissions} Mt vs WITNESS {computed_coal_co2_emissions} TWh')
         '''
-        Oil CO2 emissions are emissions from oil energy 
+        Oil CO2 emissions are emissions from oil energy
         '''
         elec_oil_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.OilGen}.{GlossaryEnergy.TechnoDetailedProductionValue}')
@@ -390,7 +390,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print(
             f'Oil CO2 emissions : ourworldindata {oil_co2_emissions} Mt vs WITNESS {computed_oil_co2_emissions} TWh')
         '''
-        Total CO2 emissions are emissions from oil energy 
+        Total CO2 emissions are emissions from oil energy
         '''
         # sources = self.ee.dm.get_value(
         #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
@@ -424,12 +424,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         energy_production = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.energy_production_brut_detailed')
         '''
-        Theory in 2019 from Energy Balances IEA 2019  expressed in TWh 
+        Theory in 2019 from Energy Balances IEA 2019  expressed in TWh
         Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
         '''
 
         '''
-        Coal balances 
+        Coal balances
         '''
         print('----------  Coal balances -------------')
 
@@ -910,7 +910,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{biogas_net_prod_iea} TWh vs WITNESS :{net_biogas_prod} TWh')
 
         '''
-        Oil balances 
+        Oil balances
         '''
         print('----------  Oil balances -------------')
 

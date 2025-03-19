@@ -72,7 +72,7 @@ class RWGS(SyngasTechno):
 
     def check_capex_unity(self, data_config):
         '''
-        Overload the check_capex_unity for this particular model 
+        Overload the check_capex_unity for this particular model
         '''
         capex_list = np.array(data_config['Capex_init_vs_CO_H2_ratio'])
 
@@ -406,7 +406,6 @@ class RWGS(SyngasTechno):
         # Cost of methane for 1 kWH of H2
         self.cost_details['syngas_needs'] = self.get_theoretical_syngas_needs(self.syngas_ratio) / self.cost_details['efficiency']
 
-
     def compute_byproducts_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
@@ -417,7 +416,7 @@ class RWGS(SyngasTechno):
     def compute_streams_consumption(self):
         """
         Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
+        Maybe add efficiency in consumption computation ?
         """
 
         super().compute_streams_consumption()
@@ -477,8 +476,8 @@ class RWGS(SyngasTechno):
         return dco2_emissions_dsyngas_ratio
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)
@@ -577,8 +576,8 @@ class RWGS(SyngasTechno):
         return dsyngas_needs_dsyngas_ratio
 
     def get_theoretical_water_prod(self):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)
@@ -631,8 +630,8 @@ class RWGS(SyngasTechno):
         return dwater_needs_dsyngas_ratio
 
     def get_theoretical_co2_needs(self, unit='kg/kWh'):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)

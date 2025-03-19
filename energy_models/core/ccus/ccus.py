@@ -45,7 +45,7 @@ class CCUS:
 
     def __init__(self, name):
         '''
-        Constructor 
+        Constructor
         '''
         self.year_start = None
         self.year_end = None
@@ -67,7 +67,7 @@ class CCUS:
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
 
     def compute_carbon_storage_capacity(self):
-        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][ GlossaryEnergy.carbon_storage].values * self.inputs_dict['scaling_factor_energy_production']
+        total_carbon_storage_by_invest_mt = self.inputs_dict[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.EnergyProductionValue}"][GlossaryEnergy.carbon_storage].values * self.inputs_dict['scaling_factor_energy_production']
 
         self.outputs_dict['carbon_storage_capacity (Gt)'] = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -100,7 +100,7 @@ class CCUS:
             GlossaryEnergy.Years: self.years,
             f'{GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})': carbon_storage_gt * 1e3,
             f'{GlossaryEnergy.carbon_capture} to be stored (Mt)': carbon_capture_to_be_stored_gt * 1e3,
-            f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit}) from CC technos': carbon_capture_from_cc_technos_gt  * 1e3,
+            f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit}) from CC technos': carbon_capture_from_cc_technos_gt * 1e3,
             f'{GlossaryEnergy.carbon_storage} Limited by capture (Mt)': carbon_storage_limited_by_capture_gt * 1e3,
         })
 
@@ -115,7 +115,7 @@ class CCUS:
 
     def compute_CCS_price(self):
         '''
-        Compute CCS_price 
+        Compute CCS_price
         '''
         ccs_price = self.inputs_dict[f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}'][GlossaryEnergy.carbon_capture].values +\
                                                self.inputs_dict[f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}'][GlossaryEnergy.carbon_storage].values

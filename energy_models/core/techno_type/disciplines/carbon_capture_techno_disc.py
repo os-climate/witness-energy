@@ -115,7 +115,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_unit})'), (
                 GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-            dprod_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
+            dprod_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio / 100.)[:,
                              np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
 
         production, consumption = self.get_sosdisc_outputs(
@@ -132,7 +132,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionValue, column),
                     (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
-                    dprod_column_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio/ 100.)[:,
+                    dprod_column_dfluegas * (self.techno_model.applied_ratio['applied_ratio'].values * utilisation_ratio / 100.)[:,
                                             np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TechnoConsumptionWithoutRatioValue,

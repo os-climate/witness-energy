@@ -33,7 +33,7 @@ class GeothermalHeat(mediumheattechno):
 
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
-        
+
     def compute_byproducts_production(self):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()

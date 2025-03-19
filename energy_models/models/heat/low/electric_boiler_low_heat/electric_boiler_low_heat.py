@@ -32,7 +32,6 @@ class ElectricBoilerLowHeat(lowheattechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 
-
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
         elec_demand = self.techno_infos_dict['elec_demand']

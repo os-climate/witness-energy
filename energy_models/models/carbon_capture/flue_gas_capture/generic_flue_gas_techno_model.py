@@ -53,4 +53,3 @@ class GenericFlueGasTechnoModel(CCTechno):
         self.consumption_detailed[f'{GlossaryEnergy.electricity} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
                                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-

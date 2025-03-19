@@ -24,7 +24,7 @@ class ConvexCombinationModel:
         self.convex_coefficients: dict[str: float] = {}
         self.dataframes: list[pd.DataFrame] = []
         self.convex_combination_df: pd.DataFrame = None
-        self.coeffs_sum : float = 0.
+        self.coeffs_sum: float = 0.
 
     def store_inputs(self,
                      positive_coefficients: dict[str: float],

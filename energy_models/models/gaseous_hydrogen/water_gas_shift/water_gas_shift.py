@@ -57,7 +57,7 @@ class WGS(GaseousHydrogenTechno):
 
     def check_capex_unity(self, data_config):
         '''
-        Overload the check_capex_unity for this particular model 
+        Overload the check_capex_unity for this particular model
         '''
         capex_list = np.array(data_config['Capex_init_vs_CO_conversion'])
 
@@ -506,7 +506,7 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_resources_needs(self):
         # need in kg
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs()/ self.cost_details['efficiency']
+        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
 
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
@@ -552,7 +552,7 @@ class WGS(GaseousHydrogenTechno):
         #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']  # in TWH
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
-        ''' 
+        '''
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)
 
         e = (1+r1)/(1+r2)
@@ -580,7 +580,7 @@ class WGS(GaseousHydrogenTechno):
         return syngas_needs
 
     def get_theoretical_water_needs(self):
-        ''' 
+        '''
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)
 
         e = (1+r1)/(1+r2)
@@ -606,7 +606,7 @@ class WGS(GaseousHydrogenTechno):
         return water_needs
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
+        '''
         Get co2 needs in kg co2 /kWh H2
         1 mol of CO2 for 4 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
