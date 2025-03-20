@@ -89,7 +89,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     # Age distribution fake
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
-                      
+
                }
     # -- add specific techno inputs to this
     DESC_IN.update(WetBiomassTechnoDiscipline.DESC_IN)

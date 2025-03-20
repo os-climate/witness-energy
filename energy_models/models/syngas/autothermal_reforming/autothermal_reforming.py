@@ -31,7 +31,6 @@ class AutothermalReforming(SyngasTechno):
         # need in kg to produce 1kwh of syngas
         self.cost_details[f'{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
 
-
     def compute_other_streams_needs(self):
         # need in kwh to produce 1kwh of syngas
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
@@ -54,7 +53,7 @@ class AutothermalReforming(SyngasTechno):
         return methane_needs
 
     def get_theoretical_CO2_needs(self):
-        ''' 
+        '''
         Get water needs in kg CO2 /kWh H2
         1 mol of CO2 for 3 mol of CO and 3 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -70,7 +69,7 @@ class AutothermalReforming(SyngasTechno):
         return water_needs
 
     def get_theoretical_O2_needs(self):
-        ''' 
+        '''
         Get water needs in kg O2 /kWh H2
         1 mol of O2 for 3 mol of CO and 3 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one

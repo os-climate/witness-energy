@@ -67,7 +67,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                   'editable': False,
                                   'structuring': True},
-        GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
+        GlossaryEnergy.MaxBudgetValue: GlossaryEnergy.MaxBudgetDf,
         GlossaryEnergy.MaxBudgetConstraintRefValue: GlossaryEnergy.MaxBudgetConstraintRef
     }
 
@@ -279,7 +279,6 @@ class IndependentInvestDiscipline(SoSWrapp):
 
                 new_chart_energy.series.append(serie)
 
-
             instanciated_charts.insert(0, new_chart_energy)
 
             series = [np.array(serie.ordinate) for serie in new_chart_energy.series]
@@ -297,7 +296,5 @@ class IndependentInvestDiscipline(SoSWrapp):
                 new_chart_energy_ratio.add_series(serie_ratio)
 
             instanciated_charts.insert(1, new_chart_energy_ratio)
-
-
 
         return instanciated_charts

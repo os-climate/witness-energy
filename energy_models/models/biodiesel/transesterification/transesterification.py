@@ -44,7 +44,7 @@ class Transesterification(BioDieselTechno):
         # need in kg/kwh biodiesel
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
         # need in kWh/kwh biodiesel
-    
+
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
 

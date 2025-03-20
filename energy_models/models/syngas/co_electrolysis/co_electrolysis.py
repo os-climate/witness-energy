@@ -36,9 +36,8 @@ class CoElectrolysis(SyngasTechno):
 
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
     def get_theoretical_CO2_needs(self):
-        ''' 
+        '''
         Get water needs in kg CO2 /kWh syngas
         1 mol of CO2 for 1 mol of CO and 1 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -54,7 +53,7 @@ class CoElectrolysis(SyngasTechno):
         return co2_needs
 
     def get_theoretical_water_needs(self):
-        ''' 
+        '''
         Get water needs in kg water /kWh syngas
         1 mol of H2O for 1 mol of CO and 1 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one

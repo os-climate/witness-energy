@@ -39,7 +39,6 @@ class BiomassFired(ElectricityTechno):
             self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']  # TWh
         """
 
-
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         '''
         Get co2 needs in kg co2 /kWh

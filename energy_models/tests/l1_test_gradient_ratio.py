@@ -609,7 +609,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio

@@ -99,7 +99,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
 
-    
     # FischerTropsch Wikipedia :
     # 140000+34000 BPD in Qatar GtL
     # 12000 BPD in Malaysia GtL
@@ -114,7 +113,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'defined in dict'},
-                      
+
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
 

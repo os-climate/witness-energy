@@ -25,7 +25,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class FossilSimpleTechno(FossilTechno):
 
-
     def compute_specifif_costs_of_technos(self):
         self.specific_costs = pd.DataFrame({
             GlossaryEnergy.Years: self.years,

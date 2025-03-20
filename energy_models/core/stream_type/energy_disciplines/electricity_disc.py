@@ -53,11 +53,11 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                  # 4400TWh is total production,
                                                  # we use a 50% higher value
                                                  'unit': 'Twh',
-                                                 'user_level': 2,},
+                                                 'user_level': 2, },
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
                                              'unit': 'Twh',
-                                             'user_level': 2,},
+                                             'user_level': 2, },
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_electricity',
@@ -103,7 +103,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                             }
         else:
             outputs_dict = {}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

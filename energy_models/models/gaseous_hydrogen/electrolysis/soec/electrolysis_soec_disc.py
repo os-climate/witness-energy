@@ -45,7 +45,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.ElectrolysisSOEC
 
-
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.03,
                                  'CO2_from_production': 0.0,

@@ -101,7 +101,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
                                  }
     # We do not invest on biomass gasification yet
-    
+
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
     # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas

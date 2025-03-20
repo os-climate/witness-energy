@@ -26,6 +26,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CCGasT(ElectricityTechno):
     COPPER_RESOURCE_NAME = GlossaryEnergy.CopperResource
+
     def compute_other_streams_needs(self):
         self.cost_details[f'{Methane.name}_needs'] = self.techno_infos_dict[f'{Methane.name}_needs']
 

@@ -11,7 +11,7 @@ Hydropower is mainly associated with the Hoover Dam a huge facility harnessing t
 
 Hydropower itself does not produce heat as a primary output. Instead, it generates electricity through the kinetic energy of flowing water. any heat generated in these incidental ways is relatively small compared to the electrical energy produced by the hydropower system. Overall, hydropower is considered an efficient and low-heat-producing method of electricity generation.
 
-## Data    
+## Data
 
 Most of the data used for this model is extracted from International Energy Agency (IEA)[^4] and International Renewable Energy Agency (IRENA)[^5].
 
@@ -19,11 +19,11 @@ Data's about Hydropower plant commissioning year has been extracted from a power
 
 ![](hydropower_plant_world_age_distribution.png)
 
-## Some insight on hydropower evolution 
+## Some insight on hydropower evolution
 
 IEA hydropower generation in the Sustainable Development Scenario, 2000-2030 [^7]
 
-![](hydropower-generation-in-the-sustainable-development-scenario-2000-2030.png)  
+![](hydropower-generation-in-the-sustainable-development-scenario-2000-2030.png)
 
 Global weighted average total installed costs, capacity factors and LCOE for hydropower, 2010-2019 [^8]
 

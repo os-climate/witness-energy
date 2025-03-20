@@ -1,4 +1,4 @@
-# Solar Photovoltaic 
+# Solar Photovoltaic
 
 **Definition[^1]:**
 "Solar cells, also called photovoltaic cells, convert sunlight directly into electricity.
@@ -6,10 +6,10 @@ Photovoltaics (often shortened as PV) gets its name from the process of converti
 
 The maximum possible energy output of a given installation assumes its continuous operation at full nameplate capacity over the relevant period. The actual energy output during that period and the capacity factor vary greatly depending on a range of factors, for renewable energy the main factor being the weather conditions. For solar PV it is then important to take into account the $capacity factor$ defined as "the ratio of the net electricity generated, for the time considered, to the energy that could have been generated at continuous full-power operation during the same period"[^2].
 
-Solar photovoltaic (PV) systems primarily generate electricity, not heat. These systems convert sunlight directly into electrical energy through the photovoltaic effect, which occurs in solar cells. 
+Solar photovoltaic (PV) systems primarily generate electricity, not heat. These systems convert sunlight directly into electrical energy through the photovoltaic effect, which occurs in solar cells.
 
 In summary, while solar PV systems themselves do not produce heat, they can indirectly impact heat production by supplying electricity for heating purposes, reducing the demand for traditional heating sources, and contributing to overall energy savings.
-## Data     
+## Data
 To generate the data for this model we used International Energy Agency (IEA)[^3] and International Renewable Energy Agency (IRENA)[^4] reports.
 
 |variable| 2020 value | 2023 value |
@@ -22,19 +22,19 @@ To generate the data for this model we used International Energy Agency (IEA)[^3
 
 ## Some insight on Solar PV evolution
 IEA solar PV power generation in the Sustainable Development Scenario, 2000-2030[^7]
-![](IEAsolarprodsds.png)  
+![](IEAsolarprodsds.png)
 
  Global weighted average total installed costs, capacity factors and LCOE for PV, 2010–2019
  ![](IRENAcostevol.png)
- 
+
 ## Land use
-Solar PV are disposed in lands and most of it on crops category of lands.[^5] 
+Solar PV are disposed in lands and most of it on crops category of lands.[^5]
 Because in developed countries, where solar PV are the most deployed, barren lands and desert are scarce (around 10% of the global barren lands surface), it will not be considered in this model.
-Moreover, only 3% of the urban surface can be used for solar PV, very few rooftops are eligible to solar PV. So for this first version of land use model it will not be considered either. 
+Moreover, only 3% of the urban surface can be used for solar PV, very few rooftops are eligible to solar PV. So for this first version of land use model it will not be considered either.
 
 The power by hectare value has been computed on the base of 357 MWh/acre[^6], giving 315059 kWh/ha.
 
-[^1]: Solar Photovoltaic Technology Basics. NREL.gov, www.nrel.gov/research/re-photovoltaics.html 
+[^1]: Solar Photovoltaic Technology Basics. NREL.gov, www.nrel.gov/research/re-photovoltaics.html
 [^2]: Capacity factor. NRC.gov, https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html
 [^3]: IEA 2022, World Energy Outlook 2019, IEA, Paris https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY 4.0.
 [^4]: IRENA (2020), Renewable Power Generation Costs in 2019,

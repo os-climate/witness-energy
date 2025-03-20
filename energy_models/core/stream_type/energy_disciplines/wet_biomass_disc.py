@@ -73,5 +73,5 @@ class BiomassWetDiscipline(EnergyDiscipline):
                         GlossaryEnergy.EnergyProductionValue: production / inputs_dict[
                             'scaling_factor_energy_production'],
                         'techno_mix': techno_mix}
-        
+
         self.store_sos_outputs_values(outputs_dict)

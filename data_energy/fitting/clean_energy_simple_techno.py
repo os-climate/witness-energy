@@ -33,7 +33,7 @@ year_calibration = 2015
 
 df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.CleanEnergySimpleTechno)
 df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.CleanEnergySimpleTechno, year=2020)[1].value
-ref_price_2023 = 70.76 # $/MWh
+ref_price_2023 = 70.76  # $/MWh
 # data to run techno
 construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.CleanEnergySimpleTechno]
 year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), year_calibration))
@@ -111,7 +111,7 @@ def fitting_renewable(x: list):
 
 # Initial guess for the variables
 x0 = np.array([250., 1., 0.0, 0.2, 0.1])
-#x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
+# x0 = np.array([743.8, 1.3, 0.06, 0.0, 0.06])
 
 bounds = [(0, 10000), (0, 1.1), (0.00, 0.), (0.001, 0.99), (0.0001, 0.3)]
 
@@ -121,7 +121,7 @@ result = minimize(fitting_renewable, x0, bounds=bounds)
 prod_values_model, price_model_values = run_model(result.x)
 
 # Print the result
-#print("Optimal solution:", result.x)
+# print("Optimal solution:", result.x)
 print("Function value at the optimum:", result.fun)
 
 
