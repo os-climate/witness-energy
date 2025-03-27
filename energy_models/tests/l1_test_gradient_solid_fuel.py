@@ -67,7 +67,6 @@ class SolidFuelJacobianTestCase(GenericDisciplinesTestClass):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(self.years))})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})

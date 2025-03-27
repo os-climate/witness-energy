@@ -50,7 +50,6 @@ class ElectricBoilerTestCase(unittest.TestCase):
         self.resources_CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

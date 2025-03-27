@@ -49,7 +49,7 @@ class EnergyMixStudyManager(StudyManager):
 
     def configure_ds_boundaries(self, lower_bound_techno=1.0, upper_bound_techno=100.):
         """
-        Configure design space boundaries 
+        Configure design space boundaries
         """
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno

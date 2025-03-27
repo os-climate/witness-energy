@@ -130,7 +130,7 @@ class BaseStream(DifferentiableModel):
 
     def compute_price(self):
         '''
-        Compute the price with all sub_prices and sub weights computed with total production 
+        Compute the price with all sub_prices and sub weights computed with total production
         '''
         self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'energy_detailed_techno_prices:{GlossaryEnergy.Years}'] = self.years

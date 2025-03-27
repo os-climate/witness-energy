@@ -3,38 +3,38 @@
 **Definition[^1] :**
 Nuclear power is the use of nuclear reactions that release nuclear energy to generate heat, which most frequently is then used in steam turbines to produce electricity in a nuclear power plant. Nuclear power can be obtained from nuclear fission, nuclear decay and nuclear fusion reactions. Presently, the vast majority of electricity from nuclear power is produced by nuclear fission of uranium and plutonium. Nuclear decay processes are used in niche applications such as radioisotope thermoelectric generators in some space probes such as Voyager 2. Generating electricity from fusion power remains at the focus of international research. This article mostly deals with nuclear fission power for electricity generation.
 
-![](nuclearpowerpic.jpg) 
+![](nuclearpowerpic.jpg)
 (Image Credit: TTstudio/ Shutterstock)
 
 A nuclear power plant is not producing electricity full time, in order to model yearly production a variable is set : **Capacity Factor (%)**.
 
-**Capacity factor[^2] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.  
+**Capacity factor[^2] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.
 
-## Data     
+## Data
 Most of the data used for this model is extracted from Internation Atomic Energy Agency (IAEA) [^3]
-World Nuclear Association (WNA) [^5], National Renewable Energy Laboratory (NREL)[^6]. 
+World Nuclear Association (WNA) [^5], National Renewable Energy Laboratory (NREL)[^6].
 
 Production of high heat in TWh is calculated as waste heat of its electricity production to the efficiency generation.
 
 Water Consumption[^7]
-![](nuclear_water.png) 
+![](nuclear_water.png)
 
 Uranium enrichment, from uranium ore[^8]
-![](uranium_enrichment.PNG) 
+![](uranium_enrichment.PNG)
 
 Uranium as fuel cost[^9]
-![](uranium_cost.PNG) 
+![](uranium_cost.PNG)
 
 Nuclear power plants age distribution[^3]
-![](nuclear_age_distribution.png) 
+![](nuclear_age_distribution.png)
 
 ## Waste disposal and Decommissioning
 Following an analysis from the World Nuclear Waste Report [^10], waste disposal cost is added as a levy and is part of the energy price.
-Decommissioning costs are integrated to the Factory Capex and is consequently spread on its lifespan. 
+Decommissioning costs are integrated to the Factory Capex and is consequently spread on its lifespan.
 
 ## Some insight on Nuclear evolution
 IEA Nuclear power generation prediction[^4]
-![](nuclear_capacity_forecast.PNG) 
+![](nuclear_capacity_forecast.PNG)
 
 ## Fuel comparison
 With a complete combustion or fission, approx. 8 kWh of heat can be generated from 1 kg of coal, approx. 12 kWh from 1 kg of mineral oil and around 24,000,000 kWh from 1 kg of uranium-235.[^13]
@@ -54,4 +54,3 @@ With a complete combustion or fission, approx. 8 kWh of heat can be generated fr
 [^13]: Data - uranium used per kg, https://www.euronuclear.org/glossary/fuel-comparison/
 [^14]: Data - efficiency and heat recovery factor, https://www.sciencedirect.com/science/article/abs/pii/S0306261921001975
 [^15]: Working: https://www.eia.gov/energyexplained/nuclear/nuclear-power-plants.php#:~:text=Nuclear%20power%20comes%20from%20nuclear,magnetic%20generators%20to%20produce%20electricity.
-

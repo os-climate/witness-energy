@@ -34,9 +34,8 @@ class SMR(SyngasTechno):
         # need in kg to produce 1kwh of syngas
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def get_theoretical_CH4_needs(self):
-        ''' 
+        '''
         Get CH4 needs in kWh CH4 /kWh syngas
         1 mol of CH4 for 1 mol of CO and 1 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -52,9 +51,9 @@ class SMR(SyngasTechno):
         return methane_needs
 
     def get_theoretical_water_needs(self):
-        ''' 
+        '''
         Get water needs in kg water /kWh syngas
-        1 mol of H2O for 1 mol of synags 
+        1 mol of H2O for 1 mol of synags
         Warning : molar mass is in g/mol but we divide and multiply by one
         '''
 

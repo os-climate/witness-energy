@@ -76,10 +76,7 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
         if stream not in energy_to_producing_technos:
             energy_to_producing_technos[stream] = []
 
-
-
     # Print the list of unique energy values
-
 
     # Create the problem
     prob = pulp.LpProblem("Minimal_Technology_Selection", pulp.LpMinimize)
@@ -138,13 +135,11 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
         raise ValueError(f"There is a total of {len(techno_infos)} technos available, please lower the minimal_techno_number constraint value")
     prob += pulp.lpSum([tech_vars[t] for t in techno_infos]) >= minimal_techno_number
 
-
     # Objective: Minimize the number of additional technologies selected
     prob += pulp.lpSum([tech_vars[t] for t in techno_infos])
 
     # Solve the problem
     prob.solve()
-
 
     def show_infos():
         print("Energy to Technologies Dictionary:", energy_to_producing_technos)
@@ -162,13 +157,12 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
             rhs_value = constraint.constant
             print(f"{name}: LHS = {lhs_value}, RHS = {rhs_value}, Status = {lhs_value == rhs_value}")
 
-
     # Print the selected technologies
     selected_technologies = [t for t in techno_infos if pulp.value(tech_vars[t]) == 1]
     selected_streams = [s for s in all_streams if pulp.value(bool_stream_produced_vars[s]) == 1]
-    print('='*100)
     print('=' * 100)
-    print('='*100)
+    print('=' * 100)
+    print('=' * 100)
     print(f"\n\nInitially Selected Technologies ({len(initial_selection)}):".upper(), initial_selection)
     for selected_techno in initial_selection:
         print(selected_techno, techno_infos[selected_techno])
@@ -193,7 +187,7 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
     return techno_dict_for_witness, n_technos, n_streams
 
 
-#techno_dict_builder(technologies_test)
+# techno_dict_builder(technologies_test)
 
 def build_techno_infos(stream_used_by_technos: dict, stream_produced_by_techno: dict):
     out = {}
@@ -215,15 +209,15 @@ techno_info_dict = build_techno_infos(GlossaryEnergy.TechnoStreamsUsedDict, Glos
 inital_selection = [
     GlossaryEnergy.HefaDecarboxylation,
     GlossaryEnergy.FischerTropsch,
-    #f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}",
-    #f"{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}",
+    # f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}",
+    # f"{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}",
 ]
 
 technos_to_avoid = [
 GlossaryEnergy.BiomassFermentation,
-f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}", # remove
-f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}", # remove
-f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}",  # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}",  # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}",  # remove
 f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}",  # remove
@@ -233,15 +227,15 @@ GlossaryEnergy.FossilSimpleTechno,
 GlossaryEnergy.CleanEnergySimpleTechno,
 
 GlossaryEnergy.RWGS,
-#GlossaryEnergy.FischerTropsch
+# GlossaryEnergy.FischerTropsch
 ]
 streams_to_avoid = [
 GlossaryEnergy.hightemperatureheat_energyname,
 GlossaryEnergy.mediumtemperatureheat_energyname,
 GlossaryEnergy.lowtemperatureheat_energyname,
 GlossaryEnergy.biomass_dry,
-#GlossaryEnergy.syngas,
-#f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
+# GlossaryEnergy.syngas,
+# f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
 ]
 streams_to_have = [
     GlossaryEnergy.carbon_captured,

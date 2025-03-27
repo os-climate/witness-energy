@@ -148,6 +148,7 @@ class TestOneInvest(unittest.TestCase):
         # for graph in graph_list:
         # graph.to_plotly().show()
 
+
 if '__main__' == __name__:
     cls = TestOneInvest()
     cls.setUp()

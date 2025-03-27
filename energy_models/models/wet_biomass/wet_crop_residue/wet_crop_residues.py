@@ -25,7 +25,6 @@ class WetCropResidues(WetBiomassTechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} (kg)'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
                                                                                                               self.inputs['data_energy_dict']['calorific_value'] * \

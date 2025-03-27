@@ -87,12 +87,12 @@ class Study(StudyManager):
         return func_df
 
     def setup_usecase(self, study_folder_path=None):
-        values_dict_list = {}
+        values_dict = {}
 
         self.study_v0.study_name = self.study_name
         self.energy_usecase = self.study_v0
         invest_list = self.study_v0.setup_usecase()
-        values_dict_list.update(invest_list)
+        values_dict.update(invest_list)
         self.energy_list = self.study_v0.energy_list
         self.ccs_list = self.study_v0.ccs_list
         self.dspace = self.study_v0.dspace
@@ -105,26 +105,20 @@ class Study(StudyManager):
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
         }
-        values_dict_list.update(numerical_values_dict)
-        mda_chain_values_dict = {
-            f'{self.study_name}.{GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue}':
-                pd.DataFrame({**{GlossaryEnergy.Years: self.years,},
-                              **{energy: 0. for energy in self.energy_list}}),
-        }
+        values_dict.update(numerical_values_dict)
 
 
         # inputs to start MDA chain :
         for ghg in GlossaryEnergy.GreenHouseGases:
-            values_dict_list.update({
+            values_dict.update({
                 f"{self.study_name}.EnergyMix.{ghg}_intensity_by_energy" : pd.DataFrame({
                     GlossaryEnergy.Years: self.years,
                     **{e: 0.001 for e in self.energy_list}
                 })
             })
-        return values_dict_list
+        return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

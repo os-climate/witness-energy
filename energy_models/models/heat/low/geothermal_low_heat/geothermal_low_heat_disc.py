@@ -43,8 +43,6 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
     techno_name = GlossaryEnergy.GeothermalLowHeat
     stream_name = lowtemperatureheat.name
 
-
-
     techno_infos_dict_default = {
         'Capex_init': 3830,
         # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
@@ -77,7 +75,7 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
     flux_input_dict = {'land_rate': 18000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

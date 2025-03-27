@@ -32,7 +32,6 @@ class GeothermalHeat(highheattechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
         # TODO : ask valentin ?? geothermal high heat produces carbon capture ??

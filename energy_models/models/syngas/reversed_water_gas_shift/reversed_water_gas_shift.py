@@ -139,7 +139,6 @@ class RWGS(SyngasTechno):
         # Cost of methane for 1 kWH of H2
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs'] = self.get_theoretical_syngas_needs(self.inputs['syngas_ratio']) / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def compute_byproducts_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
@@ -150,7 +149,7 @@ class RWGS(SyngasTechno):
     def compute_energies_demand(self):
         """
         Compute the consumption and the production of the technology for a given investment
-        Maybe add efficiency in consumption computation ? 
+        Maybe add efficiency in consumption computation ?
         """
 
         super().compute_energies_demand()
@@ -159,8 +158,8 @@ class RWGS(SyngasTechno):
                                                                                                                            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)
@@ -187,8 +186,8 @@ class RWGS(SyngasTechno):
         return syngas_needs
 
     def get_theoretical_water_prod(self):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)
@@ -213,8 +212,8 @@ class RWGS(SyngasTechno):
         return water_needs
 
     def get_theoretical_co2_needs(self, unit='kg/kWh'):
-        ''' 
-        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20 
+        '''
+        dCO2 + e(H2 +r1CO)-->  (H2 +r2CO) + cH20
 
         e = (1+r2)/(1+r1)
         c = (r2-r1)/(1+r1)

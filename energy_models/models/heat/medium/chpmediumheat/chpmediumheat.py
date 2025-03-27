@@ -32,7 +32,6 @@ class CHPMediumHeat(mediumheattechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_methane_needs()
 
-
         # methane_needs
 
         # output needed in this method is in $/kwh of heat

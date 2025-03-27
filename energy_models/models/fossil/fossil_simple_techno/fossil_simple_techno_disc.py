@@ -53,7 +53,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.FossilSimpleTechno
 
-
     prod_solid_fuel = 45000.  # TWh
     prod_liquid_fuel = 53000.  # TWh
     prod_methane = 39106.77  # TWh
@@ -95,7 +94,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     # net production = 90717.76   TWh
     initial_production = 136917.16  # TWh
 
-    
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',

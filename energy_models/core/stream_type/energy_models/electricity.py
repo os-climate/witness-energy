@@ -25,7 +25,7 @@ class Electricity(EnergyType):
     default_techno_list = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal', GlossaryEnergy.Hydropower,
                            GlossaryEnergy.CoalGen, 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                            GlossaryEnergy.GasTurbine, 'BiogasFired', 'BiomassFired',
-                           #è'Geothermal'
+                           # è'Geothermal'
                            ]
 
 
@@ -35,7 +35,7 @@ class Electricity(EnergyType):
 
     def compute_hydropower_constraint(self):
         '''
-        Compute hydropower production constraint so that 
+        Compute hydropower production constraint so that
         '''
         if GlossaryEnergy.Hydropower in self.inputs[GlossaryEnergy.techno_list]:
             self.outputs[f'prod_hydropower_constraint:{GlossaryEnergy.Years}'] = self.years

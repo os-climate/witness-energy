@@ -211,6 +211,7 @@ class StreamDiscipline(AutodifferentiedDisc):
                 split_external=True,
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
             new_chart = self.get_chart_sankey_fluxes(
@@ -249,6 +250,7 @@ class StreamDiscipline(AutodifferentiedDisc):
             new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Price"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def get_chart_energy_price_in_dollar_kg(self):
@@ -277,6 +279,7 @@ class StreamDiscipline(AutodifferentiedDisc):
             new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Price"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def get_charts_production(self, years_list):
@@ -292,7 +295,6 @@ class StreamDiscipline(AutodifferentiedDisc):
         chart_name = f'Breakdown of {self.stream_name} production'
 
         chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, self.unit, chart_name=chart_name, stacked_bar=True)
-
         for techno in techno_list:
             new_series = InstanciatedSeries(years, techno_prods_of_main_stream_df[f'{techno} ({self.unit})'], techno,
                                             'bar', True)
@@ -301,6 +303,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         new_series = InstanciatedSeries(years, total_stream_prod_df[f'{self.stream_name} ({self.unit})'], "Total",
                                         'lines', True)
         chart.series.append(new_series)
+        chart.post_processing_is_key_chart = True
         chart.post_processing_section_name = "Production"
         instanciated_charts.append(chart)
 
@@ -364,6 +367,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, "G$", chart_name=chart_name, stacked_bar=True
         )
+        chart.post_processing_section_name = "Capital"
 
         for techno in techno_list:
             ordonate_data = self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalValue}")[GlossaryEnergy.Capital]

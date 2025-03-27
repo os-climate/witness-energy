@@ -73,8 +73,6 @@ class CCTechno(TechnoType):
 
         return energy_demand
 
-    
-
     @staticmethod
     def compute_capex_variation_from_fg_ratio(fg_mean_ratio, fg_ratio_effect):
 

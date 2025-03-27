@@ -81,7 +81,6 @@ class FischerTropsch(LiquidFuelTechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
     def compute_specifif_costs_of_technos(self):
         # Cost of electricity for 1 kWH of liquid_fuel
         self.outputs[f'{GlossaryEnergy.CostOfResourceUsageValue}:{GlossaryEnergy.electricity}'] = \
@@ -267,13 +266,11 @@ class FischerTropsch(LiquidFuelTechno):
         elif self.sg_transformation_name == GlossaryEnergy.RWGS:
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})'] = 0.0
 
-
         if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
 
             water_prod = self.water_prod_RWGS * \
                          self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs_for_FT'] / \
                          self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
-
 
         water_prod += self.get_theoretical_water_prod_from_FT() / \
                       self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
@@ -385,7 +382,7 @@ class FischerTropsch(LiquidFuelTechno):
                                                          self.outputs[f'CO2_emissions_detailed:{Water.name}']
 
     def get_theoretical_syngas_needs_for_FT(self):
-        ''' 
+        '''
         Get syngas needs in kWh syngas /kWh liquid_fuel
         H2 + n/(2n+1)CO --> 1/(2n+1) CnH_2n+1 + n/(2n+1)H20
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -405,7 +402,7 @@ class FischerTropsch(LiquidFuelTechno):
         return syngas_needs_for_FT
 
     def get_theoretical_water_prod_from_FT(self):
-        ''' 
+        '''
         Get water prod in kg H20 /kWh liquid_fuel
         H2 + n/(2n+1)CO --> 1/(2n+1) CnH_2n+1 + n/(2n+1)H20
         Warning : molar mass is in g/mol but we divide and multiply by one

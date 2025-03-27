@@ -21,7 +21,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class FossilSimpleTechno(FossilTechno):
 
-
     def compute_specifif_costs_of_technos(self):
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:{GlossaryEnergy.ResourcesPriceValue}"] = self.zeros_array + self.inputs['techno_infos_dict']['resource_price']

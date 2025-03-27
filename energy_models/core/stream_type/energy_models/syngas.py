@@ -76,8 +76,8 @@ class Syngas(EnergyType):
 
 def compute_molar_mass(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the molar mass following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the molar mass following this ratio
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
     '''
@@ -88,8 +88,8 @@ def compute_molar_mass(syngas_ratio):
 
 def compute_calorific_value(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the calorific_value following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the calorific_value following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
@@ -105,8 +105,8 @@ def compute_calorific_value(syngas_ratio):
 
 def compute_high_calorific_value(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the calorific_value following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the calorific_value following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
@@ -122,8 +122,8 @@ def compute_high_calorific_value(syngas_ratio):
 
 def compute_density(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the density following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the density following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     '''

@@ -120,7 +120,7 @@ class WGS(GaseousHydrogenTechno):
 
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
-        ''' 
+        '''
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)
 
         e = (1+r1)/(1+r2)
@@ -148,7 +148,7 @@ class WGS(GaseousHydrogenTechno):
         return syngas_needs
 
     def get_theoretical_water_needs(self):
-        ''' 
+        '''
         (H2 +r1CO) + cH20 --> dCO2 + e(H2 +r2CO)
 
         e = (1+r1)/(1+r2)

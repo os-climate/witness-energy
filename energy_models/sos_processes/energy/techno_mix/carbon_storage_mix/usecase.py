@@ -141,7 +141,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.PureCarbonSolidStorage.carbon_quantity_to_be_stored': carbon_quantity_to_store,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
+                       # f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
         techno_margin_dict = {
             f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.MarginValue}': margin for techno in

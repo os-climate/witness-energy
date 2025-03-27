@@ -5,7 +5,7 @@ Carbon Capture and Storage (CCS) is the process of capturing waste carbon dioxid
 
 There exist several paths for storage:
 
-* Depleted Oil & Gas 
+* Depleted Oil & Gas
 * Enhanced Oil recovery
 * Deep saline formation
 * Deep ocean $CO_2$ injection

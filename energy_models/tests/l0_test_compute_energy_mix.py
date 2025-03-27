@@ -106,7 +106,7 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
             f'{GlossaryEnergy.methane} (TWh)': np.linspace(2.6, 2300, len(self.years))})
 
         self.cost_details = pd.DataFrame({GlossaryEnergy.methane:  np.linspace(193, 336, len(self.years)),
-                                          'methane_wotaxes': np.linspace(193, 336, len(self.years)),})
+                                          'methane_wotaxes': np.linspace(193, 336, len(self.years)), })
         # Biomass dry inputs coming from agriculture mix disc
         #
         energy_consumption_biomass = np.linspace(0, 4, self.year_range)
@@ -139,7 +139,6 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
             {GlossaryEnergy.Years: self.years, "Land use": 0.0})
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
-        
 
         self.co2_taxes = pd.DataFrame({
             GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})

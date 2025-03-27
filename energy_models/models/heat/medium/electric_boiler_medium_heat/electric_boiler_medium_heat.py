@@ -31,7 +31,6 @@ class ElectricBoilerMediumHeat(mediumheattechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
         elec_demand = self.inputs['techno_infos_dict']['elec_demand']

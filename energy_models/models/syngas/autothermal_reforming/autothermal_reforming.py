@@ -54,7 +54,7 @@ class AutothermalReforming(SyngasTechno):
         return methane_needs
 
     def get_theoretical_CO2_needs(self):
-        ''' 
+        '''
         Get water needs in kg CO2 /kWh H2
         1 mol of CO2 for 3 mol of CO and 3 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -70,7 +70,7 @@ class AutothermalReforming(SyngasTechno):
         return water_needs
 
     def get_theoretical_O2_needs(self):
-        ''' 
+        '''
         Get water needs in kg O2 /kWh H2
         1 mol of O2 for 3 mol of CO and 3 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one

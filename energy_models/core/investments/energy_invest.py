@@ -29,13 +29,13 @@ class EnergyInvest(BaseInvest):
 
     def set_energy_list(self, energy_list):
         '''
-        Set the energy_list of the energy mix 
+        Set the energy_list of the energy mix
         '''
         self.energy_list = energy_list
 
     def set_invest_mix(self, mix_df):
         '''
-        Set the invest mix of the energy mix 
+        Set the invest mix of the energy mix
         '''
         if not isinstance(self.energy_list, list):
             raise TypeError('energy_list must be defined as a list')

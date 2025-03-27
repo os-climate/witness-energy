@@ -46,8 +46,6 @@ class SyngasTechno(TechnoType):
         self.inputs['data_energy_dict']['high_calorific_value'] = calorific_value
         self.inputs['data_energy_dict']['density'] = density
 
-    
-
     def compute_transport(self):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must $/kWh

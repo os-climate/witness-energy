@@ -53,7 +53,6 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
 
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
                                  # Fixed 1.9 and recurrent 0.5 %
@@ -78,7 +77,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     # and Nuclear Power Estimates up to 2050
     initial_production = 6590.0
     # Invest in 2019 => 29.6 bn
-    
+
     # Age distribution => IAEA OPEX Nuclear 2020 - Number of Reactors by Age
     # (as of 1 January 2020)
     DESC_IN = {'techno_infos_dict': {'type': 'dict',

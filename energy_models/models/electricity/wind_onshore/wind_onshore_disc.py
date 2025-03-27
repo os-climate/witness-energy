@@ -59,7 +59,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 f"{GlossaryEnergy.CopperResource}_needs": 2900 / 1e9 # According to the IEA, Onshore Wind turbines need 2900 kg of copper for each MW implemented. Computing the need in Mt/MW,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 2900 / 1e9  # According to the IEA, Onshore Wind turbines need 2900 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -70,7 +70,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     #     techno_infos_dict_default['capacity_factor']
     initial_production = 1323  # IEA in 2019
     # Invest in 2019 => 138.2 bn less 29.6 bn offshore => 108.6 bn
-    
+
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

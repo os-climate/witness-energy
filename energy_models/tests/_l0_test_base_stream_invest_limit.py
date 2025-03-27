@@ -82,8 +82,8 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
 
     def test_01_low_influence_one_techno(self):
         '''
-        The objective is to test output energy price and energy co2 emissions when 
-        one techno has low prod compare to the other 
+        The objective is to test output energy price and energy co2 emissions when
+        one techno has low prod compare to the other
         We want to kill the low influence to reduce gradients
         '''
         self.name = 'Test'

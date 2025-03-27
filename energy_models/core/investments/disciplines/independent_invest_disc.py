@@ -289,6 +289,4 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             instanciated_charts.insert(1, new_chart_energy_ratio)
 
-
-
         return instanciated_charts

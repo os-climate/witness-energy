@@ -65,7 +65,7 @@ class EthanolJacobianCase(GenericDisciplinesTestClass):
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(years))
                                           })
-        
+
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(

@@ -67,7 +67,7 @@ class HydrogenJacobianTestCase(GenericDisciplinesTestClass):
 
         self.plasmacracking_techno_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                                           GlossaryEnergy.PlasmaCracking: np.linspace(63., 32., len(years)),
-                                                          'PlasmaCracking_wotaxes' :np.linspace(63., 32., len(years))
+                                                          'PlasmaCracking_wotaxes': np.linspace(63., 32., len(years))
                                                           })
 
         self.smr_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years,
@@ -124,7 +124,6 @@ class HydrogenJacobianTestCase(GenericDisciplinesTestClass):
 
         self.invest_level_negative = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(5000, -5000, len(self.years))})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})

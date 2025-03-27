@@ -102,8 +102,8 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
     # Renewable Methane Association [online]
     flux_input_dict = {'land_rate': 17000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
-                      
+
+
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)

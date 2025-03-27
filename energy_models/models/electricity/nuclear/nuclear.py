@@ -42,7 +42,6 @@ class Nuclear(ElectricityTechno):
         #       self.production[f'{self.stream_name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']
 
-
     def get_theoretical_uranium_fuel_needs(self):
         """
         Get Uranium fuel needs in kg Uranium fuel /kWh electricty

@@ -93,7 +93,7 @@ class CHPMediumHeatDiscipline(TechnoDiscipline):
 
     # Renewable Methane Association [online]
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
+
                       }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

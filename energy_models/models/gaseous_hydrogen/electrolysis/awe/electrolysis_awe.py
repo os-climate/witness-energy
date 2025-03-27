@@ -36,9 +36,8 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         # compute the elec needs in kWh/kWh 1/efficiency
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = 1.0 / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-
     def get_water_needs(self):
-        ''' 
+        '''
         Get water needs in kg Water /kWh H2
         1 mol of H20 for 1 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
@@ -54,7 +53,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         return water_needs
 
     def get_oxygen_produced(self):
-        ''' 
+        '''
         Get oxygen needs in kg O2 /kWh H2
         1 mol of O2 for 2 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one

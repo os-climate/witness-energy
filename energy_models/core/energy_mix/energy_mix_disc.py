@@ -185,6 +185,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Production"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Production" in charts:
@@ -199,6 +200,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             serie = InstanciatedSeries(years, df_prod_brut["Total"], 'Total', 'lines')
             new_chart.series.append(serie)
             new_chart.post_processing_section_name = "Production"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Production" in charts:
@@ -212,6 +214,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             serie = InstanciatedSeries(years, df_prod_net_details["Total"], 'Total', 'lines')
             new_chart.series.append(serie)
             new_chart.post_processing_section_name = "Production"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Production" in charts:
@@ -540,6 +543,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Emissions"
+        new_chart.post_processing_is_key_chart = True
         instanciated_charts.append(new_chart)
 
         return instanciated_charts

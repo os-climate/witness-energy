@@ -45,7 +45,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
 
-
     heat_to_power_lost = 0.243
     heat_duty = 18
     elec_demand_capture = 338

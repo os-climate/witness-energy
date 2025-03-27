@@ -194,8 +194,8 @@ class TechnoType(DifferentiableModel):
         '''
         Compute Capital & loss of capital because of the unusability of the technology.
         When the applied ratio is below 1, the technology does not produce all the energy possible.
-        Investments on this technology is consequently non_use. 
-        This method computes the non_use of capital 
+        Investments on this technology is consequently non_use.
+        This method computes the non_use of capital
 
         Capex is in $/MWh
         Prod in TWh
@@ -544,7 +544,6 @@ class TechnoType(DifferentiableModel):
             elec_need = 0.0
 
         return elec_need
-
 
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """

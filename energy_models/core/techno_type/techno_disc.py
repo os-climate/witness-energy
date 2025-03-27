@@ -328,7 +328,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
                       'Factory Mean Age',
                       GlossaryEnergy.UtilisationRatioValue,
                       'Non-Use Capital',
-                      'Power production',
+                      'Installed capacity',
                       'Power plants initial age distribution',
                       'Capex']
         for ghg in GlossaryEnergy.GreenHouseGases:
@@ -409,7 +409,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
             instanciated_charts.append(new_chart)
-        if 'Power production' in charts:
+        if 'Installed capacity' in charts:
             new_chart = self.get_chart_installed_capacity(technos_info_dict)
             instanciated_charts.append(new_chart)
         if 'Power plants initial age distribution' in charts:
@@ -502,6 +502,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Prices & Capex"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def get_chart_detailed_price_in_dollar_kg(self):
@@ -576,6 +577,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             techno_kg_price, 'Margin', 'bar')
         new_chart.series.append(serie)
         new_chart.post_processing_section_name = "Prices & Capex"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def get_chart_investments(self):
@@ -848,6 +850,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart.series.append(serie)
         new_chart.post_processing_section_name = "Production"
+        new_chart.post_processing_is_key_chart = True
 
         return new_chart
 
@@ -875,6 +878,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart.series.append(serie)
         new_chart.post_processing_section_name = "Prices & Capex"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def get_chart_production(self):
@@ -897,6 +901,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         )
 
         new_chart.post_processing_section_name = "Production"
+        new_chart.post_processing_is_key_chart = True
 
         return new_chart
 

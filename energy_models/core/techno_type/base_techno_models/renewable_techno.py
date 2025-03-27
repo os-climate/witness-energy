@@ -30,6 +30,3 @@ class RenewableTechno(TechnoType):
                          self.inputs[f'{GlossaryEnergy.TransportMarginValue}:{GlossaryEnergy.MarginValue}'] / 100.0
 
         return transport_cost
-
-
-    
