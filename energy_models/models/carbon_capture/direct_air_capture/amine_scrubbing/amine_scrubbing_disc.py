@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -105,9 +104,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5.0e-3  # in Mt at year_start
-
-    # use the same flue gas ratio as gas turbine one
-    FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

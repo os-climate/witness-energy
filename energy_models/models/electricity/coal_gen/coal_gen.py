@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -31,20 +29,19 @@ class CoalGen(ElectricityTechno):
 
     def compute_energies_needs(self):
         # in kwh of fuel by kwh of electricity
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = self.inputs['techno_infos_dict']['fuel_demand'] / \
-                                                self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = \
+            self.inputs['techno_infos_dict']['fuel_demand'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit']
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                 f'{self.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
-                                                                                            'CO2_from_production'] * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{self.stream_name} ({self.product_unit})']
+
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{SolidFuel.name} ({self.product_unit})'] - \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
-
-        self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name) # TODO

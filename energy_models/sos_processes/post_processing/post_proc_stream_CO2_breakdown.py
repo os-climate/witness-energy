@@ -337,12 +337,9 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * 1e3
             invest_techno = techno_disc.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)[
-                                GlossaryEnergy.InvestValue].values * \
-                            techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
+                                GlossaryEnergy.InvestValue].values * 1e3
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs(
@@ -687,9 +684,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * 1e3
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs(

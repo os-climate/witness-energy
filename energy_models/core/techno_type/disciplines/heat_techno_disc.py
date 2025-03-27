@@ -115,21 +115,21 @@ class LowHeatTechnoDiscipline(HeatTechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_heat_low',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_heat_low',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': "Shared",
                                   'namespace': 'ns_heat_low', 'default': lowtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(HeatTechnoDiscipline.DESC_IN)
@@ -155,21 +155,21 @@ class MediumHeatTechnoDiscipline(HeatTechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_heat_medium',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_heat_medium',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': "Shared",
                                   'namespace': 'ns_heat_medium', 'default': mediumtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(HeatTechnoDiscipline.DESC_IN)
@@ -196,23 +196,23 @@ class HighHeatTechnoDiscipline(HeatTechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_heat_high',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_heat_high',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': "Shared",
                                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
-               # 'flux_input_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               # 'flux_input_dict': {'type': 'dict', 'visibility': "Shared",
                #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(HeatTechnoDiscipline.DESC_IN)

@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -64,6 +65,8 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
 
     # Whole Building Design Guide
     # https://www.wbdg.org/resources/biomass-electricity-generation
+
+    FLUE_GAS_RATIO = np.array([0.13])
 
     techno_infos_dict_default = {'maturity': 5,
                                  # IRENA (mean of 2% - 6%)

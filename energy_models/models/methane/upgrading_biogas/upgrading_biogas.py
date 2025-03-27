@@ -41,7 +41,7 @@ class UpgradingBiogas(MethaneTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                                                                       self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                   f'{MethaneTechno.stream_name} ({self.product_unit})']
+                                                                                   f'{self.stream_name} ({self.product_unit})']
 
         # production
         # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \

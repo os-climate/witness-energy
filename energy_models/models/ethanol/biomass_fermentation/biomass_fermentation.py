@@ -93,6 +93,7 @@ class BiomassFermentation(EthanolTechno):
 
         return electricity_needs
 
+
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         """
         56 pounds of corn --> 17 pounds of captured CO2 + 2.9 gallons on Ethanol

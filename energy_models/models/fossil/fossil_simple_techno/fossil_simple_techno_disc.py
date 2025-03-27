@@ -64,9 +64,9 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     #     capex = (capex_coal * prod_solid_fuel +
     #              capex_oil * prod_liquid_fuel +
     #              capex_methane * prod_methane) / prod_fossil
-    co2_from_prod = (RefineryDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_liquid_fuel +
-                     CoalExtractionDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_solid_fuel +
-                     FossilGasDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_methane) / prod_fossil
+    co2_from_prod = (RefineryDiscipline.techno_infos_dict_default['CO2_flue_gas_intensity_by_prod_unit'] * prod_liquid_fuel +
+                     CoalExtractionDiscipline.techno_infos_dict_default['CO2_flue_gas_intensity_by_prod_unit'] * prod_solid_fuel +
+                     FossilGasDiscipline.techno_infos_dict_default['CO2_flue_gas_intensity_by_prod_unit'] * prod_methane) / prod_fossil
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.299,
@@ -76,7 +76,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
-                                 'CO2_from_production': co2_from_prod,
+                                 'CO2_flue_gas_intensity_by_prod_unit': co2_from_prod,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'resource_price': 35.0,
                                  'resource_price_unit': '$/MWh',
@@ -85,6 +85,11 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
                                  }
+    # CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
+    #         emission_factor is in Mt/TWh
+    techno_infos_dict_default['CH4_emission_factor'] =  techno_infos_dict_default['CH4_venting_emission_factor'] +\
+                                                        techno_infos_dict_default['CH4_flaring_emission_factor'] +\
+                                                        techno_infos_dict_default['CH4_unintended_leakage_emission_factor']
 
     techno_info_dict = techno_infos_dict_default
     # net production = 90717.76   TWh

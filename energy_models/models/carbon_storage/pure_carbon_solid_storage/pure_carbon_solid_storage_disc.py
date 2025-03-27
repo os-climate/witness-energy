@@ -75,14 +75,10 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0
     
-    carbon_zero_quantity_to_be_stored = pd.DataFrame(
-        {GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_storage: 0.})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                
-               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
-                                                'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
+               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('int', None, False),
                                                                          GlossaryEnergy.carbon_storage: ('float', None, False),

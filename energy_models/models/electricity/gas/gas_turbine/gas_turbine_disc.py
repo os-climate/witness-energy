@@ -60,14 +60,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  # ENERGY TECHNOLOGIES, June 2021
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
-                                 # 0.1025 kt/PJ (mean) at gas power plants in
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-                                 'CH4_emission_factor': 0.1025e-3 / 0.277,
-                                 'CH4_emission_factor_unit': 'Mt/TWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.0001 kt/PJ
-                                 'N2O_emission_factor': 0.0001e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # Source: U.S. Energy Information Administration, 2020
                                  # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
                                  # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
@@ -93,9 +85,19 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     initial_production = (1 - share_ccgt) * 6346
     FLUE_GAS_RATIO = np.array([0.0350])
 
+    # 0.1025 kt/PJ (mean) at gas power plants in
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.0001 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.CH4, GlossaryEnergy.methane, 0.1025e-3 / 0.277),
+        (GlossaryEnergy.N2O, GlossaryEnergy.methane, 0.0001e-3 / 0.277),
+    ]
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh', "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

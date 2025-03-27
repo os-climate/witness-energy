@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -28,18 +27,9 @@ class BiogasFired(ElectricityTechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biogas}_needs'] = self.inputs['techno_infos_dict'][f'{GlossaryEnergy.biogas}_needs']
 
-    def compute_byproducts_production(self):
-        co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] =\
-            co2_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
-
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.biogas} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
-
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
-        Get co2 needs in kg co2 /kWh 
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        '''
+        Get co2 producted in kg co2 /kWh
         '''
         biogas_data = BioGas.data_energy_dict
         # kg of C02 per kWh of biogas burnt
@@ -49,3 +39,9 @@ class BiogasFired(ElectricityTechno):
 
         co2_prod = biogas_co2 * biogas_need
         return co2_prod
+
+    def compute_byproducts_production(self):
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.biogas} ({self.product_unit})'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+

@@ -68,12 +68,8 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.ipcc.ch/site/assets/uploads/2018/02/ipcc_wg3_ar5_chapter7.pdf
                                  # Or for a simplified chart:
                                  # https://www.world-nuclear.org/information-library/energy-and-the-environment/carbon-dioxide-emissions-from-electricity.aspx
-                                 'CO2_from_production': 0.82,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.82,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.0014 kt/PJ
-                                 'N2O_emission_factor': 0.0014e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
                                  # License: CC BY 4.0.
@@ -122,10 +118,20 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
-    
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.0014 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.N2O, GlossaryEnergy.solid_fuel, 0.0014e-3 / 0.277),
+    ]
+
     FLUE_GAS_RATIO = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh',
+                                                  "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                       }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

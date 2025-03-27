@@ -34,14 +34,14 @@ class FossilTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/MWh',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_fossil',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_fossil',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
@@ -49,7 +49,7 @@ class FossilTechnoDiscipline(TechnoDiscipline):
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
-                                  'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'visibility': "Shared",
                                   'namespace': 'ns_fossil',
                                   'default': Fossil.data_energy_dict,
                                   'unit': 'defined in dict'},

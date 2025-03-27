@@ -88,6 +88,8 @@ class TechnoType(DifferentiableModel):
         self.compute_scope_1_ghg_emissions()
         self.compute_scope_2_ghg_emissions()
 
+        self.compute_co2_flue_gas_emissions()
+
     def compute_resources_demand(self):
         """Computes the resource demand"""
         self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{GlossaryEnergy.Years}'] = self.years
@@ -97,7 +99,11 @@ class TechnoType(DifferentiableModel):
                 self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
 
     def compute_energies_demand(self):
-        """Compute the demand of consumption for other energy"""
+        """
+        Compute the demand of consumption for other energy
+
+        Demand (TWh) = Targeted production * (TWh / Production unit)
+        """
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
         for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{energy} ({GlossaryEnergy.energy_unit})'] = \
@@ -110,9 +116,6 @@ class TechnoType(DifferentiableModel):
         """
         pass
 
-    def aggregate_ratios(self):
-        pass
-        
     def compute_limiting_ratio(self):
         """
         Select the ratios that are meaningfull to consider to modulate the techno production (and therefore consumptions).
@@ -130,7 +133,7 @@ class TechnoType(DifferentiableModel):
             if not self.inputs['techno_is_ccus']:
                 self.ratios_name_list.extend([f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream}' for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]])
             else:
-                self.ratios_name_list.extend([f'energy_market_ratios:{stream}' for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]])
+                self.ratios_name_list.extend([f'{GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue}:{stream}' for stream in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]])
                 self.ratios_name_list.extend([f'{GlossaryEnergy.CCUSAvailabilityRatiosValue}:ratio'])
 
 
@@ -140,14 +143,12 @@ class TechnoType(DifferentiableModel):
         ratio_values = self.np.ones(len(self.years))
         limiting_input = self.np.array([''] * len(self.years))
         valid_cols = list(filter(lambda col: col in self.inputs, self.ratios_name_list))
-        invalid_cols = list(set(self.ratios_name_list) - set(valid_cols))
-        if invalid_cols:
-            a = 1
         if len(valid_cols) == 1:
             limiting_input = valid_cols[0]
             ratio_values = self.inputs[limiting_input]
+            limiting_input = self.np.array([valid_cols[0]] * len(self.years))
         elif len(valid_cols) > 1:
-            ratios_array = self.np.vstack([self.inputs[col] for col in valid_cols]).T
+            ratios_array = self.np.vstack([self.inputs[col] for col in valid_cols]).T / 100.
             if self.inputs['smooth_type'] == 'cons_smooth_max':
                 ratio_values = - self.cons_smooth_maximum_vect(-ratios_array)
             else:
@@ -157,7 +158,7 @@ class TechnoType(DifferentiableModel):
 
         self.outputs[f'applied_ratio:{GlossaryEnergy.Years}'] = self.years
         self.outputs['applied_ratio:limiting_input'] = limiting_input
-        self.outputs['applied_ratio:applied_ratio'] = ratio_values
+        self.outputs['applied_ratio:applied_ratio'] = ratio_values * 100.
 
 
     def apply_limiting_ratio(self):
@@ -168,7 +169,8 @@ class TechnoType(DifferentiableModel):
             -self.applied_ratio: the effective ratio applied for each year
         The method "select_ratios" must have been called beforehand to have the self.ratio_df variable
         """
-        ratio_values = self.outputs['applied_ratio:applied_ratio']
+        ratio_values = self.outputs['applied_ratio:applied_ratio'] / 100.
+        self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{GlossaryEnergy.Years}'] = self.years
         # limit target production with ratio :
         for col in self.get_colnames_output_dataframe(GlossaryEnergy.TechnoTargetProductionValue, expect_years=True):
             self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{col}'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{col}'] * ratio_values
@@ -207,7 +209,7 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] / 1e3
 
         self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.NonUseCapital}'] = self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Capital}'] * (
-                1.0 - self.outputs['applied_ratio:applied_ratio'] * self.inputs[f'{GlossaryEnergy.UtilisationRatioValue}:{GlossaryEnergy.UtilisationRatioValue}'] / 100.)
+                1.0 - self.outputs['applied_ratio:applied_ratio'] / 100. * self.inputs[f'{GlossaryEnergy.UtilisationRatioValue}:{GlossaryEnergy.UtilisationRatioValue}'] / 100.)
 
     def compute_price(self):
         """
@@ -630,11 +632,16 @@ class TechnoType(DifferentiableModel):
         self.compute_scope_2_ghg_intensity()
 
     def compute_scope_1_ghg_intensity(self):
-        """Compute scope 1 ghg intensity (Mt/TWh): due to production"""
+        """
+        Compute scope 1 ghg intensity (Mt/TWh): due to production
+
+        We must distinguish : CO2 from flue gas and CO2 not from flue gas
+        """
 
         self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.Years}'] = self.zeros_array
 
         # CO2
+        # CO2 non flue gas
         if 'CO2_from_production' not in self.inputs['techno_infos_dict']:
             self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'] = self.get_theoretical_co2_prod(unit='kg/kWh') + self.zeros_array
         elif self.inputs['techno_infos_dict']['CO2_from_production'] == 0.0:
@@ -646,6 +653,10 @@ class TechnoType(DifferentiableModel):
             elif self.inputs['techno_infos_dict']['CO2_from_production_unit'] == 'kg/kWh':
                 self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'] = self.inputs['techno_infos_dict']['CO2_from_production'] + self.zeros_array
 
+        # CO2 from flue gas
+        co2_flue_gas_intensity = self.compute_co2_from_flue_gas_intensity_scope_1()
+        self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'] = self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.CO2}'] + co2_flue_gas_intensity
+
         # CH4 + N2O
         for ghg in [GlossaryEnergy.CH4, GlossaryEnergy.N2O]:
             if f'{ghg}_emission_factor' not in self.inputs['techno_infos_dict']:
@@ -654,6 +665,13 @@ class TechnoType(DifferentiableModel):
                 ghg_intensity = self.inputs['techno_infos_dict'][f'{ghg}_emission_factor'] + self.zeros_array
 
             self.outputs[f'ghg_intensity_scope_1:{ghg}'] = ghg_intensity
+
+        for (ghg, other_stream, intensity_by_twh_of_stream_consumed) in self.inputs["extra_ghg_from_external_source"]:
+
+            # Mt/ energy produced =  (Mt/TWh of other stream consumed) * (TWh of other stream consumed / energy produced)
+            stream_needs = self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{other_stream}_needs']
+            self.outputs[f'ghg_intensity_scope_1:{ghg}'] = self.outputs[f'ghg_intensity_scope_1:{ghg}'] + \
+                                                           intensity_by_twh_of_stream_consumed * stream_needs
 
     def compute_scope_2_ghg_intensity(self):
         """Computes the Scope 2 GHG intensity (Mt/TWh) : due to external resources and energies usage"""
@@ -879,10 +897,7 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.zeros_array
             for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
                 if energy != GlossaryEnergy.biomass_dry:
-                    if ghg == GlossaryEnergy.CO2:
-                        ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * self.inputs[f'{GlossaryEnergy.StreamsCO2EmissionsValue}:{energy}']
-                    else:
-                        ghg_intensity = self.zeros_array # TODO : add other GHG inputs
+                    ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * self.inputs[f'{ghg}_intensity_by_energy:{energy}']
                     self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
                     self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.outputs[f'ghg_intensity_scope_2:{ghg}'] + ghg_intensity
 
@@ -947,3 +962,17 @@ class TechnoType(DifferentiableModel):
             self.outputs[f'{GlossaryEnergy.TechnoCCSDemandsValue}:{stream} ({GlossaryEnergy.energy_unit})'] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * \
                 self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self) -> float:
+        """returns the intensity of co2 emissions through flue gas exhausts in Mt/TWh"""
+        return 0.
+
+    def compute_co2_flue_gas_emissions(self):
+        """Compute the CO2 emissions via flue gases"""
+        # TWh * Mt/TWH
+        co2_flue_gas_intensity = self.compute_co2_from_flue_gas_intensity_scope_1()
+
+        self.outputs[f'{self.stream_name}.{self.name}.{GlossaryEnergy.TechnoFlueGasProductionValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{self.stream_name}.{self.name}.{GlossaryEnergy.TechnoFlueGasProductionValue}:{GlossaryEnergy.CO2FromFlueGas}'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name} ({self.product_unit})'] * \
+            co2_flue_gas_intensity

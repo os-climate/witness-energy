@@ -40,11 +40,6 @@ class EnergyMix(DifferentiableModel):
 
     # TODO shouldnt it just be carbon stored ? like energy technos take stored carbon and emit it into the atmosphere ?
     # TODO because carbon captured is just a temporary state of carbon, waiting to be stored
-    CO2_list = [f'{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})',
-                f'{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})',
-                f'{GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})',
-                f'{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})',
-                f'{GlossaryEnergy.CarbonResource} ({GlossaryEnergy.mass_unit})']
     def __init__(self, name, logger: logging.Logger):
         super().__init__()
         self.name = name
@@ -68,6 +63,7 @@ class EnergyMix(DifferentiableModel):
         self.compute_energy_mix()
         self.compute_mean_energy_price()
 
+        self.compute_ghg_emissions_intensity_by_energy()
         self.compute_ghg_emissions()
 
         self.aggregate_land_use_required()
@@ -107,32 +103,26 @@ class EnergyMix(DifferentiableModel):
     def compute_raw_energy_production(self):
         """Sum all the energy production"""
 
-        self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionDetailedValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:{GlossaryEnergy.Years}'] = self.years
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             input_unit = GlossaryEnergy.unit_dicts[energy]
-            column_name = f'{energy} ({input_unit})'
-            conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.EnergyMixRawProductionDetailed['unit']]
-            self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionDetailedValue}:{column_name}'] = \
+            conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.EnergyMixRawProduction['unit']]
+            self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:{energy}'] = \
                 self.inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}:{energy} ({input_unit})'] * conversion_factor
 
         # Total computation :
-        energy_cols = list(filter(lambda x: x.endswith(f"({GlossaryEnergy.energy_unit})"),
-                                  self.get_colnames_output_dataframe(df_name='energy_production_brut_detailed', expect_years=True)))
-        energy_columns = [self.outputs[f"energy_production_brut_detailed:{col}"] for col in energy_cols]
-
-        self.outputs[f'energy_production_brut:{GlossaryEnergy.Years}'] = self.years
-        self.outputs['energy_production_brut:Total'] = self.sum_cols(energy_columns)
+        self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:Total'] = \
+            self.sum_cols(self.get_cols_output_dataframe(df_name=GlossaryEnergy.EnergyMixRawProductionValue, expect_years=True))
 
     def compute_net_energy_production(self):
         """
         Net energy = Raw energy production - Energy consumed for energy production - energy consumed for CCUS - heat losses
         """
 
-        self.outputs[f"net_energy_production_details:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{GlossaryEnergy.Years}"] = self.years
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             # starting from raw energy production
-            column_name_energy = f'{energy} (TWh)'
-            raw_production_energy = self.outputs[f"energy_production_brut_detailed:{column_name_energy}"]
+            raw_production_energy = self.outputs[f"{GlossaryEnergy.EnergyMixRawProductionValue}:{energy}"]
 
             # coarse technos:
             if energy in self.raw_to_net_dict:
@@ -142,17 +132,14 @@ class EnergyMix(DifferentiableModel):
                 net_energy_production_in_energy_sector = raw_production_energy - energy_consumption_in_energy_sector
 
             net_production_positive_part = self.np.maximum(net_energy_production_in_energy_sector, 1e-3)
-            self.outputs[f"net_energy_production_details:{energy}"] = net_production_positive_part
+            self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"] = net_production_positive_part
 
-        self.outputs["net_energy_production_details:heat_losses"] = \
-            - self.outputs['energy_production_brut:Total'] * self.inputs['heat_losses_percentage'] / 100.0
+        self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:heat_losses"] = \
+            - self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:Total'] * self.inputs['heat_losses_percentage'] / 100.0
 
-        self.outputs["net_energy_production_details:Total"] = self.sum_cols(
-            self.get_cols_output_dataframe(df_name="net_energy_production_details", expect_years=True)
+        self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:Total"] = self.sum_cols(
+            self.get_cols_output_dataframe(df_name=GlossaryEnergy.EnergyMixNetProductionsDfValue, expect_years=True)
         )
-
-        self.outputs[f"net_energy_production:{GlossaryEnergy.Years}"] = self.outputs[f"net_energy_production_details:{GlossaryEnergy.Years}"]
-        self.outputs["net_energy_production:Total"] = self.outputs["net_energy_production_details:Total"]
 
     def compute_net_prod_of_coarse_energies(self, energy):
         """Compute the energy production share to remove for coarse techno to go from raw to net"""
@@ -186,11 +173,11 @@ class EnergyMix(DifferentiableModel):
         """Compute the contribution (in %) of each energy in the total net energy production"""
         self.outputs[f"energy_mix:{GlossaryEnergy.Years}"] = self.years
 
-        total_net_energy_prod_wo_heat_losses = self.outputs["net_energy_production_details:Total"] - \
-                                               self.outputs["net_energy_production_details:heat_losses"]
+        total_net_energy_prod_wo_heat_losses = self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:Total"] - \
+                                               self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:heat_losses"]
 
         for energy in self.inputs[GlossaryEnergy.energy_list]:
-            self.outputs[f"energy_mix:{energy}"] = self.outputs[f"net_energy_production_details:{energy}"] / \
+            self.outputs[f"energy_mix:{energy}"] = self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"] / \
                                                    total_net_energy_prod_wo_heat_losses * 100.
 
     def compute_energies_availability_ratios(self):
@@ -205,22 +192,22 @@ class EnergyMix(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.Years}"] = self.years
 
         for stream_consumption in self.get_colnames_output_dataframe(f"{GlossaryEnergy.EnergyMixEnergiesDemandsDfValue}", expect_years=True, full_path=False):
-            if f'{GlossaryEnergy.EnergyMixRawProductionDetailedValue}:{stream_consumption}' in self.outputs:
-                stream_raw_production = self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionDetailedValue}:{stream_consumption}']
+            if f'{GlossaryEnergy.EnergyMixRawProductionValue}:{stream_consumption}' in self.outputs:
+                stream_raw_production = self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:{stream_consumption}']
                 demand_for_stream = self.outputs[f"{GlossaryEnergy.EnergyMixEnergiesDemandsDfValue}:{stream_consumption}"]
 
                 # min(1, raw_prod / demand) :
                 self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = self.np.maximum(
-                    self.np.minimum(stream_raw_production / (demand_for_stream + 1e-6), 1), 0)
+                    self.np.minimum(stream_raw_production / (demand_for_stream + 1e-6), 1), 0) * 100.
             else:
                 #self.logger.warning(f"{stream_consumption} is consumed but not produced in current study. No limiting ratio assumed.")
-                self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = self.zeros_array + 1.
+                self.outputs[f'{GlossaryEnergy.AllStreamsDemandRatioValue}:{stream_consumption}'] = self.zeros_array + 100.
 
     def compute_target_production_constraint(self):
         """should be negative when satisfied"""
         self.outputs[f"{GlossaryEnergy.TargetProductionConstraintValue}:{GlossaryEnergy.Years}"] = self.years
 
-        actual_net_production = self.outputs["net_energy_production:Total"]
+        actual_net_production = self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:Total"]
         target_prod = self.inputs[f"{GlossaryEnergy.TargetEnergyProductionValue}:{GlossaryEnergy.TargetEnergyProductionValue}"]
         constraint_normalized = (actual_net_production - target_prod) / (target_prod + 1e-3)
         self.outputs[f"{GlossaryEnergy.TargetProductionConstraintValue}:{GlossaryEnergy.TargetProductionConstraintValue}"] = constraint_normalized
@@ -251,7 +238,7 @@ class EnergyMix(DifferentiableModel):
         """For each energy, sum what has been consumed by other energy"""
 
         self.outputs[f"{GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue}:{GlossaryEnergy.Years}"] = self.years
-        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamEnergyConsumption['unit']]['TWh']
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamEnergyConsumption['unit']][GlossaryEnergy.EnergyMixEnergiesConsumptionDf['unit']]
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             # starting from raw energy production
             column_name_energy = f'{energy} (TWh)'
@@ -346,3 +333,12 @@ class EnergyMix(DifferentiableModel):
             self.outputs[f"{GlossaryEnergy.EnergyMixCCSConsumptionDfValue}:{GlossaryEnergy.carbon_captured}"] = self.zeros_array
         if f"{GlossaryEnergy.EnergyMixCCSConsumptionDfValue}:{GlossaryEnergy.carbon_storage}" not in self.outputs:
             self.outputs[f"{GlossaryEnergy.EnergyMixCCSConsumptionDfValue}:{GlossaryEnergy.carbon_storage}"] = self.zeros_array
+
+    def compute_ghg_emissions_intensity_by_energy(self):
+        """Gather all ghg intensities into one dataframe, for each ghg."""
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            self.outputs[f"{ghg}_intensity_by_energy:{GlossaryEnergy.Years}"] = self.years
+
+            for energy in self.inputs[GlossaryEnergy.energy_list]:
+                self.outputs[f"{ghg}_intensity_by_energy:{energy}"] = \
+                    self.inputs[f'{energy}.{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}']

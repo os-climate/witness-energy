@@ -48,7 +48,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
-                                 'CO2_from_production': 0.2,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.2,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  # 1600T/day of wood capacity, 180M$ of Capital

@@ -66,12 +66,8 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
 
                                  # RTE France
                                  # https://www.rte-france.com/en/eco2mix/co2-emissions
-                                 'CO2_from_production': 0.777,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.777,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.008 kt/PJ
-                                 'N2O_emission_factor': 0.008e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # IEA and NEA, Paris
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
@@ -134,10 +130,18 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     
     oil_flue_gas_ratio = np.array([0.12])
 
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.008 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.N2O, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}', 0.008e-3 / 0.277),
+    ]
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                       
                'flue_gas_co2_ratio': {'type': 'array', 'default': oil_flue_gas_ratio, 'unit': ''},
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh',
+                                                  "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                }
 
     # -- add specific techno outputs to this

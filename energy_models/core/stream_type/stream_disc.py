@@ -86,7 +86,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
         GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.StreamLandUseDf,
         GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf,
-        'ghg_intensity_scope_1': {'type': 'dataframe', 'unit': 'Mt/TWh', 'description': 'GHG intensity (emissions by production unit) for stream'},
+        GlossaryEnergy.StreamScope1GHGIntensityValue: GlossaryEnergy.StreamScope1GHGIntensity,
     }
 
     _maturity = 'Research'

@@ -15,7 +15,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -36,7 +35,7 @@ class CHPHighHeat(highheattechno):
     def compute_byproducts_production(self):
         # CO2 production
         # TODO
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})'] = \
             Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
             Methane.data_energy_dict['calorific_value'] * \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})']
@@ -60,7 +59,7 @@ class CHPHighHeat(highheattechno):
 
         return elec_demand
 
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+    def compute_co2_from_flue_gas_intensity_scope_1(self, unit='kg/kWh'):
         co2_captured__production = self.inputs['techno_infos_dict']['co2_captured__production']
         heat_density = Methane.data_energy_dict['density']  # kg/m^3
         heat_calorific_value = Methane.data_energy_dict['calorific_value']  # kWh/kg

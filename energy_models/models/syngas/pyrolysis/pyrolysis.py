@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -35,14 +34,10 @@ class Pyrolysis(SyngasTechno):
         # wood needs in kg to produce 1kWh of syngas
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WoodResource}_needs"] = 1 / syngas_kwh
 
-    def compute_byproducts_production(self):
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit'] / self.inputs['data_energy_dict']['calorific_value']
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
-                                                                                            'CO2_from_production'] / \
-                                                                                                                                   self.inputs['data_energy_dict'][
-                                                                                            'calorific_value'] * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{SyngasTechno.stream_name} ({self.product_unit})']
+    def compute_byproducts_production(self):
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:char ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                    f'{SyngasTechno.stream_name} ({self.product_unit})'] * \

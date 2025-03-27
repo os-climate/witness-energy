@@ -23,6 +23,7 @@ from sostrades_optimization_plugins.models.autodifferentiated_discipline import 
 class GlossaryEnergy(GlossaryWitnessCore):
     """Glossary for witness energy, inheriting from glossary of Witness Core"""
 
+    EnergyMarketDemandsDfValue = "energy_market_demands_df"
     CCSListName = "ccs_list"
     EnergyListName = "energy_list"
     NS_ENERGY = "ns_energy"
@@ -131,8 +132,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
     TechnoDetailedProductionValue = "techno_detailed_production"
     TechnoDetailedPricesValue = "techno_detailed_prices"
-    TechnoEnergyConsumptionValue = "techno_energy_consumption"
-    TechnoResourceConsumptionValue = "techno_resource_consumption"
     TechnoTargetProductionValue = "techno_production_target"
     RessourcesCO2EmissionsValue = "resources_CO2_emissions"
     TransportCostValue = "transport_cost"
@@ -164,8 +163,33 @@ class GlossaryEnergy(GlossaryWitnessCore):
                         "description": "Demand from the techno energy for carbon capture or carbon storage",
                         "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
 
-    TechnoScope1GHGEmissionsValue = "techno_scope_1_emissions"
+    TechnoFlueGasProductionValue = "techno_flue_gas_prod"
+    TechnoFlueGasProduction = {
+        'type': 'dataframe',
+        'unit': 'Mt',
+        "visibility": "Shared",
+        "namespace": GlossaryWitnessCore.NS_ENERGY_MIX,
+        "description": "Production of flue gases by techno",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            GlossaryWitnessCore.CO2FromFlueGas: ("float", None, True),
+        },
+        AutodifferentiedDisc.GRADIENTS: True}
+
+
     TechnoScope1GHGEmissions = {'type': 'dataframe', 'unit': 'Mt', "description": "Scope 1 emissions of the techno",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2FromFlueGas: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
+
+    StreamScope1GHGIntensityValue = "stream_scope_1_ghg_intensity"
+    StreamScope1GHGIntensity = {'type': 'dataframe', 'unit': 'Mt/(TWh or Mt)',
+                                "description": "Scope 1 intensity emissions of the stream",
                                 "dataframe_descriptor": {
                                     GlossaryWitnessCore.Years: ("float", None, True),
                                     GlossaryWitnessCore.CO2: ("float", None, True),
@@ -214,7 +238,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     AllStreamsDemandRatio = {
         "type": "dataframe",
         AutodifferentiedDisc.GRADIENTS: True,
-        "unit": "-",
+        "unit": "%",
         "visibility": "Shared",
         "namespace": GlossaryWitnessCore.NS_ENERGY_MIX,
         "dataframe_descriptor": {
@@ -240,6 +264,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     EnergiesUsedForProduction = {
         "var_name": EnergiesUsedForProductionValue,
         "type": "list",
+        "structuring": True,
         "subtype_descriptor": {"list": "string"},
     }
     CCSUsedForProductionValue = "CCS streams used for production"
@@ -992,7 +1017,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     unit_dicts = {
         GlossaryWitnessCore.clean_energy: energy_unit,
         fossil: energy_unit,
-        biomass_dry: energy_unit,
+        #biomass_dry: energy_unit,
         methane: energy_unit,
         f"{hydrogen}.{gaseous_hydrogen}": energy_unit,
         f"{hydrogen}.{liquid_hydrogen}": energy_unit,
@@ -1605,24 +1630,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
             AutodifferentiedDisc.GRADIENTS: True,
             "namespace": cls.NS_ENERGY,
             "description": "Price of streams used by the technos",
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, 2100], False),
-                **{
-                    stream: ("float", [0.0, 1e30], False)
-                    for stream in stream_used_for_production
-                },
-            },
-        }
-
-    @classmethod
-    def get_stream_co2_emissions_df(cls, stream_used_for_production: list[str]):
-        return {
-            "var_name": cls.StreamsCO2EmissionsValue,
-            "type": "dataframe",
-            "unit": "kg/kWh",
-            AutodifferentiedDisc.GRADIENTS: True,
-            "visibility": "Shared",
-            "namespace": cls.NS_ENERGY,
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, 2100], False),
                 **{

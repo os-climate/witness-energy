@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+"""
 
 import pandas as pd
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
@@ -259,12 +260,12 @@ class FischerTropsch(LiquidFuelTechno):
                        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs_for_FT'] / \
                        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
                                                                                                                                        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                                                                                                 f'{self.stream_name} ({self.product_unit})']
 
         elif self.sg_transformation_name == GlossaryEnergy.RWGS:
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = 0.0
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})'] = 0.0
 
 
         if self.sg_transformation_name in [GlossaryEnergy.RWGS, 'WGS or RWGS']:
@@ -292,7 +293,7 @@ class FischerTropsch(LiquidFuelTechno):
         # Consumption of WGS and FT
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.electricity} ({self.product_unit})'] = \
             (self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] + elec_needs_wgs) * \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{self.stream_name} ({self.product_unit})']  # in kWH
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProduction}:{self.stream_name} ({self.product_unit})']  # in kWH
 
         # needs of syngas in kWh syngasin/kWhsyngas_out
         syngas_needs_wgs = self.syngas_ratio_techno.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs']
@@ -305,7 +306,7 @@ class FischerTropsch(LiquidFuelTechno):
 
         # Compute of initial syngas vs output liquid_fuel
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.syngas} ({self.product_unit})'] = syngas_needs * \
-                                                                                                                       self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
+                                                                                                                       self.outputs[f'{GlossaryEnergy.TechnoTargetProduction}:'
                                                                                        f'{self.stream_name} ({self.product_unit})']  # in kWH
 
         # If WGS in the loop then we need water in the process
@@ -315,7 +316,7 @@ class FischerTropsch(LiquidFuelTechno):
                           self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
             self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = water_needs * \
-                                                                                                                       self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
+                                                                                                                       self.outputs[f'{GlossaryEnergy.TechnoTargetProduction}:'
                                                                                 f'{self.stream_name} ({self.product_unit})']
 
         elif self.sg_transformation_name == GlossaryEnergy.RWGS:
@@ -331,7 +332,7 @@ class FischerTropsch(LiquidFuelTechno):
                         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
             self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = co2_needs * \
-                                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:'
+                                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoTargetProduction}:'
                                                                                         f'{self.stream_name} ({self.product_unit})']
 
 
@@ -418,3 +419,4 @@ class FischerTropsch(LiquidFuelTechno):
                       self.inputs['data_fuel_dict']['calorific_value'])
 
         return water_prod
+"""

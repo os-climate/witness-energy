@@ -77,12 +77,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
             'ns_resource': f'{ns_study}.{energy_mix}.resource',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
+            'ns_energy_market': f'{self.ee.study_name}.Energy market',
         }
 
         # Add demand, energymix and resources discipline
 
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+            "Energy market": 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline',
         }
 
         builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
@@ -160,6 +162,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
 
+        """
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_energy_mix'
 
         # if energy_mix == 'EnergyMix':
@@ -240,6 +243,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_{energy}', post_proc_mod)
 
+        """
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
             mods_dict = {

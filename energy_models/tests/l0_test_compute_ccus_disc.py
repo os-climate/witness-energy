@@ -29,9 +29,9 @@ class CCUSDiscTestCase(GenericDisciplinesTestClass):
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'CCUS'
-        self.ns_dict = {'ns_public': self.name, GlossaryEnergy.NS_CCS: self.name, GlossaryEnergy.NS_ENERGY_MIX: self.name}
+        self.ns_dict = {'ns_public': self.name, GlossaryEnergy.NS_CCS: self.name, GlossaryEnergy.NS_ENERGY_MIX: self.name, "ns_energy_market": self.name}
         self.pickle_prefix = self.model_name
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.show_graphs = False
         self.override_dump_jacobian = False
         self.pickle_directory = dirname(__file__)

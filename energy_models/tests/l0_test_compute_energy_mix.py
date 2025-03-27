@@ -14,17 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
 import os
+
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 
 class EnergyMixTestCase(GenericDisciplinesTestClass):
@@ -35,14 +31,17 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'EnergyMix'
-        self.ns_dict = {'ns_public': self.name, GlossaryEnergy.NS_CCS: self.name,
-                        'ns_energy_study': f'{self.name}',
-                        GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
-                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
-                        GlossaryEnergy.NS_ENERGY_MIX: self.name}
+        self.ns_dict = {
+            'ns_public': self.name,
+            GlossaryEnergy.NS_CCS: self.name,
+            'ns_energy_study': f'{self.name}',
+            GlossaryEnergy.NS_WITNESS: f'{self.name}',
+            GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
+            GlossaryEnergy.NS_ENERGY_MIX: self.name
+        }
 
         self.pickle_prefix = self.model_name
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.show_graphs = False
         self.override_dump_jacobian = False
         self.pickle_directory = os.path.dirname(__file__)
@@ -86,12 +85,21 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
             GlossaryEnergy.N2O: 0.
         })
 
+        self.methane_emissions_intensity = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.CO2: 0.,
+            GlossaryEnergy.CH4: 0.10,
+            GlossaryEnergy.N2O: 0.
+        })
+
         self.hydrogen_emissions = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.CO2: 20.,
+            GlossaryEnergy.CO2: 10.,
             GlossaryEnergy.CH4: 3.,
             GlossaryEnergy.N2O: 1.
         })
+
+        self.hydrogen_emissions_intensity = self.hydrogen_emissions / 10.
 
         self.production_methane = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -184,11 +192,13 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
             f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamResourceDemandValue}': self.resource_consumption_hydro,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamResourceConsumptionValue}': self.resource_consumption_hydro,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamScope1GHGEmissionsValue}': self.hydrogen_emissions,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamScope1GHGIntensityValue}': self.hydrogen_emissions_intensity,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamCCSDemandValue}': self.stream_ccs_consumption,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.StreamCCSConsumptionValue}': self.stream_ccs_consumption,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamCCSDemandValue}': self.stream_ccs_consumption,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamCCSConsumptionValue}': self.stream_ccs_consumption,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamScope1GHGEmissionsValue}': self.methane_emissions,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamScope1GHGIntensityValue}': self.methane_emissions_intensity,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamProductionValue}': self.production_methane,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.StreamPricesValue}': self.cost_details,
             f'{self.name}.{self.model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,

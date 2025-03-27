@@ -30,9 +30,13 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class BiogasJacobianTestCase(GenericDisciplinesTestClass):
     """Anaerobic Digestion prices test class"""
     def setUp(self):
+        self.jacobian_test = False
         self.name = "Test"
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    'ns_biogas': f'{self.name}',
                    'ns_resource': self.name}
         self.stream_name = GlossaryEnergy.biogas
@@ -79,7 +83,9 @@ class BiogasJacobianTestCase(GenericDisciplinesTestClass):
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

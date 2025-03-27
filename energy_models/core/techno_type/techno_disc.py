@@ -81,6 +81,11 @@ class TechnoDiscipline(AutodifferentiedDisc):
         GlossaryEnergy.ResourcesUsedForProductionValue: GlossaryEnergy.ResourcesUsedForProduction,
         GlossaryEnergy.ResourcesUsedForBuildingValue: GlossaryEnergy.ResourcesUsedForBuilding,
         GlossaryEnergy.EnergiesUsedForProductionValue: GlossaryEnergy.EnergiesUsedForProduction,
+
+        f"{GlossaryEnergy.CO2}_intensity_by_energy": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.GHGIntensityEnergies),
+        f"{GlossaryEnergy.CH4}_intensity_by_energy": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.GHGIntensityEnergies),
+        f"{GlossaryEnergy.N2O}_intensity_by_energy": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.GHGIntensityEnergies),
+
         GlossaryEnergy.CCSUsedForProductionValue: GlossaryEnergy.CCSUsedForProduction,
         GlossaryEnergy.InvestmentBeforeYearStartValue: GlossaryEnergy.InvestmentBeforeYearStartDf,
         GlossaryEnergy.ConstructionDelay: {'type': 'int', 'unit': 'years', 'user_level': 2},
@@ -89,6 +94,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         'techno_is_carbon_capture': {'type': 'bool', "default": False, 'description': 'Says if techno is for carbon capture'},
         GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "description": "lifetime of a plant of the techno"},
         GlossaryEnergy.InitialPlantsAgeDistribFactor: {'type': 'float', 'unit': 'years', "description": "lifetime of a plant of the techno"},
+        "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh', "default": [], "description": "emissions associated to other stream consumed to include in scope 1 by unit of external source consumed"},
     }
 
     DESC_OUT = {
@@ -103,7 +109,6 @@ class TechnoDiscipline(AutodifferentiedDisc):
         # demands for CCS (certain technos):
         GlossaryEnergy.TechnoCCSDemandsValue: GlossaryEnergy.TechnoCCSDemands,
         GlossaryEnergy.TechnoCCSConsumptionValue: GlossaryEnergy.TechnoCCSConsumption,
-
 
         GlossaryEnergy.TechnoTargetProductionValue: {'type': 'dataframe', 'unit': 'TWh',
                                                      'description': "The techno target production is the maximum theoritical production multiplied by the utilisation ratio"},
@@ -176,7 +181,6 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
                 dynamic_inputs.update({
                     GlossaryEnergy.StreamPricesValue: GlossaryEnergy.get_stream_prices_df(stream_used_for_production=energies_used_for_production),
-                    GlossaryEnergy.StreamsCO2EmissionsValue: GlossaryEnergy.get_stream_co2_emissions_df(stream_used_for_production=energies_used_for_production)
                 })
 
             # ratios inputs:
@@ -208,14 +212,9 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     
                     else:
                         # CCUS techno
-                        all_streams_demand_ratio_default = pd.DataFrame({GlossaryEnergy.Years: years})
-                        dynamic_inputs['energy_market_ratios'] = {'type': 'dataframe', 'unit': '-',
-                                                                  'default': all_streams_demand_ratio_default,
-                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                  'namespace': 'ns_energy',
-                                                                  "dynamic_dataframe_columns": True,
-                                                                  self.GRADIENTS: True,
-                                                                  }
+                        variable = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyMarketRatioAvailabilities)
+                        variable["default"]  = pd.DataFrame({GlossaryEnergy.Years: years})
+                        dynamic_inputs[GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue] = variable
                 if values_dict[GlossaryEnergy.BoolApplyResourceRatio]:
                     resource_ratio_dict = dict(zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
                     resource_ratio_dict[GlossaryEnergy.Years] = years
@@ -231,7 +230,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
             GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.get_techno_prod_df(energy_name=self.stream_name),
             'techno_production_infos': {'type': 'dataframe', 'unit': '-', "dynamic_dataframe_columns": True},
             GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.TechnoLandUseDf,
-            GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
+            f"{self.stream_name}.{self.techno_name}.{GlossaryEnergy.TechnoFlueGasProductionValue}": GlossaryEnergy.TechnoFlueGasProduction,
+        GlossaryEnergy.TechnoDetailedPricesValue: GlossaryEnergy.get_techno_detailed_price_df(techno_name=self.techno_name),
         })
         di, do = self.add_additionnal_dynamic_variables()
         do.update(dynamic_outputs)
@@ -379,6 +379,10 @@ class TechnoDiscipline(AutodifferentiedDisc):
             new_chart = self.get_chart_production()
             instanciated_charts.append(new_chart)
 
+        if "Production":
+            new_chart = self.get_chart_production_capacity()
+            instanciated_charts.append(new_chart)
+
         if 'Applied Ratio' in charts:
             new_chart = self.get_chart_applied_ratio()
             instanciated_charts.append(new_chart)
@@ -399,8 +403,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
             if f'{ghg} intensity' in charts:
                 instanciated_charts.extend(self.get_chart_ghg_intensity_kwh(ghg))
 
-            if f'{ghg} intensity' in charts:
-                instanciated_charts.extend(self.get_chart_ghg_intensity_kwh(ghg))
+            if f'{ghg} emissions' in charts:
+                instanciated_charts.extend(self.get_chart_ghg_emissions(ghg))
 
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
@@ -432,6 +436,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             years, utilisation_ratio, GlossaryEnergy.UtilisationRatioValue, InstanciatedSeries.BAR_DISPLAY, True)
 
         new_chart.series.append(new_series)
+        new_chart.post_processing_section_name = "Ratios"
         return new_chart
 
     def get_chart_detailed_price_in_dollar_kwh(self):
@@ -496,6 +501,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             techno_detailed_prices[GlossaryEnergy.MarginValue], 'Margin', 'bar')
         new_chart.series.append(serie)
 
+        new_chart.post_processing_section_name = "Prices & Capex"
         return new_chart
 
     def get_chart_detailed_price_in_dollar_kg(self):
@@ -569,7 +575,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             techno_detailed_prices[GlossaryEnergy.Years],
             techno_kg_price, 'Margin', 'bar')
         new_chart.series.append(serie)
-
+        new_chart.post_processing_section_name = "Prices & Capex"
         return new_chart
 
     def get_chart_investments(self):
@@ -608,6 +614,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
                              hovertext=applied_ratio['limiting_input']))
         new_chart = InstantiatedPlotlyNativeChart(
             fig, chart_name=chart_name, default_title=True)
+        new_chart.post_processing_section_name = "Ratios"
         return new_chart
 
     def get_chart_initial_production(self):
@@ -699,7 +706,13 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         chart_name = f'{ghg} emissions of {self.stream_name} via {self.techno_name} (Scope 1 & 2)'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt', chart_name=chart_name, stacked_bar=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TechnoScope1GHGEmissions['unit'], chart_name=chart_name, stacked_bar=True)
+
+        if ghg == GlossaryEnergy.CO2:
+            flue_gas_emissions_scope_1 = self.get_sosdisc_outputs(f"{self.stream_name}.{self.techno_name}.{GlossaryEnergy.TechnoFlueGasProductionValue}")
+            if flue_gas_emissions_scope_1[GlossaryEnergy.CO2FromFlueGas].min() > 0:
+                serie = InstanciatedSeries(scope_1_emissions[GlossaryEnergy.Years], scope_1_emissions[ghg], 'Flue gas contribution to scope 1', 'lines')
+                new_chart.series.append(serie)
 
         serie = InstanciatedSeries(scope_1_emissions[GlossaryEnergy.Years], scope_1_emissions[ghg], 'Scope 1', 'bar')
         new_chart.series.append(serie)
@@ -861,11 +874,35 @@ class TechnoDiscipline(AutodifferentiedDisc):
         serie = InstanciatedSeries(years, capex, '', 'lines')
 
         new_chart.series.append(serie)
+        new_chart.post_processing_section_name = "Prices & Capex"
         return new_chart
 
     def get_chart_production(self):
         production_detailed = self.get_sosdisc_outputs("techno_production_infos")
+        production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoProductionValue)
         chart_name = f'Production of {self.stream_name} by {self.techno_name}'
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_unit}', chart_name=chart_name, stacked_bar=True)
+
+
+        new_chart.series.append(InstanciatedSeries(
+            production_detailed[GlossaryEnergy.Years],
+            production_detailed['target_production'], 'Target production (given investment and utilisation ratio)', 'lines')
+        )
+
+        new_chart.series.append(InstanciatedSeries(
+            production[GlossaryEnergy.Years],
+            production[f'{self.stream_name} ({self.stream_unit})'], 'Production achieved',
+            'bar')
+        )
+
+        new_chart.post_processing_section_name = "Production"
+
+        return new_chart
+
+    def get_chart_production_capacity(self):
+        production_detailed = self.get_sosdisc_outputs("techno_production_infos")
+        chart_name = f'Production capacity of {self.stream_name} by {self.techno_name}'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.stream_unit}', chart_name=chart_name, stacked_bar=True)
 
@@ -880,10 +917,6 @@ class TechnoDiscipline(AutodifferentiedDisc):
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
             production_detailed['max_theoritical_historical_plants_production'], 'Initial plants maximal theoritical production', 'bar')
-        )
-        new_chart.series.append(InstanciatedSeries(
-            production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_new_plant_production'], 'New plants maximal theoritical production', 'bar')
         )
 
         new_chart.series.append(InstanciatedSeries(

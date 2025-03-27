@@ -53,13 +53,8 @@ class RWGS(SyngasTechno):
 
         SyngasTechno.configure_parameters_update(self)
 
-    def capex_unity_harmonizer(self):
-        '''
-        Overload the check_capex_unity for this particular model 
-        '''
+    def compute_available_power(self):
         data_config = self.inputs['techno_infos_dict']
-        capex_list = self.np.array(data_config['Capex_init_vs_CO_H2_ratio'])
-
         # input power was in mol/h
         # We multiply by molar mass and calorific value of the paper to get
         # input power in kW
@@ -74,6 +69,20 @@ class RWGS(SyngasTechno):
         # Available power is now in kW
         self.available_power = self.np.array(
             data_config['available_power']) * syngas_molar_mass / 1000.0 * syngas_calorific_value
+
+    def capex_unity_harmonizer(self):
+        '''
+        Overload the check_capex_unity for this particular model 
+        '''
+        data_config = self.inputs['techno_infos_dict']
+        capex_list = self.np.array(data_config['Capex_init_vs_CO_H2_ratio'])
+
+        # input power was in mol/h
+        # We multiply by molar mass and calorific value of the paper to get
+        # input power in kW
+
+        final_syngas_ratio = self.np.array(data_config['CO_H2_ratio'])
+
         # Need to convertcapex_list in $/kWh
         capex_list = capex_list / self.available_power / \
                      data_config['full_load_hours']
@@ -99,6 +108,7 @@ class RWGS(SyngasTechno):
         return capex_init
 
     def get_electricity_needs(self):
+        self.compute_available_power()
 
         elec_demand = self.inputs['techno_infos_dict']['elec_demand'] / \
                       self.available_power / self.inputs['techno_infos_dict']['full_load_hours']
@@ -124,7 +134,7 @@ class RWGS(SyngasTechno):
         self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] = self.get_theoretical_co2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_energies_needs(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() + self.zeros_array
 
         # Cost of methane for 1 kWH of H2
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs'] = self.get_theoretical_syngas_needs(self.inputs['syngas_ratio']) / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
@@ -145,8 +155,8 @@ class RWGS(SyngasTechno):
 
         super().compute_energies_demand()
 
-        self.outputs[f'{GlossaryEnergy.TechnoEnergyConsumptionValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
-                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoDetailedProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
+                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

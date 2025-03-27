@@ -41,6 +41,8 @@ class CarbonStorageJacobianTestCase(GenericDisciplinesTestClass):
                         'ns_energy': self.name,
                         'ns_energy_study': self.name,
                         'ns_electricity': self.name,
+                        GlossaryEnergy.NS_WITNESS: self.name,
+                        GlossaryEnergy.NS_ENERGY_MIX: self.name,
                         'ns_carbon_storage': self.name,
                         'ns_functions': self.name,
                         'ns_resource': self.name,
@@ -68,6 +70,9 @@ class CarbonStorageJacobianTestCase(GenericDisciplinesTestClass):
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0})
 
+        self.carbon_quantity_to_be_stored = pd.DataFrame(
+            {GlossaryEnergy.Years: years, "carbon_storage": 0.0})
+
         transport_cost = 0
 
         self.transport = pd.DataFrame(
@@ -90,9 +95,12 @@ class CarbonStorageJacobianTestCase(GenericDisciplinesTestClass):
          f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
              np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
          f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-         f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+         f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
          f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
          f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+         f'{self.name}.carbon_quantity_to_be_stored': self.carbon_quantity_to_be_stored,
          f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
          f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
          f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,

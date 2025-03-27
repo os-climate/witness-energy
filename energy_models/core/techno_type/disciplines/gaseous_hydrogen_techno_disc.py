@@ -36,14 +36,14 @@ class GaseousHydrogenTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_hydrogen',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_hydrogen',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
@@ -51,7 +51,7 @@ class GaseousHydrogenTechnoDiscipline(TechnoDiscipline):
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
-                                  'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'visibility': "Shared",
                                   'namespace': 'ns_hydrogen',
                                   'default': GaseousHydrogen.data_energy_dict,
                                   'unit': 'defined in dict'},

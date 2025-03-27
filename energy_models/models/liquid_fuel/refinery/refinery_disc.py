@@ -59,7 +59,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.04,
-                                 'CO2_from_production': 0.65 / 2.0,  # we split 0.65 in refinery and oil extraction
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.65 / 2.0,  # we split 0.65 in refinery and oil extraction
                                  # However it is really depending on type of extraction
                                  # see
                                  # https://theicct.org/sites/default/files/ICCT_crudeoil_Eur_Dec2010_sum.pdf
@@ -70,9 +70,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # production from WITNESS and emissions from
                                  # IEA Methane tracker
                                  # Are approximately same than GAINS 2017 model
-                                 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
-                                 'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
-                                 'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+
+                                 # venting + flaring + unintended leakage emissions factors (Mt/TWh):
+                                 'CH4_emission_factor': (21.9 + 7.2) / 50731. + (1.4 + 6.9) / 50731. + (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
                                  # 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
                                  # 'medium_heat_production_unit': 'TWh/TWh',
@@ -227,8 +227,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         instanciated_charts = []
         # Charts for consumption and prod
         techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
-        techno_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        techno_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',

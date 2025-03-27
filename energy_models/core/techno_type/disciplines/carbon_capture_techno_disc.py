@@ -35,23 +35,23 @@ class CCTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_carbon_capture',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_carbon_capture',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
-               'fg_ratio_effect': {'type': 'bool', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'fg_ratio_effect': {'type': 'bool', 'visibility': "Shared",
                                    'namespace': 'ns_carbon_capture', 'default': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': "Shared",
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict,
                                   'unit': 'defined in dict'},
                GlossaryEnergy.CCUSAvailabilityRatiosValue: GlossaryEnergy.CCUSAvailabilityRatios

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from os.path import dirname
+
 import numpy as np
 import pandas as pd
 from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
@@ -29,10 +31,17 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CleanEnergySimpleTechnoJacobianTestCase(GenericDisciplinesTestClass):
     """CleanEnergySimpleTechnoJacobianTestCase"""
     def setUp(self):
+        self.jacobian_test = False
+        self.show_graphs = False
+        self.override_dump_jacobian = False
+        self.pickle_directory = dirname(__file__)
         self.name = 'Test'
         self.ns_dict = {'ns_public': self.name,
                         'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                         'ns_clean_energy': self.name,
                         'ns_resource': self.name}
 
@@ -77,7 +86,9 @@ class CleanEnergySimpleTechnoJacobianTestCase(GenericDisciplinesTestClass):
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

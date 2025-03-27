@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import (
     mediumheattechno,
@@ -41,12 +40,9 @@ class NaturalGasMediumHeat(mediumheattechno):
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
 
-    def compute_byproducts_production(self):
-        # CO2 production
-        # TODO
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
-            Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / Methane.data_energy_dict['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / Methane.data_energy_dict['calorific_value'] * self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
@@ -82,6 +81,11 @@ class Refinery(LiquidFuelTechno):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GaseousHydrogen.name}_needs'] = self.inputs['techno_infos_dict']['hydrogen_demand'] / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
+
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit'] / self.inputs['data_fuel_dict']['calorific_value']
+
     def compute_byproducts_production(self):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
@@ -93,27 +97,6 @@ class Refinery(LiquidFuelTechno):
                                                                                                            self.other_energy_dict[energy][
                                                                                      'calorific_value']
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.inputs['techno_infos_dict'][
-                                                                                            'CO2_from_production'] / \
-                                                                                                                                   self.inputs['data_fuel_dict'][
-                                                                                            'calorific_value'] * \
-                                                                                                                                   self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                            f'{LiquidFuelTechno.stream_name} ({self.product_unit})']
-        '''
-        Method to compute CH4 emissions from gas production
-        The proposed V0 only depends on production.
-        Equation is taken from the GAINS model for crude oil
-        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-        CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
-        emission_factor is in Mt/TWh
-        '''
-        emission_factor = self.inputs['techno_infos_dict']['CH4_flaring_emission_factor'] + \
-                          self.inputs['techno_infos_dict']['CH4_venting_emission_factor'] + \
-                          self.inputs['techno_infos_dict']['CH4_unintended_leakage_emission_factor']
-
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CH4} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                                                                             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                      f'{LiquidFuelTechno.stream_name} ({self.product_unit})']
 
     def compute_new_installations_production_capacity(self, additionnal_capex: float = 0.):
         '''

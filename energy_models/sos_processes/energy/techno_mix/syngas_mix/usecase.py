@@ -107,7 +107,7 @@ class Study(EnergyMixStudyManager):
         resources_price[GlossaryEnergy.Years] = years
         resources_price[GlossaryEnergy.CO2] = np.linspace(
             50.0, 100.0, len(years))  # biomass_dry price in $/kg
-        energy_carbon_emissions = pd.DataFrame({
+        energy_CO2_intensity = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
             GlossaryEnergy.solid_fuel: 0.64 / 4.86,
@@ -140,7 +140,9 @@ class Study(EnergyMixStudyManager):
 
             values_dict.update(
                 {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_CO2_intensity,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_CO2_intensity,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_CO2_intensity,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

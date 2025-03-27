@@ -38,7 +38,12 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                         "ns_flue_gas": self.name,
+                        GlossaryEnergy.NS_CCS: self.name,
+                        GlossaryEnergy.NS_WITNESS: self.name,
                         'ns_carbon_capture': self.name,
                         'ns_resource': f'{self.name}'}
         self.stream_name = GlossaryEnergy.carbon_captured
@@ -46,6 +51,11 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.years = years
+        self.ccus_availaivility_ratios = pd.DataFrame(
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.carbon_captured: 100.,
+             GlossaryEnergy.carbon_storage: 100.,
+            })
 
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -87,14 +97,14 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-        self.carbon_storage_availability_ratio = pd.DataFrame({GlossaryEnergy.Years: years, 'ratio': 100.})
-
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                 f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
                 f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                 f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                 f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                 f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -102,9 +112,9 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
                 f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                 f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                 f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+                f'{self.name}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.ccus_availaivility_ratios,
                 f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
                 f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                f'{self.name}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.carbon_storage_availability_ratio,
                 }
 
     def test_01_amine_jacobian(self):

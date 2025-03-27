@@ -32,6 +32,3 @@ class BiomassGasification(SyngasTechno):
 
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs'] = self.inputs['techno_infos_dict']['biomass_demand']
 
-
-    def compute_byproducts_production(self):
-        self.compute_ghg_emissions(GlossaryEnergy.CH4)

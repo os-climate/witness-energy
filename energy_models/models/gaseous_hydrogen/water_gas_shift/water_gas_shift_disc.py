@@ -15,10 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from copy import deepcopy
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
@@ -105,6 +103,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
     def init_execution(self):
         self.model = WGS(self.techno_name)
 
+    """
     def specific_run(self):
 
         # -- get inputs
@@ -136,3 +135,4 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         self.store_sos_outputs_values(
             {'detailed_prod_syngas_prices': detailed_prod_syngas_prices})
+        """

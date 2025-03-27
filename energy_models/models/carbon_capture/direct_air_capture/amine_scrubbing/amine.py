@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
     CCTechno,
@@ -46,12 +45,6 @@ class Amine(CCTechno):
     def compute_resources_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.AmineResource}_needs'] =\
             self.compute_amine_need() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
-
-    def compute_byproducts_production(self):
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CCTechno.stream_name} ({self.product_unit})'] * \
-            Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / Methane.data_energy_dict['calorific_value']
 
     def compute_amine_need(self):
         """

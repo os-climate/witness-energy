@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 from sostrades_optimization_plugins.models.differentiable_model import (
     DifferentiableModel,
 )
@@ -46,7 +45,7 @@ class BaseStream(DifferentiableModel):
         '''
         self.year_start = self.inputs[GlossaryEnergy.YearStart]
         self.year_end = self.inputs[GlossaryEnergy.YearEnd]
-        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.years = self.np.arange(self.year_start, self.year_end + 1)
 
     def compute(self):
         self.configure_parameters()
@@ -80,7 +79,7 @@ class BaseStream(DifferentiableModel):
             else:
                 self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{input_techno_varname}:{column_name}']
 
-    def _aggregate_from_all_technos(self, output_varname: str, input_techno_varname: str):
+    def _aggregate_from_all_technos(self, output_varname: str, input_techno_varname: str, conversion_factor: float):
         self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
 
         for techno in self.inputs[GlossaryEnergy.techno_list]:
@@ -90,12 +89,12 @@ class BaseStream(DifferentiableModel):
                 if output_path in self.outputs:
                     self.outputs[output_path] = \
                         self.outputs[output_path] + \
-                        self.inputs[f'{techno}.{input_techno_varname}:{col}']
+                        self.inputs[f'{techno}.{input_techno_varname}:{col}'] * conversion_factor
 
                 else:
                     self.outputs[output_path] = \
                         self.zeros_array + \
-                        self.inputs[f'{techno}.{input_techno_varname}:{col}']
+                        self.inputs[f'{techno}.{input_techno_varname}:{col}'] * conversion_factor
 
     def compute_productions(self):
         """Sum all the productions from technos of the stream (main stream and by products)"""
@@ -118,12 +117,12 @@ class BaseStream(DifferentiableModel):
         capitals = [
             self.inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Capital}"] for techno in technos
         ]
-        sum_technos_capital = np.sum(capitals, axis=0)
+        sum_technos_capital = self.np.sum(capitals, axis=0)
 
         non_use_capitals = [
             self.inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.NonUseCapital}"] for techno in technos
         ]
-        sum_technos_non_use_capital = np.sum(non_use_capitals, axis=0)
+        sum_technos_non_use_capital = self.np.sum(non_use_capitals, axis=0)
 
         self.outputs[f"{GlossaryEnergy.EnergyTypeCapitalDfValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.EnergyTypeCapitalDfValue}:{GlossaryEnergy.Capital}"] = sum_technos_capital
@@ -168,32 +167,44 @@ class BaseStream(DifferentiableModel):
         stream_total_prod = self.outputs[f'{GlossaryEnergy.StreamProductionValue}:{self.name} ({self.unit})']
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             techno_share_of_total_stream_prod = self.inputs[
-                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] / stream_total_prod
+                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] / (stream_total_prod + 1e-9)
             self.outputs[f'techno_mix:{techno}'] = techno_share_of_total_stream_prod * 100.
 
     def compute_energy_consumptions(self):
         """Compute all energy consumptions in stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoEnergyConsumption['unit']][GlossaryEnergy.StreamEnergyConsumption['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamEnergyConsumptionValue,
-            input_techno_varname=GlossaryEnergy.TechnoEnergyConsumptionValue)
+            input_techno_varname=GlossaryEnergy.TechnoEnergyConsumptionValue,
+            conversion_factor=conversion_factor)
 
     def compute_resources_consumptions(self):
         """Compute all resources consumptions in stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoResourceDemands['unit']][GlossaryEnergy.StreamResourceConsumption['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamResourceConsumptionValue,
-            input_techno_varname=GlossaryEnergy.TechnoResourceConsumptionValue)
+            input_techno_varname=GlossaryEnergy.TechnoResourceConsumptionValue,
+            conversion_factor=conversion_factor)
 
     def compute_energy_demand(self):
         """Compute total energy demands for each stream in current stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoEnergyDemands['unit']][GlossaryEnergy.StreamEnergyDemand['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamEnergyDemandValue,
-            input_techno_varname=GlossaryEnergy.TechnoEnergyDemandsValue)
+            input_techno_varname=GlossaryEnergy.TechnoEnergyDemandsValue,
+            conversion_factor=conversion_factor)
 
     def compute_resource_demand(self):
         """Compute total resource demands for each stream in current stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoResourceDemands['unit']][GlossaryEnergy.StreamResourceDemand['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamResourceDemandValue,
-            input_techno_varname=GlossaryEnergy.TechnoResourceDemandsValue)
+            input_techno_varname=GlossaryEnergy.TechnoResourceDemandsValue,
+            conversion_factor=conversion_factor)
 
     def compute_scope_1_emissions(self):
         """Compute the scope 1 emissions of the stream : emissions associated to production"""
@@ -205,20 +216,26 @@ class BaseStream(DifferentiableModel):
 
     def compute_scope_1_ghg_intensity(self):
         """Compute weighted average of scope 1 ghg intensity for each GHG (CO2, CH4, N2O)"""
-        self.outputs[f"ghg_intensity_scope_1:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{GlossaryEnergy.Years}"] = self.years
         for ghg in GlossaryEnergy.GreenHouseGases:
-            self.outputs[f"ghg_intensity_scope_1:{ghg}"] = self.zeros_array
+            self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] = self.zeros_array
             for techno in self.inputs[GlossaryEnergy.techno_list]:
-                self.outputs[f"ghg_intensity_scope_1:{ghg}"] = self.outputs[f"ghg_intensity_scope_1:{ghg}"] + \
+                self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] = self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] + \
                                                                self.outputs[f'techno_mix:{techno}'] / 100. * \
                                                                self.inputs[f"{techno}.{GlossaryEnergy.TechnoScope1GHGEmissionsValue}:{ghg}"]
 
     def compute_ccs_demand(self):
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoCCSDemands['unit']][GlossaryEnergy.StreamCCSDemand['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamCCSDemandValue,
-            input_techno_varname=GlossaryEnergy.TechnoCCSDemandsValue)
+            input_techno_varname=GlossaryEnergy.TechnoCCSDemandsValue,
+            conversion_factor=conversion_factor)
 
     def compute_ccs_consumptions(self):
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoCCSConsumption['unit']][GlossaryEnergy.StreamCCSConsumption['unit']]
         self._aggregate_from_all_technos(
             output_varname=GlossaryEnergy.StreamCCSConsumptionValue,
-            input_techno_varname=GlossaryEnergy.TechnoCCSConsumptionValue)
+            input_techno_varname=GlossaryEnergy.TechnoCCSConsumptionValue,
+            conversion_factor=conversion_factor)

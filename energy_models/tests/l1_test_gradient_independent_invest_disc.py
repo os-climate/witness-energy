@@ -85,7 +85,6 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 0.25, year_range)})
 
     def test_01_analytic_grad(self):
-        self.override_dump_jacobian = 1
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
@@ -112,7 +111,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
-                       f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.biomass_dry]
+                       f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}"]
         max_budget = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.MaxBudgetValue: np.linspace(800, 970, len(self.years))

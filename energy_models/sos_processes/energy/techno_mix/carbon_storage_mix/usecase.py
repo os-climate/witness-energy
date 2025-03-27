@@ -40,7 +40,7 @@ class Study(EnergyMixStudyManager):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.stream_name = None
         self.bspline = bspline
-        self.prefix_name = 'EnergyMix'
+        self.prefix_name = GlossaryEnergy.CCUS
         if prefix_name is not None:
             self.prefix_name = prefix_name
 
@@ -125,6 +125,8 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+        carbon_quantity_to_store = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.})
         # From future of hydrogen
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
@@ -136,6 +138,7 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{ccs_name}.PureCarbonSolidStorage.carbon_quantity_to_be_stored': carbon_quantity_to_store,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
@@ -147,8 +150,10 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
+   f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -173,5 +178,4 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

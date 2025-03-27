@@ -17,12 +17,7 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
-from sostrades_optimization_plugins.tools.discipline_tester import (
-    discipline_test_function,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
@@ -32,19 +27,21 @@ from energy_models.core.stream_type.resources_data_disc import (
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
+class FossilSimpleTechnoJacobianTestCase(GenericDisciplinesTestClass):
     """FossilSimpleTechnoJacobianTestCase"""
-
-    def analytic_grad_entry(self):
-        return [
-            self.test_01_discipline_analytic_grad,
-        ]
-
     def setUp(self):
+        self.jacobian_test = False
+        self.show_graphs = False
+        self.override_dump_jacobian = False
+        self.pickle_directory = dirname(__file__)
+
         self.name = 'Test'
         self.ns_dict = {'ns_public': self.name,
                         'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                         'ns_fossil': self.name,
                         'ns_resource': self.name}
 
@@ -88,7 +85,9 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
     def get_inputs_dict(self):
         return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
@@ -103,17 +102,4 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_discipline_analytic_grad(self):
         self.model_name = GlossaryEnergy.FossilSimpleTechno
-        discipline_test_function(
-            module_path='energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc.FossilSimpleTechnoDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            show_graphs=False,
-            inputs_dict=self.get_inputs_dict(),
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name=f'{self.stream_name}_{self.model_name}.pkl',
-            override_dump_jacobian=False
-        )
-
-
+        self.mod_path = 'energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc.FossilSimpleTechnoDiscipline'

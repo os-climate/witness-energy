@@ -32,7 +32,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.carbon_captured]['value']
-        self.prefix_name = 'EnergyMix'
+        self.prefix_name = 'CCUS'
 
     def get_builders(self):
         ns_study = self.ee.study_name
@@ -42,11 +42,15 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
                    'ns_flue_gas': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}',
-                   GlossaryEnergy.NS_CCS: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                    }
         mods_dict = {}
         mods_dict[f'{self.prefix_name}.{carbon_capture_name}'] = self.get_stream_disc_path(

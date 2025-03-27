@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -110,20 +109,15 @@ class WGS(GaseousHydrogenTechno):
     def compute_energies_needs(self):
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
-
         self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:syngas_needs'] = self.get_theoretical_syngas_needs(self.inputs['syngas_ratio']) / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
-        # TODO
-        co2_prod = self.get_theoretical_co2_prod()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
-            co2_prod * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
-
         # production
         # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
         #     self.inputs['techno_infos_dict']['low_heat_production'] * \
         #     self.production[f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})']  # in TWH
+        pass
+
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 
@@ -179,9 +173,9 @@ class WGS(GaseousHydrogenTechno):
 
         return water_needs
 
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+    def compute_co2_from_flue_gas_intensity_scope_1(self, unit='kg/kWh'):
         ''' 
-        Get co2 needs in kg co2 /kWh H2
+        Get co2 producted in kg co2 /kWh H2
         1 mol of CO2 for 4 mol of H2
         Warning : molar mass is in g/mol but we divide and multiply by one
         '''

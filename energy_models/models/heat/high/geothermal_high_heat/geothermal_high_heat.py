@@ -36,10 +36,8 @@ class GeothermalHeat(highheattechno):
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
         # TODO : ask valentin ?? geothermal high heat produces carbon capture ??
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                   f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] / \
-                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
+            carbon_production_factor * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']

@@ -124,17 +124,17 @@ class CCUS(DifferentiableModel):
 
     def compute_ccus_energy_demand(self):
         """Compute energies demand (all forms) of CCUS sector"""
-        self.outputs[f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}:{GlossaryEnergy.Years}"] = self.years
         conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamEnergyDemand['unit']][GlossaryEnergy.EnergyDemandDf['unit']]
 
         for stream in self.ccs_list:
             for other_energy_demand in self.get_colnames_input_dataframe(
                     df_name=f'{stream}.{GlossaryEnergy.StreamEnergyDemandValue}', expect_years=True, full_path=False):
-                if f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}" not in self.outputs:
+                if f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}" not in self.outputs:
                     self.outputs[
-                        f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] = self.zeros_array
-                self.outputs[f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] = \
-                    self.outputs[f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] + \
+                        f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] = self.zeros_array
+                self.outputs[f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] = \
+                    self.outputs[f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}:{other_energy_demand}"] + \
                     self.inputs[
                         f'{stream}.{GlossaryEnergy.StreamEnergyDemandValue}:{other_energy_demand}'] * conversion_factor
 

@@ -61,7 +61,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
     DESC_OUT = {
         GlossaryEnergy.CCUS_CO2EmissionsDfValue: GlossaryEnergy.CCUS_CO2EmissionsDf,
         GlossaryEnergy.CCUSOutputValue: GlossaryEnergy.CCUSOutput,
-        f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyDemandDf),
+        f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyDemandDf),
         f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyConsumptionValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyConsumptionDf),
         f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.LandUseRequiredValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamLandUseDf),
         GlossaryEnergy.CCUSPriceValue: GlossaryEnergy.CCUSPrice,
@@ -199,7 +199,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
                 instanciated_charts.append(new_chart)
 
         if 'Energy consumption and demand' in charts:
-            df_energies_demand = self.get_sosdisc_outputs(f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyDemandValue}")
+            df_energies_demand = self.get_sosdisc_outputs(f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}")
             df_energies_consumption = self.get_sosdisc_outputs(f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyConsumptionValue}")
 
             # consumption

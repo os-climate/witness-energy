@@ -175,28 +175,25 @@ class Study(EnergyMixStudyManager):
         directaircapturetechno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
                                                     f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})': 0.1})
 
+        utilisation_ratio_df = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.UtilisationRatioValue: 100.})
+
         investment_mix = self.get_investments()
         flue_gas_energy_technos = [
          f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}',
          f'{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}',
          f'{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}',
          f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}',
-         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}',
+         #f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.FischerTropsch}',
          f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}',
          f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}',
          f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}',
          f'{GlossaryEnergy.syngas}.{GlossaryEnergy.CoalGasification}',
          f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
         ]
-        flue_gas_technos_dac = [
-         f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
-        ]
-
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.energy_techno_list': flue_gas_energy_technos,
-                       f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.dac_techno_list': flue_gas_technos_dac,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': margin,
@@ -212,8 +209,8 @@ class Study(EnergyMixStudyManager):
 
         self.techno_capital = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
-        self.carbon_storage_availability_ratio = pd.DataFrame(
-            {GlossaryEnergy.Years: years, "ratio": 100.})
+        self.carbon_storage_availability_ratio = pd.DataFrame({
+            GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 100., GlossaryEnergy.carbon_storage: 100.})
 
         utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.UtilisationRatioValue: 100.})
         if self.main_study:
@@ -221,8 +218,10 @@ class Study(EnergyMixStudyManager):
                 {
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.flue_gas_co2_ratio': np.array([0.13]),
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
+   f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CoalGen}.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.GasTurbine}.flue_gas_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.CombinedCycleGasTurbine}.flue_gas_co2_ratio': np.array(
                         [0.035]),
@@ -252,6 +251,8 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio,
                     f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_prod,
                     f'{self.study_name}.{ccus_name}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.carbon_storage_availability_ratio,
+                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
+                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
                 })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -275,5 +276,4 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

@@ -141,6 +141,9 @@ class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
 
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                         'ns_electricity': self.name,
                         'ns_resource': f'{self.name}'}
 
@@ -159,7 +162,9 @@ class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
                [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1], axis=1,
                keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
             f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-            f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+            f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
             f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
             f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
         }

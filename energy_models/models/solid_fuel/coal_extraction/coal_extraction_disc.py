@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import (
     SolidFuelTechnoDiscipline,
 )
@@ -59,7 +59,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  # Greenhouse gas emissions from coal mining activities and their possible mitigation strategies.
                                  # In Environmental carbon footprints (pp.
                                  # 259-294). Butterworth-Heinemann.
-                                 'CO2_from_production': 0.64,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.64,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'underground_mining_gas_content': 11.5,
                                  'surface_mining_gas_content': 2.25,
@@ -100,6 +100,32 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
                                  'pourcentage_of_total': 0.09,
                                  'energy_burn': 'no'}
+
+    # computing CH4 emission factor (Mt/TWh)
+    '''
+    Method to compute CH4 emissions from coal mines
+    The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
+    Equation is taken from the GAINS model
+    https://gem.wiki/Estimating_methane_emissions_from_coal_mines#Model_for_Calculating_Coal_Mine_Methane_.28MC2M.29,
+    Nazar Kholod &al Global methane emissions from coal mining to continue growing even with declining coal production,
+     Journal of Cleaner Production, Volume 256, February 2020.
+    '''
+
+    emission_factor_coeff = techno_infos_dict_default['emission_factor_coefficient']
+
+    # compute gas content with surface and underground_gas_content in m3/t
+    underground_mining_gas_content = techno_infos_dict_default['underground_mining_gas_content']
+    surface_mining_gas_content = techno_infos_dict_default['surface_mining_gas_content']
+    gas_content = techno_infos_dict_default['underground_mining_percentage'] / \
+                  100.0 * underground_mining_gas_content + \
+                  (1. - techno_infos_dict_default['underground_mining_percentage'] /
+                   100.0) * surface_mining_gas_content
+
+    # gascontent must be passed in Mt/Twh
+    emission_factor_mt_twh = gas_content * emission_factor_coeff * Methane.data_energy_dict['density'] / \
+                             SolidFuel.data_energy_dict['calorific_value'] * 1e-3
+
+    techno_infos_dict_default['CH4_emission_factor'] = emission_factor_mt_twh
 
     techno_info_dict = techno_infos_dict_default
 

@@ -47,7 +47,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'capacity_factor': 0.4,
                                  'full_load_hours': 8760,
                                  'Opex_percentage': 0.34,
-                                 'CO2_from_production': 0.123,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.123,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # 0.142 kt/PJ (mean) in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf

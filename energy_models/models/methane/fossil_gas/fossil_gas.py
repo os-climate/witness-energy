@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
     MethaneTechno,
@@ -67,13 +66,11 @@ class FossilGas(MethaneTechno):
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
 
-    def compute_byproducts_production(self):
-        # kg/kWh corresponds to Mt/TWh
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = \
-            self.inputs['techno_infos_dict']['CO2_from_production'] / self.inputs['data_fuel_dict']['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{MethaneTechno.stream_name} ({self.product_unit})']
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit'] / self.inputs['data_fuel_dict']['calorific_value']
 
-        self.compute_ghg_emissions(GlossaryEnergy.CH4)
+    def compute_byproducts_production(self):
+        pass
         # self.production[f'{GlossaryEnergy.hightemperatureheat_energyname}] ({self.product_unit})'] = ((1 - self.inputs['techno_infos_dict']['efficiency']) * \
         #      self.production[f'{Methane.name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']

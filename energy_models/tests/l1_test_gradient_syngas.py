@@ -33,11 +33,15 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
     def setUp(self):
         self.name = "Test"
         self.override_dump_jacobian = False
-        self.show_graph = False
+        self.show_graph = True
         self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    'ns_syngas': f'{self.name}',
                    'ns_resource': f'{self.name}'}
         self.stream_name = GlossaryEnergy.syngas
@@ -54,7 +58,9 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
 
         self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               GlossaryEnergy.OxygenResource: len(self.years) * [60.0],
-                                              GlossaryEnergy.WaterResource: 1.4
+                                              GlossaryEnergy.WaterResource: 1.4,
+                                              GlossaryEnergy.WoodResource: 22.,
+                                              GlossaryEnergy.CO2Resource: 22.,
                                               })
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.electricity: 0.03,
@@ -104,7 +110,9 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
                            self.years),
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
@@ -129,6 +137,10 @@ class SyngasJacobianTestCase(GenericDisciplinesTestClass):
 
     def test_04_rwgs_discipline_jacobian(self):
         self.model_name = GlossaryEnergy.RWGS
+        self.inputs_dicts = {
+            f"{self.name}.{self.model_name}.syngas_ratio": np.array([10.]),
+            f"{self.name}.{self.model_name}.needed_syngas_ratio": 10.,
+        }
         self.mod_path = 'energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc.ReversedWaterGasShiftDiscipline'
 
     def test_05_coal_gasification_discipline_jacobian(self):

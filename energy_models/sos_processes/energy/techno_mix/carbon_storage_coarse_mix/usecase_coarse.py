@@ -39,7 +39,7 @@ class Study(EnergyMixStudyManager):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.stream_name = None
         self.bspline = bspline
-        self.prefix_name = 'EnergyMix'
+        self.prefix_name = GlossaryEnergy.CCUS
         if prefix_name is not None:
             self.prefix_name = prefix_name
 
@@ -106,8 +106,10 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
+   f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                     })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
