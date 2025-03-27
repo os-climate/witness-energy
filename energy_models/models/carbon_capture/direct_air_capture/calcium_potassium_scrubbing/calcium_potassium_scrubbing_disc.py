@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -91,7 +90,6 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5.0e-3  # in Mt at year_start
     # use the same flue gas ratio as gas turbine one
-    FLUE_GAS_RATIO = np.array([0.0350])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                }
@@ -103,16 +101,4 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CalciumPotassium(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
-
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-        CCTechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources)
+        self.model = CalciumPotassium(self.techno_name)

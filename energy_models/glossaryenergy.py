@@ -15,11 +15,15 @@ limitations under the License.
 '''
 
 from climateeconomics.glossarycore import GlossaryCore as GlossaryWitnessCore
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 
 class GlossaryEnergy(GlossaryWitnessCore):
     """Glossary for witness energy, inheriting from glossary of Witness Core"""
 
+    EnergyMarketDemandsDfValue = "energy_market_demands_df"
     CCSListName = "ccs_list"
     EnergyListName = "energy_list"
     NS_ENERGY = "ns_energy"
@@ -65,7 +69,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     syngas = "syngas"
     ultra_low_sulfur_diesel = "ultra_low_sulfur_diesel"
     wet_biomass = "wet_biomass"
-    carbon_capture = "carbon_capture"
+    carbon_captured = "carbon_capture"
     carbon_storage = "carbon_storage"
     direct_air_capture = "direct_air_capture"
     flue_gas_capture = "flue_gas_capture"
@@ -99,7 +103,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         syngas,
         ultra_low_sulfur_diesel,
         wet_biomass,
-        carbon_capture,
+        carbon_captured,
         carbon_storage,
         direct_air_capture,
         flue_gas_capture,
@@ -128,26 +132,92 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
     TechnoDetailedProductionValue = "techno_detailed_production"
     TechnoDetailedPricesValue = "techno_detailed_prices"
-    TechnoConsumptionValue = "techno_consumption"
-    TechnoProductionWithoutRatioValue = "techno_production_woratio"
+    TechnoTargetProductionValue = "techno_production_target"
     RessourcesCO2EmissionsValue = "resources_CO2_emissions"
     TransportCostValue = "transport_cost"
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ReforestationInvestmentValue = "reforestation_investment"
     CarbonCapturedValue = "carbon_captured_type"
-    InstalledPower = (
-        "power_production"  # todo : rename string to Installed Power [MW] (check unit)
-    )
 
-    InstalledPowerDf = {
-        "type": "dataframe",
-        "unit": "MW",
+    TechnoEnergyConsumption = {'type': 'dataframe', 'unit': 'TWh',
+                               "description": "Different energies consumed by the techno",
+                               "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+    TechnoResourceConsumption = {'type': 'dataframe', 'unit': 'Mt',
+                                 "description": "Different resources consumed by the techno",
+                                 "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoResourceDemands = {'type': 'dataframe', 'unit': 'Mt',
+                             "description": "Demand of resource to achieve techno target production",
+                             "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+    TechnoEnergyDemands = {'type': 'dataframe', 'unit': 'TWh',
+                           "description": "Demand of other energy to achieve techno target production",
+                           "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoCCSDemandsValue = "techno_ccs_demands"
+    TechnoCCSDemands = {'type': 'dataframe', 'unit': 'Mt', "description": "Demand from the techno energy for carbon capture or carbon storage",
+                           "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoCCSConsumptionValue = "techno_ccs_consumption"
+    TechnoCCSConsumption = {'type': 'dataframe', 'unit': 'Mt',
+                        "description": "Demand from the techno energy for carbon capture or carbon storage",
+                        "dynamic_dataframe_columns": True, AutodifferentiedDisc.GRADIENTS: True}
+
+    TechnoFlueGasProductionValue = "techno_flue_gas_prod"
+    TechnoFlueGasProduction = {
+        'type': 'dataframe',
+        'unit': 'Mt',
+        "visibility": "Shared",
+        "namespace": GlossaryWitnessCore.NS_ENERGY_MIX,
+        "description": "Production of flue gases by techno",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("float", None, True),
-            "new_power_production": ("float", None, True),
-            "total_installed_power": ("float", None, True),
-            "removed_power_production": ("float", None, True),
+            GlossaryWitnessCore.CO2FromFlueGas: ("float", None, True),
+        },
+        AutodifferentiedDisc.GRADIENTS: True}
+
+
+    TechnoScope1GHGEmissions = {'type': 'dataframe', 'unit': 'Mt', "description": "Scope 1 emissions of the techno",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2FromFlueGas: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
+
+    StreamScope1GHGIntensityValue = "stream_scope_1_ghg_intensity"
+    StreamScope1GHGIntensity = {'type': 'dataframe', 'unit': 'Mt/(TWh or Mt)',
+                                "description": "Scope 1 intensity emissions of the stream",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
+
+    StreamScope1GHGEmissionsValue = "stream_scope_1_emissions"
+    StreamScope1GHGEmissions = {'type': 'dataframe', 'unit': 'Mt', "description": "Scope 1 emissions of the stream",
+                                "dataframe_descriptor": {
+                                    GlossaryWitnessCore.Years: ("float", None, True),
+                                    GlossaryWitnessCore.CO2: ("float", None, True),
+                                    GlossaryWitnessCore.CH4: ("float", None, True),
+                                    GlossaryWitnessCore.N2O: ("float", None, True),
+                                },
+                                AutodifferentiedDisc.GRADIENTS: True}
+
+    InstalledCapacity = "installed_capacity"
+    InstalledCapacityDf = {
+        "type": "dataframe",
+        "unit": "MW or Mt",
+        "description": "Capacity of energy production (MW) or carbon capture (Mt)",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, True),
+            "newly_installed_capacity": ("float", None, True),
+            "total_installed_capacity": ("float", None, True),
+            "removed_installed_capacity": ("float", None, True),
         },
     }
 
@@ -167,9 +237,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     AllStreamsDemandRatio = {
         "type": "dataframe",
-        "unit": "-",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "%",
         "visibility": "Shared",
-        "namespace": "ns_energy",
+        "namespace": GlossaryWitnessCore.NS_ENERGY_MIX,
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("int", [1900, YearEndDefaultCore], False),
         },
@@ -189,9 +260,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "subtype_descriptor": {"list": "string"},
     }
 
-    StreamsUsedForProductionValue = "Streams used for production"
-    StreamsUsedForProduction = {
-        "var_name": StreamsUsedForProductionValue,
+    EnergiesUsedForProductionValue = "Energies used for production"
+    EnergiesUsedForProduction = {
+        "var_name": EnergiesUsedForProductionValue,
+        "type": "list",
+        "structuring": True,
+        "subtype_descriptor": {"list": "string"},
+    }
+    CCSUsedForProductionValue = "CCS streams used for production"
+    CCSUsedForProduction = {
+        "var_name": CCSUsedForProductionValue,
         "type": "list",
         "subtype_descriptor": {"list": "string"},
     }
@@ -298,6 +376,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "var_name": GlossaryWitnessCore.TechnoCapitalValue,
         "type": "dataframe",
         "unit": "G$",
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Capital in G$ of the technology",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
@@ -326,12 +405,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
             GlossaryWitnessCore.InvestValue: ("float", None, True),
         },
         "dataframe_edition_locked": False,
+        AutodifferentiedDisc.GRADIENTS: True,
     }
 
     UtilisationRatioDf = {
         "var_name": GlossaryWitnessCore.UtilisationRatioValue,
         "type": "dataframe",
         "namespace": "ns_witness",
+        AutodifferentiedDisc.GRADIENTS: True,
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
                 "int",
@@ -357,6 +438,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         # namespace: ns_energy,
         # visibility: Shared,
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Capital in G$ of the energy type",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: (
@@ -515,10 +597,35 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "dataframe_edition_locked": False,
     }
 
+    CCUSAvailabilityRatiosValue = "ccus_availability_ratio"
+    CCUSAvailabilityRatios = {
+        'type': 'dataframe',
+        AutodifferentiedDisc.GRADIENTS: True,
+        'unit': '%',
+        'visibility': "Shared",
+        'namespace': GlossaryWitnessCore.NS_CCS,
+        "description": "Availability ratio for CCUS streams usage",
+        'dataframe_descriptor': {
+            GlossaryWitnessCore.Years: ('int', [1900, GlossaryWitnessCore.YearEndDefault], False),
+            carbon_captured: ('float', None, True),
+            carbon_storage: ('float', None, True)},
+    }
+
+    CCUSOutputValue = "ccus_carbon_storage_capacity"
+    CCUSOutput = {
+        "type": "dataframe",
+        "unit": "Gt",
+        "description": "Total carbon captured by CCUS and carbon storage capacity of CCUS sector",
+        'dataframe_descriptor': {
+            GlossaryWitnessCore.Years: ('float', None, False),
+            carbon_captured: ('float', None, False),
+            carbon_storage: ('float', None, False),}
+    }
+
     TechnoProductionDf = {
         "var_name": TechnoProductionValue,
         "type": "dataframe",
-        "unit": "TWh or Mt",
+        "unit": "TWh",
         "dynamic_dataframe_columns": True,
     }
 
@@ -531,9 +638,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     # techno names
     NaturalGas = "NaturalGas"
-    CropEnergy = "CropEnergy"
-    ManagedWood = "ManagedWood"
-    UnmanagedWood = "UnmanagedWood"
     OrganicWaste = "OrganicWaste"
     BiomassBuryingFossilization = "BiomassBuryingFossilization"
     CarbonStorageTechno = "CarbonStorageTechno"
@@ -623,7 +727,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     stream_type = "type"
     energy_type = "energy"
     agriculture_type = "agriculture"
-    ccus_type = "CCUS"
+    CCUS = "CCUS"
     value = "value"
     DEFAULT_TECHNO_DICT_DEV = {
         methane: {
@@ -688,8 +792,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             stream_type: energy_type,
             value: [HydrogenLiquefaction],
         },
-        carbon_capture: {
-            stream_type: ccus_type,
+        carbon_captured: {
+            stream_type: CCUS,
             value: [
                 f"{direct_air_capture}.{AmineScrubbing}",
                 f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
@@ -702,7 +806,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         carbon_storage: {
-            stream_type: ccus_type,
+            stream_type: CCUS,
             value: [
                 BiomassBuryingFossilization,
                 DeepOceanInjection,
@@ -718,12 +822,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
     DEFAULT_COARSE_TECHNO_DICT = {
         GlossaryWitnessCore.clean_energy: {stream_type: energy_type, value: [GlossaryWitnessCore.CleanEnergySimpleTechno]},
         fossil: {stream_type: energy_type, value: [FossilSimpleTechno]},
-        carbon_capture: {
-            stream_type: ccus_type,
+        carbon_captured: {
+            stream_type: CCUS,
             value: [DirectAirCapture, FlueGasCapture],
         },
         carbon_storage: {
-            stream_type: ccus_type,
+            stream_type: CCUS,
             value: [CarbonStorageTechno],
         },
     }
@@ -762,7 +866,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
         f"{fuel}.{liquid_fuel}": {
             stream_type: energy_type,
-            value: [Refinery, FischerTropsch],
+            value: [Refinery],#, FischerTropsch],
         },
         f"{fuel}.{hydrotreated_oil_fuel}": {
             stream_type: energy_type,
@@ -788,11 +892,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 # BiomassFired,
             ],
         },
-        carbon_capture: {
-            stream_type: ccus_type,
+        carbon_captured: {
+            stream_type: CCUS,
             value: [
-                f"{direct_air_capture}.{AmineScrubbing}",
-                f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
+                #f"{direct_air_capture}.{AmineScrubbing}",
+                #f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
                 f"{flue_gas_capture}.{CalciumLooping}",
                 f"{flue_gas_capture}.{ChilledAmmoniaProcess}",
                 f"{flue_gas_capture}.{CO2Membranes}",
@@ -802,7 +906,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
             ],
         },
         carbon_storage: {
-            stream_type: ccus_type,
+            stream_type: CCUS,
             value: [
                 BiomassBuryingFossilization,
                 DeepOceanInjection,
@@ -834,8 +938,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         solid_fuel: energy_type,
         biomass_dry: agriculture_type,
         electricity: energy_type,
-        carbon_capture: ccus_type,
-        carbon_storage: ccus_type
+        carbon_captured: CCUS,
+        carbon_storage: CCUS
     }
 
     UraniumResource = "uranium_resource"
@@ -913,7 +1017,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     unit_dicts = {
         GlossaryWitnessCore.clean_energy: energy_unit,
         fossil: energy_unit,
-        biomass_dry: energy_unit,
+        #biomass_dry: energy_unit,
         methane: energy_unit,
         f"{hydrogen}.{gaseous_hydrogen}": energy_unit,
         f"{hydrogen}.{liquid_hydrogen}": energy_unit,
@@ -929,7 +1033,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{heat}.{hightemperatureheat}": energy_unit,
         solid_fuel: energy_unit,
         electricity: energy_unit,
-        carbon_capture: mass_unit,
+        carbon_captured: mass_unit,
         carbon_storage: mass_unit,
         GlossaryWitnessCore.N2O: mass_unit,
         CO2FromFlueGas: mass_unit,
@@ -952,7 +1056,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     techno_byproducts = {
         FossilGas: [GlossaryWitnessCore.CH4, CO2FromFlueGas],
-        UpgradingBiogas: [carbon_capture],
+        UpgradingBiogas: [carbon_captured],
         Methanation: [WaterResource],
         WaterGasShift: [CO2FromFlueGas],
         ElectrolysisSOEC: [O2],
@@ -974,11 +1078,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
             heating_oil,
         ],
         FischerTropsch: [WaterResource, CO2FromFlueGas],
-        HefaDecarboxylation: [carbon_capture],
+        HefaDecarboxylation: [carbon_captured],
         HefaDeoxygenation: [WaterResource],
         Transesterification: [GlycerolResource],
-        BiomassFermentation: [carbon_capture],
-        CoalExtraction: [GlossaryWitnessCore.CH4, carbon_capture],
+        BiomassFermentation: [carbon_captured],
+        CoalExtraction: [GlossaryWitnessCore.CH4, carbon_captured],
         Pelletizing: [CO2FromFlueGas],
         SolarThermal: [f"{heat}.{hightemperatureheat}"],
         Nuclear: [f"{heat}.{hightemperatureheat}"],
@@ -1021,9 +1125,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CHPLowHeat: [electricity, CO2FromFlueGas],
         CHPMediumHeat: [electricity, CO2FromFlueGas],
         CHPHighHeat: [electricity, CO2FromFlueGas],
-        GeothermalLowHeat: [carbon_capture],
-        GeothermalMediumHeat: [carbon_capture],
-        GeothermalHighHeat: [carbon_capture],
+        GeothermalLowHeat: [carbon_captured],
+        GeothermalMediumHeat: [carbon_captured],
+        GeothermalHighHeat: [carbon_captured],
         HydrogenLiquefaction: [],
         AnaerobicDigestion: [],
         WindOffshore: [],
@@ -1049,10 +1153,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         FossilSimpleTechno: [CO2FromFlueGas, GlossaryWitnessCore.CH4],
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
-        ManagedWood: [],
-        UnmanagedWood: [carbon_capture],
-        CropEnergy: [],
-        Reforestation: [],
         Geothermal: [],
         Crop: [],
         Forest: [],
@@ -1067,8 +1167,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoStreamsUsedDict = {
         Transesterification: [electricity],  # heat -> low, no electricity
         AnaerobicDigestion: [electricity],  # produce heat -> low, dont consume electricity, consume biomass_dry and wet
-        ManagedWood: [electricity],  # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
-        UnmanagedWood: [electricity],  # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
         f"{direct_air_capture}.{AmineScrubbing}": [electricity, methane],   # put heat instead of methane
         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [electricity, methane],  # put heat instead of methane
         f"{direct_air_capture}.{DirectAirCaptureTechno}": [GlossaryWitnessCore.clean_energy, fossil],  # dont touch
@@ -1112,19 +1210,19 @@ class GlossaryEnergy(GlossaryWitnessCore):
         HefaDeoxygenation: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # heat instead of electricity, use resource natural_oil (trygliceride)
         Refinery: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # idea : creer une techno puit de pétrole (CrudeOil)
         HydrogenLiquefaction: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # might need some heat ? produced or consumed, not clear
-        FossilGas: [electricity],  # "transport fuel"
-        Methanation: [f"{hydrogen}.{gaseous_hydrogen}", carbon_capture],
-        UpgradingBiogas: [electricity, biogas],  # heat not electricity
+        FossilGas: [electricity], # "transport fuel"
+        Methanation: [f"{hydrogen}.{gaseous_hydrogen}", carbon_captured],
+        UpgradingBiogas: [electricity, biogas], # heat not electricity
         CO2Hydrogenation: [
             f"{hydrogen}.{gaseous_hydrogen}",
             electricity,
-            carbon_capture,  # consumed CO2 (which can come from carbon_capture)
+            carbon_captured,  # consumed CO2 (which can come from carbon_capture)
         ],
         CoalExtraction: [electricity],  # transport fuel instead of electricity
         Pelletizing: [electricity, biomass_dry],  # might be heat instead of electricity
-        AutothermalReforming: [methane, carbon_capture],  # add heat
+        AutothermalReforming: [methane, carbon_captured], # add heat
         BiomassGasification: [electricity, biomass_dry],  # heat instead of electricity, produce syngas
-        CoElectrolysis: [electricity, carbon_capture],
+        CoElectrolysis: [electricity, carbon_captured],
         CoalGasification: [solid_fuel],  # add heat
         RWGS: [electricity, syngas],  # heat instead of electricity, CO2 instead of carbon_capture
         SMR: [electricity, methane],  # heat instead of elec
@@ -1138,7 +1236,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: [],  # add transport fuel
         GeologicMineralization: [],  # add transport fuel
         CarbonStorageTechno: [],
-        CropEnergy: [],
     }
 
     # dict of resources used by technos
@@ -1232,14 +1329,14 @@ class GlossaryEnergy(GlossaryWitnessCore):
         CoalGen: electricity,
         OilGen: electricity,
         BiomassFired: electricity,
-        f"{direct_air_capture}.{AmineScrubbing}": carbon_capture,
-        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": carbon_capture,
-        f"{flue_gas_capture}.{CalciumLooping}": carbon_capture,
-        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": carbon_capture,
-        f"{flue_gas_capture}.{CO2Membranes}": carbon_capture,
-        f"{flue_gas_capture}.{MonoEthanolAmine}": carbon_capture,
-        f"{flue_gas_capture}.{PiperazineProcess}": carbon_capture,
-        f"{flue_gas_capture}.{PressureSwingAdsorption}": carbon_capture,
+        f"{direct_air_capture}.{AmineScrubbing}": carbon_captured,
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": carbon_captured,
+        f"{flue_gas_capture}.{CalciumLooping}": carbon_captured,
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": carbon_captured,
+        f"{flue_gas_capture}.{CO2Membranes}": carbon_captured,
+        f"{flue_gas_capture}.{MonoEthanolAmine}": carbon_captured,
+        f"{flue_gas_capture}.{PiperazineProcess}": carbon_captured,
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": carbon_captured,
         BiomassBuryingFossilization: carbon_storage,
         DeepOceanInjection: carbon_storage,
         DeepSalineFormation: carbon_storage,
@@ -1249,14 +1346,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
         PureCarbonSolidStorage: carbon_storage,
         RWGS: syngas,
         WaterGasShift: f"{hydrogen}.{gaseous_hydrogen}",
-        f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_capture,
-        CropEnergy: biomass_dry,
-        ManagedWood: biomass_dry,
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_captured,
         CarbonStorageTechno: carbon_storage,
-        Reforestation: carbon_storage,
         Geothermal: electricity,
-        UnmanagedWood: biomass_dry,
-        f"{flue_gas_capture}.{FlueGasTechno}": carbon_capture,
+        f"{flue_gas_capture}.{FlueGasTechno}": carbon_captured,
         ElectricBoilerHighHeat: f"{heat}.{hightemperatureheat}",
         HeatPumpHighHeat: f"{heat}.{hightemperatureheat}",
         GeothermalHighHeat: f"{heat}.{hightemperatureheat}",
@@ -1330,13 +1423,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
          EnhancedOilRecovery: 0,
          GeologicMineralization: 0,
          PureCarbonSolidStorage: 0,
-        UnmanagedWood: 3,
-        Reforestation: 3,
         CarbonStorageTechno: 0,
         f"{direct_air_capture}.{DirectAirCaptureTechno}": 3,
-        CropEnergy: 1,
         Geothermal: 7,     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). # National Renewable Energy Lab.(NREL), Golden, CO (United States).
-        ManagedWood: 3,
         f"{flue_gas_capture}.{FlueGasTechno}": 1,
         HeatPumpHighHeat: 1,
         ElectricBoilerHighHeat: 2,
@@ -1399,21 +1488,18 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{direct_air_capture}.{AmineScrubbing}": 35,  # should be modified
         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": 35,  # should be modified
         f"{flue_gas_capture}.{CalciumLooping}": 25,  # SAEECCT Coal USC plant lifetime
-        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": 25,  # SAEECCT Coal USC plant lifetime
-        f"{flue_gas_capture}.{CO2Membranes}": 25,  # SAEECCT Coal USC plant lifetime
-        f"{flue_gas_capture}.{MonoEthanolAmine}": 25,  # SAEECCT Coal USC plant lifetime
-        f"{flue_gas_capture}.{PiperazineProcess}": 25,  # SAEECCT Coal USC plant lifetime
-        f"{flue_gas_capture}.{PressureSwingAdsorption}": 25,  # SAEECCT Coal USC plant lifetime
-        BiomassBuryingFossilization: 35,  # should be modified
-        DeepOceanInjection: 35,  # should be modified
-        DeepSalineFormation: 35,  # should be modified
-        DepletedOilGas: 35,  # should be modified
-        EnhancedOilRecovery: 35,  # should be modified
-        GeologicMineralization: 35,  # should be modified
-        PureCarbonSolidStorage: 35,  # should be modified
-        ManagedWood: 150,  # for now constant in time but should increase with time
-        UnmanagedWood: 150,  # for now constant in time but should increase with time
-        CropEnergy: 50,  # for now constant in time but should increase with time
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{CO2Membranes}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{MonoEthanolAmine}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PiperazineProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": 25, # SAEECCT Coal USC plant lifetime
+        BiomassBuryingFossilization: 35, # should be modified
+        DeepOceanInjection: 35, # should be modified
+        DeepSalineFormation: 35, # should be modified
+        DepletedOilGas: 35, # should be modified
+        EnhancedOilRecovery: 35, # should be modified
+        GeologicMineralization: 35, # should be modified
+        PureCarbonSolidStorage: 35, # should be modified
         FossilSimpleTechno: 25,
         NaturalGasBoilerHighHeat: 45,  # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
         HeatPumpHighHeat: 25,  # years # https://www.energy.gov/energysaver/heat-pump-systems
@@ -1435,23 +1521,31 @@ class GlossaryEnergy(GlossaryWitnessCore):
         f"{CarbonStorageTechno}": 35,
         f"{direct_air_capture}.{DirectAirCaptureTechno}": 35,
         f"{flue_gas_capture}.{FlueGasTechno}": 25,
-        Reforestation: 150,  # for now constant in time but should increase with time,
-        Geothermal: 30,  # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.  Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.  Publications Office of the European Union, Luxemburgo.
-        AnimalManure: 25,  # for now constant in time but should increase with time
+        Geothermal: 30, # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.  Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.  Publications Office of the European Union, Luxemburgo.
+        AnimalManure: 25, # for now constant in time but should increase with time
         WetCropResidues: 25,  # for now constant in time but should increase with time
         CO2Membranes: 25,  # SAEECCT Coal USC plant lifetime
     }
 
-    @classmethod
-    def get_land_use_df(cls, techno_name: str):
-        return {
+    TechnoLandUseDf = {
             "type": "dataframe",
             "unit": "Gha",
+            AutodifferentiedDisc.GRADIENTS: True,
             "dataframe_descriptor": {
-                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
-                f"{techno_name} ({cls.surface_unit})": ("float", None, False),
+                GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+                "Land use": ("float", None, False),
             },
         }
+
+    StreamLandUseDf = {
+        "type": "dataframe",
+        "unit": "Gha",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
+            "Land use": ("float", None, False),
+        },
+    }
 
     @classmethod
     def get_techno_detailed_price_df(cls, techno_name: str):
@@ -1511,6 +1605,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "type": "dataframe",
             "unit": "$/MWh",
+            AutodifferentiedDisc.GRADIENTS: True,
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name}": ("float", None, False),
@@ -1519,43 +1614,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         }
 
     @classmethod
-    def get_age_distrib_prod_df(cls, energy_name: str):
-        techno_unit = cls.unit_dicts[energy_name]
-        return {
-            "type": "dataframe",
-            "unit": techno_unit,
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
-                f"distrib_prod ({techno_unit})": ("float", None, False),
-                "age_x_prod": ("float", None, False),
-            },
-        }
-
-    @classmethod
-    def get_techno_prod_df(
-        cls, energy_name: str, techno_name: str, byproducts_list: list[str]
-    ):
+    def get_techno_prod_df(cls, energy_name: str):
         return {
             "type": "dataframe",
             "unit": cls.unit_dicts[energy_name],
-            "description": f"Production of {energy_name} by from techno {techno_name}",
-            "dataframe_descriptor": {
-                cls.Years: (
-                    "int",
-                    [1900, GlossaryWitnessCore.YearEndDefault],
-                    False,
-                ),
-                f"{energy_name} ({cls.unit_dicts[energy_name]})": (
-                    "float",
-                    None,
-                    False,
-                ),
-                **{
-                    f"{bp} ({cls.unit_dicts[bp]})": ("float", None, False)
-                    for bp in byproducts_list
-                },
-            },
-        }
+            AutodifferentiedDisc.GRADIENTS: True,}
 
     @classmethod
     def get_stream_prices_df(cls, stream_used_for_production: list[str]):
@@ -1564,25 +1627,9 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "type": "dataframe",
             "unit": "$/MWh or $/mass",
             "visibility": "Shared",
+            AutodifferentiedDisc.GRADIENTS: True,
             "namespace": cls.NS_ENERGY,
             "description": "Price of streams used by the technos",
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, 2100], False),
-                **{
-                    stream: ("float", [0.0, 1e30], False)
-                    for stream in stream_used_for_production
-                },
-            },
-        }
-
-    @classmethod
-    def get_stream_co2_emissions_df(cls, stream_used_for_production: list[str]):
-        return {
-            "var_name": cls.StreamsCO2EmissionsValue,
-            "type": "dataframe",
-            "unit": "kg/kWh",
-            "visibility": "Shared",
-            "namespace": cls.NS_ENERGY,
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, 2100], False),
                 **{
@@ -1603,13 +1650,13 @@ class GlossaryEnergy(GlossaryWitnessCore):
         extra_cols = []
         if techno_name == GlossaryEnergy.FischerTropsch:
             extra_cols = [
-                f"{cls.carbon_capture} ({cls.unit_dicts[cls.carbon_capture]})",
+                f"{cls.carbon_captured} ({cls.unit_dicts[cls.carbon_captured]})",
                 f"{cls.syngas} ({cls.unit_dicts[cls.syngas]})",
                 f"{cls.WaterResource} ({cls.mass_unit})",
             ]
         if techno_name == GlossaryEnergy.RWGS:
             extra_cols = [
-                f"{cls.carbon_capture} ({cls.unit_dicts[cls.carbon_capture]})",
+                f"{cls.carbon_captured} ({cls.unit_dicts[cls.carbon_captured]})",
             ]
 
         return {
@@ -1642,6 +1689,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         return {
             "varname": cls.StreamPricesValue,
             "type": "dataframe",
+            AutodifferentiedDisc.GRADIENTS: True,
             "unit": "$/MWh",
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, 2100], False),

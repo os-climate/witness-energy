@@ -38,7 +38,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -63,8 +63,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Ethanol.name
-        energy_name = f'{energy_mix_name}.{self.energy_name}'
+        self.stream_name = Ethanol.name
+        energy_name = f'{energy_mix_name}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # the value for invest_level is just set as an order of magnitude
@@ -106,8 +106,10 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update({
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
+   f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
              })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

@@ -20,7 +20,6 @@ from copy import deepcopy
 # DESC_OUT = energy techno output (J or Wh) + price + cost breakdown
 import pandas as pd
 
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -93,7 +92,7 @@ class BaseInvest:
     def compute_distribution_list(self, input_dict):
         self.distribution_list = []
         for energy in input_dict[GlossaryEnergy.energy_list]:
-            if energy == BiomassDry.name:
+            if energy == GlossaryEnergy.biomass_dry:
                 pass
             else:
                 for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:

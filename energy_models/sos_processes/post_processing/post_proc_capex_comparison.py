@@ -86,7 +86,7 @@ def create_chart_factory_comparison_energy(execution_engine, namespace, energy_l
         if energy == GlossaryEnergy.biomass_dry:
             continue
         ns_energy = f'{namespace}.{energy}'
-        energy_production = execution_engine.dm.get_value(f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}')
+        energy_production = execution_engine.dm.get_value(f'{ns_energy}.{GlossaryEnergy.StreamProductionValue}')
         energy_detailed_prices = [
             ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.{energy}')]
         years = energy_production[GlossaryEnergy.Years].values

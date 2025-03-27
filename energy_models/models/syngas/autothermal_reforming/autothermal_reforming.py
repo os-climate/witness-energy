@@ -29,12 +29,13 @@ class AutothermalReforming(SyngasTechno):
     def compute_resources_needs(self):
         # need in kg to produce 1kwh of syngas
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f'{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.OxygenResource}_needs'] = self.get_theoretical_O2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_other_streams_needs(self):
+
+    def compute_energies_needs(self):
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
-        self.cost_details[f"{GlossaryEnergy.carbon_capture}_needs"] = self.get_theoretical_CO2_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.carbon_captured}_needs"] = self.get_theoretical_CO2_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_CH4_needs(self):
         """
@@ -47,8 +48,8 @@ class AutothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         methane_data = Methane.data_energy_dict
         methane_needs = mol_CH4 * methane_data['molar_mass'] * methane_data['calorific_value'] / \
-                        (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                         self.data_energy_dict['calorific_value'])
+                        (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                         self.inputs['data_energy_dict']['calorific_value'])
 
         return methane_needs
 
@@ -63,8 +64,8 @@ class AutothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         water_data = CO2.data_energy_dict
         water_needs = mol_CO2 * water_data['molar_mass'] / \
-                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                       self.inputs['data_energy_dict']['calorific_value'])
 
         return water_needs
 
@@ -79,8 +80,8 @@ class AutothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         oxygen_data = Oxygen.data_energy_dict
         water_needs = mol_O2 * oxygen_data['molar_mass'] / \
-                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                       self.inputs['data_energy_dict']['calorific_value'])
 
         return water_needs
 
@@ -89,9 +90,9 @@ class AutothermalReforming(SyngasTechno):
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({GlossaryEnergy.mass_unit})'] = self.production_detailed[
-                                                                           f'{SyngasTechno.energy_name} ({self.product_unit})'] * \
-                                                                       H2Oprod
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
+                                                                           f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
+                                                                                                                  H2Oprod
 
     def get_h2o_production(self):
         """
@@ -104,7 +105,7 @@ class AutothermalReforming(SyngasTechno):
         water_data = Water.data_energy_dict
         production_for_1kg = mol_H20 * \
                              water_data['molar_mass'] / \
-                             (mol_syngas * self.data_energy_dict['molar_mass']
-                              * self.data_energy_dict['calorific_value'])
+                             (mol_syngas * self.inputs['data_energy_dict']['molar_mass']
+                              * self.inputs['data_energy_dict']['calorific_value'])
 
         return production_for_1kg

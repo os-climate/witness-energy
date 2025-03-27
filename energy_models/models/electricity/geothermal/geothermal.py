@@ -22,6 +22,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Geothermal(ElectricityTechno):
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.mediumtemperatureheat_energyname}_needs'] = ((1 - self.techno_infos_dict['efficiency']) /
-                                                                                         self.techno_infos_dict['efficiency'])
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.mediumtemperatureheat_energyname}_needs'] = ((1 - self.inputs['techno_infos_dict']['efficiency']) /
+                                                                                         self.inputs['techno_infos_dict']['efficiency'])

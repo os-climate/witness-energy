@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -29,24 +28,21 @@ class CoalGasification(SyngasTechno):
         """
         Get the fuel needs for 1 kwh of the energy producted by the technology
         """
-        if self.techno_infos_dict['fuel_demand'] != 0.0:
-            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
-                                                      self.techno_infos_dict['fuel_demand'])
+        if self.inputs['techno_infos_dict']['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.inputs['techno_infos_dict']['fuel_demand_unit'],
+                                                      self.inputs['techno_infos_dict']['fuel_demand'])
 
         else:
             fuel_need = 0.0
 
         return fuel_need
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # in kwh of fuel by kwh of syngas
-        self.cost_details[f'{SolidFuel.name}_needs'] = self.get_fuel_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = self.get_fuel_needs()
 
-    def compute_byproducts_production(self):
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{SyngasTechno.energy_name} ({self.product_unit})']
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit'] / self.inputs['data_energy_dict']['calorific_value']
+

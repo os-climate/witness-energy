@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 
 from energy_models.core.stream_type.energy_type import EnergyType
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -29,27 +28,17 @@ class Electricity(EnergyType):
                            # è'Geothermal'
                            ]
 
-    def __init__(self, name):
-        super().__init__(name)
-        self.hydropower_production_current = None
-        self.hydropower_constraint_ref = None
-        self.hydropower_constraint = None
 
-    def configure_parameters(self, inputs_dict):
-        '''
-        Overide configure parameters of EnergyType
-        '''
-        self.hydropower_production_current = inputs_dict['hydropower_production_current']
-        self.hydropower_constraint_ref = inputs_dict['hydropower_constraint_ref']
-        EnergyType.configure_parameters(self, inputs_dict)
+    def compute(self):
+        super().compute()
+        self.compute_hydropower_constraint()
 
     def compute_hydropower_constraint(self):
         '''
         Compute hydropower production constraint so that
         '''
-        self.hydropower_constraint = pd.DataFrame(
-            {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years]})
-
-        self.hydropower_constraint['hydropower_constraint'] = - (
-                self.production_by_techno[
-                    f'{self.name} {self.hydropower_name} ({self.unit})'] - self.hydropower_production_current) / self.hydropower_constraint_ref
+        if GlossaryEnergy.Hydropower in self.inputs[GlossaryEnergy.techno_list]:
+            self.outputs[f'prod_hydropower_constraint:{GlossaryEnergy.Years}'] = self.years
+            self.outputs['prod_hydropower_constraint:hydropower_constraint'] = - (
+                    self.inputs[f'{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] -
+                    self.inputs['hydropower_production_current']) / self.inputs['hydropower_constraint_ref']

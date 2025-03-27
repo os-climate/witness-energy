@@ -14,388 +14,228 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy
 
-import numpy as np
-import pandas as pd
+from sostrades_optimization_plugins.models.differentiable_model import (
+    DifferentiableModel,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class BaseStream:
-    """
-    Class for energy production technology type
-    """
+class BaseStream(DifferentiableModel):
+    """Class for energy production technology type"""
     name = ''
     unit = ''
     default_techno_list = []
-    # If the prod_element is negligible do not take into account this element
-    # It is negligible if min_prod = 10-3 TWh
-    min_prod = 1.0e-3
 
     def __init__(self, name):
-        '''
-        Constructor
-        '''
+        super().__init__()
         self.years = None
-        self.sub_prices = None
-        self.sub_prices_wo_taxes = None
-        self.total_carbon_emissions = None
-        self.sub_carbon_emissions = None
-        self.co2_emitted_by_energy = None
-        self.mix_weights = None
-        self.price_by_energy = None
-        self.production = None
-        self.production_raw = None
-        self.production_by_techno = None
-        self.consumption = None
-        self.land_use_required = None
-        self.consumption_woratio = None
-        self.production = None
-        self.consumption = None
-        self.production_by_techno = None
-        self.energy_type_capital = None
         self.name = name
-        # -- Inputs attributes set from configure method
-        self.year_start = GlossaryEnergy.YearStartDefault  # year start
-        self.year_end = GlossaryEnergy.YearEndDefault  # year end
-        self.min_prod = 1e-3
-        self.subelements_list = []
-        self.total_prices = None  # energy outputs dataframe
+        self.year_start = None
+        self.year_end = None
 
-        self.sub_production_dict = {}
-        self.sub_consumption_dict = {}
-        self.sub_consumption_woratio_dict = {}
-        self.sub_land_use_required_dict = {}
+    @property
+    def zeros_array(self):
+        return self.years * 0.
 
-    def reload_df(self):
-        '''
-        Reload all dataframes with new year start and year end
-        '''
-        self.years = np.arange(self.year_start, self.year_end + 1)
-        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
-        self.sub_prices = base_df.copy(deep=True)
-        self.sub_prices_wo_taxes = base_df.copy(deep=True)
-        self.total_prices = base_df.copy(deep=True)
-        self.total_carbon_emissions = base_df.copy(deep=True)
-        self.sub_carbon_emissions = base_df.copy(deep=True)
-        self.co2_emitted_by_energy = base_df.copy(deep=True)
-        self.mix_weights = base_df.copy(deep=True)
-        self.price_by_energy = base_df.copy(deep=True)
-        self.production = base_df.copy(deep=True)
-        self.production_raw = base_df.copy(deep=True)
-        self.production_by_techno = base_df.copy(deep=True)
-        self.consumption = base_df.copy(deep=True)
-        self.land_use_required = base_df.copy(deep=True)
-
-    def configure(self, inputs_dict):
-        self.configure_parameters(inputs_dict)
-        self.configure_parameters_update(inputs_dict)
-
-    def configure_parameters(self, inputs_dict):
+    def configure_parameters(self):
         '''
         Configure at init
         '''
-        self.year_start = inputs_dict[GlossaryEnergy.YearStart]
-        self.year_end = inputs_dict[GlossaryEnergy.YearEnd]
+        self.year_start = self.inputs[GlossaryEnergy.YearStart]
+        self.year_end = self.inputs[GlossaryEnergy.YearEnd]
+        self.years = self.np.arange(self.year_start, self.year_end + 1)
 
-        self.reload_df()
+    def compute(self):
+        self.configure_parameters()
+        self.compute_productions()
 
-    def configure_parameters_update(self, inputs_dict):
-        '''
-        Configure before each run
-        '''
-        for element in self.subelements_list:
-            self.sub_prices[element] = inputs_dict[f'{element}.{GlossaryEnergy.TechnoPricesValue}'][element]
-            self.sub_prices_wo_taxes[element] = inputs_dict[
-                f'{element}.{GlossaryEnergy.TechnoPricesValue}'][f'{element}_wotaxes']
-            # Unscale techno production and consumption
-            self.sub_production_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryEnergy.TechnoProductionValue}'])
-            self.sub_consumption_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryEnergy.TechnoConsumptionValue}'])
-            self.sub_consumption_woratio_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'])
-            for column in self.sub_production_dict[element].columns:
-                if column == GlossaryEnergy.Years:
-                    continue
-                self.sub_production_dict[element][column] = self.sub_production_dict[element][column].values * \
-                                                            inputs_dict['scaling_factor_techno_production']
-            for column in self.sub_consumption_dict[element].columns:
-                if column == GlossaryEnergy.Years:
-                    continue
-                self.sub_consumption_dict[element][column] = self.sub_consumption_dict[element][column].values * \
-                                                             inputs_dict['scaling_factor_techno_consumption']
-                self.sub_consumption_woratio_dict[element][column] = self.sub_consumption_woratio_dict[element][
-                                                                         column].values * \
-                                                                     inputs_dict['scaling_factor_techno_consumption']
-            self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
+        self.compute_energy_consumptions()
+        self.compute_ccs_consumptions()
+        self.compute_resources_consumptions()
 
-        # print(self.name, [list(inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}'].columns) for element in self.subelements_list])
+        self.compute_energy_demand()
+        self.compute_ccs_demand()
+        self.compute_resource_demand()
 
-    def compute(self, inputs, exp_min=True):
-        '''
-        Compute all energy variables with its own technologies
-        '''
+        self.compute_techno_mix()
+        self.compute_price()
+        self.compute_land_use()
+        self.compute_energy_type_capital()
 
-        _, self.consumption_woratio, _ = self.compute_production(
-            self.sub_production_dict, self.sub_consumption_woratio_dict)
+        self.compute_scope_1_emissions()
+        self.compute_scope_1_ghg_intensity()
 
-        self.production, self.consumption, self.production_by_techno = self.compute_production(
-            self.sub_production_dict, self.sub_consumption_dict)
+    def _aggregate_column_from_all_technos(self, output_varname: str, input_techno_varname: str, column_name: str):
+        self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
 
-        self.compute_price(exp_min=exp_min)
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            output_path = f"{output_varname}:{column_name}"
+            if output_path in self.outputs:
+                self.outputs[output_path] = \
+                    self.outputs[output_path] + \
+                    self.inputs[f'{techno}.{input_techno_varname}:{column_name}']
+            else:
+                self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{input_techno_varname}:{column_name}']
 
-        self.aggregate_land_use_required()
+    def _aggregate_from_all_technos(self, output_varname: str, input_techno_varname: str, conversion_factor: float):
+        self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
 
-        self.compute_energy_type_capital(inputs)
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            techno_columns = self.get_colnames_input_dataframe(df_name=f'{techno}.{input_techno_varname}', expect_years=True)
+            for col in techno_columns:
+                output_path = f"{output_varname}:{col}"
+                if output_path in self.outputs:
+                    self.outputs[output_path] = \
+                        self.outputs[output_path] + \
+                        self.inputs[f'{techno}.{input_techno_varname}:{col}'] * conversion_factor
 
-        # print(self.name, list(self.production.columns))
-        return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
-
-    def compute_production(self, sub_production_dict, sub_consumption_dict):
-        '''
-        Compute energy production by summing all energy productions
-        And compute the techno_mix_weights each year
-        '''
-
-        # Initialize dataframe out
-        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
-        production = base_df.copy(deep=True)
-        consumption = base_df.copy(deep=True)
-        production_by_techno = base_df.copy(deep=True)
-
-        # Loop on technologies
-        production[f'{self.name}'] = 0.
-        for element in self.subelements_list:
-            production_by_techno[f'{self.name} {element} ({self.unit})'] = sub_production_dict[
-                element][f'{self.name} ({self.unit})'].values
-            production[
-                f'{self.name}'] += production_by_techno[f'{self.name} {element} ({self.unit})'].values
-
-            production, consumption = self.compute_byproducts_consumption_and_production(
-                element, sub_production_dict, sub_consumption_dict, production, consumption)
-
-        # print(self.name, "&&#", self.unit)
-        # print(self.name, list(production_by_techno.columns))
-        return production, consumption, production_by_techno
-
-    def compute_byproducts_consumption_and_production(self, element, sub_production_dict, sub_consumption_dict, production,
-                                                      consumption, factor=1.0):
-        """Compute byproducts consumptions and productions"""
-
-        for elem, prod in sub_production_dict[element].items():
-            # DO not count major energy production in this function (already
-            # computed)
-            if elem != f'{self.name} ({self.unit})' and elem != GlossaryEnergy.Years:
-                if elem in production:
-                    production[elem] += prod.values * factor
                 else:
-                    production[elem] = prod.values * factor
+                    self.outputs[output_path] = \
+                        self.zeros_array + \
+                        self.inputs[f'{techno}.{input_techno_varname}:{col}'] * conversion_factor
 
-        for elem, cons in sub_consumption_dict[element].items():
-            if elem != GlossaryEnergy.Years:
-                if elem in consumption:
-                    consumption[elem] += cons.values * factor
+    def compute_productions(self):
+        """Sum all the productions from technos of the stream (main stream and by products)"""
+        self.outputs[f"{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.StreamProductionDetailedValue}:{GlossaryEnergy.Years}"] = self.years
+
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            self.outputs[f"{GlossaryEnergy.StreamProductionDetailedValue}:{techno} ({self.unit})"] = \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] * 1e3
+            techno_products = self.get_colnames_input_dataframe(df_name=f'{techno}.{GlossaryEnergy.TechnoProductionValue}', expect_years=True)
+            for techno_product in techno_products:
+                output_path = f"{GlossaryEnergy.StreamProductionValue}:{techno_product}"
+                if output_path in self.outputs:
+                    self.outputs[output_path] = self.outputs[output_path] + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
                 else:
-                    consumption[elem] = cons.values * factor
+                    self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
 
-        return production, consumption
-
-    def compute_energy_type_capital(self, inputs):
-        technos = inputs[GlossaryEnergy.techno_list]
+    def compute_energy_type_capital(self):
+        technos = self.inputs[GlossaryEnergy.techno_list]
         capitals = [
-            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.Capital].values for techno in technos
+            self.inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Capital}"] for techno in technos
         ]
-        sum_technos_capital = np.sum(capitals, axis=0)
+        sum_technos_capital = self.np.sum(capitals, axis=0)
 
         non_use_capitals = [
-            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.NonUseCapital].values for techno in technos
+            self.inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.NonUseCapital}"] for techno in technos
         ]
-        sum_technos_non_use_capital = np.sum(non_use_capitals, axis=0)
+        sum_technos_non_use_capital = self.np.sum(non_use_capitals, axis=0)
 
-        self.energy_type_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: sum_technos_capital,
-            GlossaryEnergy.NonUseCapital: sum_technos_non_use_capital,
-        })
+        self.outputs[f"{GlossaryEnergy.EnergyTypeCapitalDfValue}:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.EnergyTypeCapitalDfValue}:{GlossaryEnergy.Capital}"] = sum_technos_capital
+        self.outputs[f"{GlossaryEnergy.EnergyTypeCapitalDfValue}:{GlossaryEnergy.NonUseCapital}"] = sum_technos_non_use_capital
 
-    def compute_price(self, exp_min=True):
+    def compute_price(self):
         '''
         Compute the price with all sub_prices and sub weights computed with total production
         '''
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'energy_detailed_techno_prices:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] = self.zeros_array
+        self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] = self.zeros_array
 
-        self.total_prices[self.name] = 0.
-        self.total_prices[f'{self.name}_wotaxes'] = 0.
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            self.outputs[f'energy_detailed_techno_prices:{techno}'] = self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}']
+            techno_share_of_total_stream_prod = self.outputs[f'techno_mix:{techno}'] / 100.
 
-        element_list = self.subelements_list
-        full_element_list = [
-            f'{self.name} {element} ({self.unit})' for element in element_list]
-        element_dict = dict(zip(element_list, full_element_list))
-        if exp_min:
-            prod_element, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
-                self.production_by_techno, element_dict, self.min_prod)
-        else:
-            prod_element, prod_total_for_mix_weight = self.compute_prod_wcutoff(
-                self.production_by_techno, element_dict, self.min_prod)
-        for element in self.subelements_list:
-            # we compute then mix_weight with these prods minimized and use it
-            # also for co2 emissions
-            mix_weight = prod_element[element] / \
-                         prod_total_for_mix_weight
-            # Still If the element is negligible do not take into account this element
-            # It is negligible if tol = 0.1%
-            tol = 1e-3
-            mix_weight[mix_weight < tol] = 0.0
-            self.mix_weights[element] = mix_weight * 100.
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}'] + \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}'] * techno_share_of_total_stream_prod
 
-            self.total_prices[self.name] += self.sub_prices[element] * mix_weight
-            self.total_prices[f'{self.name}_wotaxes'] += self.sub_prices_wo_taxes[element] * mix_weight
-            self.mix_weights[element] = mix_weight * 100.
-        # In case all the technologies are below the threshold
-        # and the cutoff is applied, assign a placeholder price
-        if not exp_min:
-            for year in self.total_prices[GlossaryEnergy.Years].values:
-                if np.real(self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] == year][
-                               self.name].values) == 0.0:
-                    # Get the min_price of the technos this year that are > 0.0
-                    year_techno_prices = self.sub_prices[self.subelements_list].loc[
-                        self.sub_prices[GlossaryEnergy.Years] == year]
-                    min_techno_price = min(
-                        val for val in year_techno_prices.values[0] if val > 0.0)
-                    min_techno_name = [
-                        name for name in year_techno_prices.columns if
-                        year_techno_prices[name].values == min_techno_price][0]
-                    for element in self.subelements_list:
-                        self.mix_weights.loc[self.mix_weights[GlossaryEnergy.Years] == year,
-                                             element] = 100. if element == min_techno_name else 0.0
-                    min_techno_price_wo_taxes = self.sub_prices_wo_taxes[min_techno_name]
-                    self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] ==
-                                          year, self.name] = min_techno_price
-                    self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] ==
-                                          year, f'{self.name}_wotaxes'] = min_techno_price_wo_taxes
+            self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] = \
+                self.outputs[f'{GlossaryEnergy.StreamPricesValue}:{self.name}_wotaxes'] + \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}:{techno}_wotaxes'] * techno_share_of_total_stream_prod
 
-    def compute_prod_wcutoff(self, production_by_techno, elements_dict, min_prod):
+    def compute_land_use(self):
+        """Sum the land uses of the technos to obtain land use of the stream"""
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = self.zeros_array
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoLandUseDf['unit']][GlossaryEnergy.StreamLandUseDf['unit']]
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+                self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
+                    self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] + \
+                    self.inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}:Land use'] \
+                    * conversion_factor
 
-        prod_total_for_mix_weight = np.zeros(len(self.years))
-        prod_element_dict = {}
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-            prod_element_dict[key][prod_element_dict[key]
-                                   < min_prod] = 0.0
-            prod_total_for_mix_weight = prod_total_for_mix_weight + \
-                                        prod_element_dict[key]
-        prod_total_for_mix_weight[prod_total_for_mix_weight == 0.0] = min_prod
 
-        return prod_element_dict, prod_total_for_mix_weight
+    def compute_techno_mix(self):
+        """Compute the contribution of each techno for the production of the main stream (in %) [0, 100]"""
+        self.outputs[f'techno_mix:{GlossaryEnergy.Years}'] = self.years
+        stream_total_prod = self.outputs[f'{GlossaryEnergy.StreamProductionValue}:{self.name} ({self.unit})']
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            techno_share_of_total_stream_prod = self.inputs[
+                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] / (stream_total_prod + 1e-9)
+            self.outputs[f'techno_mix:{techno}'] = techno_share_of_total_stream_prod * 100.
 
-    def compute_dprod_wcutoff(self, production_by_techno, elements_dict, min_prod):
+    def compute_energy_consumptions(self):
+        """Compute all energy consumptions in stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoEnergyConsumption['unit']][GlossaryEnergy.StreamEnergyConsumption['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamEnergyConsumptionValue,
+            input_techno_varname=GlossaryEnergy.TechnoEnergyConsumptionValue,
+            conversion_factor=conversion_factor)
 
-        prod_element_dict = {}
-        dprod_element_dict = {}
+    def compute_resources_consumptions(self):
+        """Compute all resources consumptions in stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoResourceDemands['unit']][GlossaryEnergy.StreamResourceConsumption['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamResourceConsumptionValue,
+            input_techno_varname=GlossaryEnergy.TechnoResourceConsumptionValue,
+            conversion_factor=conversion_factor)
 
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-            dprod_element_dict[key] = np.ones(
-                len(prod_element_dict[key]))
-            dprod_element_dict[key][prod_element_dict[key]
-                                    < min_prod] = 0.0
+    def compute_energy_demand(self):
+        """Compute total energy demands for each stream in current stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoEnergyDemands['unit']][GlossaryEnergy.StreamEnergyDemand['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamEnergyDemandValue,
+            input_techno_varname=GlossaryEnergy.TechnoEnergyDemandsValue,
+            conversion_factor=conversion_factor)
 
-        return dprod_element_dict
+    def compute_resource_demand(self):
+        """Compute total resource demands for each stream in current stream"""
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoResourceDemands['unit']][GlossaryEnergy.StreamResourceDemand['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamResourceDemandValue,
+            input_techno_varname=GlossaryEnergy.TechnoResourceDemandsValue,
+            conversion_factor=conversion_factor)
 
-    def compute_prod_with_exp_min(self, production_by_techno, elements_dict, min_prod):
-        '''
-        Compute the production of each element by minimizing them with and exponential function to reach min prod
-        Objective is to decrease gradients when prod are very low
-        Be careful the objective is to increase the total production to
-        decrease the gradient then we have to modify the sum also
+    def compute_scope_1_emissions(self):
+        """Compute the scope 1 emissions of the stream : emissions associated to production"""
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            self._aggregate_column_from_all_technos(
+                output_varname=GlossaryEnergy.StreamScope1GHGEmissionsValue,
+                input_techno_varname=GlossaryEnergy.TechnoScope1GHGEmissionsValue,
+                column_name=ghg)
 
-        BIG WARNING : there is an issue in the handling of complex number in this function that may cause small errors
-        in gradient tests. So far, no solution has been found. This error can be reproduced by running the test on the
-        gradients of liquid_hydrogen stream in the case of a production of techno HydrogenLiquefaction below min_prod.
+    def compute_scope_1_ghg_intensity(self):
+        """Compute weighted average of scope 1 ghg intensity for each GHG (CO2, CH4, N2O)"""
+        self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{GlossaryEnergy.Years}"] = self.years
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] = self.zeros_array
+            for techno in self.inputs[GlossaryEnergy.techno_list]:
+                self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] = self.outputs[f"{GlossaryEnergy.StreamScope1GHGIntensityValue}:{ghg}"] + \
+                                                               self.outputs[f'techno_mix:{techno}'] / 100. * \
+                                                               self.inputs[f"{techno}.{GlossaryEnergy.TechnoScope1GHGEmissionsValue}:{ghg}"]
 
-        elements_dict contains {Name of the prod techno or energy: full name of the column}
-        '''
+    def compute_ccs_demand(self):
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoCCSDemands['unit']][GlossaryEnergy.StreamCCSDemand['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamCCSDemandValue,
+            input_techno_varname=GlossaryEnergy.TechnoCCSDemandsValue,
+            conversion_factor=conversion_factor)
 
-        prod_total_for_mix_weight = np.zeros(len(self.years))
-        prod_element_dict = {}
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-
-            if prod_element_dict[key].min() < min_prod:
-                # if some values are below min_prod
-                # We use the exp smoothing only on values below self.min_prod (np.minimum(prod_element, min_prod))
-                # Then we take the maximum to take prod_element if it is higher
-                # than min_prod
-                # To avoid underflow : exp(-200) is considered to be the
-                # minimum value for the exp
-                prod_element_dict[key][prod_element_dict[key]
-                                       < -200.0 * min_prod] = -200.0 * min_prod
-                prod_element_dict[key] = np.maximum(
-                    min_prod / 10.0 * (9.0 + np.exp(np.minimum(prod_element_dict[key], min_prod) / min_prod)
-                                       * np.exp(-1)), prod_element_dict[key])
-
-            prod_total_for_mix_weight = prod_total_for_mix_weight + \
-                                        prod_element_dict[key]
-
-        return prod_element_dict, prod_total_for_mix_weight
-
-    def compute_dprod_with_exp_min(self, production_by_techno, elements_dict, min_prod):
-
-        prod_element_dict = {}
-        dprod_element_dict = {}
-
-        for key, value in elements_dict.items():
-            prod_element_dict[key] = deepcopy(production_by_techno[
-                                                  value].values)
-            dprod_element_dict[key] = np.ones(
-                len(prod_element_dict[key]))
-            if prod_element_dict[key].min() < min_prod:
-                # To avoid underflow : exp(-200) is considered to be the
-                # minimum value for the exp
-                prod_element_dict[key][prod_element_dict[key]
-                                       < -200.0 * min_prod] = -200.0 * min_prod
-                dprod_element_dict[key][prod_element_dict[key] < min_prod] = np.exp(
-                    prod_element_dict[key][prod_element_dict[key] < min_prod] / min_prod) * np.exp(-1) / 10.0
-
-        return dprod_element_dict
-
-    def compute_grad_element_mix_vs_prod(self, production_by_techno, elements_dict, exp_min=True, min_prod=1e-3):
-        if exp_min:
-            prod_element_dict, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
-                production_by_techno, elements_dict, min_prod)
-            dprod_element_dict = self.compute_dprod_with_exp_min(
-                production_by_techno, elements_dict, min_prod)
-        else:
-            prod_element_dict, prod_total_for_mix_weight = self.compute_prod_wcutoff(
-                production_by_techno, elements_dict, min_prod)
-            dprod_element_dict = self.compute_dprod_wcutoff(
-                production_by_techno, elements_dict, min_prod)
-        grad_element_mix_vs_prod = {}
-
-        for element in elements_dict.keys():
-            grad_element_mix_vs_prod[f'{element}'] = dprod_element_dict[element] * (
-                    prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight ** 2
-            for element_other in elements_dict.keys():
-                if element_other != element:
-                    grad_element_mix_vs_prod[f'{element} {element_other}'] = -dprod_element_dict[element] * \
-                                                                             prod_element_dict[element_other] / \
-                                                                             prod_total_for_mix_weight ** 2
-
-        return grad_element_mix_vs_prod
-
-    def aggregate_land_use_required(self):
-        '''
-        Aggregate into an unique dataframe of information of sub technology about land use required
-        '''
-
-        for element in self.sub_land_use_required_dict.values():
-
-            element_columns = list(element)
-            element_columns.remove(GlossaryEnergy.Years)
-
-            for column_df in element_columns:
-                self.land_use_required[column_df] = element[column_df]
+    def compute_ccs_consumptions(self):
+        conversion_factor = GlossaryEnergy.conversion_dict[
+            GlossaryEnergy.TechnoCCSConsumption['unit']][GlossaryEnergy.StreamCCSConsumption['unit']]
+        self._aggregate_from_all_technos(
+            output_varname=GlossaryEnergy.StreamCCSConsumptionValue,
+            input_techno_varname=GlossaryEnergy.TechnoCCSConsumptionValue,
+            conversion_factor=conversion_factor)

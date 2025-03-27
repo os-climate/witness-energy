@@ -38,7 +38,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -62,8 +62,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Fossil.name
-        fossil_name = f'EnergyMix.{self.energy_name}'
+        self.stream_name = Fossil.name
+        fossil_name = f'EnergyMix.{self.stream_name}'
         years = np.arange(self.year_start, self.year_end + 1)
 
         # the value for invest_level is just set as an order of magnitude
@@ -88,7 +88,16 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
-        energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years})
+        energy_CO2_intensity = pd.DataFrame({
+            energy: [0.]*len(years) for energy in GlossaryEnergy.unit_dicts.keys()
+        })
+        energy_CH4_intensity = pd.DataFrame({
+            energy: [0.]*len(years) for energy in GlossaryEnergy.unit_dicts.keys()
+        })
+        energy_N2O_intensity = pd.DataFrame({
+            energy: [0.]*len(years) for energy in GlossaryEnergy.unit_dicts.keys()
+        })
+        
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -106,8 +115,10 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_CO2_intensity,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_CO2_intensity,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_CO2_intensity,
+f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

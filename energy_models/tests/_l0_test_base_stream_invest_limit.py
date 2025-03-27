@@ -36,10 +36,8 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
-        self.energy_name = GlossaryEnergy.hydrogen
+
+        self.stream_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.years = years
@@ -82,9 +80,6 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 
-    def tearDown(self):
-        pass
-
     def test_01_low_influence_one_techno(self):
         '''
         The objective is to test output energy price and energy co2 emissions when
@@ -97,6 +92,9 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -124,14 +122,14 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisPEM],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
@@ -174,6 +172,9 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -201,14 +202,14 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.techno_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisPEM],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionValue}': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoProductionValue}': wgs_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionValue}': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoEnergyDemandsValue}': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoProductionValue}': electrolysis_production,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ElectrolysisPEM}.{GlossaryEnergy.CO2EmissionsValue}': self.electrolysis_carbon_emissions,

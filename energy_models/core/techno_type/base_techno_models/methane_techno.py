@@ -20,7 +20,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class MethaneTechno(TechnoType):
-    energy_name = Methane.name
+    stream_name = Methane.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

@@ -59,7 +59,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.04,
-                                 'CO2_from_production': 0.65 / 2.0,  # we split 0.65 in refinery and oil extraction
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.65 / 2.0,  # we split 0.65 in refinery and oil extraction
                                  # However it is really depending on type of extraction
                                  # see
                                  # https://theicct.org/sites/default/files/ICCT_crudeoil_Eur_Dec2010_sum.pdf
@@ -70,9 +70,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # production from WITNESS and emissions from
                                  # IEA Methane tracker
                                  # Are approximately same than GAINS 2017 model
-                                 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
-                                 'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
-                                 'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+
+                                 # venting + flaring + unintended leakage emissions factors (Mt/TWh):
+                                 'CH4_emission_factor': (21.9 + 7.2) / 50731. + (1.4 + 6.9) / 50731. + (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
                                  # 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
                                  # 'medium_heat_production_unit': 'TWh/TWh',
@@ -140,90 +140,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = Refinery(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
-
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price(ignore_oil=True)
-        grad_dict_resources_for_co2 = self.techno_model.grad_price_vs_resources_price(ignore_oil=False)
-
-        carbon_emissions = self.get_sosdisc_outputs(
-            GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_for_co2)
-
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_for_co2={}):
-        """
-        Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
-        """
-
-        for energy, value in grad_dict.items():
-            grad_total = value * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
-                                          len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / \
-                         100.0
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamPricesValue, energy),
-                grad_total)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.StreamPricesValue, energy), grad_total)
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
-                value)
-
-            grad_on_co2_tax = value * \
-                              self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
-                                                              <= self.techno_model.year_end][
-                                  GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name])).values
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.StreamsCO2EmissionsValue, energy),
-                grad_on_co2_tax)
-
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
-                                  self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
-                                  )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
-            dtechno_prices_dCO2_taxes = dCO2_taxes_factory
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
-                dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
-
-        for resource, value in grad_dict_resources.items():
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.ResourcesPriceValue, resource),
-                value * self.techno_model.margin[
-                    GlossaryEnergy.MarginValue].values / 100.0)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
-                (GlossaryEnergy.ResourcesPriceValue, resource), value *
-                                                                self.techno_model.margin[
-                                                                    GlossaryEnergy.MarginValue].values / 100.0)
-            value_for_co2 = grad_dict_resources_for_co2[resource]
-            grad_on_co2_tax = value_for_co2 * \
-                              self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
-                                                              <= self.techno_model.year_end][
-                                  GlossaryEnergy.CO2Tax].values[:,
-                              np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name])).values
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),
-                grad_on_co2_tax)
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value_for_co2)
+        self.model = Refinery(self.techno_name)
 
     def get_chart_filter_list(self):
 
@@ -309,10 +226,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
-        techno_production = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedProductionValue)
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
+        techno_production = self.get_sosdisc_outputs(GlossaryEnergy.TechnoProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
@@ -331,7 +246,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         for products in techno_production.columns:
             if products != GlossaryEnergy.Years and products.endswith(
-                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} ({GlossaryEnergy.energy_unit})':
+                    '(TWh)') and products != f'{LiquidFuelTechnoDiscipline.stream_name} ({GlossaryEnergy.energy_unit})':
                 energy_twh = techno_production[products].values
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")

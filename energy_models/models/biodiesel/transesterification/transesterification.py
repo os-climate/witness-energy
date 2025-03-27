@@ -36,22 +36,22 @@ class Transesterification(BioDieselTechno):
 
     def compute_resources_needs(self):
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Methanol.name}_needs'] = self.get_theoretical_methanol_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methanol.name}_needs'] = self.get_theoretical_methanol_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         # need in kg oil/kWh biodiesel
-        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         # need in kg/kwh biodiesel
-        self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Water.name}_needs'] = self.get_theoretical_water_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
         # need in kWh/kwh biodiesel
-
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
+    
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
-        self.production_detailed[f'{Glycerol.name} ({GlossaryEnergy.mass_unit})'] = 0.12 * self.production_detailed[
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Glycerol.name} ({GlossaryEnergy.mass_unit})'] = 0.12 * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
             f'{BioDiesel.name} ({self.product_unit})'] / \
-                                                                          self.data_energy_dict['calorific_value']
+                                                                                                                         self.inputs['data_fuel_dict']['calorific_value']
 
     def get_theoretical_methanol_needs(self):
         """
@@ -59,7 +59,7 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 methanol = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of methanol = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        biodiesel_calorific_value = self.data_energy_dict['calorific_value']
+        biodiesel_calorific_value = self.inputs['data_fuel_dict']['calorific_value']
 
         methanol_needs = 0.0819672311 / biodiesel_calorific_value
 
@@ -71,7 +71,7 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 NaturalOil = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of NaturalOil = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        biodiesel_calorific_value = self.data_energy_dict['calorific_value']
+        biodiesel_calorific_value = self.inputs['data_fuel_dict']['calorific_value']
 
         natural_oil_needs = 1.008196721 / biodiesel_calorific_value
 
@@ -83,7 +83,7 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 SodiumHydroxide = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of SodiumHydroxide = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        biodiesel_calorific_value = self.data_energy_dict['calorific_value']
+        biodiesel_calorific_value = self.inputs['data_fuel_dict']['calorific_value']
 
         sodiumhydroxyde_needs = 0.01 / biodiesel_calorific_value
 
@@ -95,7 +95,7 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 SodiumHydroxide = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of SodiumHydroxide = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        biodiesel_calorific_value = self.data_energy_dict['calorific_value']
+        biodiesel_calorific_value = self.inputs['data_fuel_dict']['calorific_value']
 
         water_needs = 0.017 / biodiesel_calorific_value
 
@@ -107,7 +107,7 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 SodiumHydroxide +0.02kWh elec= 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of SodiumHydroxide + = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        biodiesel_calorific_value = self.data_energy_dict['calorific_value']
+        biodiesel_calorific_value = self.inputs['data_fuel_dict']['calorific_value']
 
         elec_needs = 0.02 / biodiesel_calorific_value
 

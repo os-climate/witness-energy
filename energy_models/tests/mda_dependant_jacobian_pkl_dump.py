@@ -55,8 +55,6 @@ if __name__ == '__main__':
         jacobian_target, 'l1_test_gradient_ratio.py', test_names=[
             'test_01_ratio_hydrogen_liquefaction_discipline_jacobian',
             'test_02_ratio_SMR_discipline_jacobian',
-            'test_03_ratio_CropEnergy_discipline_jacobian',
-            'test_04_ratio_UnmanagedWood_discipline_jacobian',
             'test_05_ratio_WaterGasShift_discipline_jacobian',
             'test_06_ratio_FischerTropsch_discipline_jacobian',
             'test_07_ratio_CalciumLooping_discipline_jacobian',

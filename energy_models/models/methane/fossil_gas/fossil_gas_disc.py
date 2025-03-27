@@ -47,7 +47,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'capacity_factor': 0.4,
                                  'full_load_hours': 8760,
                                  'Opex_percentage': 0.34,
-                                 'CO2_from_production': 0.123,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.123,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # 0.142 kt/PJ (mean) in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
@@ -92,21 +92,4 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = FossilGas(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
-
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        MethaneTechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price(ignore_gas=True)
-        grad_dict_resources_for_co2 = self.techno_model.grad_price_vs_resources_price(ignore_gas=False)
-
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_for_co2)
+        self.model = FossilGas(self.techno_name)

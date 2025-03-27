@@ -14,54 +14,48 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pickle
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import (
-    CalciumPotassiumScrubbingDiscipline,
-)
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
-    DirectAirCaptureTechnoDiscipline,
-)
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import (
-    CalciumLoopingDiscipline,
-)
 
 
-class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
-    """
-    Carbon capture jacobian test class
-    """
-
-    def analytic_grad_entry(self):
-        return [
-            self.test_01_amine_jacobian,
-            self.test_02_CaKOH_jacobian,
-            self.test_03_Calcium_looping_jacobian,
-            self.test_04_carbon_capture_discipline_jacobian,
-        ]
+class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
+    """Carbon capture jacobian test class"""
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
-        self.energy_name = GlossaryEnergy.carbon_capture
+        self.name = "Test"
+        self.override_dump_jacobian = False
+        self.show_graph = False
+        self.jacobian_test = False
+        self.pickle_directory = dirname(__file__)
+        self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                        'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
+                        "ns_flue_gas": self.name,
+                        GlossaryEnergy.NS_CCS: self.name,
+                        GlossaryEnergy.NS_WITNESS: self.name,
+                        'ns_carbon_capture': self.name,
+                        'ns_resource': f'{self.name}'}
+        self.stream_name = GlossaryEnergy.carbon_captured
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
         self.years = years
+        self.ccus_availaivility_ratios = pd.DataFrame(
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.carbon_captured: 100.,
+             GlossaryEnergy.carbon_storage: 100.,
+            })
 
         self.stream_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -98,419 +92,42 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
+            zip(EnergyMix.resource_list, np.linspace(1.0, 1.0, len(years))))
         resource_ratio_dict[GlossaryEnergy.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
-    def get_checked_inputs(self):
-        return [
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
-            f'{self.name}.{GlossaryEnergy.StreamPricesValue}',
-            f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}',
-            f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
-            f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
-            f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
-            f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-        ]
-
-    def get_checked_outputs(self):
-        return [
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
-        ]
-
-    def tearDown(self):
-        pass
+    def get_inputs_dict(self):
+        return {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
+                    np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
+                f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
+                f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
+                f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
+                f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+                f'{self.name}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.ccus_availaivility_ratios,
+                f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
+                f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                }
 
     def test_01_amine_jacobian(self):
-
-        self.name = 'Test'
         self.model_name = 'amine_scrubbing'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc.AmineScrubbingDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = DirectAirCaptureTechnoDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-15, local_data=disc_techno.local_data,
-                            derr_approx='complex_step', threshold=1e-5,
-                            inputs=self.get_checked_inputs(),
-                            outputs=self.get_checked_outputs(), )
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc.AmineScrubbingDiscipline'
 
     def test_02_CaKOH_jacobian(self):
-
-        self.name = 'Test'
         self.model_name = 'calcium_potassium_scrubbing'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc.CalciumPotassiumScrubbingDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = CalciumPotassiumScrubbingDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-                       #
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=self.get_checked_inputs(),
-                            outputs=self.get_checked_outputs(), )
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc.CalciumPotassiumScrubbingDiscipline'
 
     def test_03_Calcium_looping_jacobian(self):
-
-        self.name = 'Test'
         self.model_name = 'calcium_looping'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = CalciumLoopingDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_default_resources_CO2_emissions(
-                           np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-
-                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict
-
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=self.get_checked_inputs() + [f'{self.name}.{GlossaryEnergy.FlueGasMean}'],
-                            outputs=self.get_checked_outputs()
-                            )
-
-    def test_04_carbon_capture_discipline_jacobian(self):
-        if True:
-            return
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': f'{self.name}',
-                   'ns_carbon_capture': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.energy_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_streams_input_dict.pkl'), 'rb')
-        mda_data_input_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        namespace = f'{self.name}'
-        inputs_dict = {}
-        coupled_inputs = []
-        for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
-                       GlossaryEnergy.YearEnd,
-                       'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
-                       'scaling_factor_techno_consumption', 'scaling_factor_techno_production',
-                       'flue_gas_prod_ratio', 'flue_gas_production']:
-                inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
-                if mda_data_input_dict[self.energy_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{key}']
-            else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
-                    'value']
-                if mda_data_input_dict[self.energy_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
-        mda_data_output_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        coupled_outputs = []
-        for key in mda_data_output_dict[self.energy_name].keys():
-            if mda_data_output_dict[self.energy_name][key]['is_coupling']:
-                coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
-
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000,
-            GlossaryEnergy.NonUseCapital: 1000.,
-        })
-
-        for techno in technos:
-            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc.local_data,
-                            inputs=coupled_inputs,
-                            outputs=coupled_outputs, )
-
-    def _test_04b_carbon_capture_discipline_jacobian(self):
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': f'{self.name}',
-                   'ns_carbon_capture': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.energy_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        import pickle
-        with open("CCstream.pkl", 'rb') as f:
-            inputs_dict = pickle.load(f)
-        inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
-        inputs_dict2.update({f"{self.name}.carbon_capture.{key}": val for key, val in inputs_dict.items()})
-        for key, value in inputs_dict2.items():
-            if isinstance(value, pd.DataFrame):
-                for col in value.columns:
-                    if value[col].dtype == 'complex128':
-                        value[col] = np.real(value[col])
-        for key in list(filter(lambda x: "smooth_type" in x, inputs_dict2.keys())):
-            inputs_dict2[key] = "smooth_max"
-        self.ee.load_study_from_input_dict(inputs_dict2)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc.local_data,
-                            inputs=[
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoPricesValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoCapitalValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoConsumptionValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.LandUseRequiredValue}",
-                            ],
-                            outputs=[
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.StreamPricesValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyProductionValue}",
-                                f"{self.name}.{self.energy_name}.{GlossaryEnergy.StreamConsumptionValue}",
-                            ], )
-
-    def test_05_direct_air_capture_techno_discipline_gradient(self):
-        demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
-        demand_ratio_dict[GlossaryEnergy.Years] = self.years
-        self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
-        self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        techno_infos_dict = DirectAirCaptureTechnoDiscipline.techno_infos_dict_default
-        techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-                       f'{self.name}.techno_infos_dict': techno_infos_dict,
-                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-                       }
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        # self.override_dump_jacobian = True
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=self.get_checked_inputs(),
-                            outputs=self.get_checked_outputs(), )
-
-        # os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}.pkl'))
-        # self.override_dump_jacobian = False
-
-    def _test_06_direct_air_capture_techno_discipline_gradient(self):
-        self.name = 'Test'
-        self.model_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
-                   'ns_energy_study': f'{self.name}',
-                   'ns_carbon_capture': self.name,
-                   'ns_resource': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        # overload value of lifetime to reduce test duration
-        import pickle
-        with open("DACinputict.pkl", 'rb') as f:
-            inputs_dict = pickle.load(f)
-        inputs_dict2 = {f"{self.name}.{key}": val for key, val in inputs_dict.items()}
-        inputs_dict2[f"{self.name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.InvestLevelValue}"] = inputs_dict[GlossaryEnergy.InvestLevelValue]
-        for key, value in inputs_dict2.items():
-            if isinstance(value, pd.DataFrame):
-                for col in value.columns:
-                    if value[col].dtype == 'complex128':
-                        value[col] = np.real(value[col])
-        for key in list(filter(lambda x: "smooth_type" in x, inputs_dict2.keys())):
-            inputs_dict2[key] = "smooth_max"
-        self.ee.load_study_from_input_dict(inputs_dict2)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}_2.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
-                            local_data=disc_techno.local_data,
-                            inputs=self.get_checked_inputs(),
-                            outputs=self.get_checked_outputs(), )
-
-        # os.remove(os.path.join(dirname(__file__), "jacobian_pkls",  f'jacobian_dac_{self.model_name}_2.pkl'))
-        # self.override_dump_jacobian = False
-
-
-if '__main__' == __name__:
-    cls = CarbonCaptureJacobianTestCase()
-    cls.setUp()
-    cls.test_03_Calcium_looping_jacobian()
+        self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
+    def test_04_direct_air_capture(self):
+        self.model_name = "direct_air_capture"
+        self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'

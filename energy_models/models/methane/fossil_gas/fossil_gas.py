@@ -14,10 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.methane_techno import (
     MethaneTechno,
@@ -32,9 +29,9 @@ class FossilGas(MethaneTechno):
         """
         Get the fuel needs for 1 kwh of the energy producted by the technology
         """
-        if self.techno_infos_dict['fuel_demand'] != 0.0:
-            fuel_need = self.check_energy_demand_unit(self.techno_infos_dict['fuel_demand_unit'],
-                                                      self.techno_infos_dict['fuel_demand'])
+        if self.inputs['techno_infos_dict']['fuel_demand'] != 0.0:
+            fuel_need = self.check_energy_demand_unit(self.inputs['techno_infos_dict']['fuel_demand_unit'],
+                                                      self.inputs['techno_infos_dict']['fuel_demand'])
 
         else:
             fuel_need = 0.0
@@ -50,40 +47,30 @@ class FossilGas(MethaneTechno):
         cost_of_resource_usage = {
             GlossaryEnergy.Years: self.years,
         }
-        for resource in self.resources_used_for_production:
+        self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{GlossaryEnergy.Years}"] = self.years
+        self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:Total"] = self.zeros_array
+        for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]:
             if resource == GlossaryEnergy.NaturalGasResource:
                 # Skip NaturalGasResource so not to count it twice
-                cost_of_resource_usage[resource] = 0.0
+                self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"] = 0.0
             else:
-                cost_of_resource_usage[resource] = self.cost_details[f"{resource}_needs"].values * self.resources_prices[resource].values
+                self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{resource}_needs"].values * self.inputs[f"{GlossaryEnergy.ResourcesPriceValue}:{resource}"]
+            self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:Total"] += self.outputs[f"{GlossaryEnergy.CostOfResourceUsageValue}:{resource}"]
 
-        self.cost_of_resources_usage = pd.DataFrame(cost_of_resource_usage)
-
-    def grad_price_vs_resources_price(self, ignore_gas: bool = False):
-        grad = {resource: np.diag(self.cost_details[f'{resource}_needs'].values) for resource in self.resources_used_for_production}
-
-        if ignore_gas:
-            grad[GlossaryEnergy.NaturalGasResource] = grad[GlossaryEnergy.NaturalGasResource] * 0.0
-
-        return grad
 
     def compute_resources_needs(self):
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value']  # kg/kWh
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
         # needs in [kg/kWh]
 
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit'] / self.inputs['data_fuel_dict']['calorific_value']
+
     def compute_byproducts_production(self):
-        # kg/kWh corresponds to Mt/TWh
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] / \
-                                                                                        self.data_energy_dict[
-                                                                                            'calorific_value'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{MethaneTechno.energy_name} ({self.product_unit})']
-        self.compute_ghg_emissions(Methane.emission_name)
-        # self.production[f'{hightemperatureheat.name}] ({self.product_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        pass
+        # self.production[f'{GlossaryEnergy.hightemperatureheat_energyname}] ({self.product_unit})'] = ((1 - self.inputs['techno_infos_dict']['efficiency']) * \
         #      self.production[f'{Methane.name} ({self.product_unit})']) / \
-        #       self.techno_infos_dict['efficiency']
+        #       self.inputs['techno_infos_dict']['efficiency']
