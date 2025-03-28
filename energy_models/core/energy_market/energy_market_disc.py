@@ -41,7 +41,7 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
         "last_modification_date": "",
         "category": "",
         "definition": "",
-        "icon": "fa-solid fa-bolt",
+        "icon": "fa-solid fa-right-left",
         "version": "",
     }
 

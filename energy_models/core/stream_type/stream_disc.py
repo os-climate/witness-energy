@@ -207,7 +207,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         if "Stream Flow" in charts or True:
             new_chart = self.get_chart_sankey_fluxes(
                 years_list,
-                chart_name=f"Flow of energy streams for {self.sos_name.split('.')[-1]} production (TWh)",
+                chart_name=f"Flow of energy streams for {self.sos_name.split('.')[-1]} production ({self.unit})",
                 split_external=True,
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
@@ -227,14 +227,14 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix over the years'
+        chart_name = f'Detailed prices of {self.stream_name} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name
         )
 
         serie = InstanciatedSeries(
             energy_prices[GlossaryEnergy.Years],
-            energy_prices[self.stream_name], f'{self.stream_name} mix price', 'lines')
+            energy_prices[self.stream_name], f'{self.pimp_string(self.stream_name)} mix', 'lines')
 
         new_chart.series.append(serie)
 
@@ -246,7 +246,7 @@ class StreamDiscipline(AutodifferentiedDisc):
             )
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years],
-                techno_price[technology], f'{technology} price', 'lines')
+                techno_price[technology], self.pimp_string(technology), 'lines')
             new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Price"
@@ -255,14 +255,14 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kg(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix over the years'
+        chart_name = f'Detailed prices of {self.stream_name} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
         total_price = energy_prices[self.stream_name] * \
                       self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
         serie = InstanciatedSeries(
             energy_prices[GlossaryEnergy.Years],
-            total_price, f'{self.stream_name} mix price', 'lines')
+            total_price, f'{self.stream_name} mix', 'lines')
 
         new_chart.series.append(serie)
 
@@ -275,7 +275,7 @@ class StreamDiscipline(AutodifferentiedDisc):
                               self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years],
-                techno_price_kg, f'{technology}', 'lines')
+                techno_price_kg, self.pimp_string(technology), 'lines')
             new_chart.series.append(serie)
 
         new_chart.post_processing_section_name = "Price"

@@ -76,4 +76,4 @@ class FlueGas(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}"] = self.zeros_array
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             self.outputs[f"{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}"] += \
-                self.inputs[f'{techno}.flue_gas_co2_ratio'][0] * self.outputs[f'techno_mix:{techno}']
+                self.inputs[f'{techno}.flue_gas_co2_ratio'][0] * self.outputs[f'techno_mix:{techno}'] / 100.

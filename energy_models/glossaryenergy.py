@@ -40,6 +40,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     YearEndDefaultCore = GlossaryWitnessCore.YearEndDefault
     YearEndVar = {
         "type": "int",
+        "structuring": True,
         "default": YearEndDefault,
         "unit": "year",
         "visibility": "Shared",

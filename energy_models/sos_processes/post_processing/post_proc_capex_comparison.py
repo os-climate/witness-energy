@@ -58,7 +58,7 @@ def create_chart_factory_comparison_technos(execution_engine, namespace, energy)
         ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.EnergyMix.{energy}')]
 
     if len(energy_detailed_prices) >= 2:
-        chart_name = f'Factory for each {energy} technologies over the years'
+        chart_name = f'Factory for each {energy} technologies '
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Factory [$/MWh]',
                                              chart_name=chart_name)
@@ -99,7 +99,7 @@ def create_chart_factory_comparison_energy(execution_engine, namespace, energy_l
             factory_mean += factory_techno
 
         mean_factory[energy] = factory_mean / len(energy_detailed_prices)
-    chart_name = 'Mean Factory for all energy over the years'
+    chart_name = 'Mean Factory for all energy '
 
     new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Factory [$/MWh]',
                                          chart_name=chart_name)

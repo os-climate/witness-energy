@@ -271,7 +271,7 @@ class FuelDiscipline(SoSWrapp):
 
     def get_chart_energy_price_in_dollar_mwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.energy_name} mix over the years'
+        chart_name = f'Detailed prices of {self.energy_name} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
@@ -288,7 +288,7 @@ class FuelDiscipline(SoSWrapp):
     def get_chart_techno_price_in_dollar_mwh(self):
         techno_prices = self.get_sosdisc_outputs(
             'energy_detailed_techno_prices')
-        chart_name = f'Detailed prices of {self.energy_name} technologies mix over the years'
+        chart_name = f'Detailed prices of {self.energy_name} technologies mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
