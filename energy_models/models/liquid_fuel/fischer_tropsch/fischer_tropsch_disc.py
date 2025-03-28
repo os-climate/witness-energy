@@ -213,7 +213,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         if 'Detailed prices' in charts and '$/USgallon' in price_unit_list:
             techno_detailed_prices = self.get_sosdisc_outputs(
                 GlossaryEnergy.TechnoDetailedPricesValue)
-            chart_name = f'Detailed prices of {self.techno_name} technology over the years'
+            chart_name = f'Detailed prices of {self.techno_name} technology '
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
@@ -249,7 +249,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             GlossaryEnergy.TechnoDetailedPricesValue)
         cost_of_energies_usage = self.get_sosdisc_outputs(GlossaryEnergy.CostOfStreamsUsageValue)
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
-        chart_name = f'Detailed prices of {self.techno_name} technology over the years'
+        chart_name = f'Detailed prices of {self.techno_name} technology '
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         minimum = 0
@@ -335,7 +335,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         specific_costs = self.get_sosdisc_outputs(GlossaryEnergy.SpecificCostsForProductionValue)
         calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
             'calorific_value']
-        chart_name = f'Detailed prices [$/t] of {self.techno_name} technology over the years'
+        chart_name = f'Detailed prices [$/t] of {self.techno_name} technology '
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         minimum = 0

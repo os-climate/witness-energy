@@ -66,7 +66,7 @@ class HeatTechnoDiscipline(TechnoDiscipline):
             x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
-            title = 'Detailed heat_flux over the years'
+            title = 'Detailed heat_flux '
             new_chart = self.get_charts(title, x_data, y_data, x_label, y_label, series_name, True)
             instanciated_charts.append(new_chart)
 

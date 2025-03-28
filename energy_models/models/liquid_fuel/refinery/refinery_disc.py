@@ -171,7 +171,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         if 'Detailed prices' in charts and '$/USgallon' in price_unit_list:
             techno_detailed_prices = self.get_sosdisc_outputs(
                 GlossaryEnergy.TechnoDetailedPricesValue)
-            chart_name = f'Detailed prices of {self.techno_name} technology over the years'
+            chart_name = f'Detailed prices of {self.techno_name} technology '
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
@@ -201,7 +201,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         if 'Prices per flow' in charts and '$/USgallon' in price_unit_list:
             techno_detailed_prices = self.get_sosdisc_outputs(
                 GlossaryEnergy.TechnoDetailedPricesValue)
-            chart_name = f'Refinery breakdown price for {self.techno_name} technology over the years'
+            chart_name = f'Refinery breakdown price for {self.techno_name} technology '
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 

@@ -258,7 +258,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         min4 = min(production_mix_df[name_residue_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3, min4) * 0.8
 
-        chart_name = 'Production of Crop over the years'
+        chart_name = 'Production of Crop '
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Crop (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
@@ -298,7 +298,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = 'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology '
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -334,7 +334,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = 'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology '
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

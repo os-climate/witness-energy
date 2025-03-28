@@ -194,7 +194,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixRawProduction['unit'], chart_name='Raw production breakdown', stacked_bar=True)
             for col in df_prod_brut_details.columns:
                 if col != GlossaryEnergy.Years and col != "Total":
-                    serie = InstanciatedSeries(years, df_prod_brut_details[col], col, 'bar')
+                    serie = InstanciatedSeries(years, df_prod_brut_details[col], self.pimp_string(col), 'bar')
                     new_chart.series.append(serie)
 
             serie = InstanciatedSeries(years, df_prod_brut["Total"], 'Total', 'lines')
@@ -208,7 +208,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixNetProductionsDf['unit'], chart_name='Net production breakdown', stacked_bar=True)
             for col in df_prod_net_details.columns:
                 if col != GlossaryEnergy.Years and col != "Total":
-                    serie = InstanciatedSeries(years, df_prod_net_details[col], col, 'bar')
+                    serie = InstanciatedSeries(years, df_prod_net_details[col], self.pimp_string(col), 'bar')
                     new_chart.series.append(serie)
 
             serie = InstanciatedSeries(years, df_prod_net_details["Total"], 'Total', 'lines')
@@ -224,7 +224,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                                                  chart_name='Energy consumption within the energy sector', stacked_bar=True)
             for col in df_consumption.columns:
                 if col != GlossaryEnergy.Years and col != "Total":
-                    serie = InstanciatedSeries(years, df_consumption[col], col, 'bar')
+                    serie = InstanciatedSeries(years, df_consumption[col], self.pimp_string(col), 'bar')
                     new_chart.series.append(serie)
 
             serie = InstanciatedSeries(years, df_consumption["Total"], 'Total', 'lines')
@@ -237,7 +237,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '%', chart_name='Energy mix', stacked_bar=True)
             for col in df_energy_mix.columns:
                 if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_energy_mix[col], col, 'bar')
+                    serie = InstanciatedSeries(years, df_energy_mix[col], self.pimp_string(col), 'bar')
                     new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Production"
@@ -278,7 +278,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name='Energy prices')
             for col in df_price.columns:
                 if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_price[col], col, 'lines')
+                    serie = InstanciatedSeries(years, df_price[col], self.pimp_string(col), 'lines')
                     new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Price"
@@ -296,7 +296,6 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                 instanciated_charts.extend(self.get_ghg_charts(ghg))
 
         if 'Emissions intensities' in charts:
-            instanciated_charts.extend(self.get_ghg_equivalent_charts())
             for ghg in GlossaryEnergy.GreenHouseGases:
                 instanciated_charts.extend(self.get_ghg_intensity_by_energy(ghg))
 
@@ -316,7 +315,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyMixEnergiesDemandsDf['unit'], chart_name='Demands for each energy within the energy sector', stacked_bar=True)
             for col in df_demands.columns:
                 if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_demands[col], col, 'bar' )
+                    serie = InstanciatedSeries(years, df_demands[col], self.pimp_string(col), 'bar' )
                     new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Demands"
@@ -497,7 +496,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                                              stacked_bar=True)
         for col in df_emissions_by_energy.columns:
             if col != GlossaryEnergy.Years:
-                serie = InstanciatedSeries(years, df_emissions_by_energy[col], col, 'bar')
+                serie = InstanciatedSeries(years, df_emissions_by_energy[col], self.pimp_string(col), 'bar')
                 new_chart.series.append(serie)
 
         serie = InstanciatedSeries(years, df_total_emissions[ghg], f"Total {ghg} emissions of energy sector", 'lines')
@@ -535,7 +534,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         total = np.zeros_like(df_total_emissions[GlossaryEnergy.CO2])
 
         for ghg in GlossaryEnergy.GreenHouseGases:
-            serie = InstanciatedSeries(years, df_total_emissions[ghg], ghg, 'bar')
+            serie = InstanciatedSeries(years, df_total_emissions[ghg] * ClimateEcoDiscipline.GWP_100_default[ghg], ghg, 'bar')
             total += df_total_emissions[ghg] * ClimateEcoDiscipline.GWP_100_default[ghg]
             new_chart.series.append(serie)
 
