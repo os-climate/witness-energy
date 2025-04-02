@@ -38,7 +38,7 @@ class GeothermalHeat(mediumheattechno):
         # TODO
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
             carbon_production_factor * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']

@@ -42,16 +42,16 @@ class CCUS(DifferentiableModel):
 
     def compute_ccus_production(self):
         """Carbon captured production and carbon storage capacity"""
-        input_unit = GlossaryEnergy.ccus_stream_unit
+        input_unit = GlossaryEnergy.StreamProductionDf['unit']
         conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.CCUSOutput['unit']]
         self.outputs[f"{GlossaryEnergy.CCUSOutputValue}:{GlossaryEnergy.Years}"] = self.years
 
         self.outputs[f"{GlossaryEnergy.CCUSOutputValue}:{GlossaryEnergy.carbon_storage}"] = \
-            self.inputs[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_storage} ({input_unit})"]\
+            self.inputs[f"{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_storage}"]\
             * conversion_factor
 
         self.outputs[f"{GlossaryEnergy.CCUSOutputValue}:{GlossaryEnergy.carbon_captured}"] = \
-            self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured} ({input_unit})"]\
+            self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured}"]\
             * conversion_factor
 
         self.outputs[f"{GlossaryEnergy.CCUSOutputValue}:Carbon captured to store (after direct usages)"] = \
@@ -78,11 +78,11 @@ class CCUS(DifferentiableModel):
                 self.inputs[f"{stream}.{GlossaryEnergy.LandUseRequiredValue}:Land use"] * conversion_factor
 
     def compute_emissions(self):
-        input_unit = CarbonCaptureDiscipline.unit
+        input_unit = GlossaryEnergy.StreamProductionDf['unit']
         conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.CCUS_CO2EmissionsDf['unit']]
         self.outputs[f"{GlossaryEnergy.CCUS_CO2EmissionsDfValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.CCUS_CO2EmissionsDfValue}:{GlossaryEnergy.CO2}"] = \
-            self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured} ({input_unit})"] * conversion_factor
+            self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured}"] * conversion_factor
 
     def compute_ccus_streams_ratios(self):
         """Availibility = min(1 , prod/ demand)"""
@@ -106,8 +106,8 @@ class CCUS(DifferentiableModel):
         output_unit = "Gt"
 
         carbon_storage_demand_breakdown = {
-            "Carbon captured by CCUS": self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.ccus_stream_unit})"]
-                                       * GlossaryEnergy.conversion_dict[GlossaryEnergy.ccus_stream_unit][output_unit],
+            "Carbon captured by CCUS": self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured}"]
+                                       * GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamProductionDf['unit']][output_unit],
             "Carbon captured demand for Energy Mix": - self.inputs[f"{GlossaryEnergy.EnergyMixCCSDemandsDfValue}:{GlossaryEnergy.carbon_captured}"]
                                                      * GlossaryEnergy.conversion_dict[GlossaryEnergy.EnergyMixCCSDemandsDf['unit']][output_unit]
         }

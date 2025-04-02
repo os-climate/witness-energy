@@ -57,7 +57,7 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         water_prod_factor = self.get_theoretical_water_prod()
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = \
             water_prod_factor * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{HydrotreatedOilFuel.name} ({self.product_unit})'] \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] \
             / water_calorific_value
 
     def get_theoretical_natural_oil_needs(self):

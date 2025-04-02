@@ -50,7 +50,7 @@ class Transesterification(BioDieselTechno):
 
     def compute_byproducts_production(self):
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Glycerol.name} ({GlossaryEnergy.mass_unit})'] = 0.12 * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-            f'{BioDiesel.name} ({self.product_unit})'] / \
+            f'{self.stream_name}'] / \
                                                                                                                          self.inputs['data_fuel_dict']['calorific_value']
 
     def get_theoretical_methanol_needs(self):

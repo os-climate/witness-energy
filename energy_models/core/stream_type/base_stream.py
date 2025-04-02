@@ -101,16 +101,24 @@ class BaseStream(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.StreamProductionDetailedValue}:{GlossaryEnergy.Years}"] = self.years
 
+        conversion_factor_stream_prod = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoProductionDf['unit']][GlossaryEnergy.StreamProductionDf['unit']]
+        conversion_factor_stream_prod_detailed = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoProductionDf['unit']][GlossaryEnergy.StreamProductionDetailedDf['unit']]
+        inputs_units = GlossaryEnergy.TechnoProductionDf['unit'].split(' or ')
+        outputs_units = GlossaryEnergy.StreamProductionDf['unit'].split(' or ')
         for techno in self.inputs[GlossaryEnergy.techno_list]:
-            self.outputs[f"{GlossaryEnergy.StreamProductionDetailedValue}:{techno} ({self.unit})"] = \
-                self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] * 1e3
+            self.outputs[f"{GlossaryEnergy.StreamProductionDetailedValue}:{techno}"] = \
+                self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name}'] * conversion_factor_stream_prod_detailed
             techno_products = self.get_colnames_input_dataframe(df_name=f'{techno}.{GlossaryEnergy.TechnoProductionValue}', expect_years=True)
             for techno_product in techno_products:
-                output_path = f"{GlossaryEnergy.StreamProductionValue}:{techno_product}"
+                techno_product_outputname = techno_product
+                for iu, ou in zip(inputs_units, outputs_units):
+                    techno_product_outputname = techno_product_outputname.replace(f"({iu})", f"({ou})")
+                output_path = f"{GlossaryEnergy.StreamProductionValue}:{techno_product_outputname}"
                 if output_path in self.outputs:
-                    self.outputs[output_path] = self.outputs[output_path] + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
+                    self.outputs[output_path] = self.outputs[output_path] + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}'] * conversion_factor_stream_prod
                 else:
-                    self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}']
+                    self.outputs[output_path] = self.zeros_array + self.inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{techno_product}'] * conversion_factor_stream_prod
+
 
     def compute_energy_type_capital(self):
         technos = self.inputs[GlossaryEnergy.techno_list]
@@ -164,10 +172,10 @@ class BaseStream(DifferentiableModel):
     def compute_techno_mix(self):
         """Compute the contribution of each techno for the production of the main stream (in %) [0, 100]"""
         self.outputs[f'techno_mix:{GlossaryEnergy.Years}'] = self.years
-        stream_total_prod = self.outputs[f'{GlossaryEnergy.StreamProductionValue}:{self.name} ({self.unit})']
+        stream_total_prod = self.outputs[f'{GlossaryEnergy.StreamProductionValue}:{self.name}']
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             techno_share_of_total_stream_prod = self.inputs[
-                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] / (stream_total_prod + 1e-9)
+                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name}'] / (stream_total_prod + 1e-9)
             self.outputs[f'techno_mix:{techno}'] = techno_share_of_total_stream_prod * 100.
 
     def compute_energy_consumptions(self):

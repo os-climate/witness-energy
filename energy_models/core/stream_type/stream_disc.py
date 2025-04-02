@@ -290,18 +290,19 @@ class StreamDiscipline(AutodifferentiedDisc):
         techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         total_stream_prod_df = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionValue)
-
+        displayed_unit = self.unit
+        conversion_factor_detailed_prod = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamProductionDetailedDf['unit']][displayed_unit]
+        conversion_factor_total_prod = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamProductionDf['unit']][displayed_unit]
         years = techno_prods_of_main_stream_df[GlossaryEnergy.Years]
         chart_name = f'Breakdown of {self.stream_name} production'
 
-        chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, self.unit, chart_name=chart_name, stacked_bar=True)
+        chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, displayed_unit, chart_name=chart_name, stacked_bar=True)
         for techno in techno_list:
-            new_series = InstanciatedSeries(years, techno_prods_of_main_stream_df[f'{techno} ({self.unit})'], techno,
+            new_series = InstanciatedSeries(years, techno_prods_of_main_stream_df[f'{techno}'] * conversion_factor_detailed_prod, techno,
                                             'bar', True)
             chart.series.append(new_series)
 
-        new_series = InstanciatedSeries(years, total_stream_prod_df[f'{self.stream_name} ({self.unit})'], "Total",
-                                        'lines', True)
+        new_series = InstanciatedSeries(years, total_stream_prod_df[f'{self.stream_name}'] * conversion_factor_total_prod, "Total", 'lines', True)
         chart.series.append(new_series)
         chart.post_processing_is_key_chart = True
         chart.post_processing_section_name = "Production"
@@ -347,8 +348,8 @@ class StreamDiscipline(AutodifferentiedDisc):
         for year in years_list:
 
             df_at_year = stream_production_breakdown.loc[stream_production_breakdown["years"] == year]
-            values = [float(df_at_year[f'{techno} ({self.unit})']) for techno in techno_list]
-            pie_chart = InstanciatedPieChart(f'Composition of {self.stream_name} production in {year} ({self.unit})', display_techno_list, values)
+            values = [float(df_at_year[f'{techno}']) for techno in techno_list]
+            pie_chart = InstanciatedPieChart(f'Composition of {self.stream_name} production in {year} ({GlossaryEnergy.StreamProductionDetailedDf["unit"]})', display_techno_list, values)
             pie_chart.post_processing_section_name = "Production"
             instanciated_charts.append(pie_chart)
 

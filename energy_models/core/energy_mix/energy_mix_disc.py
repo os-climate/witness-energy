@@ -304,7 +304,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '%', chart_name='Demands satisfaction level')
             for col in df_demands_ratio.columns:
                 if col != GlossaryEnergy.Years:
-                    serie = InstanciatedSeries(years, df_demands_ratio[col] * 100., col, 'lines' )
+                    serie = InstanciatedSeries(years, df_demands_ratio[col], col, 'lines' )
                     new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Demands"

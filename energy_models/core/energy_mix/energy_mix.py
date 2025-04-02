@@ -104,11 +104,11 @@ class EnergyMix(DifferentiableModel):
         """Sum all the energy production"""
 
         self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:{GlossaryEnergy.Years}'] = self.years
+        input_unit = GlossaryEnergy.StreamProductionDf['unit'].split(' or ')[0]
+        conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.EnergyMixRawProduction['unit']]
         for energy in self.inputs[GlossaryEnergy.energy_list]:
-            input_unit = GlossaryEnergy.unit_dicts[energy]
-            conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.EnergyMixRawProduction['unit']]
             self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:{energy}'] = \
-                self.inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}:{energy} ({input_unit})'] * conversion_factor
+                self.inputs[f'{energy}.{GlossaryEnergy.StreamProductionValue}:{energy}'] * conversion_factor
 
         # Total computation :
         self.outputs[f'{GlossaryEnergy.EnergyMixRawProductionValue}:Total'] = \
@@ -120,6 +120,8 @@ class EnergyMix(DifferentiableModel):
         """
 
         self.outputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{GlossaryEnergy.Years}"] = self.years
+
+        assert GlossaryEnergy.EnergyMixRawProduction['unit'] == GlossaryEnergy.EnergyMixEnergiesConsumptionDf['unit']
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             # starting from raw energy production
             raw_production_energy = self.outputs[f"{GlossaryEnergy.EnergyMixRawProductionValue}:{energy}"]
@@ -190,6 +192,7 @@ class EnergyMix(DifferentiableModel):
         Ratio stream A to compute the real production.
         """
         self.outputs[f"{GlossaryEnergy.AllStreamsDemandRatioValue}:{GlossaryEnergy.Years}"] = self.years
+        assert GlossaryEnergy.EnergyMixRawProduction['unit'] == GlossaryEnergy.EnergyMixEnergiesDemandsDf['unit']
 
         for stream_consumption in self.get_colnames_output_dataframe(f"{GlossaryEnergy.EnergyMixEnergiesDemandsDfValue}", expect_years=True, full_path=False):
             if f'{GlossaryEnergy.EnergyMixRawProductionValue}:{stream_consumption}' in self.outputs:
@@ -240,16 +243,12 @@ class EnergyMix(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue}:{GlossaryEnergy.Years}"] = self.years
         conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.StreamEnergyConsumption['unit']][GlossaryEnergy.EnergyMixEnergiesConsumptionDf['unit']]
         for energy in self.inputs[GlossaryEnergy.energy_list]:
-            # starting from raw energy production
-            column_name_energy = f'{energy} (TWh)'
-
-            # removing consumed energy
             consumed_energy_by_energy_list = []
             for other_energy in self.inputs[GlossaryEnergy.energy_list]:
                 consumptions_of_other_energy = self.get_colnames_input_dataframe(df_name=f'{other_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}', expect_years=True, full_path=False)
-                if column_name_energy in consumptions_of_other_energy:
+                if energy in consumptions_of_other_energy:
                     consumed_energy_by_energy_list.append(
-                        self.inputs[f'{other_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}:{column_name_energy}'])
+                        self.inputs[f'{other_energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}:{energy}'])
 
             consumed_energy_by_other_energy_sum = self.sum_cols(consumed_energy_by_energy_list) * conversion_factor if consumed_energy_by_energy_list else self.zeros_array
             self.outputs[f"{GlossaryEnergy.EnergyMixEnergiesConsumptionDfValue}:{energy}"] = consumed_energy_by_other_energy_sum

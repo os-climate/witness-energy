@@ -44,7 +44,7 @@ class CCGasT(ElectricityTechno):
     def compute_byproducts_production(self):
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
         # TODO
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)

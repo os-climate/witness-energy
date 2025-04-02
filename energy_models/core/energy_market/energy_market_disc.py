@@ -131,7 +131,7 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
 
             instanciated_charts.append(new_chart)
 
-        if 'Demand' in charts:
+        if 'Demand' in charts and not simplified_demand:
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, destination_unit,
                                                  chart_name="Demand", stacked_bar=True)
 
@@ -158,6 +158,7 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
                 new_chart.add_series(serie)
 
                 new_chart.post_processing_section_name = "Production & Demand"
+                new_chart.post_processing_is_key_chart = True
                 new_chart.annotation_upper_left = {"Note": 'simplified demand, on total of energy only, not by energy type'}
 
             else:
@@ -189,6 +190,7 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
                     new_chart.add_series(serie)
 
             new_chart.post_processing_section_name = "Production & Demand"
+            new_chart.post_processing_is_key_chart = True
             if simplified_demand:
                 new_chart.annotation_upper_left = {"Note": 'simplified demand, ratios is computed bases on totals, not by energy type'}
 
@@ -207,6 +209,7 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
             new_chart.add_series(serie)
 
             new_chart.post_processing_section_name = "Demand breakdown by sector"
+            new_chart.post_processing_is_key_chart = True
 
             instanciated_charts.append(new_chart)
 

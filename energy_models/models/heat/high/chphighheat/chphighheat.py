@@ -38,12 +38,11 @@ class CHPHighHeat(highheattechno):
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.CO2FromFlueGas} ({GlossaryEnergy.mass_unit})'] = \
             Methane.data_energy_dict[GlossaryEnergy.CO2PerUse] / \
             Methane.data_energy_dict['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{Methane.name} ({GlossaryEnergy.energy_unit})']
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({self.product_unit})'] = \
-            (self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] /
-             (1 - self.inputs['techno_infos_dict']['efficiency'])) - self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{ElectricityTechno.stream_name} ({GlossaryEnergy.energy_unit})'] = \
+            (self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] /
+             (1 - self.inputs['techno_infos_dict']['efficiency'])) - self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

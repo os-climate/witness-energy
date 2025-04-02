@@ -38,10 +38,10 @@ class CoalGen(ElectricityTechno):
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] = \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                f'{self.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
+                f'{self.stream_name}'] * (1.0 - elec_needs)
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{SolidFuel.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{SolidFuel.name}'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']

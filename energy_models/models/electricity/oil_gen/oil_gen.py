@@ -38,10 +38,10 @@ class OilGen(ElectricityTechno):
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] * (1.0 - elec_needs)
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] * (1.0 - elec_needs)
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{LiquidFuel.name} ({self.product_unit})'] - \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{LiquidFuel.name}'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 

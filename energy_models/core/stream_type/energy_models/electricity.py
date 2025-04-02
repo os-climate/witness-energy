@@ -40,5 +40,5 @@ class Electricity(EnergyType):
         if GlossaryEnergy.Hydropower in self.inputs[GlossaryEnergy.techno_list]:
             self.outputs[f'prod_hydropower_constraint:{GlossaryEnergy.Years}'] = self.years
             self.outputs['prod_hydropower_constraint:hydropower_constraint'] = - (
-                    self.inputs[f'{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}:{self.name} ({self.unit})'] -
+                    self.inputs[f'{GlossaryEnergy.Hydropower}.{GlossaryEnergy.TechnoProductionValue}:{self.name}'] -
                     self.inputs['hydropower_production_current']) / self.inputs['hydropower_constraint_ref']

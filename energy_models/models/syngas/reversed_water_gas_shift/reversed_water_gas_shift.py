@@ -142,9 +142,8 @@ class RWGS(SyngasTechno):
     def compute_byproducts_production(self):
         th_water_prod = self.get_theoretical_water_prod()
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = th_water_prod * \
-                                                                                                                  self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                           f'{SyngasTechno.stream_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{Water.name} ({GlossaryEnergy.mass_unit})'] = \
+            th_water_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def compute_energies_demand(self):
         """
@@ -154,8 +153,9 @@ class RWGS(SyngasTechno):
 
         super().compute_energies_demand()
 
-        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
-                                                                                                                           self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{SyngasTechno.stream_name} ({self.product_unit})']  # in kg
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CarbonCapture.name} ({GlossaryEnergy.mass_unit})'] = \
+            self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CO2Resource}_needs"] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']  # in kg
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         '''

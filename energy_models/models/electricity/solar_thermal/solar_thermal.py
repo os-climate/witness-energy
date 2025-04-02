@@ -30,7 +30,7 @@ class SolarThermal(ElectricityTechno):
         density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
         self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             density_per_ha
 
     def compute_byproducts_production(self):
@@ -41,5 +41,5 @@ class SolarThermal(ElectricityTechno):
 
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] =\
             ((1 - self.inputs['techno_infos_dict']['efficiency']) *
-             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']) \
+             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']) \
             / self.inputs['techno_infos_dict']['efficiency']

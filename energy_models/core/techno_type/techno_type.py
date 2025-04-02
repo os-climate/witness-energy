@@ -96,19 +96,19 @@ class TechnoType(DifferentiableModel):
         for resource in self.inputs[GlossaryEnergy.ResourcesUsedForProductionValue]:
             self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{resource} ({GlossaryEnergy.mass_unit})'] =\
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{resource}_needs"] * \
-                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def compute_energies_demand(self):
         """
         Compute the demand of consumption for other energy
 
-        Demand (TWh) = Targeted production * (TWh / Production unit)
+        Demand (TWh) = Targeted production * Needs by production unit ( in TWh / Production unit)
         """
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
         for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
-            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{energy} ({GlossaryEnergy.energy_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{energy}'] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * \
-                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def compute_byproducts_production(self):
         """
@@ -206,7 +206,7 @@ class TechnoType(DifferentiableModel):
         self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Capital}'] = \
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:Capex_{self.name}'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] / 1e3
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / 1e3
 
         self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.NonUseCapital}'] = self.outputs[f'{GlossaryEnergy.TechnoCapitalValue}:{GlossaryEnergy.Capital}'] * (
                 1.0 - self.outputs['applied_ratio:applied_ratio'] / 100. * self.inputs[f'{GlossaryEnergy.UtilisationRatioValue}:{GlossaryEnergy.UtilisationRatioValue}'] / 100.)
@@ -756,7 +756,7 @@ class TechnoType(DifferentiableModel):
         max_theoritical_production = max_theoritical_historical_plants_production + max_theoritical_new_plant_production
         target_production = utilisation_ratio * max_theoritical_production
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})'] = target_production
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] = target_production
 
         self.outputs[f'techno_production_infos:{GlossaryEnergy.Years}'] = self.years
         self.outputs['techno_production_infos:target_production'] = target_production
@@ -786,7 +786,7 @@ class TechnoType(DifferentiableModel):
         # minimum to avoid division by zero, no impact on gradients as mean age of production is strictly for information purpose, and not a coupling variable
         mean_age_of_new_producing_plants = (mask_age.T @ new_installations_production_capacity) / \
                                            self.np.maximum(self.outputs['techno_production_infos:max_theoritical_new_plant_production'], 1e-3)
-        target_total_production = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+        target_total_production = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
         max_theoritical_new_plant_production = self.outputs['techno_production_infos:max_theoritical_new_plant_production']
 
         # minimum to avoid division by zero, no impact on gradients as mean age of production is strictly for
@@ -867,7 +867,7 @@ class TechnoType(DifferentiableModel):
 
         if related_to == 'prod':
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GHG_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
-                                                                                                                    self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+                                                                                                                    self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
         else:
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GHG_type} ({GlossaryEnergy.mass_unit})'] = emission_factor * \
                                                                                                                     self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{related_to} ({self.product_unit})']
@@ -944,7 +944,7 @@ class TechnoType(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.TechnoScope1GHGEmissionsValue}:{GlossaryEnergy.Years}"] = self.years
         for ghg in GlossaryEnergy.GreenHouseGases:
             self.outputs[f"{GlossaryEnergy.TechnoScope1GHGEmissionsValue}:{ghg}"] = \
-                self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name} ({self.product_unit})'] * \
+                self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name}'] * \
                 self.outputs[f'ghg_intensity_scope_1:{ghg}']
 
     def compute_scope_2_ghg_emissions(self):
@@ -952,7 +952,7 @@ class TechnoType(DifferentiableModel):
         self.outputs[f"techno_scope_2_ghg_emissions:{GlossaryEnergy.Years}"] = self.years
         for ghg in GlossaryEnergy.GreenHouseGases:
             self.outputs[f"techno_scope_2_ghg_emissions:{ghg}"] = \
-                self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name} ({self.product_unit})'] * \
+                self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name}'] * \
                 self.outputs[f'ghg_intensity_scope_2:{ghg}']
 
     def compute_ccs_streams_demands(self):
@@ -960,7 +960,7 @@ class TechnoType(DifferentiableModel):
         for stream in self.inputs[GlossaryEnergy.CCSUsedForProductionValue]:
             self.outputs[f'{GlossaryEnergy.TechnoCCSDemandsValue}:{stream} ({GlossaryEnergy.energy_unit})'] = \
                 self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{stream}_needs"] * \
-                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name} ({self.product_unit})']
+                self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
     def compute_co2_from_flue_gas_intensity_scope_1(self) -> float:
         """returns the intensity of co2 emissions through flue gas exhausts in Mt/TWh"""
@@ -973,5 +973,5 @@ class TechnoType(DifferentiableModel):
 
         self.outputs[f'{self.stream_name}.{self.name}.{GlossaryEnergy.TechnoFlueGasProductionValue}:{GlossaryEnergy.Years}'] = self.years
         self.outputs[f'{self.stream_name}.{self.name}.{GlossaryEnergy.TechnoFlueGasProductionValue}:{GlossaryEnergy.CO2FromFlueGas}'] = \
-            self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name} ({self.product_unit})'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoProductionValue}:{self.stream_name}'] * \
             co2_flue_gas_intensity

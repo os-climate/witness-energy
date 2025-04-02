@@ -39,12 +39,10 @@ class Pyrolysis(SyngasTechno):
 
     def compute_byproducts_production(self):
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:char ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                   f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
-                                                                                                          self.inputs['techno_infos_dict']['char_yield'] / \
-                                                                                                          self.inputs['techno_infos_dict']['syngas_yield']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:char ({GlossaryEnergy.mass_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] * \
+            self.inputs['techno_infos_dict']['char_yield'] / self.inputs['techno_infos_dict']['syngas_yield']
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:bio_oil ({GlossaryEnergy.mass_unit})'] = self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                      f'{SyngasTechno.stream_name} ({self.product_unit})'] * \
-                                                                                                             self.inputs['techno_infos_dict']['bio_oil_yield'] / \
-                                                                                                             self.inputs['techno_infos_dict']['syngas_yield']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:bio_oil ({GlossaryEnergy.mass_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] * \
+            self.inputs['techno_infos_dict']['bio_oil_yield'] / self.inputs['techno_infos_dict']['syngas_yield']

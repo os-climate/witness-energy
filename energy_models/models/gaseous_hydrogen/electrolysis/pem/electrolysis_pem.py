@@ -87,7 +87,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         o2_needs = self.get_oxygen_produced()
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:O2 ({GlossaryEnergy.mass_unit})'] = \
             o2_needs / self.inputs['data_fuel_dict']['calorific_value'] * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GaseousHydrogenTechno.stream_name} ({self.product_unit})']
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
         # Production
         # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \

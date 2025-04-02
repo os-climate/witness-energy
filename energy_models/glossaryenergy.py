@@ -626,7 +626,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoProductionDf = {
         "var_name": TechnoProductionValue,
         "type": "dataframe",
-        "unit": "TWh",
+        "unit": "TWh or Mt",
         "dynamic_dataframe_columns": True,
     }
 
@@ -1613,13 +1613,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"{techno_name}_wotaxes": ("float", None, False),
             },
         }
-
-    @classmethod
-    def get_techno_prod_df(cls, energy_name: str):
-        return {
-            "type": "dataframe",
-            "unit": cls.unit_dicts[energy_name],
-            AutodifferentiedDisc.GRADIENTS: True,}
 
     @classmethod
     def get_stream_prices_df(cls, stream_used_for_production: list[str]):

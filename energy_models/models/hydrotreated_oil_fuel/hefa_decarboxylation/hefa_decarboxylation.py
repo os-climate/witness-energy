@@ -54,7 +54,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
             carbon_production_factor * \
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{HydrotreatedOilFuel.name} ({self.product_unit})'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_natural_oil_needs(self):
