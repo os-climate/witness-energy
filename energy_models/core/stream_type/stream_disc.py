@@ -335,23 +335,24 @@ class StreamDiscipline(AutodifferentiedDisc):
             chart.post_processing_section_name = "Production"
             instanciated_charts.append(chart)
 
-        new_charts = self.get_chart_technology_mix(years_list)
+        new_charts = self.get_chart_techno_mix(years_list)
         instanciated_charts.extend(new_charts)
         return instanciated_charts
 
-    def get_chart_technology_mix(self, years_list):
+    def get_chart_techno_mix(self, years_list):
         instanciated_charts = []
-        techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-        stream_production_breakdown = self.get_sosdisc_outputs(GlossaryEnergy.StreamProductionDetailedValue)
-        display_techno_list = []
+        techno_mix = self.get_sosdisc_outputs("techno_mix")
+        years = techno_mix[GlossaryEnergy.Years]
+        chart_name = f'Techno mix for {self.stream_name} production'
+        chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, self.unit, chart_name=chart_name, stacked_bar=True)
 
-        for year in years_list:
+        for col in techno_mix.columns:
+            if col != GlossaryEnergy.Years:
+                new_series = InstanciatedSeries(years, techno_mix[col], self.pimp_string(col), 'bar', True)
+                chart.series.append(new_series)
 
-            df_at_year = stream_production_breakdown.loc[stream_production_breakdown["years"] == year]
-            values = [float(df_at_year[f'{techno}']) for techno in techno_list]
-            pie_chart = InstanciatedPieChart(f'Composition of {self.stream_name} production in {year} ({GlossaryEnergy.StreamProductionDetailedDf["unit"]})', display_techno_list, values)
-            pie_chart.post_processing_section_name = "Production"
-            instanciated_charts.append(pie_chart)
+        chart.post_processing_section_name = "Production"
+        instanciated_charts.append(chart)
 
 
         return instanciated_charts

@@ -145,8 +145,9 @@ class TechnoType(DifferentiableModel):
         valid_cols = list(filter(lambda col: col in self.inputs, self.ratios_name_list))
         if len(valid_cols) == 1:
             limiting_input = valid_cols[0]
-            ratio_values = self.inputs[limiting_input]
-            limiting_input = self.np.array([valid_cols[0]] * len(self.years))
+            limiting_input_name = valid_cols[0].split(':')[1]
+            ratio_values = self.inputs[limiting_input] / 100.
+            limiting_input = self.np.array([limiting_input_name] * len(self.years))
         elif len(valid_cols) > 1:
             ratios_array = self.np.vstack([self.inputs[col] for col in valid_cols]).T / 100.
             if self.inputs['smooth_type'] == 'cons_smooth_max':
@@ -156,9 +157,10 @@ class TechnoType(DifferentiableModel):
             limiting_input = self.np.array(
                 [self.ratios_name_list[index].split(':')[1] for index in self.np.argmin(ratios_array, axis=1)])
 
+        applied_ratio = ratio_values * 100.
         self.outputs[f'applied_ratio:{GlossaryEnergy.Years}'] = self.years
         self.outputs['applied_ratio:limiting_input'] = limiting_input
-        self.outputs['applied_ratio:applied_ratio'] = ratio_values * 100.
+        self.outputs['applied_ratio:applied_ratio'] = applied_ratio
 
 
     def apply_limiting_ratio(self):

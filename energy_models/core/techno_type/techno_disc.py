@@ -390,7 +390,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
             instanciated_charts.extend(self.get_chart_energy_consumption())
 
         if "Energy demand":
-            instanciated_charts.extend(self.get_chart_energy_consumption())
+            instanciated_charts.extend(self.get_chart_energy_demand())
 
         if 'Applied Ratio' in charts:
             new_chart = self.get_chart_applied_ratio()
@@ -601,7 +601,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         displayed_unit = 'M$'
         assert GlossaryEnergy.TechnoInvestDf['unit'] == GlossaryEnergy.InvestmentBeforeYearStartDf['unit']
         conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoInvestDf['unit']][displayed_unit]
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TechnoInvestDf['unit'],
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, displayed_unit,
                                              chart_name=chart_name, stacked_bar=True)
         invest = invest_during_study[GlossaryEnergy.InvestValue].values * conversion_factor
         serie = InstanciatedSeries(
@@ -627,11 +627,11 @@ class TechnoDiscipline(AutodifferentiedDisc):
         applied_ratio = self.get_sosdisc_outputs('applied_ratio')
         chart_name = f'Ratio applied on {self.techno_name} technology energy Production'
         fig = go.Figure()
-        fig.add_trace(go.Bar(x=applied_ratio[GlossaryEnergy.Years],
-                             y=applied_ratio['applied_ratio'],
-                             marker=dict(color=applied_ratio['applied_ratio'],
+        fig.add_trace(go.Bar(x=list(applied_ratio[GlossaryEnergy.Years]),
+                             y=list(applied_ratio['applied_ratio']),
+                             marker=dict(color=list(applied_ratio['applied_ratio']),
                                          colorscale='Emrld'),
-                             hovertext=applied_ratio['limiting_input']))
+                             hovertext=list(applied_ratio['limiting_input'])))
         new_chart = InstantiatedPlotlyNativeChart(
             fig, chart_name=chart_name, default_title=True)
         new_chart.post_processing_section_name = "Ratios"

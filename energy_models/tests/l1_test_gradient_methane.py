@@ -82,7 +82,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
         self.resources_price[GlossaryEnergy.WaterResource] = 1.4
         # ---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+            zip(EnergyMix.energy_list, np.linspace(100.0, 100.0, len(self.years))))
         demand_ratio_dict[GlossaryEnergy.Years] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.all_streams_demand_ratio[GlossaryEnergy.carbon_captured] = 1.0

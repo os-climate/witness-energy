@@ -172,10 +172,11 @@ class BaseStream(DifferentiableModel):
     def compute_techno_mix(self):
         """Compute the contribution of each techno for the production of the main stream (in %) [0, 100]"""
         self.outputs[f'techno_mix:{GlossaryEnergy.Years}'] = self.years
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.TechnoProductionDf['unit']][GlossaryEnergy.StreamProductionDf['unit']]
         stream_total_prod = self.outputs[f'{GlossaryEnergy.StreamProductionValue}:{self.name}']
         for techno in self.inputs[GlossaryEnergy.techno_list]:
             techno_share_of_total_stream_prod = self.inputs[
-                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name}'] / (stream_total_prod + 1e-9)
+                                                    f'{techno}.{GlossaryEnergy.TechnoProductionValue}:{self.name}'] * conversion_factor / (stream_total_prod + 1e-9)
             self.outputs[f'techno_mix:{techno}'] = techno_share_of_total_stream_prod * 100.
 
     def compute_energy_consumptions(self):
