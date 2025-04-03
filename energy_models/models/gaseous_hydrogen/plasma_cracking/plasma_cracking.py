@@ -18,7 +18,6 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_type import EnergyType
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )

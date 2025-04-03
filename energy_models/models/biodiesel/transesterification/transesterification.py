@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.resources_models.glycerol import Glycerol
 from energy_models.core.stream_type.resources_models.methanol import Methanol
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil

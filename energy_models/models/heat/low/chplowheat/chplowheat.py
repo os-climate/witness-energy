@@ -15,7 +15,6 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,

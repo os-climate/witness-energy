@@ -16,9 +16,6 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
-from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import (
-    CCTechno,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.generic_flue_gas_techno_model import (
     GenericFlueGasTechnoModel,

@@ -18,9 +18,6 @@ limitations under the License.
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
-    HydrotreatedOilFuel,
-)
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
