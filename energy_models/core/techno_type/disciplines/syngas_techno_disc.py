@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
@@ -37,14 +36,14 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
-                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'visibility': "Shared",
                                                    'namespace': 'ns_syngas',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
-                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': "Shared",
                                                      'namespace': 'ns_syngas',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
                                                      'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
@@ -52,7 +51,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
-                                  'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'visibility': "Shared",
                                   'namespace': 'ns_syngas',
                                   'default': Syngas.data_energy_dict,
                                   'unit': 'defined in dict'},
@@ -60,28 +59,11 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
     DESC_IN.update(TechnoDiscipline.DESC_IN)
     syngas_ratio = None
     _maturity = 'Research'
-    energy_name = GlossaryEnergy.syngas
+    stream_name = GlossaryEnergy.syngas
 
     # -- add specific techno outputs to this
-    DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%'}}
+    DESC_OUT = {'syngas_ratio': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor':
+        {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
+         'syngas_ratio': ('float', None, True)}}}
 
     DESC_OUT.update(TechnoDiscipline.DESC_OUT)
-
-    def run(self):
-        super().run()
-
-        outputs_dict = {'syngas_ratio': np.array([self.syngas_ratio])}
-        
-        self.store_sos_outputs_values(outputs_dict)
-
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        TechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources)

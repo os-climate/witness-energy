@@ -66,12 +66,8 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
 
                                  # RTE France
                                  # https://www.rte-france.com/en/eco2mix/co2-emissions
-                                 'CO2_from_production': 0.777,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.777,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.008 kt/PJ
-                                 'N2O_emission_factor': 0.008e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # IEA and NEA, Paris
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
@@ -115,7 +111,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9,  # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -131,13 +127,21 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     # https://www.iea.org/reports/world-energy-investment-2019/power-sector
     # License: CC BY 4.0.
     # (linear from 2016, 2017, 2018 data)
-    
+
     oil_flue_gas_ratio = np.array([0.12])
 
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.008 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.N2O, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}', 0.008e-3 / 0.277),
+    ]
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                'flue_gas_co2_ratio': {'type': 'array', 'default': oil_flue_gas_ratio, 'unit': ''},
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh',
+                                                  "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                }
 
     # -- add specific techno outputs to this
@@ -146,15 +150,12 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = OilGen(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = OilGen(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

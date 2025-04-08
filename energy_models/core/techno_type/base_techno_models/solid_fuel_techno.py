@@ -20,9 +20,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class SolidFuelTechno(TechnoType):
-    energy_name = SolidFuel.name
+    stream_name = SolidFuel.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
-
-    

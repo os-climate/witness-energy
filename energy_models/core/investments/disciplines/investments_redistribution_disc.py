@@ -31,7 +31,6 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.investments_redistribution import (
     InvestmentsRedistribution,
 )
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -60,10 +59,8 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyListName: energy_list_desc_dict,
         GlossaryEnergy.CCSListName: ccs_list_desc_dict,
-        GlossaryEnergy.ForestInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
         GlossaryEnergy.EconomicsDfValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EconomicsDf),
-        GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(
-            GlossaryEnergy.EnergyInvestPercentageGDP)
+        GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyInvestPercentageGDP)
     }
 
     DESC_OUT = {
@@ -90,19 +87,15 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy != BiomassDry.name:
+                    if energy != GlossaryEnergy.biomass_dry:
                         # Add technologies_list to inputs
                         techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
                         # update informations of technologies list with specific ones (namespace, default and possible values)
-                        techno_list_desc_dict.update(
-                            {'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                             'namespace': 'ns_energy',
-                             'default': EnergyMix.stream_class_dict[energy].default_techno_list})
+                        techno_list_desc_dict.update({'namespace': 'ns_energy',})
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = techno_list_desc_dict
                         # Add all invest_level outputs
                         if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
-                            technology_list = self.get_sosdisc_inputs(
-                                f'{energy}.{GlossaryEnergy.techno_list}')
+                            technology_list = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.techno_list}')
                             if technology_list is not None:
                                 for techno in technology_list:
                                     # update dataframe descriptor with used technologies
@@ -115,25 +108,13 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                                     dynamic_outputs[
                                         f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_desc_dict
 
-                    else:
-                        # if Biomass dry energy then add relevant variables
-                        dynamic_inputs[GlossaryEnergy.ManagedWoodInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.ManagedWoodInvestment)
-                        dynamic_inputs[
-                            GlossaryEnergy.DeforestationInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.DeforestationInvestment)
-                        dynamic_inputs[GlossaryEnergy.CropInvestmentName] = GlossaryEnergy.get_dynamic_variable(
-                            GlossaryEnergy.CropInvestment)
-
         if GlossaryEnergy.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             if ccs_list is not None:
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
                     techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
-                    techno_list_desc_dict.update(
-                        {'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                         'namespace': GlossaryEnergy.NS_CCS})
+                    techno_list_desc_dict.update({'namespace': GlossaryEnergy.NS_CCS})
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.TechnoListName}'] = techno_list_desc_dict
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
@@ -183,7 +164,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
         # add investments in all technologies (except for biomass dry to output)
         for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
-            if energy != BiomassDry.name:
+            if energy != GlossaryEnergy.biomass_dry:
                 for techno_name, invest_techno in self.invest_redistribution_model.investment_per_technology_dict.items():
                     output_dict[f'{techno_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_techno
 
@@ -232,17 +213,6 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             (GlossaryEnergy.EnergyInvestPercentageGDPName, GlossaryEnergy.EnergyInvestPercentageGDPName),
             economics_df[GlossaryEnergy.OutputNetOfDamage].values * identity / 100.)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
-            identity * 1e-3)
-
-        if BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-                    (techno, GlossaryEnergy.InvestmentsValue),
-                    identity * 1e-3)
 
     def get_chart_filter_list(self):
 
@@ -281,7 +251,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             # add a chart per energy with breakdown of investments in every technology of the energy
             for energy in energy_list + ccs_list:
                 list_energy = []
-                if energy != BiomassDry.name:
+                if energy != GlossaryEnergy.biomass_dry:
                     chart_name = f'Distribution of investments for {energy} '
                     new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                                 chart_name=chart_name, stacked_bar=True)
@@ -305,39 +275,6 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
                     new_chart_energy.series.append(serie)
 
-            forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
-            chart_name = 'Distribution of reforestation investments '
-            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                         chart_name=chart_name, stacked_bar=True)
-            serie_agriculture = InstanciatedSeries(
-                forest_investment[GlossaryEnergy.Years].values.tolist(),
-                forest_investment[GlossaryEnergy.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
-            agriculture_chart.series.append(serie_agriculture)
-            instanciated_charts.append(agriculture_chart)
-            serie = InstanciatedSeries(
-                forest_investment[GlossaryEnergy.Years].values.tolist(),
-                forest_investment[GlossaryEnergy.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
-
-            new_chart_energy.series.append(serie)
-
-            if BiomassDry.name in energy_list:
-                chart_name = 'Distribution of agriculture sector investments '
-                agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                             chart_name=chart_name, stacked_bar=True)
-
-                for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                    invest = self.get_sosdisc_inputs(techno)
-                    serie_agriculture = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""),
-                        'bar')
-                    agriculture_chart.series.append(serie_agriculture)
-                    serie = InstanciatedSeries(
-                        invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
-                    new_chart_energy.series.append(serie)
-                instanciated_charts.append(agriculture_chart)
-                instanciated_charts.insert(0, new_chart_energy)
 
             instanciated_charts.insert(0, new_chart_energy)
 

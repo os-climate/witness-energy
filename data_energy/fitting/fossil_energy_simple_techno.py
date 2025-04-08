@@ -32,7 +32,7 @@ year_calibration = 2015
 
 df_invest_historic = DatabaseWitnessEnergy.get_techno_invest_df(techno_name=GlossaryEnergy.FossilSimpleTechno)
 df_prod_historic = DatabaseWitnessEnergy.get_techno_prod(techno_name=GlossaryEnergy.FossilSimpleTechno, year=2020)[1].value
-ref_price_2023 = 121.5 # $/MWh Source: chatgpt LCOE without tax
+ref_price_2023 = 121.5  # $/MWh Source: chatgpt LCOE without tax
 # data to run techno
 construction_delay = GlossaryEnergy.TechnoConstructionDelayDict[GlossaryEnergy.FossilSimpleTechno]
 year_start_fitting = int(max(df_invest_historic['years'].min() + construction_delay, df_prod_historic['years'].min(), year_calibration))
@@ -68,7 +68,6 @@ ee.configure()
 ee.display_treeview_nodes()
 
 
-
 def run_model(x: list, year_end: int = year_end_fitting):
     techno_dict_default["Capex_init"] = x[0]
     init_age_distrib_factor = x[1]
@@ -82,7 +81,7 @@ def run_model(x: list, year_end: int = year_end_fitting):
         f'{name}.{GlossaryEnergy.YearStart}': year_start_fitting,
         f'{name}.{GlossaryEnergy.YearEnd}': year_end,
         f'{name}.{GlossaryEnergy.StreamPricesValue}': stream_prices,
-        f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years_fitting}),
+        f'{name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: years_fitting}),
         f'{name}.{model_name}.{GlossaryEnergy.InvestLevelValue}': invest_df,
         f'{name}.{GlossaryEnergy.TransportMarginValue}': margin,
         f'{name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
@@ -158,7 +157,7 @@ for graph in graph_list:
 
 """
 Results obtained:
-Function value at the optimum: 16826745.79920797 
+Function value at the optimum: 16826745.79920797
 => less than 6% error at max between model and historic production between 2015 and 2023
 => no error on the price
 Optimal capex_init : 222.638

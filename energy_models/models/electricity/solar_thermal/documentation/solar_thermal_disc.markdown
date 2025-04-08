@@ -18,20 +18,20 @@ Production of heat for high temperature is calculated in TWh. It depends on prod
  ![](solar_thermal_type.png)
  (Image Credit: IEA [^1b])
 
-## Data     
+## Data
 Most of the data used for this model is extracted from Greenpeace International, SolarPACES and ESTELA report[^2], National Renewable Energy Laboratory (NREL) [^3], Joint Research Center [^1] and International Renewable Energy Agency (IRENA)[^4].
 
 ## Some insight on SolarThermal evolution
 IEA solar thermal power generation in the Sustainable Development Scenario, 2000-2030
-![](concentrating-solar-power-generation-in-the-sustainable-development-scenario-2000-2030.png)  
+![](concentrating-solar-power-generation-in-the-sustainable-development-scenario-2000-2030.png)
 
  Global weighted average total installed costs, capacity factors and LCOE for CSP, 2010-2019
  ![](irena_csp.png)
- 
+
 ## Land use
-Solar thermal are disposed in lands and most of it on crops category of lands.[^5] 
+Solar thermal are disposed in lands and most of it on crops category of lands.[^5]
 Because in developed countries, where solar thermal are the most deployed, barren lands and desert are scarce (around 10% of the global barren lands surface), it will not be considered in this model.
-Moreover, only 3% of the urban surface can be used for solar thermal, very few rooftops are eligible to solar panels. So for this first version of land use model it will not be considered either. 
+Moreover, only 3% of the urban surface can be used for solar thermal, very few rooftops are eligible to solar panels. So for this first version of land use model it will not be considered either.
 
 The power by hectare value has been computed on the base of 357 MWh/acre[^6] for photovoltaic panels, and solar thermal uses 10% less space than Solar photovoltaic, giving 346564,9 kWh/ha.
 

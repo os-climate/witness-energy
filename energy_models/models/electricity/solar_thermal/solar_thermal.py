@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SolarThermal(ElectricityTechno):
@@ -26,10 +26,11 @@ class SolarThermal(ElectricityTechno):
         '''
         Compute required land for solar_pv
         '''
-        density_per_ha = self.techno_infos_dict['density_per_ha']
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
+        density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
-        self.land_use[f'{self.name} (Gha)'] = \
-            self.production_detailed[f'{self.energy_name} ({self.product_unit})'] / \
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             density_per_ha
 
     def compute_byproducts_production(self):
@@ -38,10 +39,7 @@ class SolarThermal(ElectricityTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = ((1 -
-                                                                                                 self.techno_infos_dict[
-                                                                                                     'efficiency']) *
-                                                                                                self.production_detailed[
-                                                                                                    f'{ElectricityTechno.energy_name} ({self.product_unit})']) / \
-                                                                                               self.techno_infos_dict[
-                                                                                                   'efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] =\
+            ((1 - self.inputs['techno_infos_dict']['efficiency']) *
+             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']) \
+            / self.inputs['techno_infos_dict']['efficiency']

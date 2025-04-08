@@ -14,13 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -45,7 +44,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
 
     techno_name = GlossaryEnergy.BiomassFired
 
-
     # Source for Initial prod in TWh (2019):
     # IEA 2022, Data Tables
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019,
@@ -67,6 +65,8 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # Whole Building Design Guide
     # https://www.wbdg.org/resources/biomass-electricity-generation
 
+    FLUE_GAS_RATIO = np.array([0.13])
+
     techno_infos_dict_default = {'maturity': 5,
                                  # IRENA (mean of 2% - 6%)
                                  'Opex_percentage': 0.04,
@@ -81,7 +81,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9 #No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9  # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW,
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -102,15 +102,12 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassFired(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassFired(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
@@ -133,25 +130,3 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         instanciated_chart.append(new_chart_copper)
 
         return instanciated_chart
-
-    def compute_sos_jacobian(self):
-        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
-
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (
-                                         self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[
-            f'{BiomassDry.name} ({self.techno_model.product_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
-            (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (consumption_gradient - dprod_name_dinvest))

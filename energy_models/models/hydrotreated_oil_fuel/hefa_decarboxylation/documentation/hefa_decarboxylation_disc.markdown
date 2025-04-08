@@ -4,8 +4,8 @@
 
 Hydroprocessing uses hydrogen to convert unsaturated compounds such as alkenes and aromatics into saturated alkanes (paraffins) and cycloalkanes, which are more stable and less reactive. The conversion is usually a two-staged process.
 
-The first stage, the so-called hydrotreatment, takes place at reaction temperatures between 300 °C and 390 °C. 
-First hydrogen is added to saturate the double bonds of the unsaturated vegetable oil triglycerides. 
+The first stage, the so-called hydrotreatment, takes place at reaction temperatures between 300 °C and 390 °C.
+First hydrogen is added to saturate the double bonds of the unsaturated vegetable oil triglycerides.
 Then more hydrogen is added to remove the propane backbone, hereby cleaving the saturated vegetable oil triglycerides to fatty acids. Finally, the fatty acids either undergo hydrooxygenation (by addition of more hydrogen the oxygen leaves as H2O) or decarboxylation (oxygen leaves as CO2 without further addition of hydrogen), or a combination of these two. The result is a mixture of straight chain, branched chain, and cyclic paraffinic hydrocarbons.
 (see [Hydrotreatment](https://www.etipbioenergy.eu/value-chains/conversion-technologies/conventional-technologies/hydrotreatment-to-hvo))
 
@@ -15,7 +15,7 @@ from: [ETIP Bioteenergy](https://www.etipbioenergy.eu/value-chains/conversion-te
 
 ## Decarboxylation
 
-This technology is focused on the second reaction, producing C02 and fuel from oil and hydrogen. This reaction consumes less hydrogen but produces CO2. It is a cheaper reaction to perform, but it is likely to be less attractive than the deoxygenation reaction following environmental concerns. 
+This technology is focused on the second reaction, producing C02 and fuel from oil and hydrogen. This reaction consumes less hydrogen but produces CO2. It is a cheaper reaction to perform, but it is likely to be less attractive than the deoxygenation reaction following environmental concerns.
 
 
 ## Use in Jet Fuel
@@ -33,7 +33,7 @@ Technico-economic information (Capex, Opex, Production levels, past investments,
 
 ## Heat
 Heat production/consumption is neglected in coal-gasification process.
- 
+
 
 - [Tao, L., Milbrandt, A., Zhang, Y. et al. Techno-economic and resource analysis of hydroprocessed renewable jet fuel. Biotechnol Biofuels 10, 261 (2017).](https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3)
 - [Noah, Matthew. A Techno-Economic and Environmental Assessment of Hydroprocessed Renewable Distillate Fuels. (2011)](https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y)
@@ -42,6 +42,3 @@ Heat production/consumption is neglected in coal-gasification process.
 /Sustainable Aviation Fuels (SAF) (2021)](https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf), License: CC BY 4.0.
 - [ETIP Bioenergy. HVO/HEFA](https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa)
 - [De Jong, S., Antonissen, K., Hoefnagels, R. et al. Life-cycle analysis of greenhouse gas emissions from renewable jet fuel production. Biotechnol Biofuels 10, 64 (2017).](https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0739-7)
-
-
-

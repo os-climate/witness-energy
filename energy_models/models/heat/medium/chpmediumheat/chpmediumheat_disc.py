@@ -19,11 +19,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     MediumHeatTechnoDiscipline,
 )
+from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.medium.chpmediumheat.chpmediumheat import CHPMediumHeat
 
 
-class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
+class CHPMediumHeatDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'CHP Model',
@@ -39,7 +40,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CHPMediumHeat
-    energy_name = mediumtemperatureheat.name
+    stream_name = mediumtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237
@@ -92,13 +93,18 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
+
                       }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = TechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CHPMediumHeat(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = CHPMediumHeat(self.techno_name)
+    def get_chart_filter_list(self):
+        return TechnoDiscipline.get_chart_filter_list(self)
+    def get_post_processing_list(self, filters=None):
+        """
+        Basic post processing method for the model
+        """
+        return TechnoDiscipline.get_post_processing_list(self, filters)

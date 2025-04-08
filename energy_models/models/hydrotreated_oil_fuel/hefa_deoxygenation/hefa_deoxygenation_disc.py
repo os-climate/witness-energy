@@ -44,12 +44,11 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HefaDeoxygenation
-    energy_name = HydrotreatedOilFuel.name
+    stream_name = HydrotreatedOilFuel.name
     # Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017.
     # Techno-economic and resource analysis of hydroprocessed renewable jet fuel.
     # Biotechnology for biofuels, 10(1), pp.1-16.
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
-
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -118,16 +117,4 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = HefaDeoxygenation(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
-
-    def compute_sos_jacobian(self):
-        super().compute_sos_jacobian()
-        grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()
-        for resource, value in grad_dict_resources_co2.items():
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
-                (GlossaryEnergy.RessourcesCO2EmissionsValue, resource),
-                value
-            )
+        self.model = HefaDeoxygenation(self.techno_name)

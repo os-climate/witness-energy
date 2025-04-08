@@ -26,7 +26,6 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
     FunctionManagerDisc,
 )
 
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
@@ -35,10 +34,11 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.energy_study_manager import (
     EnergyStudyManager,
 )
+from energy_models.core.stream_type.carbon_disciplines.flue_gas_disc import (
+    FlueGasDiscipline,
+)
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
@@ -47,7 +47,6 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
 from energy_models.core.stream_type.energy_models.heat import (
-    hightemperatureheat,
     lowtemperatureheat,
     mediumtemperatureheat,
 )
@@ -63,12 +62,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
-    PureCarbonSS,
-)
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
-    DEFAULT_FLUE_GAS_LIST,
-)
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
@@ -164,7 +157,7 @@ class Study(EnergyStudyManager):
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if (
-                hightemperatureheat.name in self.energy_list
+                GlossaryEnergy.hightemperatureheat_energyname in self.energy_list
                 and GaseousHydrogen.name in self.energy_list
                 and LiquidHydrogen.name in self.energy_list
         ):
@@ -175,21 +168,6 @@ class Study(EnergyStudyManager):
             list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
-        if GaseousHydrogen.name in self.energy_list:
-            if "PlasmaCracking" in self.dict_technos[GaseousHydrogen.name]:
-                list_var.extend([PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT])
-                list_parent.extend(["Carbon_to_be_stored_constraints"])
-                list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
-                list_weight.extend([0.0])
-                list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
-                list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
-
-        list_var.extend([EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
-        list_parent.extend(["Energy_constraints"])
-        list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
-        list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if GlossaryEnergy.electricity in self.energy_list:
             if Electricity.hydropower_name in self.dict_technos[GlossaryEnergy.electricity]:
@@ -223,20 +201,6 @@ class Study(EnergyStudyManager):
             list_weight.extend([-1.0])
             list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
-
-        if set(EnergyDemandDiscipline.energy_constraint_list).issubset(
-                self.energy_list
-        ):
-            list_var.extend(
-                ["electricity_demand_constraint", "transport_demand_constraint"]
-            )
-            list_parent.extend(["demand_constraint", "demand_constraint"])
-            list_ftype.extend([FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT])
-            list_weight.extend([-1.0, -1.0])
-            list_aggr_type.extend([FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM])
-            list_namespaces.extend(
-                [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS]
-            )
 
         func_df["variable"] = list_var
         func_df["parent"] = list_parent
@@ -338,12 +302,11 @@ class Study(EnergyStudyManager):
         invest_energy_mix_dict = {
             GlossaryEnergy.Years: years,
             GlossaryEnergy.electricity: [4.49, 35, 35, 35, 35, 35, 35, 35],
-            BioGas.name: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
-            BiomassDry.name: [0.003, 0.5, 1.0, 1.0, 1.0, 0.8, 0.8, 0.8],
+            GlossaryEnergy.biogas: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
             Methane.name: [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
             GaseousHydrogen.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             LiquidFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            hightemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            GlossaryEnergy.hightemperatureheat_energyname: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             mediumtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             lowtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             SolidFuel.name: [0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
@@ -375,14 +338,14 @@ class Study(EnergyStudyManager):
         if self.coarse_mode:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
-                GlossaryEnergy.carbon_capture: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                GlossaryEnergy.carbon_captured: np.ones(GlossaryEnergy.NB_POLES_COARSE),
                 GlossaryEnergy.carbon_storage: np.ones(GlossaryEnergy.NB_POLES_COARSE)
             }
 
         else:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
-                GlossaryEnergy.carbon_capture: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                GlossaryEnergy.carbon_captured: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
                 GlossaryEnergy.carbon_storage: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
             }
 
@@ -406,7 +369,7 @@ class Study(EnergyStudyManager):
         for study in instanciated_studies:
             if study is not None:
                 invest_techno = study.get_investments()
-                energy = study.energy_name
+                energy = study.stream_name
 
                 for techno in invest_techno.columns:
                     if techno != GlossaryEnergy.Years:
@@ -436,8 +399,8 @@ class Study(EnergyStudyManager):
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
             instance_sub_study = None  # initialize variable
-            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type:
-                prefix_name = GlossaryEnergy.ccus_type
+            if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.CCUS:
+                prefix_name = GlossaryEnergy.CCUS
                 instance_sub_study = sub_study(
                     year_start=self.year_start,
                     year_end=self.year_end,
@@ -462,7 +425,7 @@ class Study(EnergyStudyManager):
                 pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name][GlossaryEnergy.stream_type]} is not in [{GlossaryEnergy.energy_type},{GlossaryEnergy.ccus_type},{GlossaryEnergy.agriculture_type}]"
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name][GlossaryEnergy.stream_type]} is not in [{GlossaryEnergy.energy_type},{GlossaryEnergy.CCUS},{GlossaryEnergy.agriculture_type}]"
                 )
             if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] != GlossaryEnergy.agriculture_type and instance_sub_study is not None:
                 instance_sub_study.configure_ds_boundaries(
@@ -501,17 +464,16 @@ class Study(EnergyStudyManager):
             {
                 GlossaryEnergy.Years: self.years,
                 GlossaryEnergy.electricity: 9.0,
-                BiomassDry.name: 68.12 / 3.36,
-                BioGas.name: 90,
+                GlossaryEnergy.biogas: 90,
                 Methane.name: 34.0,
                 SolidFuel.name: 8.6,
                 GaseousHydrogen.name: 90.0,
                 LiquidFuel.name: 70.0,
-                hightemperatureheat.name: 71.0,
+                GlossaryEnergy.hightemperatureheat_energyname: 71.0,
                 mediumtemperatureheat.name: 71.0,
                 lowtemperatureheat.name: 71.0,
                 GlossaryEnergy.syngas: 40.0,
-                GlossaryEnergy.carbon_capture: 0.0,
+                GlossaryEnergy.carbon_captured: 0.0,
                 GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
@@ -523,47 +485,21 @@ class Study(EnergyStudyManager):
 
         co2_taxes = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 750})
 
-        # price in $/MWh
-        energy_carbon_emissions = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.electricity: 0.0,
-                BiomassDry.name: -0.425 * 44.01 / 12.0 / 3.36,
-                BioGas.name: -0.618,
-                Methane.name: 0.123 / 15.4,
-                SolidFuel.name: 0.64 / 4.86,
-                GaseousHydrogen.name: 0.0,
-                LiquidFuel.name: 0.0,
-                hightemperatureheat.name: 0.0,
-                mediumtemperatureheat.name: 0.0,
-                lowtemperatureheat.name: 0.0,
-                GlossaryEnergy.syngas: 0.0,
-                GlossaryEnergy.carbon_capture: 0.0,
-                GlossaryEnergy.carbon_storage: 0.0,
-                BioDiesel.name: 0.0,
-                LiquidHydrogen.name: 0.0,
-                CleanEnergy.name: 0.0,
-                Fossil.name: 0.64 / 4.86,
-                HydrotreatedOilFuel.name: 0.0,
-            }
-        )
-
         resources_CO2_emissions = get_default_resources_CO2_emissions(self.years)
         resources_prices = get_default_resources_prices(self.years)
 
         all_streams_demand_ratio = {GlossaryEnergy.Years: self.years}
-        all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})
+        all_streams_demand_ratio.update({energy: 1e-2 for energy in self.energy_list + self.ccs_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
         all_resource_ratio_usable_demand = {GlossaryEnergy.Years: self.years}
-        all_resource_ratio_usable_demand.update({resource: 100.0 for resource in EnergyMix.RESOURCE_LIST})
+        all_resource_ratio_usable_demand.update({resource: 0.0 for resource in EnergyMix.resource_list})
         all_resource_ratio_usable_demand = pd.DataFrame(all_resource_ratio_usable_demand)
 
         invest_df = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.EnergyInvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)),
         })
-        # init land surface for food for biomass dry crop energy
 
         population_df = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -613,10 +549,10 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
+            f"{self.study_name}.consumers_actors": [GlossaryEnergy.CCUS],
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
@@ -649,14 +585,18 @@ class Study(EnergyStudyManager):
             for energy, tech_dict in self.techno_dict.items()
             for techno in tech_dict[GlossaryEnergy.value]
         ]
-        flue_gas_list = [
-            techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
+        flue_gas_energy_technolist = [
+            techno for techno in FlueGasDiscipline.POSSIBLE_FLUE_GAS_ENERGY_TECHNOS if techno in possible_technos
         ]
+        values_dict[
+            f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}"] = pd.DataFrame({
+            GlossaryEnergy.Years: self.years, "ratio": 1e-3
+        })
 
-        if GlossaryEnergy.carbon_capture in GlossaryEnergy.DEFAULT_TECHNO_DICT:
+        if GlossaryEnergy.carbon_captured in GlossaryEnergy.DEFAULT_TECHNO_DICT:
             values_dict[
-                f"{self.study_name}.{GlossaryEnergy.ccus_type}.{GlossaryEnergy.carbon_capture}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
-            ] = flue_gas_list
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{FlueGas.node_name}.energy_techno_list"
+            ] = flue_gas_energy_technolist
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process
@@ -691,11 +631,12 @@ class Study(EnergyStudyManager):
         dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
         resource_input_list = dc_resource.setup_usecase()
-        values_dict_list.extend(resource_input_list)
+        values_dict_list.append(resource_input_list)
 
-        agri_values_dict = self.get_input_value_from_agriculture_mix()
-        values_dict_list.append(agri_values_dict)
-        return values_dict_list
+        out = {}
+        for vd in values_dict_list:
+            out.update(vd)
+        return out
 
     def add_utilization_ratio_dv(self, instanciated_studies):
         """
@@ -722,42 +663,8 @@ class Study(EnergyStudyManager):
                         upper_bound,
                     )
 
-    def get_input_value_from_agriculture_mix(self):
-        agri_mix_name = "AgricultureMix"
-
-        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.N2OPerUse: 5.34e-5})
-        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CH4PerUse: 0.0})
-        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2PerUse: 0.277})
-
-        energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
-        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
-        energy_prices = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.biomass_dry: 9.8,
-            "biomass_dry_wotaxes": 9.8,
-        })
-
-        land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
-        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
-        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.001, GlossaryEnergy.NonUseCapital: 0.})
-
-        agri_values_dict = {
-            f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
-            f"{self.study_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
-            f"{self.study_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
-            f"{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
-        }
-
-        return agri_values_dict
 
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

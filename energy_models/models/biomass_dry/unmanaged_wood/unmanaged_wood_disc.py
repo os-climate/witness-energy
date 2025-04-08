@@ -50,7 +50,6 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     techno_name = GlossaryEnergy.UnmanagedWood
 
-
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
     wood_density = 600.0  # kg/m3
@@ -149,7 +148,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                           wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in Twh
 
     # distrib computed, for planted forests since 150 years
-    
+
     # distrib computed, for planted forests since 1980 (40years)
     #                                              'distrib': [3.25, 3.26, 3.27, 3.27, 3.27, 3.24, 3.21, 3.17, 3.14, 3.1,
     #                                                           3.04, 2.99, 2.94, 2.89, 2.83, 2.77, 2.71, 2.66, 2.57, 2.51,
@@ -167,7 +166,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'define in dict'},
-                      
+
                }
     # -- add specific techno inputs to this
     DESC_IN.update(BiomassDryTechnoDiscipline.DESC_IN)
@@ -192,7 +191,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -279,7 +278,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         min3 = min(production_mix_df[name_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3) * 0.8
 
-        chart_name = 'Production of Unmanaged wood over the years'
+        chart_name = 'Production of Unmanaged wood '
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Unmanaged wood (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
@@ -309,7 +308,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = 'Detailed Price of Unmanaged wood technology over the years'
+        chart_name = 'Detailed Price of Unmanaged wood technology '
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -342,7 +341,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = 'Detailed Price of Unmanaged wood technology over the years'
+        chart_name = 'Detailed Price of Unmanaged wood technology '
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

@@ -55,7 +55,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  # Hunt, Guillot and Associates, Ruston,
                                  # Louisiana. https://www. hga-llc.
                                  # com/images/2014.
-                                 'CO2_from_production': 0.116,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.116,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # electricity to product 1kg of pellets
                                  'elec_demand': 0.1062,
@@ -85,6 +85,4 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = Pelletizing(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = Pelletizing(self.techno_name)

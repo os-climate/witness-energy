@@ -20,10 +20,13 @@ techno_dict_folder = dirname(__file__)
 filename = "techno_dict_2024-07-14 Jul01_24technos_12streams.json"
 
 filename = "techno_dict_test.json"
+
+
 def load_dict(filename: str):
     filepath = join(techno_dict_folder, filename)
     with open(filepath, 'r') as json_file:
         loaded_dict = json.load(json_file)
     return loaded_dict
+
 
 techno_dict_midway = load_dict(filename)

@@ -22,6 +22,6 @@ from energy_models.core.techno_type.techno_type import TechnoType
 class EthanolTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.energy_name = Ethanol.name
+        self.stream_name = Ethanol.name
 
     

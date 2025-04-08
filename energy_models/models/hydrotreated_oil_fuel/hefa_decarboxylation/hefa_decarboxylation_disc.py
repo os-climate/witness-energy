@@ -44,10 +44,9 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.HefaDecarboxylation
-    energy_name = HydrotreatedOilFuel.name
+    stream_name = HydrotreatedOilFuel.name
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
-
 
     # conversion factors
     dollar_per_gallon_to_dollar_per_m3 = 264.17
@@ -106,6 +105,4 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = HefaDecarboxylation(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = HefaDecarboxylation(self.techno_name)

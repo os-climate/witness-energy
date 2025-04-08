@@ -70,8 +70,8 @@ if construction_delay != GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore
     raise ValueError("must adapt script as construction delay for windOnshore and windOffshore differ")
 
 name = 'usecase_witness_optim_nze_eval'
-model_name_onshore = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOnshore}"
-model_name_offshore = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOffshore}"
+model_name_onshore = f"MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOnshore}"
+model_name_offshore = f"MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.WindOffshore}"
 ns_dict = {'ns_public': name,
            'ns_energy': name,
            'ns_energy_study': f'{name}',
@@ -92,11 +92,11 @@ with open('dm_iea_nze.pkl', 'rb') as f:
     dm = pickle.load(f)
 f.close()
 inputs_dict = deepcopy(dm)
-inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.TransportCostValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsGHGEmissionsValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.TransportCostValue}')})
 
 # initial_production from IEA is split between windonshore and windoffshore following arbitrary ratio
 init_prod_onshore_over_offshore = 1508. / 107.69  # taken from initial witness results

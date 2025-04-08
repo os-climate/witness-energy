@@ -16,13 +16,15 @@ limitations under the License.
 '''
 from importlib import import_module
 
-from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class EnergyStudyManager(StudyManager):
+class EnergyStudyManager(ClimateEconomicsStudyManager):
     """
     classdocs
     """
@@ -50,7 +52,7 @@ class EnergyStudyManager(StudyManager):
         ]
         self.coarse_mode: bool = set(self.techno_dict.keys()) == set(GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys())
         self.ccs_list = [
-            key for key, value in self.techno_dict.items() if value[GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type
+            key for key, value in self.techno_dict.items() if value[GlossaryEnergy.stream_type] == GlossaryEnergy.CCUS
         ]
 
     def get_energy_mix_study_cls(self, energy_name, add_name=None):

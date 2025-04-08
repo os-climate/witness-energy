@@ -89,7 +89,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     # Age distribution fake
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
-                      
+
                }
     # -- add specific techno inputs to this
     DESC_IN.update(WetBiomassTechnoDiscipline.DESC_IN)
@@ -98,6 +98,4 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
     DESC_OUT = WetBiomassTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = WetCropResidues(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = WetCropResidues(self.techno_name)

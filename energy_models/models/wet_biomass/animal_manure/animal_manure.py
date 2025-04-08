@@ -22,10 +22,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class AnimalManure(WetBiomassTechno):
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
     def compute_byproducts_production(self):
-        self.production_detailed[f'{GlossaryEnergy.carbon_capture} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
-                                                       self.data_energy_dict['calorific_value'] * \
-                                                       self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} (kg)'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
+                                                                                                              self.inputs['data_energy_dict']['calorific_value'] * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{WetBiomassTechno.stream_name} (kWh)']

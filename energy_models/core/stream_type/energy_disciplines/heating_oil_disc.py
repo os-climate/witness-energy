@@ -47,11 +47,11 @@ class HeatingOilDiscipline(EnergyDiscipline):
     }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = HeatingOil.name
+    stream_name = HeatingOil.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = HeatingOil(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = HeatingOil(self.stream_name)
+

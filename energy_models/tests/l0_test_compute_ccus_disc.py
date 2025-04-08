@@ -14,141 +14,117 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pickle
-import unittest
-from os.path import dirname, join
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class CCUSDiscTestCase(unittest.TestCase):
-    """
-    CO2EmissionsDisc  test class
-    """
+class CCUSDiscTestCase(GenericDisciplinesTestClass):
+    """CCUS discipline test class"""
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        self.name = 'Test'
+        self.model_name = 'CCUS'
+        self.ns_dict = {'ns_public': self.name, GlossaryEnergy.NS_CCS: self.name, GlossaryEnergy.NS_ENERGY_MIX: self.name, "ns_energy_market": self.name}
+        self.pickle_prefix = self.model_name
+        self.jacobian_test = False
+        self.show_graphs = False
+        self.override_dump_jacobian = False
+        self.pickle_directory = dirname(__file__)
+
+
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            GlossaryEnergy.fossil, GlossaryEnergy.clean_energy, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
-            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
-            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat',
-            GlossaryEnergy.biomass_dry]]
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
-        streams_outputs_dict = pickle.load(pkl_file)
-        pkl_file.close()
 
-        self.CO2_per_use = {}
-        self.stream_prices = {}
-        self.energy_consumption_woratio = {}
-        self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
-        for i, energy in enumerate(self.energy_list):
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.CO2PerUse]['value']
-            self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
-            self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
-        for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
-            self.land_use_required[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
-            self.energy_production[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
-            self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
-            self.stream_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamPricesValue][
-                'value']
-            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
-                f'{energy}'][GlossaryEnergy.StreamConsumptionWithoutRatioValue]['value']
+        self.carbon_capture_energies_consumption = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.electricity} (TWh)": 10.,
+            f"{GlossaryEnergy.heat} (TWh)": 12.,
+        })
 
-        self.scaling_factor_energy_production = 1000.0
-        self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
-        years = streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value'][GlossaryEnergy.Years]
-        self.CO2_taxes = pd.DataFrame(data={GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 150.})
-        self.co2_emissions = pd.DataFrame(
-            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
-        self.co2_emissions = pd.DataFrame(
-            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
-            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Gt)': 0.005})
-        self.carbon_capture_from_energy_mix = pd.DataFrame(
-            data={GlossaryEnergy.Years: years, 'carbon_capture from energy mix (Gt)': 1e-15})
+        self.carbon_capture_energies_demand = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.electricity} (TWh)": 10.,
+            f"{GlossaryEnergy.heat} (TWh)": 12.,
+        })
 
-    def tearDown(self):
-        pass
+        self.carbon_storage_energies_consumption = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.electricity} (TWh)": 10.,
+        })
 
-    def test_01_CCUS_discipline(self):
+        self.carbon_storage_energies_demand = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.electricity} (TWh)": 10.,
+        })
 
-        self.name = 'Test'
-        self.model_name = 'ConsumptionCO2Emissions'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': self.name,
-                   GlossaryEnergy.NS_CCS: self.name,
-                   'ns_energy_study': self.name,
-                   GlossaryEnergy.NS_FUNCTIONS: self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_carbon_storage': self.name}
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        self.carbon_capture_prod = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.carbon_captured} (Mt)": 10. * 1e3,
+        })
 
-        mod_path = 'energy_models.core.ccus.ccus_disc.CCUS_Discipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        self.carbon_storage_prod = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            f"{GlossaryEnergy.carbon_storage} (Mt)": 9.5 * 1e3,
+        })
 
-        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.carbon_capture_land_use = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            "Land use": 54.,
+        })
 
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
+        self.carbon_storage_land_use = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            "Land use": 7.,
+        })
 
-        inputs_dict = {
+        self.carbon_capture_prices = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.carbon_captured: 70.,
+        })
+
+        self.carbon_storage_prices = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.carbon_storage: 5.4,
+        })
+
+        self.energy_mix_ccs_consumptions = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.carbon_captured: 1.,
+            GlossaryEnergy.carbon_storage: 0.,
+        })
+
+        self.energy_mix_ccs_demands = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.carbon_captured: 1.,
+            GlossaryEnergy.carbon_storage: 0.,
+        })
+
+
+    def get_inputs_dict(self) -> dict:
+        return {
             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
-            f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
+
+            f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamPricesValue}': self.carbon_capture_prices,
+            f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}': self.carbon_capture_prod,
+            f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamEnergyDemandValue}': self.carbon_capture_energies_demand,
+            f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamEnergyConsumptionValue}': self.carbon_capture_energies_demand,
+            f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.LandUseRequiredValue}': self.carbon_capture_land_use,
+
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}': self.carbon_storage_prices,
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamProductionValue}': self.carbon_storage_prod,
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamEnergyDemandValue}': self.carbon_storage_energies_demand,
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamEnergyConsumptionValue}': self.carbon_storage_energies_demand,
+            f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.LandUseRequiredValue}': self.carbon_storage_land_use,
+
+            f'{self.name}.{GlossaryEnergy.EnergyMixCCSDemandsDfValue}': self.energy_mix_ccs_demands,
+            f'{self.name}.{GlossaryEnergy.EnergyMixCCSConsumptionDfValue}': self.energy_mix_ccs_consumptions,
         }
-        for energy in self.energy_list:
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.CO2PerUse}'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
-                energy]
-
-        for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = self.energy_consumption[
-                energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamPricesValue}'] = self.stream_prices[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = \
-                self.energy_consumption_woratio[energy]
-            inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
-        inputs_dict[f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'] = self.CO2_taxes
-        inputs_dict[f'{self.name}.carbon_capture_from_energy_mix'] = self.carbon_capture_from_energy_mix
-        inputs_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = self.co2_emissions_needed_by_energy_mix
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
-
-
-if '__main__' == __name__:
-    cls = CCUSDiscTestCase()
-    cls.setUp()
-    cls.test_01_CCUS_discipline()
+    def test_01_CCUS_discipline(self):
+        self.mod_path = 'energy_models.core.ccus.ccus_disc.CCUS_Discipline'

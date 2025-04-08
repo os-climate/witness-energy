@@ -15,9 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
@@ -28,32 +25,23 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CoalGen(ElectricityTechno):
     def compute_resources_needs(self):
         # need in kg/kWh
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.techno_infos_dict['water_demand']
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.inputs['techno_infos_dict']['water_demand']
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # in kwh of fuel by kwh of electricity
-        self.cost_details[f'{SolidFuel.name}_needs'] = self.techno_infos_dict['fuel_demand'] / \
-                                                self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{SolidFuel.name}_needs'] = \
+            self.inputs['techno_infos_dict']['fuel_demand'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+
+    def compute_co2_from_flue_gas_intensity_scope_1(self):
+        return self.inputs['techno_infos_dict']['CO2_flue_gas_intensity_by_prod_unit']
 
     def compute_byproducts_production(self):
         elec_needs = self.get_electricity_needs()
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})'] = \
-            self.production_detailed[
-                f'{ElectricityTechno.energy_name} ({self.product_unit})'] * (1.0 - elec_needs)
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict[
-                                                                                            'CO2_from_production'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{ElectricityTechno.energy_name} ({self.product_unit})']
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_unit})'] = \
-            self.consumption_detailed[f'{SolidFuel.name} ({self.product_unit})'] - \
-            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
+                f'{self.stream_name}'] * (1.0 - elec_needs)
 
-        self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
-
-    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
-                              dcapex_list_dinvest_list):
-        dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(
-            self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list)
-        elec_needs = self.get_electricity_needs()
-
-        return dprod_dinvest * (1.0 - elec_needs)
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{SolidFuel.name}'] - \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']

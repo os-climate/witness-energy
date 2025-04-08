@@ -101,7 +101,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
                                  }
     # We do not invest on biomass gasification yet
-    
+
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
     # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas
@@ -121,6 +121,4 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassGasification(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassGasification(self.techno_name)

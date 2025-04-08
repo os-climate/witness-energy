@@ -5,21 +5,21 @@ A mixture of methane and carbon dioxide (CO2), biogas can be produced from organ
 
 
 **How Does an Anaerobic Digester Work? [^6]**
-Anaerobic digestion, or methanization, uses the process of fermentation to break down organic matter from animals. The biomass is heated to approximately 37°C to 38°C (sometimes more than 50°C) and stirred continuously. After at least 20 days and a series of bacteria-induced chemical transformations, the fermented biomass produces biogas . 
+Anaerobic digestion, or methanization, uses the process of fermentation to break down organic matter from animals. The biomass is heated to approximately 37°C to 38°C (sometimes more than 50°C) and stirred continuously. After at least 20 days and a series of bacteria-induced chemical transformations, the fermented biomass produces biogas .
 The composition of biogas depends on the type of feedstock and the production pathway. The methane content of biogas typically ranges from 45% to 75% and the carbon dioxyde content from 25% to 55% by volume.
 
 
-Biogas and biomethane production pathways 
-![](Biogasbiomethaneinfographic.png) 
+Biogas and biomethane production pathways
+![](Biogasbiomethaneinfographic.png)
 (Image Credit: IEA [^5])
 
 
 
-## Data     
-Most of the data used for this model is extracted from the paper of Rajendran & al [^1] which is a review of all papers on anaerobic digestion. 
+## Data
+Most of the data used for this model is extracted from the paper of Rajendran & al [^1] which is a review of all papers on anaerobic digestion.
 World initial production is extracted from the IEA site [^5].
 
-Typical prices of Biogas from anaerobic digestion can be found on IRENA site[^2] : "between USD 0.22 and USD 0.39 per cubic meter of methane for manure-based biogas production, and USD 0.11 to USD 0.50 per cubic meter of methane for industrial waste-based biogas production". This corresponds to a biogas price between 0.02 and 0.078 $/kWh. 
+Typical prices of Biogas from anaerobic digestion can be found on IRENA site[^2] : "between USD 0.22 and USD 0.39 per cubic meter of methane for manure-based biogas production, and USD 0.11 to USD 0.50 per cubic meter of methane for industrial waste-based biogas production". This corresponds to a biogas price between 0.02 and 0.078 $/kWh.
 
 The efficiency of the anaerobic digester is mentionned in Carlini & al [^3].
 The age distribution of biogas plants from anaerobic digestion has been computed with the plant list in [^4].

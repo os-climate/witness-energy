@@ -44,7 +44,6 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}'
 
-
     # Most of the data from this model come from :
     # Guandalini, G., Romano, M.C., Ho, M., Wiley, D., Rubin, E.S. and Abanades, J.C., 2019.
     # A sequential approach for the economic evaluation of new CO2 capture technologies for power plants.
@@ -100,7 +99,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     initial_capture = 15  # Mt
 
     # We assume 0.5 MT increase per year, with a capex ~ 40$/ton
-    
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
@@ -118,19 +117,5 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = MonoEthanolAmine(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = MonoEthanolAmine(self.techno_name)
 
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        CCTechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_stream_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
-
-        self.set_partial_derivatives_flue_gas()
