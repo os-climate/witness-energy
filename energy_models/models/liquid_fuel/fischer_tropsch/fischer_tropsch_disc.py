@@ -67,8 +67,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.FischerTropsch
-    lifetime = 30
-    construction_delay = 3
+
     # 'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',
     #          'reaction2': '(2n+1)H2 + nCO --> CnH_2n+1 + nH20 ',
 
@@ -86,7 +85,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 0.5,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
                                  # 'medium_heat_production_unit': 'TWh/kg',
@@ -97,14 +95,11 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  # N/2N+1 with N number of carbon mol in
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
 
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.0, 2.0, 2.0]})
-
+    
     # FischerTropsch Wikipedia :
     # 140000+34000 BPD in Qatar GtL
     # 12000 BPD in Malaysia GtL
@@ -114,29 +109,12 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     initial_production = (140000 + 34000 + 12000 + 112000 + 165000 +
                           36000) * 1700 / 1e9 * 365  # in TWh at year_start
 
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.95238095, 0.95238095, 0.95238095, 0.95238095, 0.95238095,
-                                                         3.15981426, 6.64297934, 4.1268588, 3.0951441, 1.43778317,
-                                                         1.67390446, 4.00804617, 2.60936589, 4.97960258, 9.57870397,
-                                                         0., 2.20329743, 5.97672626, 5.34205629, 6.07448349,
-                                                         8.28981257, 5.90002444, 3.60348166, 1.6724005, 4.1584419,
-                                                         3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default,
                                      'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+                      
                'syngas_ratio': {'type': 'array', 'unit': '%',
                                 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
 
@@ -186,7 +164,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                   100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'), ('syngas_ratio',), dprice_FT_dsyngas_ratio)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),
+            ('syngas_ratio',),
+            dprice_FT_dsyngas_ratio)
 
         # Grad of techno_production vs syngas_ratio
 
@@ -216,7 +196,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = {
             key: value / self.techno_model.applied_ratio[
-                'applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption for
+                'applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption / self.techno_model.utilisation_ratio * 100 for
             key, value in grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoConsumptionWithoutRatioValue, 'syngas_ratio', grad_dict)
@@ -483,13 +463,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 WGS_cost.tolist(), 'WGS', 'lines')
 
             new_chart.series.append(serie)
-        if 'RWGS' in techno_detailed_prices:
+        if GlossaryEnergy.RWGS in techno_detailed_prices:
             WGS_cost = specific_costs[GlossaryEnergy.syngas].values - \
                        techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values
             # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                WGS_cost.tolist(), 'RWGS', 'lines')
+                WGS_cost.tolist(), GlossaryEnergy.RWGS, 'lines')
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
@@ -576,13 +556,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 WGS_cost.tolist(), 'WGS', 'lines')
 
             new_chart.series.append(serie)
-        if 'RWGS' in techno_detailed_prices:
+        if GlossaryEnergy.RWGS in techno_detailed_prices:
             WGS_cost = (specific_costs[GlossaryEnergy.syngas].values -
                         techno_detailed_prices[f'{GlossaryEnergy.syngas} before transformation'].values) * calorific_value
             # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                WGS_cost.tolist(), 'RWGS', 'lines')
+                WGS_cost.tolist(), GlossaryEnergy.RWGS, 'lines')
 
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:

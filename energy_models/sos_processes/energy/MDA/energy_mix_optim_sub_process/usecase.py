@@ -37,6 +37,7 @@ from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
@@ -53,7 +54,6 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.resources_data_disc import (
     get_default_resources_CO2_emissions,
@@ -89,7 +89,6 @@ class Study(EnergyStudyManager):
         )
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.dict_technos = {}
         self.coupling_name = "MDA"
@@ -105,7 +104,6 @@ class Study(EnergyStudyManager):
         self.bspline = bspline
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.test_post_procs = False
-        
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -148,7 +146,7 @@ class Study(EnergyStudyManager):
             LiquidHydrogen.name: [0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             HydrotreatedOilFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             Ethanol.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            Renewable.name: np.linspace(1000.0, 15.625, len(years)),
+            CleanEnergy.name: np.linspace(1000.0, 15.625, len(years)),
             Fossil.name: np.linspace(1500.0, 77.5, len(years)),
         }
 
@@ -236,7 +234,7 @@ class Study(EnergyStudyManager):
         instanced_sub_studies = []
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
-            instance_sub_study = None # initialize variable
+            instance_sub_study = None  # initialize variable
             if self.techno_dict[sub_study_name][GlossaryEnergy.stream_type] == GlossaryEnergy.ccus_type:
                 prefix_name = f"{GlossaryEnergy.ccus_type}"
                 instance_sub_study = sub_study(
@@ -320,7 +318,6 @@ class Study(EnergyStudyManager):
                         'namespace_in': GlossaryEnergy.NS_WITNESS,
                         'namespace_out': GlossaryEnergy.NS_WITNESS
                     }
-
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
@@ -408,12 +405,12 @@ class Study(EnergyStudyManager):
 
     def make_func_df(self):
         func_df = pd.DataFrame({
-            "variable": [GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
-            "parent": ["objectives", "constraints", "constraints"],
-            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
-            "weight": [1.0, 100.0, 100.0,],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM,],
-            "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS,]
+            "variable": [GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream, GlossaryEnergy.ObjectiveEnergyNonUseCapital, GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
+            "parent": ["objectives", "objectives","objectives", "constraints", "constraints"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE,FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT],
+            "weight": [0., 0.1, 1.0, 10.0, 10.0,],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM,FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT, FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS] * 5
         })
         return func_df
 
@@ -487,14 +484,14 @@ class Study(EnergyStudyManager):
 
         CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
 
-        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
+        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.001, GlossaryEnergy.NonUseCapital: 0.})
 
         agri_values_dict = {
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
-            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionValue}": energy_consumption,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}": energy_consumption,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
             f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
             f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.StreamPricesValue}": energy_prices,
@@ -528,7 +525,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
-                Renewable.name: 90.0,
+                CleanEnergy.name: 90.0,
                 Fossil.name: 110.0,
                 HydrotreatedOilFuel.name: 70.0,
             }
@@ -555,7 +552,7 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.carbon_storage: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
-                Renewable.name: 0.0,
+                CleanEnergy.name: 0.0,
                 Fossil.name: 0.64 / 4.86,
                 HydrotreatedOilFuel.name: 0.0,
             }
@@ -581,7 +578,6 @@ class Study(EnergyStudyManager):
             "indus_emissions": 0.
         })
 
-
         target_energy_prod = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.TargetEnergyProductionValue: np.linspace(100. * 1.e3, 150. * 1e3, len(self.years))
@@ -597,7 +593,6 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.TotalProductionValue: 0.
         })
 
-
         values_dict = {
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
@@ -610,7 +605,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
-            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.inner_mda_name": "MDAGSNewton",
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
@@ -696,9 +691,9 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.GHGEmissions.{GlossaryEnergy.SectorListValue}": [],
-            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-8,
-            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDAGaussSeidel",
+            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 400,
+            f"{self.study_name}.{self.coupling_name}.tolerance": 1e-10,
+            f"{self.study_name}.{self.coupling_name}.inner_mda_name": "MDAGaussSeidel",
         }
 
         dvar_values = self.get_dvar_values(dspace)
@@ -710,4 +705,5 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

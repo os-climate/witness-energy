@@ -38,7 +38,7 @@ def compute_fossil_data(data_name):
 
 class Fossil(EnergyType):
     name = GlossaryEnergy.fossil
-    default_techno_list = ['FossilSimpleTechno']
+    default_techno_list = [GlossaryEnergy.FossilSimpleTechno]
     data_energy_dict = {GlossaryEnergy.CO2PerUse: compute_fossil_data(GlossaryEnergy.CO2PerUse),  # mean of CO2 per use of fossil energies
                         'CO2_per_use_unit': 'kg/kg',
                         'density': compute_fossil_data('density'),

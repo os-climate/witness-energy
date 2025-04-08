@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import (
     GaseousHydrogenTechnoDiscipline,
@@ -46,12 +44,8 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.ElectrolysisSOEC
-    # Haldor Topsoe, 2021
-    # Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production
-    # https://blog.topsoe.com/haldor-topsoe-to-build-large-scale-soec-electrolyzer-manufacturing-facility-to-meet-customer-needs-for-green-hydrogen-production
-    # Construction will start in 2022 and will ends in 2023
-    construction_delay = 1  # year
-    lifetime = 8  # Around 60000hours
+
+
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.03,
                                  'CO2_from_production': 0.0,
@@ -59,7 +53,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  'learning_rate': 0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
-                                 'lifetime': lifetime,
                                  'Capex_init': 2800,
                                  'Capex_init_unit': '$/kW',
                                  'euro_dollar': 1.114,
@@ -71,36 +64,19 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.84,
                                  'efficiency_max': 0.92,  # because of topsoe
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 0.0
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.ones(lifetime - 1) * 100.0 / (lifetime - 1)})
 
     # Public investment in Europe through FCH JU : 156 MEuro or 190M$
     # We assume half is for SOEC .
     # Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
     # https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
-    invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryEnergy.InvestValue: [0.297]})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

@@ -30,7 +30,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_FULL: int = 8  # number of poles in witness full
     NB_POLE_ENERGY_MIX_PROCESS = 12
     EXPORT_PROFILES_AT_POLES = "export_invest_profiles_at_poles"
-    YearEndDefaultValueGradientTest = 2030
+    YearEndDefaultValueGradientTest = 2050  # TODO: if using 2030 => year
     LifetimeDefaultValueGradientTest = 7
     YearEndDefault = 2050
     YearEndDefaultCore = GlossaryWitnessCore.YearEndDefault
@@ -61,7 +61,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     liquefied_petroleum_gas = "liquefied_petroleum_gas"
     hydrotreated_oil_fuel = "hydrotreated_oil_fuel"
     methane = "methane"
-    renewable = "renewable"
     solid_fuel = "solid_fuel"
     syngas = "syngas"
     ultra_low_sulfur_diesel = "ultra_low_sulfur_diesel"
@@ -95,7 +94,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         liquefied_petroleum_gas,
         hydrotreated_oil_fuel,
         methane,
-        renewable,
+        GlossaryWitnessCore.clean_energy,
         solid_fuel,
         syngas,
         ultra_low_sulfur_diesel,
@@ -114,10 +113,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
     technologies_list = "technologies_list"
     loss_percentage = "loss_percentage"
 
-    LifetimeName = "lifetime"
     Transesterification = "Transesterification"
     AnaerobicDigestion = "AnaerobicDigestion"
 
+    BoolApplyRatio = "is_apply_ratio"
+    BoolApplyStreamRatio = "is_stream_demand"
+    BoolApplyResourceRatio = "is_apply_resource_ratio"
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
@@ -305,6 +306,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
+            GlossaryWitnessCore.NonUseCapital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -336,8 +338,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YearEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
+            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100.1], False),
         },
+    }
+
+    InitialPlantsTechnoProductionValue = "InitialPlantsTechnoProduction"
+    InitialPlantsTechnoProduction = {
+        "varname": InitialPlantsTechnoProductionValue,
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
     }
 
     EnergyTypeCapitalDfValue = "energy_type_capital"
@@ -355,6 +365,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 False,
             ),
             GlossaryWitnessCore.Capital: ("float", [0.0, 1e30], False),
+            GlossaryWitnessCore.NonUseCapital: ("float", [0.0, 1e30], False),
         },
     }
 
@@ -581,7 +592,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
     Methanation = "Methanation"
     UpgradingBiogas = "UpgradingBiogas"
     CO2Hydrogenation = "CO2Hydrogenation"
-    RenewableSimpleTechno = "RenewableSimpleTechno"
     CoalExtraction = "CoalExtraction"
     Pelletizing = "Pelletizing"
     AutothermalReforming = "AutothermalReforming"
@@ -589,7 +599,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CoElectrolysis = "CoElectrolysis"
     CoalGasification = "CoalGasification"
     Pyrolysis = "Pyrolysis"
-    ReversedWaterGasShift = "RWGS"
+    RWGS = "ReversedWaterGasShift"
     Crop = "Crop"
     Forest = "Forest"
     SMR = "SMR"
@@ -710,7 +720,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     }
 
     DEFAULT_COARSE_TECHNO_DICT = {
-        renewable: {stream_type: energy_type, value: [RenewableSimpleTechno]},
+        GlossaryWitnessCore.clean_energy: {stream_type: energy_type, value: [GlossaryWitnessCore.CleanEnergySimpleTechno]},
         fossil: {stream_type: energy_type, value: [FossilSimpleTechno]},
         carbon_capture: {
             stream_type: ccus_type,
@@ -812,7 +822,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     stream_to_type_mapper = {
         fossil: energy_type,
-        renewable: energy_type,
+        GlossaryWitnessCore.clean_energy: energy_type,
         methane: energy_type,
         f'{heat}.{lowtemperatureheat}': energy_type,
         f'{heat}.{mediumtemperatureheat}': energy_type,
@@ -906,7 +916,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     surface_unit = "Gha"
 
     unit_dicts = {
-        renewable: energy_unit,
+        GlossaryWitnessCore.clean_energy: energy_unit,
         fossil: energy_unit,
         biomass_dry: energy_unit,
         methane: energy_unit,
@@ -973,7 +983,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         HefaDeoxygenation: [WaterResource],
         Transesterification: [GlycerolResource],
         BiomassFermentation: [carbon_capture],
-        CoalExtraction: [GlossaryWitnessCore.CH4, CO2Resource],
+        CoalExtraction: [GlossaryWitnessCore.CH4, carbon_capture],
         Pelletizing: [CO2FromFlueGas],
         SolarThermal: [f"{heat}.{hightemperatureheat}"],
         Nuclear: [f"{heat}.{hightemperatureheat}"],
@@ -1040,18 +1050,18 @@ class GlossaryEnergy(GlossaryWitnessCore):
         GeologicMineralization: [],
         PureCarbonSolidStorage: [],
         SMR: [],
-        RenewableSimpleTechno: [],
+        GlossaryWitnessCore.CleanEnergySimpleTechno: [],
         FossilSimpleTechno: [CO2FromFlueGas, GlossaryWitnessCore.CH4],
         CarbonStorageTechno: [],
         CO2Hydrogenation: [],
         ManagedWood: [],
-        UnmanagedWood: [CO2Resource],
+        UnmanagedWood: [carbon_capture],
         CropEnergy: [],
         Reforestation: [],
         Geothermal: [],
         Crop: [],
         Forest: [],
-        ReversedWaterGasShift: [WaterResource],
+        RWGS: [WaterResource],
     }
 
     # dictionnary of energies used by each techno
@@ -1065,12 +1075,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         UnmanagedWood: [electricity], # consume fuel and electricity .. les tronçonneuses et les camions (donc transport fuel)
         f"{direct_air_capture}.{AmineScrubbing}": [electricity, methane],   # put heat instead of methane
         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": [electricity, methane], # put heat instead of methane
-        f"{direct_air_capture}.{DirectAirCaptureTechno}": [renewable, fossil], # dont touch
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": [GlossaryWitnessCore.clean_energy, fossil], # dont touch
         # in flue gas techno: heat comes directly from plant so just electricity
         f"{flue_gas_capture}.{CalciumLooping}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{ChilledAmmoniaProcess}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{CO2Membranes}": [electricity], # heat and electricity
-        f"{flue_gas_capture}.{FlueGasTechno}": [renewable], # heat and electricity -> not heat because
+        f"{flue_gas_capture}.{FlueGasTechno}": [GlossaryWitnessCore.clean_energy], # heat and electricity -> not heat because
         f"{flue_gas_capture}.{MonoEthanolAmine}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{PiperazineProcess}": [electricity], # heat and electricity
         f"{flue_gas_capture}.{PressureSwingAdsorption}": [electricity], # heat and electricity
@@ -1107,7 +1117,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         Refinery: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # idea : creer une techno puit de pétrole (CrudeOil)
         HydrogenLiquefaction: [f"{hydrogen}.{gaseous_hydrogen}", electricity],  # might need some heat ? produced or consumed, not clear
         FossilGas: [electricity], # "transport fuel"
-        Methanation: [f"{hydrogen}.{gaseous_hydrogen}"],  # consumed CO2 (which can come from carbon_capture)
+        Methanation: [f"{hydrogen}.{gaseous_hydrogen}", carbon_capture],
         UpgradingBiogas: [electricity, biogas], # heat not electricity
         CO2Hydrogenation: [
             f"{hydrogen}.{gaseous_hydrogen}",
@@ -1116,22 +1126,23 @@ class GlossaryEnergy(GlossaryWitnessCore):
         ],
         CoalExtraction: [electricity],  # transport fuel instead of electricity
         Pelletizing: [electricity, biomass_dry],  # might be heat instead of electricity
-        AutothermalReforming: [methane], # add heat
+        AutothermalReforming: [methane, carbon_capture], # add heat
         BiomassGasification: [electricity, biomass_dry],  # heat instead of electricity, produce syngas
-        CoElectrolysis: [electricity],  # consumed CO2 (which can come from carbon_capture)
+        CoElectrolysis: [electricity, carbon_capture],
         CoalGasification: [solid_fuel],  # add heat
-        ReversedWaterGasShift: [electricity, syngas], # heat instead of electricity, CO2 instead of carbon_capture
+        RWGS: [electricity, syngas], # heat instead of electricity, CO2 instead of carbon_capture
         SMR: [electricity, methane],  # heat instead of elec
         AnimalManure: [electricity],  # transport fuel in stead of elec
         WetCropResidues: [electricity], # transport fuel in stead of elec
         Geothermal: [f"{heat}.{mediumtemperatureheat}"],  # just electricity
         BiomassBuryingFossilization: [biomass_dry],  # add transport fuel
-        DeepOceanInjection: [carbon_capture],  # add transport fuel
-        DeepSalineFormation: [carbon_capture],  # add transport fuel
-        DepletedOilGas: [carbon_capture],  # add transport fuel
-        EnhancedOilRecovery: [carbon_capture],  # add transport fuel
-        GeologicMineralization: [carbon_capture],  # add transport fuel
-        CarbonStorageTechno: [carbon_capture],
+        DeepOceanInjection: [],  # add transport fuel
+        DeepSalineFormation: [],  # add transport fuel
+        DepletedOilGas: [],  # add transport fuel
+        EnhancedOilRecovery: [],  # add transport fuel
+        GeologicMineralization: [],  # add transport fuel
+        CarbonStorageTechno: [],
+        CropEnergy: [],
     }
 
     # dict of resources used by technos
@@ -1157,19 +1168,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
         ElectrolysisSOEC: [WaterResource],
         Refinery: [OilResource],
         FossilGas: [NaturalGasResource],
-        Methanation: [CO2Resource],
         CO2Hydrogenation: [WaterResource],
         CoalExtraction: [CoalResource],
-        AutothermalReforming: [CO2Resource, OxygenResource],
-        CoElectrolysis: [CO2Resource, WaterResource],
+        AutothermalReforming: [OxygenResource],
+        CoElectrolysis: [WaterResource],
         Pyrolysis: [WoodResource],
         WaterGasShift: [WaterResource],
-        ReversedWaterGasShift: [CO2Resource],
+        RWGS: [CO2Resource],
         SMR: [WaterResource],
         HefaDecarboxylation: [NaturalOilResource],
         HefaDeoxygenation: [NaturalOilResource],
         BiomassGasification: [WaterResource],
-        CropEnergy: [CO2Resource],
         UpgradingBiogas: [MonoEthanolAmineResource],
         PureCarbonSolidStorage: [SolidCarbon],  # note : could be a stream but we prefered to let it as a resource for the moment
     }
@@ -1242,7 +1251,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         EnhancedOilRecovery: carbon_storage,
         GeologicMineralization: carbon_storage,
         PureCarbonSolidStorage: carbon_storage,
-        ReversedWaterGasShift: syngas,
+        RWGS: syngas,
         WaterGasShift: f"{hydrogen}.{gaseous_hydrogen}",
         f"{direct_air_capture}.{DirectAirCaptureTechno}": carbon_capture,
         CropEnergy: biomass_dry,
@@ -1268,8 +1277,173 @@ class GlossaryEnergy(GlossaryWitnessCore):
         NaturalGasBoilerMediumHeat: f"{heat}.{mediumtemperatureheat}",
         HeatPumpLowHeat: f"{heat}.{lowtemperatureheat}",
         CHPLowHeat: f"{heat}.{lowtemperatureheat}",
-        RenewableSimpleTechno: renewable,
+        GlossaryWitnessCore.CleanEnergySimpleTechno: GlossaryWitnessCore.clean_energy,
         FossilSimpleTechno: fossil,
+    }
+
+    TechnoConstructionDelayDict = {
+         FossilGas: 3,
+         RWGS: 2,
+         UpgradingBiogas: 2,
+         Methanation: 2,  # Thema, M., Bauer, F. and Sterner, M., 2019.  Power-to-Gas: Electrolysis and methanation status review.  Renewable and Sustainable Energy Reviews, 112, pp.775-787. the average time needed for planning and constructing was about 1.5years from Thema2019
+         WaterGasShift: 2, # Giuliano, A., Freda, C. and Catizzone, E., 2020. Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections. Bioengineering, 7(3), p.70.
+         ElectrolysisSOEC: 1, # Haldor Topsoe, 2021 Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production https://blog.topsoe.com/haldor-topsoe-to-build-large-scale-soec-electrolyzer-manufacturing-facility-to-meet-customer-needs-for-green-hydrogen-production  Construction will start in 2022 and will ends in 2023
+         ElectrolysisPEM: 2,
+         ElectrolysisAWE: 1,
+         PlasmaCracking: 2,
+         HydrogenLiquefaction: 2,
+         AnaerobicDigestion: 3,
+         BiomassGasification: 3,
+         SMR: 2,
+         CoalGasification: 4,
+         Pyrolysis: 2,
+         AutothermalReforming: 3,
+         CoElectrolysis: 2,
+         Refinery: 3,
+         FischerTropsch: 3,
+         HefaDecarboxylation: 3,
+         HefaDeoxygenation: 3,
+         Transesterification: 3,
+         BiomassFermentation: 2,
+         CoalExtraction: 3,
+         Pelletizing: 3,
+         WindOffshore: 3,  # ATB NREL 2020
+         WindOnshore: 3,  # ATB NREL 2020
+         SolarPv: 1,
+         SolarThermal: 3, # JRC, ATB NREL, database https://solarpaces.nrel.gov/
+         Hydropower: 3,
+         Nuclear: 6, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
+         CombinedCycleGasTurbine: 2,
+         GasTurbine: 2, #Lazard
+         BiogasFired: 2,
+         CoalGen: 5,  # For 1000MW hypercritical in Korea
+         OilGen: 5,  # For 1000MW hypercritical in Korea
+         BiomassFired: 2,
+         f"{direct_air_capture}.{AmineScrubbing}": 3,
+         f"{direct_air_capture}.{CalciumPotassiumScrubbing}": 3,
+         f"{flue_gas_capture}.{CalciumLooping}": 1,
+         f"{flue_gas_capture}.{ChilledAmmoniaProcess}": 1,
+         f"{flue_gas_capture}.{CO2Membranes}": 1,
+         f"{flue_gas_capture}.{MonoEthanolAmine}": 1,
+         f"{flue_gas_capture}.{PiperazineProcess}": 1,
+         f"{flue_gas_capture}.{PressureSwingAdsorption}": 1,
+         BiomassBuryingFossilization: 0,
+         DeepOceanInjection: 0,
+         DeepSalineFormation: 0,
+         DepletedOilGas: 0,
+         EnhancedOilRecovery: 0,
+         GeologicMineralization: 0,
+         PureCarbonSolidStorage: 0,
+        UnmanagedWood: 3,
+        Reforestation: 3,
+        CarbonStorageTechno: 0,
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": 3,
+        CropEnergy: 1,
+        Geothermal: 7,     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). # National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        ManagedWood: 3,
+        f"{flue_gas_capture}.{FlueGasTechno}": 1,
+        HeatPumpHighHeat: 1,
+        ElectricBoilerHighHeat: 2,
+        GeothermalHighHeat: 1,
+        ElectricBoilerLowHeat: 2,
+        CHPHighHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        NaturalGasBoilerHighHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        NaturalGasBoilerLowHeat: 2,
+        GeothermalLowHeat: 1,
+        HeatPumpLowHeat: 1,
+        GeothermalMediumHeat: 1,
+        HeatPumpMediumHeat: 1,
+        CHPLowHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        FossilSimpleTechno: 3,
+        NaturalGasBoilerMediumHeat: 2, # Economic and Technical Analysis of Heat Dry Milling: Model Description. Rhys T.Dale and Wallace E.Tyner Staff Paper Agricultural Economics Department Purdue University
+        CO2Hydrogenation: 3,
+        GlossaryWitnessCore.CleanEnergySimpleTechno: 3, # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation # Technologies., average
+        CHPMediumHeat: 2,
+        ElectricBoilerMediumHeat: 2,
+    }
+
+    TechnoLifetimeDict = {
+        RWGS: 40, # for now constant in time but should increase with time
+        FossilGas: 23, # for now constant in time but should increase with time
+        UpgradingBiogas: 20, # for now constant in time but should increase with time
+        Methanation: 15, # for now constant in time but should increase with time
+        WaterGasShift: 20, # Giuliano2020 amortized on 20 years # for now constant in time but should increase with time
+        ElectrolysisSOEC: 8, # Around 60000hours
+        ElectrolysisPEM: 11, # Around 90000 operating hours with 8000 hours a year
+        ElectrolysisAWE: 25, # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019. Advances in alkaline water electrolyzers: A review. Journal of Energy Storage, 23, pp.392-403. Around 20 and 30 years
+        PlasmaCracking: 25,
+        HydrogenLiquefaction: 39,
+        AnaerobicDigestion: 20,
+        BiomassGasification: 25, # Wang2019 Rosenfeld2020 says 20 # for now constant in time but should increase with time
+        SMR: 25,
+        CoalGasification: 20,
+        Pyrolysis: 20,
+        AutothermalReforming: 15, # for now constant in time but should increase with time
+        CoElectrolysis: 40,
+        Refinery: 35, # should be modified
+        FischerTropsch: 30, # for now constant in time but should increase with time
+        HefaDecarboxylation: 30, # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2 # for now constant in time but should increase with time
+        HefaDeoxygenation: 30,# Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017. Techno-economic and resource analysis of hydroprocessed renewable jet fuel. # Biotechnology for biofuels, 10(1), pp.1-16.# https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
+        Transesterification: 15, # for now constant in time but should increase with time
+        BiomassFermentation: 45, # http://www.ethanolproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
+        CoalExtraction: 35, # should be modified
+        Pelletizing: 25, # Wang2019 Rosenfeld2020 says 20 # for now constant in time but should increase with time
+        WindOffshore: 30, # ATB NREL 2020
+        WindOnshore: 30, # ATB NREL 2020
+        SolarPv: 25, # IRENA, EOLES model
+        SolarThermal: 25, # JRC, IRENA, SolarPACES
+        Hydropower: 50, # should be modified
+        Nuclear: 60,  # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        CombinedCycleGasTurbine: 30, # # Source: U.S. Energy Information Administration 2020, for now constant in time but should increase with time
+        GasTurbine: 30, # Source U.S. Energy Information Administration 2020, # for now constant in time but should increase with time
+        BiogasFired: 20, # Value for CHP units
+        CoalGen: 46, # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.  Quantifying operational lifetimes for coal power plants under the Paris goals. Nature communications, 10(1), pp.1-9.
+        OilGen: 46, # Source: Cui, R.Y., Hultman, N., Edwards, M.R., He, L., Sen, A., Surana, K., McJeon, H., Iyer, G., Patel, P., Yu, S. and Nace, T., 2019.  Quantifying operational lifetimes for coal power plants under the Paris goals. Nature communications, 10(1), pp.1-9.
+        BiomassFired: 25, # Value for CHP units
+        f"{direct_air_capture}.{AmineScrubbing}": 35, # should be modified
+        f"{direct_air_capture}.{CalciumPotassiumScrubbing}": 35, # should be modified
+        f"{flue_gas_capture}.{CalciumLooping}": 25,  # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{ChilledAmmoniaProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{CO2Membranes}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{MonoEthanolAmine}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PiperazineProcess}": 25, # SAEECCT Coal USC plant lifetime
+        f"{flue_gas_capture}.{PressureSwingAdsorption}": 25, # SAEECCT Coal USC plant lifetime
+        BiomassBuryingFossilization: 35, # should be modified
+        DeepOceanInjection: 35, # should be modified
+        DeepSalineFormation: 35, # should be modified
+        DepletedOilGas: 35, # should be modified
+        EnhancedOilRecovery: 35, # should be modified
+        GeologicMineralization: 35, # should be modified
+        PureCarbonSolidStorage: 35, # should be modified
+        ManagedWood: 150, # for now constant in time but should increase with time
+        UnmanagedWood: 150, # for now constant in time but should increase with time
+        CropEnergy: 50, # for now constant in time but should increase with time
+        FossilSimpleTechno: 25,
+        NaturalGasBoilerHighHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        HeatPumpHighHeat: 25, # years # https://www.energy.gov/energysaver/heat-pump-systems
+        GeothermalHighHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPHighHeat: 45, # Heat Producer [Online] # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        NaturalGasBoilerLowHeat: 45, # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp # https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        ElectricBoilerLowHeat: 45,
+        HeatPumpLowHeat: 25,
+        GeothermalLowHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPLowHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        NaturalGasBoilerMediumHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        ElectricBoilerMediumHeat: 45, # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp # https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        HeatPumpMediumHeat: 25, # years # https://www.energy.gov/energysaver/heat-pump-systems
+        GeothermalMediumHeat: 25, # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        CHPMediumHeat: 45, # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+        CO2Hydrogenation: 20,
+        GlossaryWitnessCore.CleanEnergySimpleTechno: 30, # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.  2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).
+        f"{ElectricBoilerHighHeat}": 45, # Heat Producer [Online] # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
+        f"{CarbonStorageTechno}": 35,
+        f"{direct_air_capture}.{DirectAirCaptureTechno}": 35,
+        f"{flue_gas_capture}.{FlueGasTechno}": 25,
+        Reforestation: 150,  # for now constant in time but should increase with time,
+        Geothermal: 30, # Tsiropoulos, I., Tarvydas, D. and Zucker, A., 2018.  Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.  Publications Office of the European Union, Luxemburgo.
+        AnimalManure: 25, # for now constant in time but should increase with time
+        WetCropResidues: 25,  # for now constant in time but should increase with time
+        CO2Membranes: 25, # SAEECCT Coal USC plant lifetime
     }
 
     @classmethod
@@ -1280,17 +1454,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "dataframe_descriptor": {
                 cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
                 f"{techno_name} ({cls.surface_unit})": ("float", None, False),
-            },
-        }
-
-    @classmethod
-    def get_non_use_capital_df(cls, techno_name: str):
-        return {
-            "type": "dataframe",
-            "unit": "G$",
-            "dataframe_descriptor": {
-                cls.Years: ("int", [1900, GlossaryWitnessCore.YearEndDefault], False),
-                techno_name: ("float", None, False),
             },
         }
 
@@ -1327,7 +1490,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"Capex_{techno_name}": ("float", None, False),
                 cls.InvestValue: ("float", None, False),
                 "efficiency": ("float", None, False),
-                "energy_costs": ("float", None, False),
+                "energy_and_resources_costs": ("float", None, False),
                 "transport": ("float", None, False),
                 f"{techno_name}_factory": ("float", None, False),
                 cls.MarginValue: ("float", None, False),
@@ -1448,7 +1611,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 f"{cls.syngas} ({cls.unit_dicts[cls.syngas]})",
                 f"{cls.WaterResource} ({cls.mass_unit})",
             ]
-        if techno_name == GlossaryEnergy.ReversedWaterGasShift:
+        if techno_name == GlossaryEnergy.RWGS:
             extra_cols = [
                 f"{cls.carbon_capture} ({cls.unit_dicts[cls.carbon_capture]})",
             ]

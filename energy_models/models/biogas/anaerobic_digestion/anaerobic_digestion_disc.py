@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 from energy_models.core.techno_type.disciplines.biogas_techno_disc import (
@@ -44,11 +42,9 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.AnaerobicDigestion
-    lifetime = 20
-    construction_delay = 3  # years Not Found
+
     techno_infos_dict_default = {'maturity': 3,
                                  'Opex_percentage': 0.85,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # Rajendran, K., Gallachóir, B.ó. and Murphy, J.D., 2019.
@@ -79,7 +75,6 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'efficiency': 0.4,
                                  'WACC': 0.06,
                                  'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay
                                  }
 
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
@@ -91,30 +86,12 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
 
     # Age distribution can be computed with
     # http://task37.ieabioenergy.com/plant-list.html
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [10.12312, 10.12312, 10.12312, 7.113543, 7.113543, 12.9959,
-                                                         7.387141, 7.387141, 3.556772,
-                                                         5.471956, 4.514364, 4.651163, 2.599179, 2.599179, 1.094391,
-                                                         0.820793, 0.820793, 0.820793, 0.683994528
-                                                         ]})  # to review
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
     # License: CC BY 4.0.
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.015, 0.017, 0.009]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     DESC_IN.update(BiogasTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

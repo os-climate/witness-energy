@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.methane_techno_disc import (
     MethaneTechnoDiscipline,
@@ -44,12 +42,10 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     # -- add specific techno inputs to this
 
     techno_name = GlossaryEnergy.UpgradingBiogas
-    lifetime = 20
-    construction_delay = 2  # years
+
     # 'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',
 
     techno_infos_dict_default = {'Opex_percentage': 0.04,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'Capex_init': 1570000.0,  # CAPEX p27 only for upgrading by amine
                                  'Capex_init_unit': 'euro',
                                  'available_power': 3440000.0,
@@ -73,8 +69,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'maturity': 3,
                                  'learning_rate': 0.2,
                                  'WACC': 0.0878,
-                                 'techno_evo_eff': 'no',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
+                                     'techno_evo_eff': 'no',  # in kWh/kg
                                  }
 
     # At present, about  3.5 Mtoe of biomethane is produced around the world and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe
@@ -82,29 +77,9 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     initial_production = 3.5 * 0.923 * 11.63  # in TWh at year_start
     # Same as anaerobic digestion since most of biogas from anaerobic
     # digestion is converted into bioCH4
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.085787594423131,
-                                                         11.083221775965836, 9.906291833479699,
-                                                         11.264502455357881, 15.372601517593951, 10.940986166952394,
-                                                         6.682284695273031, 3.1012940652355083, 7.711401160086531,
-                                                         5.848393573822739, 2.2088353407762535, 3.162650601721087,
-                                                         8.631749219311956]})  # to review
-
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [4.43575, 4.43575]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}
-                                       },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+    }
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

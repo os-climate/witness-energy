@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,15 +45,14 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.SolarPv
-    lifetime = 25  # IRENA, EOLES model
-    construction_delay = 1
+
     # Source for Opex percentage, Capex init, capacity factor:
     # IEA 2022, World Energy Outlook 2019,
     # https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY
     # 4.0.
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.electricity,
-                                 'Opex_percentage': 0.021,  # Mean of IEA 2019, EOLES data and others
+                                 'Opex_percentage': 0.017,  # represent 10 $/MWh, 6 to 10 in 2020, 10 to 30 in 2023
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'fuel_demand': 0.0,
@@ -64,24 +61,19 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'heat_demand': 0.0,
                                  'heat_demand_unit': 'kWh/kgCO2',
-                                 'WACC': 0.075,  # Weighted averaged cost of capital. Source IRENA
+                                 'WACC': 0.06,  # between 5 to 7% according to IRENA
                                  'learning_rate': 0.18,  # IEA 2011
-                                 'lifetime': lifetime,  # should be modified
-                                 'Capex_init': 1077,  # IEA 2019 Mean of regional value
+                                 'Capex_init': 883,  # IRENA 2020 https://www.irena.org/Data/View-data-by-topic/Costs/Solar-costs, 850 $/kW in 2023
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'full_load_hours': 8760,  # 1577, #Source Audi ?
+                                 'full_load_hours': 1577,  # capacity factor=0.18 , IEA Average annual capacity factors by technology, 2018 10-21%, IRENA 2019: 18%
                                  'water_demand': 0.0,
                                  'water_demand_unit': '',
-                                 # IEA Average annual capacity factors by
-                                 # technology, 2018 10-21%, IRENA 2019: 18%
-                                 'capacity_factor': 0.2,
                                  'density_per_ha': 315059,
                                  'density_per_ha_unit': 'kWh/ha',
                                  'transport_cost_unit': '$/kg',  # check if pertient
                                  'techno_evo_eff': 'no',
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CopperResource}_needs": 2822 / 1e9 # According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
@@ -89,28 +81,10 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
     initial_production = 700  # in TWh at year_start source IEA 2019
     # Invest before year start in $ source IEA 2019
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [108.0]})
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [20.4, 18.8, 15.2, 10.1, 8.0, 7.6, 5.9, 6, 3.4, 1.5, 1.3, 0.25,
-                                                         0.19, 0.18,
-                                                         0.17, 0.16, 0.15, 0.14, 0.13, 0.12, 0.10, 0.1, 0.1, 0.01]
-                                             })
-
+    
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+                      }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

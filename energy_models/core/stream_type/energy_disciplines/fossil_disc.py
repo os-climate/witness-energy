@@ -30,7 +30,7 @@ class FossilDiscipline(EnergyDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
 

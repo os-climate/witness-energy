@@ -116,7 +116,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -128,8 +128,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -169,9 +169,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -210,7 +208,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -222,8 +220,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -250,8 +248,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
 
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -265,7 +261,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -307,7 +303,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -319,8 +315,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, 'syngas_ratio',
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -348,8 +344,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -363,7 +357,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -404,7 +398,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -416,8 +410,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, 'syngas_ratio',
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -445,8 +439,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -464,7 +456,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -504,7 +496,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -516,8 +508,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', GlossaryEnergy.FlueGasMean,
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio, GlossaryEnergy.FlueGasMean,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -543,8 +535,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -558,7 +548,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -620,17 +610,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.Capital: 20000 * np.ones_like(self.years)
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = self.year_end
@@ -645,7 +624,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -726,7 +705,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.energy_name}')[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_cc{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -765,7 +744,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -778,7 +757,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -794,8 +773,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 output, 'coupling')]
 
         coupled_inputs = [
-            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+            'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = ['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.model_name}.pkl',
@@ -832,7 +811,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{GlossaryEnergy.YearEnd}'] = self.year_end
         full_values_dict[f'{self.name}.{usecase.coupling_name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-8
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDANewtonRaphson'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         # Overwrite values for ratios with values from setup
         full_values_dict[
@@ -856,7 +835,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # EnergyMix
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}')[
-            0].mdo_discipline_wrapp.mdo_discipline
+            0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -878,12 +857,12 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for energy in energy_list:
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamProductionWithoutRatioValue}', ]
             coupled_inputs += [
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
         # coupled_inputs = [
-        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}', ]
+        # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.StreamProductionWithoutRatioValue}']
         coupled_outputs = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
@@ -918,7 +897,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on EnergyMix discipline.
         For now do not include it to the test routine (not sure how volatile this test it)
         '''
-        self.setUp()
         self.model_name = 'EnergyMix'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
@@ -945,7 +923,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -957,7 +935,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -971,9 +949,9 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         #                         ])
 
         coupled_inputs = [
-            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}',
             # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
-            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.EnergyConsumptionValue}']
+            f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.StreamConsumptionValue}']
         coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]
 
         # coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]
@@ -1015,7 +993,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1027,8 +1005,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand', 'ratio_objective']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1068,9 +1046,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1109,7 +1085,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1121,8 +1097,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1163,12 +1139,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1207,7 +1181,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1219,8 +1193,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1260,9 +1234,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1301,7 +1273,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1313,8 +1285,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1354,9 +1326,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
@@ -1395,7 +1365,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = []
         for key in mda_data_input_dict[self.techno_name].keys():
             # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'inner_mda_name',
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
@@ -1407,8 +1377,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        GlossaryEnergy.StreamPricesValue, GlossaryEnergy.StreamsCO2EmissionsValue,
                        GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'scaling_factor_techno_production', GlossaryEnergy.BoolApplyRatio,
+                       GlossaryEnergy.BoolApplyStreamRatio, GlossaryEnergy.BoolApplyResourceRatio,
                        'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
                        'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -1449,12 +1419,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.techno_name}')[0].discipline_wrapp.discipline
         coupled_inputs.append(
             f'{namespace}.all_resource_ratio_usable_demand'
         )
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
         coupled_outputs.remove(f'Test_Ratio.Electrolysis.PEM.{GlossaryEnergy.TechnoPricesValue}')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,

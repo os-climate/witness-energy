@@ -17,7 +17,6 @@ limitations under the License.
 
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -40,7 +39,6 @@ class Study(StudyManager):
             self,
             year_start=GlossaryEnergy.YearStartDefault,
             year_end=GlossaryEnergy.YearEndDefault,
-            time_step=1,
             lower_bound_techno=1.0e-6,
             upper_bound_techno=100.0,
             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
@@ -53,7 +51,6 @@ class Study(StudyManager):
         self.main_study = main_study
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.energy_list = None
         self.ccs_list = None
         self.dict_technos = None
@@ -70,7 +67,6 @@ class Study(StudyManager):
         self.study_v0 = Study_v0(
             year_start=self.year_start,
             year_end=self.year_end,
-            time_step=self.time_step,
             main_study=self.main_study,
             bspline=self.bspline,
             execution_engine=execution_engine,
@@ -106,17 +102,11 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
         }
         values_dict_list.append(numerical_values_dict)
 
         return values_dict_list
-
-    def specific_check_inputs(self):
-        """
-        Specific check of years column
-        """
-        specific_check_years(self.execution_engine.dm)
 
 
 if '__main__' == __name__:

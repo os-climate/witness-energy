@@ -49,7 +49,7 @@ def launch_data_pickle_generation(directory=''):
 
     full_values_dict[f'{name}.epsilon0'] = 1.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
-    full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel'
+    full_values_dict[f'{name}.inner_mda_name'] = 'MDAGaussSeidel'
     full_values_dict[f'{name}.max_mda_iter'] = 200
     full_values_dict[f'{name}.year_end'] = GlossaryEnergy.YearEndDefaultValueGradientTest
     ee.load_study_from_input_dict(full_values_dict)
@@ -234,8 +234,8 @@ def launch_data_pickle_generation(directory=''):
                 mda_energy_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
     energy_production_detailed = Energy_Mix_disc.get_sosdisc_outputs(
-        GlossaryEnergy.EnergyProductionDetailedValue)
-    mda_energy_data_streams_output_dict[GlossaryEnergy.EnergyProductionDetailedValue] = energy_production_detailed
+        GlossaryEnergy.StreamProductionDetailedValue)
+    mda_energy_data_streams_output_dict[GlossaryEnergy.StreamProductionDetailedValue] = energy_production_detailed
 
     if directory == '':
         prefix = '.'

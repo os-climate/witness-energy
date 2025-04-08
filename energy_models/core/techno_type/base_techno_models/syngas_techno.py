@@ -47,7 +47,7 @@ class SyngasTechno(TechnoType):
     def compute_transport(self):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must $/kWh
-        transport_cost = self.transport_cost['transport'] * \
-                         self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
+        transport_cost = self.transport_cost['transport'].values * \
+                         self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
 
         return transport_cost

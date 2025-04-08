@@ -15,19 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.renewable import Renewable
+from energy_models.core.stream_type.energy_models.clean_energy import CleanEnergy
 from energy_models.core.techno_type.techno_type import TechnoType
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class RenewableTechno(TechnoType):
-    energy_name = Renewable.name
+    energy_name = CleanEnergy.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must be in $/MWh
-        transport_cost = self.transport_cost['transport'] * \
-                         self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
+        transport_cost = self.transport_cost['transport'].values * \
+                         self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
 
         return transport_cost
 

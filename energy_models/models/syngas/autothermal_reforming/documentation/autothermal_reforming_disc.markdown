@@ -2,7 +2,7 @@
 
 Autothermal reforming uses CO_2 and oxygen in a reaction with methane to form syngas.  The reaction takes place in a single chamber where the methane is partially oxidized. The reaction is exothermic due to the oxidation. 
 
-$$ 2CH_4 + O_2 + CO_2 --> 3CO + H_2O + 3H_2 $$
+$$2CH_4 + O_2 + CO_2 --> 3CO + H_2O + 3H_2$$
 
 The syngas produced ratio of H2:CO is 1:1. 
 

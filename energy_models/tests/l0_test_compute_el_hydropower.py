@@ -19,7 +19,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -47,40 +46,24 @@ class HydropowerTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                          GlossaryEnergy.InvestValue: np.array(
-                                              [4435750000.0, 4522000000.0, 4608250000.0,
-                                               4694500000.0, 4780750000.0, 4867000000.0,
-                                               4969400000.0, 5071800000.0, 5174200000.0,
-                                               5276600000.0, 5379000000.0, 5364700000.0,
-                                               5350400000.0, 5336100000.0, 5321800000.0,
-                                               5307500000.0, 5293200000.0, 5278900000.0,
-                                               5264600000.0, 5250300000.0, 5236000000.0,
-                                               5221700000.0, 5207400000.0, 5193100000.0,
-                                               5178800000.0, 5164500000.0, 5150200000.0,
-                                               5135900000.0, 5121600000.0, 5107300000.0,
-                                               5093000000.0]) * 1.0e-9})
+                                          GlossaryEnergy.InvestValue: np.linspace(4., 5., len(self.years))})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
              GlossaryEnergy.MarginValue: np.ones(
                  len(np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))) * 110})
 
-        transport_cost = 11,
+        transport_cost = 11
         # It is noteworthy that the cost of transmission has generally been held (and can
         # continue to be held)    within the £10-12/MWhr range despite transmission distances
         # increasing by almost an order of magnitude from an average of 20km for the
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
 
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})

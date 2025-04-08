@@ -77,7 +77,6 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryEnergy.NS_WITNESS: f'{self.name}'}
@@ -94,19 +93,19 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+                       f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
                        f'{self.name}.{GlossaryEnergy.PopulationDfValue}': self.population,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TransportDemandValue}': self.transport_demand
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}',
+                            inputs=[f'{self.name}.{GlossaryEnergy.StreamProductionDetailedValue}',
                                     f'{self.name}.{GlossaryEnergy.PopulationDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'

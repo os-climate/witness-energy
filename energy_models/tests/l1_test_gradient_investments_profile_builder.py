@@ -34,9 +34,10 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
+        self.override_dump_jacobian = True # let that to True
         self.name = 'Test'
         self.model_name = 'investments profile'
-        self.columns_names = [GlossaryEnergy.renewable, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
+        self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
         self.n_profiles = 4
         self.coeff_jacobian = [f'{self.name}.{self.model_name}.coeff_{i}' for i in range(self.n_profiles)]
         self.year_min = 2020
@@ -75,8 +76,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
             self.test_02_output_at_poles,
             ]
 
-
-    def test_01_output_invest_mix(self, energy_list=None):
+    def test_01_output_invest_mix(self):
         '''
         Test the gradient of the invest profile exported into invest_mix
         '''
@@ -99,8 +99,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.override_dump_jacobian = True
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(derr_approx='complex_step',
                             inputs=self.coeff_jacobian,
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
@@ -109,7 +108,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
                             discipline=disc,
                             filename='jacobian_investments_profile_builder_disc_all_years.pkl', threshold=1e-5, )
 
-    def test_02_output_at_poles(self, energy_list=None):
+    def test_02_output_at_poles(self):
         '''
         Test the gradient of the invest profile exported into mix_array at the poles
         '''
@@ -141,8 +140,7 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
 
         outputs = [f'{self.name}.{self.model_name}.{col}_array_mix' for col in self.columns_names]
 
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.override_dump_jacobian = True
+        disc = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(derr_approx='complex_step',
                             inputs=self.coeff_jacobian,
                             outputs=outputs,

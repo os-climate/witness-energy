@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import (
     SyngasTechnoDiscipline,
@@ -28,7 +27,7 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 )
 
 
-class RWGSDiscipline(SyngasTechnoDiscipline):
+class ReversedWaterGasShiftDiscipline(SyngasTechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'Reversed Water Gas Shift Model',
@@ -43,9 +42,8 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         'version': '',
     }
 
-    techno_name = GlossaryEnergy.ReversedWaterGasShift
-    lifetime = 20
-    construction_delay = 2
+    techno_name = GlossaryEnergy.RWGS
+
     techno_infos_dict_default = {'maturity': 5,
                                  'reaction': 'dCO2 + e(H2+r1C0) = syngas(H2+r2CO) + cH20',
                                  'CO2_from_production': 0.0,
@@ -58,7 +56,6 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
                                  'WACC': 0.0878,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.2,
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # Capex at table 3 and 8
                                  'Capex_init_vs_CO_H2_ratio': [37.47e6, 113.45e6],
                                  'Capex_init_vs_CO_H2_ratio_unit': '$',
@@ -79,40 +76,18 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
                                  'efficiency': 0.75,  # pump + compressor efficiency Rezaei2019
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     # Fake investments (not found in the litterature...)
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.1715, 0.1715]})
-    # From Future of hydrogen : accounting for around three quarters of the
+        # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes. and 23+ from coal gasification
     # that means that WGS is used for 98% of the hydrogen production
     initial_production = 0.0
 
     # Fake initial age distrib (not found in the litterature...)
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.array(
-                                                 [3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                  ]) + 0.82141})
-
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+                      
                'syngas_ratio': {'type': 'array', 'unit': '%'},
                'needed_syngas_ratio': {'type': 'float', 'unit': '%'}
                }
@@ -212,7 +187,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.ReversedWaterGasShift), ('syngas_ratio',),
+            (GlossaryEnergy.CO2EmissionsValue, GlossaryEnergy.RWGS), ('syngas_ratio',),
             np.identity(len(years)) / 100.0 * (dco2_emissions_dsyngas_ratio.to_numpy() +
                                                dcons_syngas_dsyngas_ratio) / efficiency[:, np.newaxis]
             + dcons_electricity_dsyngas_ratio)

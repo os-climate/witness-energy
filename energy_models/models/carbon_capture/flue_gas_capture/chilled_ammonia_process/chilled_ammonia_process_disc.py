@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import (
     CCTechnoDiscipline,
@@ -44,8 +42,7 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
         'version': '',
     }
     techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}'
-    lifetime = 25  # SAEECCT Coal USC plant lifetime
-    construction_delay = 1
+
 
     # Most of the data from this model come from :
     # Guandalini, G., Romano, M.C., Ho, M., Wiley, D., Rubin, E.S. and Abanades, J.C., 2019.
@@ -63,8 +60,7 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
     c02_capacity_year = 790.2 * 0.85 * 8760 * 550
     carbon_capture_efficiency = 0.90
 
-    techno_infos_dict_default = {'lifetime': lifetime,
-                                 'capacity_factor': 0.85,  # SAEECCT - Coal capacity factor
+    techno_infos_dict_default = {'capacity_factor': 0.85,  # SAEECCT - Coal capacity factor
                                  'maturity': 0,
                                  'Opex_percentage': 0,
                                  'learning_rate': 0,
@@ -96,45 +92,23 @@ class ChilledAmmoniaProcessDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
+                                 }
 
     techno_info_dict = techno_infos_dict_default
 
     initial_capture = 5  # Mt
 
     # We assume 0.5 MT increase per year, with a capex ~ 40$/ton
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.2]})
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0]
-                                             })
-
+    
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
                                             'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
                                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                      GlossaryEnergy.FlueGasMean: (
                                                                      'float', None, True), }
                                             },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}}
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 

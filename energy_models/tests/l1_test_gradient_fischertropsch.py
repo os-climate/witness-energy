@@ -19,7 +19,6 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -59,13 +58,13 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)
 
-        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: np.ones(len(self.years)) * 20,
+        self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 20,
                                            GlossaryEnergy.syngas: 34, GlossaryEnergy.carbon_capture: 12.4
                                            })
-        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.SMR: np.ones(len(self.years)) * 34,
-                                                    
-                                                    GlossaryEnergy.CoElectrolysis: np.ones(len(self.years)) * 60,
-                                                    GlossaryEnergy.BiomassGasification: np.ones(len(self.years)) * 50
+        self.syngas_detailed_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                                    GlossaryEnergy.SMR: 34,
+                                                    GlossaryEnergy.CoElectrolysis: 60,
+                                                    GlossaryEnergy.BiomassGasification: 50
                                                     })
         self.syngas_ratio_technos = {GlossaryEnergy.SMR: 33,
                                      GlossaryEnergy.CoElectrolysis: 100.0,
@@ -74,48 +73,19 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.stream_co2_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.carbon_capture: -2.})
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                          GlossaryEnergy.InvestValue: np.array(
-                                              [4435750000.0, 4522000000.0, 4608250000.0,
-                                               4694500000.0, 4780750000.0, 4867000000.0,
-                                               4969400000.0, 5071800000.0, 5174200000.0,
-                                               5276600000.0, 5379000000.0, 5364700000.0,
-                                               5350400000.0, 5336100000.0, 5321800000.0,
-                                               5307500000.0, 5293200000.0, 5278900000.0,
-                                               5264600000.0, 5250300000.0, 5236000000.0,
-                                               5221700000.0, 5207400000.0, 5193100000.0,
-                                               5178800000.0, 5164500000.0, 5150200000.0,
-                                               5135900000.0, 5121600000.0, 5107300000.0,
-                                               5093000000.0])[:len(self.years)] * 1.0e-9})
+                                          GlossaryEnergy.InvestValue: np.linspace(4., 5.0, len(self.years))})
 
         self.invest_level_negative = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                   GlossaryEnergy.InvestValue: np.array(
-                                                       [4435750000.0, 4522000000.0, 4608250000.0,
-                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                        -5276600000.0, -5379000000.0, -5364700000.0,
-                                                        -5350400000.0, -5336100000.0, -5321800000.0,
-                                                        5307500000.0, 5293200000.0, 5278900000.0,
-                                                        5264600000.0, 5250300000.0, 5236000000.0,
-                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                        5093000000.0])[:len(self.years)] * 1.0e-9})
+                                                   GlossaryEnergy.InvestValue: np.linspace(4., 5.0, len(self.years))})
         # CO2 Taxe Data
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
-
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * 100})
+            {GlossaryEnergy.Years: self.years, 'transport': 100})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
@@ -130,6 +100,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         # overload value of lifetime to reduce test duration
         self.techno_infos_dict = FischerTropschDiscipline.techno_infos_dict_default
         self.techno_infos_dict[GlossaryEnergy.LifetimeName] = GlossaryEnergy.LifetimeDefaultValueGradientTest
+
     def test_01_FT_gradient_syngas_ratio_08(self):
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_WGS'
@@ -175,7 +146,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
@@ -241,7 +212,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
@@ -307,7 +278,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
@@ -362,7 +333,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.array(
-                           list(np.linspace(100, 0, 5)) + list(np.linspace(0, 100, 6))),
+                           list(np.linspace(100, 0, 5)
+                                ) + list(np.linspace(0, 100, GlossaryEnergy.YearEndDefaultValueGradientTest - self.years[4]))),
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -374,7 +346,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
@@ -438,7 +410,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
@@ -502,7 +474,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',

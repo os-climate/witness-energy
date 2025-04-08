@@ -46,8 +46,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.PlasmaCracking
-    lifetime = 25
-    construction_delay = 2
+
     techno_infos_dict_default = {'reaction': 'CH4 = C + 2H2',
                                  'maturity': 5,
                                  'Opex_percentage': 0.2,
@@ -58,7 +57,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'WACC': 0.1,
                                  'learning_rate': 0.25,
                                  'maximum_learning_capex_ratio': 0.33,
-                                 'lifetime': lifetime,
                                  'Capex_init': 12440000.0,
                                  'Capex_init_unit': 'pounds',
                                  'pounds_dollar': 1.32,
@@ -70,27 +68,9 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.15,
                                  'efficiency_max': 0.6,
                                  'nb_years_amort_capex': 10.,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay}
+                                 }
 
     initial_production = 1e-12
-    initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),
-                                             'distrib': [3.317804973859207,
-                                                         6.975128305927281, 4.333201737255864,
-                                                         3.2499013031833868, 1.5096723255070685,
-                                                         1.7575996841282722,
-                                                         4.208448479896288, 2.7398341887870643,
-                                                         5.228582707722979,
-                                                         10.057639166085064, 0.0, 2.313462297352473,
-                                                         6.2755625737595535,
-                                                         5.609159099363739, 6.3782076592711885,
-                                                         8.704303197679629,
-                                                         6.1950256610618135, 3.7836557445596464,
-                                                         1.7560205289962763,
-                                                         4.366363995027777, 3.3114883533312236, 1.250690879995941,
-                                                         1.7907619419001841, 4.88748519534807, 0.0]})
-    invest_before_year_start = pd.DataFrame({
-        'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
-
     CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),
                                 'CO2_credits': 50.})
 
@@ -102,17 +82,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('float', None, True),
-                                                                'distrib': ('float', None, True)}},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                                               'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+
                'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True,
                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                         'CO2_credits': ('float', None, True), }
@@ -140,16 +110,17 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                years = np.arange(year_start, year_end + 1)
+                if year_start is not None and year_end is not None:
+                    years = np.arange(year_start, year_end + 1)
 
-                if self.get_sosdisc_inputs('CO2_credits')[GlossaryEnergy.Years].values.tolist() != list(years):
-                    self.update_default_value(
-                        'CO2_credits', self.IO_TYPE_IN, pd.DataFrame({GlossaryEnergy.Years: years, 'CO2_credits': 50.}))
+                    if self.get_sosdisc_inputs('CO2_credits')[GlossaryEnergy.Years].values.tolist() != list(years):
+                        self.update_default_value(
+                            'CO2_credits', self.IO_TYPE_IN, pd.DataFrame({GlossaryEnergy.Years: years, 'CO2_credits': 50.}))
 
-                if self.get_sosdisc_inputs('market_demand')[GlossaryEnergy.Years].values.tolist() != list(years):
-                    self.update_default_value(
-                        'market_demand', self.IO_TYPE_IN,
-                        pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
+                    if self.get_sosdisc_inputs('market_demand')[GlossaryEnergy.Years].values.tolist() != list(years):
+                        self.update_default_value(
+                            'market_demand', self.IO_TYPE_IN,
+                            pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_demand': 5e-2}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

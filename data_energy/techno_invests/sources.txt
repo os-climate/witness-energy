@@ -1,0 +1,11 @@
+FossilSimpleTechno : https://www.iea.org/data-and-statistics/charts/global-investment-in-clean-energy-and-fossil-fuels-2015-2024
+fossil simple techno invest = coal + gas + oil
+
+Clean energy simple techno  : https://www.iea.org/data-and-statistics/charts/global-investment-in-clean-energy-and-fossil-fuels-2015-2024
+Clean energy invest = Renewable + Nuclear and others + Low emission fuels + 70% of grid invests because renewable need a lot of grid invest to work (https://www.rystadenergy.com/news/power-grids-investments-energy-transition-permitting-policies)
+
+CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-capture-and-utilisation
+DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
+SolarPV: [https://www.iea.org/energy-system/renewables/solar-pv,]
+WindOnShore: https://about.bnef.com/blog/offshore-wind-investment-hit-all-time-high-in-2023/#:~:text=Offshore%20wind%20investment%20surged%20to,%2476.7%20billion%2C%20jumping%2079%25.
+WindOffShore: https://about.bnef.com/blog/offshore-wind-investment-hit-all-time-high-in-2023/#:~:text=Offshore%20wind%20investment%20surged%20to,%2476.7%20billion%2C%20jumping%2079%25.

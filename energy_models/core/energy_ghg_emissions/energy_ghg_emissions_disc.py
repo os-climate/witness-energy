@@ -55,7 +55,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-cloud fa-fw',
+        'icon': "fa-solid fa-bolt",
         'version': '',
     }
 
@@ -80,42 +80,10 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                             'default': ClimateEcoDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
-        GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
+        GlossaryEnergy.StreamProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                        'namespace': 'ns_energy',
-                                                       'dataframe_descriptor': {
-                                                           GlossaryEnergy.Years: ('float', None, True),
-                                                           f'production {GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.biogas} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.syngas} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} ({GlossaryEnergy.energy_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})': (
-                                                               'float', None, True),
-                                                           f'production {GlossaryEnergy.carbon_storage} ({GlossaryEnergy.mass_unit})': (
-                                                               'float', None, True),
-                                                           'Total production': ('float', None, True),
-                                                           'Total production (uncut)': ('float', None, True),
-                                                       },
+                                                       "dynamic_dataframe_columns": True,
                                                        },
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
                                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -174,7 +142,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                          GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True)}}
-                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.StreamConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dynamic_dataframe_columns': True}
@@ -193,7 +161,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                          GlossaryEnergy.GhGPerUse.format(ghg): ('float', None, True),}
                             }
-                        dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
+                        dynamic_inputs[f'{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
@@ -249,7 +217,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         CO2_emissions_sources = outputs_dict['CO2_emissions_sources']
         CO2_emissions_sinks = outputs_dict['CO2_emissions_sinks']
         energy_production_detailed = inputs_dict[
-            GlossaryEnergy.EnergyProductionDetailedValue]
+            GlossaryEnergy.StreamProductionDetailedValue]
 
         # ------------------------------------#
         # -- CO2 emissions sources gradients--#
@@ -270,7 +238,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if 'Total CO2 by use' in co2_emission_column:
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} ({GlossaryEnergy.energy_unit})'),
+                            (GlossaryEnergy.StreamProductionDetailedValue, f'production {energy} ({GlossaryEnergy.energy_unit})'),
                             np.identity(len(years)) * value / 1e3)
                     else:
                         self.set_partial_derivative_for_other_types(
@@ -280,11 +248,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
                         if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_sources', co2_emission_column),
-                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
+                                (f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
 
                 else:
@@ -301,11 +269,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
 
             elif co2_emission_column in CO2_emissions_sources.columns and energy in ccs_list:
@@ -344,7 +312,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 value = dtot_co2_emissions[f'Total {ghg} emissions vs prod{energy}']
                 self.set_partial_derivative_for_other_types(
                     ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
-                    (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} ({GlossaryEnergy.energy_unit})'),
+                    (GlossaryEnergy.StreamProductionDetailedValue, f'production {energy} ({GlossaryEnergy.energy_unit})'),
                     np.identity(len(years)) * value / 1e3)
             ns_energy = energy
             if energy == GlossaryEnergy.biomass_dry:
@@ -379,11 +347,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}'].columns)
                         if f'{energy} ({GlossaryEnergy.energy_unit})' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_sinks', co2_emission_column),
-                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
+                                (f'{energy_df}.{GlossaryEnergy.StreamConsumptionValue}', f'{energy} ({GlossaryEnergy.energy_unit})'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -404,11 +372,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sinks', co2_emission_column),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                         self.set_partial_derivative_for_other_types(
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'),
-                            (f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
+                            (f'{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}', last_part_key),
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         self.set_partial_derivative_for_other_types(
             ('GHG_total_energy_emissions', 'Total CO2 emissions'),

@@ -18,14 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import (
-    DirectAirCaptureTechnoDiscipline,
-)
 
 
 class DirectAirCaptureTechnoTestCase(unittest.TestCase):
@@ -46,56 +42,22 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.stream_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                 0.159236536471781, 0.15899046935409588,
-                                                                 0.15874840310033885,
-                                                                 0.15875044941298937, 0.15875249600769718,
-                                                                 0.15875454288453355,
-                                                                 0.15875659004356974, 0.1587586374848771,
-                                                                 0.15893789675406477,
-                                                                 0.15911934200930778, 0.15930302260662477,
-                                                                 0.15948898953954933,
-                                                                 0.15967729551117891, 0.15986799501019029,
-                                                                 0.16006114439108429,
-                                                                 0.16025680195894345, 0.16045502805900876,
-                                                                 0.16065588517140537,
-                                                                 0.1608594380113745, 0.16106575363539733,
-                                                                 0.16127490155362818,
-                                                                 0.16148695384909017, 0.1617019853041231,
-                                                                 0.1619200735346165,
-                                                                 0.16214129913260598, 0.16236574581786147,
-                                                                 0.16259350059915213,
-                                                                 0.1628246539459331]) * 1000.0, GlossaryEnergy.fossil: 100.
+            {GlossaryEnergy.Years: years, GlossaryEnergy.clean_energy: 160., GlossaryEnergy.fossil: 100.
              })
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 0.2})
-        invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
-                           5150200000.0, 5164500000.0, 5178800000.0,
-                           5221700000.0, 5207400000.0, 5193100000.0,
-                           5064600000.0, 4950300000.0, 4836000000.0,
-                           4707500000.0, 4793200000.0, 4678900000.0,
-                           4550400000.0, 4336100000.0, 4321800000.0,
-                           4435750000.0, 4522000000.0, 4608250000.0,
-                           4276600000.0, 4379000000.0, 4364700000.0,
-                           4169400000.0, 4071800000.0, 4174200000.0,
-                           3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.02 / 1000 * 1.0e-9
+            {GlossaryEnergy.Years: years, GlossaryEnergy.clean_energy: 0.0, GlossaryEnergy.fossil: 0.2})
+
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(0.001, 0.0008, len(years))})
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryEnergy.Years: years, 'transport': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -135,8 +97,6 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                           DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        }
 

@@ -19,7 +19,6 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import (
     BiomassDryTechno,
 )
@@ -86,7 +85,7 @@ class UnmanagedWood(BiomassDryTechno):
                 var_prod = d_production_tot
                 for line in range(len(years)):
                     if self.is_invest_before_year(
-                            years[line] - self.techno_infos_dict[GlossaryEnergy.ConstructionDelay]) \
+                            years[line] - self.construction_delay) \
                             and var_prod[line] == 0.0 and dprod_dinvest[line, :].sum() != 0.0 and line != len(
                         years) - 1:
                         var_prod[line] = var_prod[line + 1]
@@ -143,7 +142,7 @@ class UnmanagedWood(BiomassDryTechno):
                                                                                                        name_residue] + \
                                                                                                    self.production_mix[
                                                                                                        name_wood]
-        self.production_detailed[f'{CO2.name} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
                                                                      self.data_energy_dict['high_calorific_value'] * \
                                                                      self.production_detailed[
                                                                          f'{BiomassDryTechno.energy_name} ({self.product_unit})']

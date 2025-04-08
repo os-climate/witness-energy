@@ -21,7 +21,7 @@ class ProcessBuilder(BaseProcessBuilder):
     # ontology information
     _ontology_data = {
         'label': 'Energy Mix Optim process - medium techno dict',
-        'description': 'Techno dict with 12 streams and 24 technos',
+        'description': '',
         'category': '',
         'version': '',
     }

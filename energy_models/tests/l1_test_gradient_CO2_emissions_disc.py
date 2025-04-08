@@ -57,7 +57,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
+            GlossaryEnergy.fossil, GlossaryEnergy.clean_energy, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}',
             GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage,
             f'{GlossaryEnergy.heat}.lowtemperatureheat', f'{GlossaryEnergy.heat}.mediumtemperatureheat',
             f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry]]
@@ -76,14 +76,14 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                     'value']
             self.energy_consumption[f'{energy}'] = \
-                streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+                streams_outputs_dict[f'{energy}'][GlossaryEnergy.StreamConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
                 streams_outputs_dict[f'{ccs_name}'][GlossaryEnergy.EnergyProductionValue]['value']
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.StreamProductionDetailedValue]
 
     def tearDown(self):
         pass
@@ -121,7 +121,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
         }
 
         for energy in self.energy_list:
@@ -130,7 +130,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.StreamConsumptionValue}'] = \
                     self.energy_consumption[
                         energy]
 
@@ -139,7 +139,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = \
                     self.energy_consumption[
                         energy]
 
@@ -151,7 +151,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2PerUse}' for energy in self.energy_list if
@@ -199,7 +199,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+            f'{self.name}.{self.model_name}.{GlossaryEnergy.StreamProductionDetailedValue}': self.energy_production_detailed,
         }
         for energy in self.energy_list:
             if energy == GlossaryEnergy.biomass_dry:
@@ -207,7 +207,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.StreamConsumptionValue}'] = \
                     self.energy_consumption[
                         energy]
 
@@ -216,7 +216,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = \
                     self.energy_production[
                         energy]
-                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
+                inputs_dict[f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}'] = \
                     self.energy_consumption[
                         energy]
         for energy in self.ccs_list:
@@ -226,7 +226,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
 
         coupled_inputs = [
             f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in self.ccs_list]
@@ -235,12 +235,12 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
              self.energy_list if
              energy != GlossaryEnergy.biomass_dry])
         coupled_inputs.extend(
-            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              self.energy_list if
              energy != GlossaryEnergy.biomass_dry])
 
         # coupled_inputs.append(f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyProductionValue}')
-        # coupled_inputs.append(f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}')
+        # coupled_inputs.append(f'{self.name}.{self.agriculture_mix_name}.{GlossaryEnergy.StreamConsumptionValue}')
         coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
                            f'{self.name}.CO2_emissions_by_use_sinks']
 

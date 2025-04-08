@@ -12,13 +12,13 @@ The selection of the gasifier type depends on the raw material. Various gasifica
 
 Produced syngas followed the below formula and consist in a primarily mixture of carbon monoxide and hydrogen : 
 
-$$ Biomass(CH_aO_bN_cS_d) + O_2 --> CO_2$$
-$$ Biomass(CH_aO_bN_cS_d) + CO_2 --> 2CO$$
-$$ Biomass(CH_aO_bN_cS_d) + H_20 --> CO + H_2$$
+$$Biomass(CH_aO_bN_cS_d) + O_2 --> CO_2$$
+$$Biomass(CH_aO_bN_cS_d) + CO_2 --> 2CO$$
+$$Biomass(CH_aO_bN_cS_d) + H_20 --> CO + H_2$$
 
 then when aggregate
 
-$$ Biomass(CH_aO_bN_cS_d) + O_2 + H_2O --> CO + CO_2 + H_2 + other species$$
+$$Biomass(CH_aO_bN_cS_d) + O_2 + H_2O --> CO + CO_2 + H_2 + other species$$
 
 (other species => $N_2$, $H_2S$ less than 0.3 Mole Frac(%))
 

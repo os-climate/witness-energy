@@ -50,13 +50,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         'version': '',
     }
     techno_name = GlossaryEnergy.PureCarbonSolidStorage
-    lifetime = 35
-    construction_delay = 0
+
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0,
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
-                                 'lifetime': lifetime,  # should be modified
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -73,7 +71,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 1,
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  f"{GlossaryEnergy.CarbonResource}_needs": 1. / Carbon.data_energy_dict[GlossaryEnergy.CO2PerUse],
                                  'techno_evo_eff': 'no',
                                  }
@@ -81,39 +78,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0
-    invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryEnergy.InvestValue: []})
-
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
-                                             'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 10.0,
-                                                         10.0, 10.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0, 0.0, 0.0,
-                                                         0.0]
-                                             })
-
+    
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
         {GlossaryEnergy.Years: range(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1), GlossaryEnergy.carbon_storage: 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False},
+               
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,
@@ -141,14 +112,15 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-                years = np.arange(year_start, year_end + 1)
+                if year_start is not None and year_end is not None:
+                    years = np.arange(year_start, year_end + 1)
 
-                if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
-                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[
-                        GlossaryEnergy.Years].values.tolist() != list(years):
-                        self.update_default_value(
-                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
-                            pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
+                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
+                        if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[
+                            GlossaryEnergy.Years].values.tolist() != list(years):
+                            self.update_default_value(
+                                'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
+                                pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

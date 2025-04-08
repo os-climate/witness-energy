@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -47,8 +46,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     }
 
     techno_name = GlossaryEnergy.CombinedCycleGasTurbine
-    lifetime = 30  # Source: U.S. Energy Information Administration 2020
-    construction_delay = 2  # years
+
     # Taud, R., Karg, J. and O'Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
@@ -67,7 +65,6 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  # ENERGY TECHNOLOGIES, June 2021
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
-                                 'lifetime': lifetime,  # for now constant in time but should increase with time
                                  # 0.1025 kt/PJ (mean) at gas power plants in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
                                  'CH4_emission_factor': 0.1025e-3 / 0.277,
@@ -86,7 +83,6 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  # 'efficiency': 0.55,       #https://www.ipieca.org/resources/energy-efficiency-solutions/combined-cycle-gas-turbines-2022#:~:text=The%20overall%20efficiency%20of%20an,drops%20significantly%20at%20partial%20load.
                                  'techno_evo_eff': 'no',  # yes or no
-                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW.
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
@@ -94,33 +90,17 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     # Major hypothesis: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
-    invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 51.0 * share]})
-    # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
+        # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
     # Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
     # In US according to EIA 53% of capa from CCGT and 47 for GT in 2017
     share_ccgt = 0.75
     # Initial prod in TWh
     initial_production = share_ccgt * 6346
-    initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [2.8, 2.4, 4.3, 2, 1.5, 1.3, 0.9, 1.3, 4.8, 7.1, 14.6, 14.2,
-                                                         6.7, 4.9, 2.9, 2, 1.8, 2, 1.8, 2.9, 2.7, 1.5, 2.3, 1.4,
-                                                         1.3, 2.1, 3.6, 1.3, 1.6]})
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
-                                                                'distrib': ('float', None, True)},
-                                       'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
-                                                               'default': invest_before_year_start,
-                                                               'dataframe_descriptor': {
-                                                                   'past years': ('int', [-20, -1], False),
-                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
-                                                               'dataframe_edition_locked': False}
+                      
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

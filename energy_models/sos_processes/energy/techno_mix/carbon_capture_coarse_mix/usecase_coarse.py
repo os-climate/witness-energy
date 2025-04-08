@@ -77,7 +77,7 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.renewable: 10.0,
+                                      GlossaryEnergy.clean_energy: 10.0,
                                       GlossaryEnergy.fossil: 2.0,
                                       })
 
@@ -102,7 +102,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.0})
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, GlossaryEnergy.electricity: 0.0, 'calcium': 0.0,
-             GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 5.0})
+             GlossaryEnergy.clean_energy: 0.0, GlossaryEnergy.fossil: 5.0})
 
         flue_gas_list = [f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}', f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}']
         fossil_simple_techno_prod = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -122,7 +122,7 @@ class Study(EnergyMixStudyManager):
                        #f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
-        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0})
+        techno_capital = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.Capital: 0.0, GlossaryEnergy.NonUseCapital: 0.})
         if self.main_study:
             values_dict.update(
                 {

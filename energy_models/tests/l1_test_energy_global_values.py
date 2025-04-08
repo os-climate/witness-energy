@@ -101,7 +101,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
              GlossaryEnergy.CO2Tax: 20.0}, index=np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1))
 
         usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=GlossaryEnergy.YearStartDefault,
-                                       year_end=GlossaryEnergy.YearEndDefault, time_step=1)
+                                       year_end=GlossaryEnergy.YearEndDefault)
         usecase_agri.study_name = cls.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()
@@ -419,7 +419,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # These emissions are in Gt
         net_energy_production = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.EnergyProductionDetailedValue}')
+            f'{self.name}.{self.energymixname}.{GlossaryEnergy.StreamProductionDetailedValue}')
 
         energy_production = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.energy_production_brut_detailed')
@@ -449,7 +449,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # elec plants needs
         elec_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.EnergyConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamConsumptionValue}')[
             f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_coal_IEA = 20194.44  # TWh
@@ -465,7 +465,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # syngas plants needs
         syngas_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.EnergyConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamConsumptionValue}')[
             f'{GlossaryEnergy.solid_fuel} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_coal_IEA = 264.72  # TWh
@@ -531,7 +531,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # elec plants needs
         elec_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.EnergyConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.StreamConsumptionValue}')[
             f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         elec_plants_gas_IEA = 10833.33  # TWh
@@ -554,7 +554,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               ' TWh')
         # syngas plants needs
         syngas_plants = \
-        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.EnergyConsumptionValue}')[
+        self.ee.dm.get_value(f'{self.name}.{self.energymixname}.syngas.{GlossaryEnergy.StreamConsumptionValue}')[
             f'{GlossaryEnergy.methane} ({GlossaryEnergy.energy_unit})'][0] * 1000.0
 
         liquefaction_plants_methane_IEA = 202.74  # TWh
@@ -817,19 +817,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #               biomass_dry_elec_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_elec_plants, ' TWh')
         #
         #         biogas_cons = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biogas}.{GlossaryEnergy.EnergyConsumptionValue}')
+        #             f'{self.name}.{self.energymixname}.{GlossaryEnergy.biogas}.{GlossaryEnergy.StreamConsumptionValue}')
         #
         #         biomass_by_biogas_cons = biogas_cons[f'{GlossaryEnergy.wet_biomass} ({GlossaryEnergy.mass_unit})'].loc[
         #             biogas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
         #
         #         syngas_cons = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
+        #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.StreamConsumptionValue}')
         #
         #         biomass_by_syngas_cons = syngas_cons[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             syngas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000
         #
         #         solid_fuel_cons = self.ee.dm.get_value(
-        #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
+        #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.StreamConsumptionValue}')
         #
         #         biomass_by_solid_fuel_cons = solid_fuel_cons[f'{GlossaryEnergy.biomass_dry} ({GlossaryEnergy.energy_unit})'].loc[
         #             solid_fuel_cons[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1000

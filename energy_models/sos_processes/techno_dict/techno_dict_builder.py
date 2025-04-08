@@ -31,6 +31,8 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
                         minimal_techno_number: int = 0,
                         minimal_stream_number: int = 0,
                         technos_to_avoid: list[str] = [],
+                        streams_to_avoid: list[str] = [],
+                        streams_to_have: list[str] = [],
                         max_carbon_storage_technos: int = 10):
     """
     :param techno_infos: expect something like this :
@@ -97,6 +99,11 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
     M = 10000
     bool_stream_produced_vars = pulp.LpVariable.dicts(name="IsStreamProduced", indices=all_streams, lowBound=0, upBound=1, cat=pulp.LpBinary)
 
+    for s in streams_to_avoid:
+        prob.addConstraint(constraint=bool_stream_produced_vars[s] == 0, name=f"AvoidedStreamProduced{s}")
+    for s in streams_to_have:
+        prob.addConstraint(constraint=bool_stream_produced_vars[s] == 1, name=f"StreamsToHave{s}")
+
     # For each energy, add constraints to ensure that if it is consumed, it must be produced by some technology
     for tech in tech_vars:
         # Constraint to ensure each energy consumed must be produced
@@ -120,7 +127,6 @@ def techno_dict_builder(techno_infos: dict, initial_selection: list[str],
                 name=f"stream_{stream}_is_produced_2")
 
             prob += pulp.lpSum([bool_stream_produced_vars[s] for s in all_streams]) >= minimal_stream_number
-
 
     for stream in all_streams:
         techno_producing_stream = energy_to_producing_technos[stream]
@@ -207,8 +213,39 @@ def build_techno_infos(stream_used_by_technos: dict, stream_produced_by_techno: 
 techno_info_dict = build_techno_infos(GlossaryEnergy.TechnoStreamsUsedDict, GlossaryEnergy.TechnoStreamProducedDict)
 
 inital_selection = [
-    GlossaryEnergy.CarbonStorageTechno,
     GlossaryEnergy.HefaDecarboxylation,
+    GlossaryEnergy.FischerTropsch,
+    #f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}",
+    #f"{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}",
+]
+
+technos_to_avoid = [
+GlossaryEnergy.BiomassFermentation,
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.MonoEthanolAmine}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.ChilledAmmoniaProcess}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CO2Membranes}", # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PressureSwingAdsorption}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}",  # remove
+f"{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.PiperazineProcess}",  # remove
+GlossaryEnergy.BiomassBuryingFossilization,
+GlossaryEnergy.PureCarbonSolidStorage,
+GlossaryEnergy.FossilSimpleTechno,
+GlossaryEnergy.CleanEnergySimpleTechno,
+
+GlossaryEnergy.RWGS,
+#GlossaryEnergy.FischerTropsch
+]
+streams_to_avoid = [
+GlossaryEnergy.hightemperatureheat_energyname,
+GlossaryEnergy.mediumtemperatureheat_energyname,
+GlossaryEnergy.lowtemperatureheat_energyname,
+GlossaryEnergy.biomass_dry,
+#GlossaryEnergy.syngas,
+#f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
+]
+streams_to_have = [
+    GlossaryEnergy.carbon_capture,
+    GlossaryEnergy.carbon_storage,
 ]
 
 
@@ -216,8 +253,11 @@ if __name__ == '__main__':
     sub_techno_dict, n_technos, n_streams = techno_dict_builder(
         techno_infos=techno_info_dict,
         initial_selection=inital_selection,
-        minimal_stream_number=7,
-        minimal_techno_number=20,
+        minimal_stream_number=11,
+        minimal_techno_number=30,
+        streams_to_avoid=streams_to_avoid,
+        streams_to_have=streams_to_have,
+        technos_to_avoid=technos_to_avoid,
         max_carbon_storage_technos=3)
 
     ts = datetime.now().strftime("%Y-%m-%d %h%M")

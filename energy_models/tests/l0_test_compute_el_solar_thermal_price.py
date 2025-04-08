@@ -19,7 +19,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
 )
@@ -55,18 +54,14 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.invest_level_2 = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.ones(len(self.years)) * 15.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: 15.0})
 
-        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
-        func = sc.interp1d(co2_taxes_year, co2_taxes,
-                           kind='linear', fill_value='extrapolate')
+        
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: func(self.years)})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: np.linspace(14., 40., len(self.years))})
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: np.ones(len(self.years)) * 110.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.MarginValue: 110.0})
 
         transport_cost = 11
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -75,7 +70,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'transport': np.ones(len(self.years)) * transport_cost})
+            {GlossaryEnergy.Years: self.years, 'transport': transport_cost})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.stream_prices = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
@@ -96,14 +91,13 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         self.years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.UtilisationRatioValue: np.ones_like(self.years) * 100.
+            GlossaryEnergy.UtilisationRatioValue: 100.
         })
         self.inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YearStartDefault,
                             GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndDefault,
                             GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                             'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
                             GlossaryEnergy.InvestLevelValue: self.invest_level_2,
-                            GlossaryEnergy.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
                             GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
                             GlossaryEnergy.MarginValue: self.margin,
                             GlossaryEnergy.TransportCostValue: self.transport,
@@ -111,7 +105,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                             GlossaryEnergy.StreamPricesValue: self.stream_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
-                            'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
                             GlossaryEnergy.RessourcesCO2EmissionsValue: get_default_resources_CO2_emissions(
                                 np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)),
                             GlossaryEnergy.StreamsCO2EmissionsValue: pd.DataFrame(),
@@ -120,8 +113,8 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             'scaling_factor_techno_production': self.scaling_factor_techno_production,
                             ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                             GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                            'is_stream_demand': self.is_stream_demand,
-                            'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                            GlossaryEnergy.BoolApplyStreamRatio: self.is_stream_demand,
+                            GlossaryEnergy.BoolApplyResourceRatio: self.is_apply_resource_ratio,
                             'smooth_type': 'smooth_max',
                             'data_fuel_dict': Electricity.data_energy_dict,
                             }
