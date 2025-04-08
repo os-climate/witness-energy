@@ -71,7 +71,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     #     techno_infos_dict_default['capacity_factor']
     initial_production = 89  # IEA in 2019
     # Invest in 2019 => 29.6 bn
-    
+
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -87,15 +87,13 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = WindOffshore(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = WindOffshore(self.techno_name)
+
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

@@ -31,13 +31,11 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.override_dump_jacobian = True # let that to True
         self.name = 'Test'
         self.model_name = 'investments profile'
-        self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_capture]
+        self.columns_names = [GlossaryEnergy.clean_energy, GlossaryEnergy.fossil, GlossaryEnergy.carbon_captured]
         self.n_profiles = 4
         self.coeff_jacobian = [f'{self.name}.{self.model_name}.coeff_{i}' for i in range(self.n_profiles)]
         self.year_min = 2020
@@ -65,9 +63,6 @@ class TestInvestmentProfileBuilderDisc(AbstractJacobianUnittest):
         self.inputs_dict.update({
             f"{self.name}.{self.model_name}.df_{i}": df_generator(self.years) for i in range(self.n_profiles)
         })
-        pass
-
-    def tearDown(self):
         pass
 
     def analytic_grad_entry(self):

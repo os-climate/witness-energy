@@ -30,9 +30,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -53,7 +51,6 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 0.0})
-        
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
@@ -77,15 +74,15 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == f'{GlossaryEnergy.heat}.HeatPump']
 
-    def tearDown(self):
-        pass
-
     def test_02_heatpump_discipline(self):
         self.name = 'Test'
         self.model_name = 'HeatPump'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    'ns_heat_medium': f'{self.name}',
                    'ns_resource': self.name
                    }
@@ -103,7 +100,9 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CO2}_intensity_by_energy': self.stream_co2_emissions,
+                       f'{self.name}.{GlossaryEnergy.CH4}_intensity_by_energy': self.stream_co2_emissions * 0.1,
+                       f'{self.name}.{GlossaryEnergy.N2O}_intensity_by_energy': self.stream_co2_emissions * 0.01,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,

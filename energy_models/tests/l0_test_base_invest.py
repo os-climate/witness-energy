@@ -30,9 +30,7 @@ class TestBaseInvest(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.base_invest = BaseInvest('Test')
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault

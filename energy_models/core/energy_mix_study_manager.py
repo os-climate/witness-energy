@@ -34,7 +34,7 @@ class EnergyMixStudyManager(StudyManager):
         self.technologies_list = technologies_list
         self.lower_bound_techno = None
         self.upper_bound_techno = None
-        self.energy_name = None
+        self.stream_name = None
         super().__init__(file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.configure_ds_boundaries()
         self.invest_discipline = invest_discipline
@@ -49,7 +49,7 @@ class EnergyMixStudyManager(StudyManager):
 
     def configure_ds_boundaries(self, lower_bound_techno=1.0, upper_bound_techno=100.):
         """
-        Configure design space boundaries 
+        Configure design space boundaries
         """
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
@@ -59,14 +59,14 @@ class EnergyMixStudyManager(StudyManager):
         Update design variable arrays
         """
         invest_mix_dict = self.get_investments()
-        energy_wodot = self.energy_name.replace('.', '_')
+        energy_wodot = self.stream_name.replace('.', '_')
 
         enable_variable = True
 
         for techno in self.technologies_list:
             techno_wo_dot = techno.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{self.energy_name}.{techno}.{energy_wodot}_{techno_wo_dot}_array_mix', np.maximum(
+                f'{self.stream_name}.{techno}.{energy_wodot}_{techno_wo_dot}_array_mix', np.maximum(
                     self.lower_bound_techno, invest_mix_dict[techno].values),
                 self.lower_bound_techno, self.upper_bound_techno, enable_variable=enable_variable)
 

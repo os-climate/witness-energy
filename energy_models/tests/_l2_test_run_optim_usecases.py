@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 03/03/2025 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,14 +27,12 @@ class TestUseCases(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
         self.processes_repo = 'energy_models.sos_processes'
 
     def test_01_run_optim_usecases(self):
         '''
-        Run all usecases in this repository.    
+        Run all usecases in this repository.
         '''
         run_optim_usecases(self.processes_repo)

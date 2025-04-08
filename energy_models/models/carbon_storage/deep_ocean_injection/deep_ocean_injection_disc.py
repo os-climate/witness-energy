@@ -70,7 +70,7 @@ class DeepOceanInjectionDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0
-    
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                }
@@ -82,6 +82,4 @@ class DeepOceanInjectionDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = DeepOceanInjection(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = DeepOceanInjection(self.techno_name)

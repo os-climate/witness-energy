@@ -21,14 +21,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class FossilTechno(TechnoType):
-    energy_name = Fossil.name
+    stream_name = Fossil.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must be in $/MWh
-        transport_cost = self.transport_cost['transport'].values * \
-                         self.transport_margin[GlossaryEnergy.MarginValue].values / 100.0
+        transport_cost = self.inputs[f'{GlossaryEnergy.TransportCostValue}:transport'] * \
+                         self.inputs[f'{GlossaryEnergy.TransportMarginValue}:{GlossaryEnergy.MarginValue}'] / 100.0
 
         return transport_cost
-
-    

@@ -90,25 +90,5 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = SMR(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = SMR(self.techno_name)
 
-    # def compute_sos_jacobian(self):
-    #     SyngasTechnoDiscipline.compute_sos_jacobian(self)
-    #
-    #     # the generic gradient for production column is not working because of
-    #     # abandoned mines not proportional to production
-    #
-    #     scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-    #         ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-    #     applied_ratio = self.get_sosdisc_outputs(
-    #         'applied_ratio')['applied_ratio'].values
-    #
-    #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    #     consumption_gradient = self.techno_consumption_derivative[f'{SyngasTechno.energy_name} ({self.techno_model.product_unit})']
-    #     #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
-    #     self.set_partial_derivative_for_other_types(
-    #         (GlossaryEnergy.TechnoProductionValue,
-    #          f'{highheattechno.energy_name} ({self.techno_model.product_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-    #         (consumption_gradient- dprod_name_dinvest))

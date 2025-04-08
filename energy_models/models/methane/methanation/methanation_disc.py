@@ -41,7 +41,6 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
 
     techno_name = GlossaryEnergy.Methanation
 
-
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
                                  # Rosenfeld, D.C., Böhm, H., Lindorfer, J. and Lehner, M., 2020.
@@ -81,6 +80,4 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     DESC_OUT = MethaneTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = Methanation(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = Methanation(self.techno_name)

@@ -74,14 +74,14 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertient
                                  'techno_evo_eff': 'no',
                                  GlossaryEnergy.EnergyEfficiency: 1.0,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 2822 / 1e9 # According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented. Computing the need in Mt/MW,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 2822 / 1e9  # According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented. Computing the need in Mt/MW,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     techno_info_dict = techno_infos_dict_default
     initial_production = 700  # in TWh at year_start source IEA 2019
     # Invest before year start in $ source IEA 2019
-    
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                       }
@@ -93,15 +93,12 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = SolarPv(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = SolarPv(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

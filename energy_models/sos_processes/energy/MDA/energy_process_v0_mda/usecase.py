@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-
+import numpy as np
+import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
@@ -76,6 +76,7 @@ class Study(StudyManager):
         )
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
         self.test_post_procs = True
+        self.years = np.arange(self.year_start, self.year_end + 1)
 
     def setup_objectives(self):
         func_df = Study_v0.setup_objectives(self)
@@ -86,12 +87,12 @@ class Study(StudyManager):
         return func_df
 
     def setup_usecase(self, study_folder_path=None):
-        values_dict_list = []
+        values_dict = {}
 
         self.study_v0.study_name = self.study_name
         self.energy_usecase = self.study_v0
         invest_list = self.study_v0.setup_usecase()
-        values_dict_list.extend(invest_list)
+        values_dict.update(invest_list)
         self.energy_list = self.study_v0.energy_list
         self.ccs_list = self.study_v0.ccs_list
         self.dspace = self.study_v0.dspace
@@ -102,13 +103,23 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
+            f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
         }
-        values_dict_list.append(numerical_values_dict)
+        values_dict.update(numerical_values_dict)
 
-        return values_dict_list
+
+        # inputs to start MDA chain :
+        for ghg in GlossaryEnergy.GreenHouseGases:
+            values_dict.update({
+                f"{self.study_name}.EnergyMix.{ghg}_intensity_by_energy" : pd.DataFrame({
+                    GlossaryEnergy.Years: self.years,
+                    **{e: 0.001 for e in self.energy_list}
+                })
+            })
+        return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

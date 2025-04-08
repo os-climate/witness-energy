@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 2890,0.012,0.000,0.037,0.000,C:\Users\NG92D02\Anaconda3\lib\site-packages\pandas\core\array_algos\putmask.py:29(putmask_inplace)
 53622,0.037,0.000,0.037,0.000,{built-in method pandas._libs.missing.checknull}
 36429,0.037,0.000,0.037,0.000,C:\Users\NG92D02\Anaconda3\lib\site-packages\numpy\core\numerictypes.py:651(<listcomp>)
-
-

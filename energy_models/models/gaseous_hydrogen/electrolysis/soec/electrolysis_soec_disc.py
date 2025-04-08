@@ -45,7 +45,6 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.ElectrolysisSOEC
 
-
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.03,
                                  'CO2_from_production': 0.0,
@@ -83,6 +82,4 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     DESC_OUT = GaseousHydrogenTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = ElectrolysisSOEC(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = ElectrolysisSOEC(self.techno_name)

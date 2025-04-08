@@ -48,7 +48,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Source for CO2_from_production: IEA 2022, IEA ETSAP 2010
                                  # https://iea-etsap.org/E-TechDS/PDF/P05-Coal-gasification-GS-gct-AD_gs.pdf
                                  # License: CC BY 4.0.
-                                 'CO2_from_production': 1.94,  # ETSAP IEA indicates 50kT CO2 /PJ syngas
+                                 'CO2_flue_gas_intensity_by_prod_unit': 1.94,  # ETSAP IEA indicates 50kT CO2 /PJ syngas
                                  'CO2_from_production_unit': 'kg/kg',
                                  # IPCC report Chap4 2019  https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf
                                  # 6.1 kg/TJ
@@ -64,9 +64,9 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
                                  'efficiency': 1.0,
-                                     'techno_evo_eff': 'no',}
+                                     'techno_evo_eff': 'no', }
     # We do not invest on coal gasification yet
-    
+
     syngas_ratio = CoalGasification.syngas_COH2_ratio
 
     # From Future of hydrogen : Around 70 Mt of dedicated hydrogen are produced today, 76% from natural gas and
@@ -90,6 +90,4 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CoalGasification(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = CoalGasification(self.techno_name)

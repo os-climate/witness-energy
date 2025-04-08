@@ -48,7 +48,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     techno_infos_dict_default = {'maturity': 0,
                                  'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
-                                 'CO2_from_production': 0.2,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.2,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  # 1600T/day of wood capacity, 180M$ of Capital
@@ -79,7 +79,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
@@ -87,6 +87,4 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = Pyrolysis(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = Pyrolysis(self.techno_name)

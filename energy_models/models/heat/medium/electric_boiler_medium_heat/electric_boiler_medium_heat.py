@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import (
     mediumheattechno,
@@ -29,25 +28,11 @@ class ElectricBoilerMediumHeat(mediumheattechno):
         self.heat_flux = None
         self.heat_flux_distribution = None
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.cost_details['efficiency']
-
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_theoretical_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
-        elec_demand = self.techno_infos_dict['elec_demand']
+        elec_demand = self.inputs['techno_infos_dict']['elec_demand']
 
         return elec_demand
-
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
-
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        self.heat_flux = land_rate / self.cost_details['energy_and_resources_costs'].values
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                                    'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution

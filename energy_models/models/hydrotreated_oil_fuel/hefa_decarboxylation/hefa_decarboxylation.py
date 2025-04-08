@@ -19,9 +19,6 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
 )
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import (
-    HydrotreatedOilFuel,
-)
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
 from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import (
     HydrotreatedOilFuelTechno,
@@ -44,19 +41,18 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
 
     def compute_resources_needs(self):
         naturaloil_data = NaturalOil.data_energy_dict
-        self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / naturaloil_data['calorific_value']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs() / naturaloil_data['calorific_value']
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.cost_details['efficiency']
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
-
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()  / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.elec_consumption_factor
 
     def compute_byproducts_production(self):
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                               self.production_detailed[
-                                                                                   f'{HydrotreatedOilFuel.name} ({self.product_unit})'] / \
-                                                                               self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
+            carbon_production_factor * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_natural_oil_needs(self):
         """
@@ -65,8 +61,8 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         naturaloil_data = NaturalOil.data_energy_dict
 
         natural_oil_needs = 1 / 3 * naturaloil_data['calorific_value'] * naturaloil_data['molar_mass'] / \
-                            (self.data_energy_dict['calorific_value']
-                             * self.data_energy_dict['molar_mass'])
+                            (self.inputs['data_fuel_dict']['calorific_value']
+                             * self.inputs['data_fuel_dict']['molar_mass'])
 
         return natural_oil_needs
 
@@ -77,8 +73,8 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         hydrogen_data = GaseousHydrogen.data_energy_dict
 
         gaseous_hydrogen_needs = 6 / 3 * hydrogen_data['calorific_value'] * hydrogen_data['molar_mass'] / \
-                                 (self.data_energy_dict['calorific_value']
-                                  * self.data_energy_dict['molar_mass'])
+                                 (self.inputs['data_fuel_dict']['calorific_value']
+                                  * self.inputs['data_fuel_dict']['molar_mass'])
 
         return gaseous_hydrogen_needs
 
@@ -88,7 +84,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         """
         co2_molar_mass = CO2.data_energy_dict['molar_mass']
         co2_prod = (3 / 3) * co2_molar_mass / \
-                   (self.data_energy_dict['calorific_value']
-                    * self.data_energy_dict['molar_mass'])
+                   (self.inputs['data_fuel_dict']['calorific_value']
+                    * self.inputs['data_fuel_dict']['molar_mass'])
 
         return co2_prod

@@ -14,14 +14,14 @@ The production process we consider uses the chemical reactions of transesterific
 
 World bio fuel production was estimated around 1 100 TWh in 2019, including bioethanol and hydrotreated vegetable oil. Production in liter for 2019 and forecast to 2025:
 
-![](biodiesel_production.PNG) 
+![](biodiesel_production.PNG)
 (Image credit: IEA, taken from [^2])
 
 **Price:**
 
-Price for FAME (Fatty Acid Methyl Ester) and SME (Soy Methyl Ester) is highly versatile, since end of 2020 it became more expensive (> 1000 USD/ton). With a calorific value of 37.27 MJ/kg, it appears to be superior to 100 USD/MWh. 
+Price for FAME (Fatty Acid Methyl Ester) and SME (Soy Methyl Ester) is highly versatile, since end of 2020 it became more expensive (> 1000 USD/ton). With a calorific value of 37.27 MJ/kg, it appears to be superior to 100 USD/MWh.
 
- ![](biodiesel_price.PNG) 
+ ![](biodiesel_price.PNG)
  (Image credit:  NESTE, taken from [^3])
 
 [^1]: Biodiesel, Wikipedia, https://en.wikipedia.org/wiki/Biodiesel

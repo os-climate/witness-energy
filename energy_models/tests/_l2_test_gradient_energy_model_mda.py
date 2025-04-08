@@ -54,9 +54,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.dirs_to_del = []
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
@@ -94,7 +92,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
                           GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
                           GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas,
-                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_captured,
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
@@ -133,7 +131,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
                           GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
                           GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas,
-                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_captured,
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
@@ -179,7 +177,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
                           GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
                           GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas,
-                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_captured,
                           GlossaryEnergy.carbon_storage]
 
         output_prices = [
@@ -199,10 +197,10 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_mda.local_data,
-                            inputs=[f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}'],
+                            inputs=[f'{self.name}.{GlossaryEnergy.StreamsGHGEmissionsValue}'],
                             outputs=output_prices + output_co2_emissions + output_hydrogen_prices + output_lf_prices +
                                     [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}',
-                                     f'{self.name}.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}'], parallel=True)
+                                     f'{self.name}.EnergyMix.{GlossaryEnergy.StreamsGHGEmissionsValue}'], parallel=True)
 
     def test_04_check_gradient_energymixoutputs_vs_energy_investment(self):
 
@@ -233,7 +231,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamProductionValue}',
                              f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective',
                              f'{self.name}.FunctionManagerDisc.co2_emissions_objective',
@@ -284,7 +282,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         energy_prices = self.ee.dm.get_value(
             f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamPricesValue}')
         energy_emissions = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.StreamsGHGEmissionsValue}')
 
         dump_dir = join(dirname(__file__), self.name)
 
@@ -305,12 +303,12 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         full_values_dict = {
             f'{usecase.study_name}.inner_mda_name': 'MDAGaussSeidel',
             f'{usecase.study_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-            f'{usecase.study_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_emissions}
+            f'{usecase.study_name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': energy_emissions}
 
         exec_eng2.load_study_from_input_dict(full_values_dict)
         energy_list = [GlossaryEnergy.methane, GlossaryEnergy.solid_fuel, GlossaryEnergy.syngas,
                        GlossaryEnergy.electricity, GlossaryEnergy.liquid_fuel,
-                       GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, GlossaryEnergy.biogas,
+                       GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage, GlossaryEnergy.biogas,
                        GlossaryEnergy.biomass_dry, GlossaryEnergy.biodiesel,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}',
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}']
@@ -397,7 +395,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.StreamProductionValue}',
                              f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective',
                              f'{self.name}.FunctionManagerDisc.co2_emissions_objective',

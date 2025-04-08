@@ -36,7 +36,6 @@ class UnmanagedWood(BiomassDryTechno):
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
-
     def grad_production_invest(self, capex, production, production_mix):
 
         dcapex_dinvest = self.compute_dcapex_dinvest(self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]

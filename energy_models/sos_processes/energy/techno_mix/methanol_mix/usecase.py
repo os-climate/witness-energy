@@ -41,7 +41,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -64,14 +64,14 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Methanol.name
-        energy_name = f'{energy_mix_name}.{self.energy_name}'
+        self.stream_name = Methanol.name
+        energy_name = f'{energy_mix_name}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                       GlossaryEnergy.electricity: 16.0,
                                       GaseousHydrogen.name: 80.0,
-                                      GlossaryEnergy.carbon_capture: 70.0})
+                                      GlossaryEnergy.carbon_captured: 70.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -91,7 +91,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GaseousHydrogen.name: 0.0, GlossaryEnergy.carbon_capture: 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GaseousHydrogen.name: 0.0, GlossaryEnergy.carbon_captured: 0.0})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -99,14 +99,16 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       #f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
+                       # f'{self.study_name}.{energy_name}.{GlossaryEnergy.invest_techno_mix}.: investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

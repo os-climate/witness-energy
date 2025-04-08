@@ -49,7 +49,6 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # Cost development of low carbon energy technologies-Scenario-based cost trajectories to 2050, 2017 Edition.
     # Publications Office of the European Union, Luxemburgo.
 
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.045,
                                  # Fixed 4.0% and recurrent 0.5 %
@@ -71,7 +70,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 /1e9, # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9,  # No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station. It needs 1100 kg / MW. Computing the need in Mt/MW
                                  # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -94,15 +93,12 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = Geothermal(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = Geothermal(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

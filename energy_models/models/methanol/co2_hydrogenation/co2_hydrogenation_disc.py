@@ -42,13 +42,11 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CO2Hydrogenation
-    energy_name = Methanol.name
+    stream_name = Methanol.name
 
     # energy data
     methanol_density = Methanol.data_energy_dict['density']
     methanol_calorific_value = Methanol.data_energy_dict['calorific_value']
-
-
 
     techno_infos_dict_default = {
         'Capex_init': 35.58 / (20 * 50) / 5.54,
@@ -83,6 +81,4 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
     DESC_OUT = MethanolTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CO2Hydrogenation(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = CO2Hydrogenation(self.techno_name)

@@ -15,15 +15,15 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     HighHeatTechnoDiscipline,
 )
+from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.high.chphighheat.chphighheat import CHPHighHeat
 
 
-class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
+class CHPHighHeatDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'CHP Model',
@@ -39,7 +39,7 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.CHPHighHeat
-    energy_name = hightemperatureheat.name
+    stream_name = GlossaryEnergy.hightemperatureheat_energyname
 
     # Conversions
     pound_to_kg = 0.45359237
@@ -48,7 +48,6 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     # Heat Producer [Online]
     # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
-
 
     techno_infos_dict_default = {
         'Capex_init': 1300,
@@ -90,22 +89,17 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
                 1 - 0.47)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
     # Renewable Methane Association [online]
-    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               
-                      }
+    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'}}
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = TechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CHPHighHeat(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
-
-    def run(self):
-        '''
-        Run for all energy disciplines
-        '''
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model.configure_parameters_update(inputs_dict)
-        super().run()
+        self.model = CHPHighHeat(self.techno_name)
+    def get_chart_filter_list(self):
+        return TechnoDiscipline.get_chart_filter_list(self)
+    def get_post_processing_list(self, filters=None):
+        """
+        Basic post processing method for the model
+        """
+        return TechnoDiscipline.get_post_processing_list(self, filters)

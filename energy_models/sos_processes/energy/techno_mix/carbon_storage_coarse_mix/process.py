@@ -31,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT[GlossaryEnergy.carbon_storage]['value']
-        self.prefix_name = 'EnergyMix'
+        self.prefix_name = GlossaryEnergy.CCUS
 
     def get_builders(self):
         ns_study = self.ee.study_name
@@ -43,6 +43,9 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_dict = {'ns_carbon_storage': f'{ns_study}.{self.prefix_name}.{carbon_storage_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
                    'ns_public': f'{ns_study}',
                    GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}

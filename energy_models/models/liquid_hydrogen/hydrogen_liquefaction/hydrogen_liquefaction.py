@@ -32,19 +32,18 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
     inputs
 
     """
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 
         # for 1kwh of gas hydrogen, we get 0.98
-        self.cost_details[f'{GaseousHydrogen.name}_needs'] = 1 / \
-                                              self.cost_details['efficiency']
-
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GaseousHydrogen.name}_needs'] = 1 / \
+                                              self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def compute_byproducts_production(self):
         pass
-        # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
+        # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = (1 - self.inputs['techno_infos_dict']['efficiency']) * \
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_unit})']/\
-        #     self.techno_infos_dict['efficiency']
+        #     self.inputs['techno_infos_dict']['efficiency']
 
         # self.production[f'{lowtemperatureheat.name} ({self.product_unit})'] = \
-        #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] * self.techno_infos_dict['heat_recovery_factor']
+        #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] * self.inputs['techno_infos_dict']['heat_recovery_factor']

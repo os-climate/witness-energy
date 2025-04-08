@@ -53,7 +53,6 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
 
-
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
                                  # Fixed 1.9 and recurrent 0.5 %
@@ -78,7 +77,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     # and Nuclear Power Estimates up to 2050
     initial_production = 6590.0
     # Invest in 2019 => 29.6 bn
-    
+
     # Age distribution => IAEA OPEX Nuclear 2020 - Number of Reactors by Age
     # (as of 1 January 2020)
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
@@ -93,15 +92,12 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = RenewableElectricitySimpleTechno(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = RenewableElectricitySimpleTechno(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

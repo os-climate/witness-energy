@@ -65,7 +65,7 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     initial_storage = 0  # in kg at year_start
-    
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                }
@@ -77,6 +77,4 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassBuryingFossilization(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassBuryingFossilization(self.techno_name)

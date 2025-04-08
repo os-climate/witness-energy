@@ -44,10 +44,10 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         'version': '',
     }
     '''
-    Discipline that generates an output invest profile based on generic input invest profiles and input weights for 
+    Discipline that generates an output invest profile based on generic input invest profiles and input weights for
     each of those profiles.
     Based on the input boolean EXPORT_PROFILES_AT_POLES, it can either export the output profile at the poles or for all years
-    then, the output variable is not named the same, as in the first case it becomes an input of the design_var discipline and 
+    then, the output variable is not named the same, as in the first case it becomes an input of the design_var discipline and
     in the second case it is an input of the investment distribution
     '''
 
@@ -76,7 +76,6 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 for i in range(n_profiles):
                     dynamic_inputs[f'coeff_{i}'] = {'type': 'float', 'unit': '-'}
 
-
         if 'column_names' in self.get_data_in():
             column_names = self.get_sosdisc_inputs('column_names')
             if column_names is not None and n_profiles is not None:
@@ -94,7 +93,6 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 if export_profiles_at_poles is not None and export_profiles_at_poles:
                     dynamic_inputs['nb_poles'] = {'type': 'int', 'unit': '-', 'user_level': 3}
 
-
         if df_descriptor is not None and export_profiles_at_poles is not None:
             # the output invest profile can be provided either for all the years or for some limited number of poles.
             if not export_profiles_at_poles:
@@ -109,7 +107,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                     dynamic_outputs[f'{var}_array_mix'] = {
                         "type": "array",
                         "unit": "G$",
-                        "namespace": "ns_invest", # same namespace as for design_var discipline inputs as described in design_var_descriptor
+                        "namespace": "ns_invest",  # same namespace as for design_var discipline inputs as described in design_var_descriptor
                         "visibility": "Shared",
                     }
 
@@ -157,7 +155,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
             df = inputs['df_0']
             nb_poles = inputs['nb_poles']
             years_poles, poles_index = self.compute_poles(df, nb_poles)
-            for col in column_names: # extract data at the poles
+            for col in column_names:  # extract data at the poles
                 df = self.model.convex_combination_df[[GlossaryEnergy.Years] + [col]]
                 outputs = {col + '_array_mix': df[df.index.isin(poles_index)][col].values}
                 self.store_sos_outputs_values(outputs)
@@ -168,7 +166,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         n_profiles = dict_in['n_profiles']
         df = dict_in['df_0']
         export_profiles_at_poles = dict_in[GlossaryEnergy.EXPORT_PROFILES_AT_POLES]
-        poles_index = None # initialize to avoid pylint error
+        poles_index = None  # initialize to avoid pylint error
         if export_profiles_at_poles:
             nb_poles = dict_in['nb_poles']
             years_poles, poles_index = self.compute_poles(df, nb_poles)
@@ -182,7 +180,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                         (f'coeff_{i}',), derivative.reshape((len(derivative), 1))
                         )
                 else:
-                    derivative_at_poles = derivative[poles_index].reshape((len(poles_index), 1)) #extract gradient at the poles only
+                    derivative_at_poles = derivative[poles_index].reshape((len(poles_index), 1))  # extract gradient at the poles only
                     self.set_partial_derivative(col_name + '_array_mix', f'coeff_{i}', derivative_at_poles)
 
     def get_chart_filter_list(self):
@@ -207,7 +205,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
         df = self.get_sosdisc_inputs('df_0')
         years = list(df[GlossaryEnergy.Years].values)  # all profiles should have the same years
         export_profiles_at_poles = self.get_sosdisc_inputs(GlossaryEnergy.EXPORT_PROFILES_AT_POLES)
-        years_poles = None # initialize to avoid pylint error
+        years_poles = None  # initialize to avoid pylint error
         if export_profiles_at_poles:
             nb_poles = self.get_sosdisc_inputs('nb_poles')
             years_poles, poles_index = self.compute_poles(df, nb_poles)
@@ -216,7 +214,6 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                                          chart_name="Output profile invest")
         graph_poles = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest array_mix [G$]',
                                          chart_name="Output profile invest at the poles")
-
 
         for idx, column in enumerate(column_names):
             chart_name = f"Investments in {column}"
@@ -242,7 +239,7 @@ class InvestmentsProfileBuilderDisc(SoSWrapp):
                 series_values = list(invest_profile_poles)
                 serie_obj = InstanciatedSeries(list(years_poles), series_values, column + '_array_mix', display_type="scatter",
                                                marker_symbol='circle',
-                                               #marker=dict(color='LightSkyBlue', size=20, line=dict(color='MediumPurple', width=2))
+                                               # marker=dict(color='LightSkyBlue', size=20, line=dict(color='MediumPurple', width=2))
                                                )
                 graph_poles.add_series(serie_obj)
 

@@ -51,11 +51,11 @@ class UltraLowSulfurDieselDiscipline(EnergyDiscipline):
     }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = UltraLowSulfurDiesel.name
+    stream_name = UltraLowSulfurDiesel.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = UltraLowSulfurDiesel(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = UltraLowSulfurDiesel(self.stream_name)
+

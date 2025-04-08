@@ -20,9 +20,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class KeroseneTechno(TechnoType):
-    energy_name = GlossaryEnergy.kerosene
+    stream_name = GlossaryEnergy.kerosene
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
-
-    

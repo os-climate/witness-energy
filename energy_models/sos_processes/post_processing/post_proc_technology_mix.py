@@ -34,7 +34,7 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].discipline_wrapp.wrapper.energy_name
+        0].discipline_wrapp.wrapper.stream_name
     chart_list += [f'{energy} Price data of all technologies']
 
     # The filters are set to False by default since the graphs are not yet
@@ -80,7 +80,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             else:
                 var_energyproduction_all_energy_df = var_energyproduction_all_energy_df.merge(var_energyproduction_df)
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", energ + ".").str.replace(" (TWh)", "")  #(r" \(.*\)", "")
+                    energ + " ", energ + ".").str.replace(" (TWh)", "")  # (r" \(.*\)", "")
                 # FIXME: r" is raw string not regex, need to use re.sub
             y_incre += 1
 
@@ -232,14 +232,14 @@ def post_processings(execution_engine, namespace, filters):
     # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
     wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper
     if wrapper_type is not None:
-        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
         if f'{energy} Price data of all technologies' in graphs_list:
             capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
                                                                   '15 Most Producing Technologies Capex', 'CAPEX_Part',
                                                                   'Capex')
             instanciated_charts.append(capex_bar_slider_graph)
 
-        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
         if f'{energy} Price data of all technologies' in graphs_list:
             total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
                                                                         '15 Most Producing Technologies Price',

@@ -45,11 +45,11 @@ class EthanolDiscipline(EnergyDiscipline):
                                   'unit': 'define in dict'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    energy_name = Ethanol.name
+    stream_name = Ethanol.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = Ethanol(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = Ethanol(self.stream_name)
+

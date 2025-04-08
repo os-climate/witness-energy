@@ -48,12 +48,12 @@ class FossilDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = Fossil.name
+    stream_name = Fossil.name
     DESC_OUT = {}
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = Fossil(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = Fossil(self.stream_name)
+

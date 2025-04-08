@@ -50,7 +50,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     }
     techno_name = GlossaryEnergy.CropEnergy
 
-
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
     # 50% of crops are left on the field,
@@ -144,7 +143,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
     def run(self):
         '''
-        specific run for crops 
+        specific run for crops
         '''
         super().run()
         self.specific_run()
@@ -155,7 +154,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -235,7 +234,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
     def get_production_chart(self):
         '''
-        Create chart with production details for industry/energy 
+        Create chart with production details for industry/energy
         '''
         production_mix_df = self.get_sosdisc_outputs('mix_detailed_production')
 
@@ -259,7 +258,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         min4 = min(production_mix_df[name_residue_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3, min4) * 0.8
 
-        chart_name = 'Production of Crop over the years'
+        chart_name = 'Production of Crop '
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Crop (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
@@ -299,7 +298,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = 'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology '
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -335,7 +334,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_crop = f'{self.energy_name}_crop'
 
-        chart_name = 'Price of Crop energy technology over the years'
+        chart_name = 'Price of Crop energy technology '
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

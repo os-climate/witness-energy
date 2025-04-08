@@ -23,7 +23,7 @@ Density = 750 kg/m^3
 
 The average price of gasoline around the world is 4.21 USD per US gallon in 2021[^3]. However, there is substantial difference in these prices among countries. As a general rule, richer countries have higher prices while poorer countries and the countries that produce and export oil have significantly lower prices.
 
-**Kerosene (~13%)** 
+**Kerosene (~13%)**
 
 Also known as paraffin, it is a combustible hydrocarbon liquid which is widely used as a fuel in aviation as well as households.
 
@@ -82,17 +82,17 @@ We took 22000 USD per barrel and an OPEX percentage of 0.04, extracted from the 
 
 **GHG emissions**
 
-The GAINS model predicts methane fugitive emissions from crude oil extraction. Methane is emitted during each phase of oil extraction. During flaring, the waste gas out of oil facilities is burned and emits some CH4 emissions. Some other methane emissions occur during venting which consists at releasing methane directly to the atmosphere during the oil development process (wall completion, tank maintenance ...). Finally unintended leakage is also taken into account in this model for methane emissions. Emission factors from oil extraction are adapted from IEA data in the IEA Methane Tracker 2021 [^12] and compared with the Supplement data of the Hoglund Isaksson paper [^10]. 
+The GAINS model predicts methane fugitive emissions from crude oil extraction. Methane is emitted during each phase of oil extraction. During flaring, the waste gas out of oil facilities is burned and emits some CH4 emissions. Some other methane emissions occur during venting which consists at releasing methane directly to the atmosphere during the oil development process (wall completion, tank maintenance ...). Finally unintended leakage is also taken into account in this model for methane emissions. Emission factors from oil extraction are adapted from IEA data in the IEA Methane Tracker 2021 [^12] and compared with the Supplement data of the Hoglund Isaksson paper [^10].
 
 ![](emissions.jpg) (source[^11])
 
 **Hydrogen Consumption**
 
-Refineries use hydrogen to lower the sulfur content of diesel fuel. Refinery demand for hydrogen has increased as 
-demand for diesel fuel has risen both domestically and internationally, and as sulfur-content regulations have become 
-more stringent. Oil refining is the largest consumer of hydrogen today (close to 40 Mt in 2020), and will remain so 
-in the short to medium term. Hydrogen used in this sector is normally produced onsite by steam methane reforming, 
-separated from by-product gases from petrochemical processes or sourced externally as merchant hydrogen 
+Refineries use hydrogen to lower the sulfur content of diesel fuel. Refinery demand for hydrogen has increased as
+demand for diesel fuel has risen both domestically and internationally, and as sulfur-content regulations have become
+more stringent. Oil refining is the largest consumer of hydrogen today (close to 40 Mt in 2020), and will remain so
+in the short to medium term. Hydrogen used in this sector is normally produced onsite by steam methane reforming,
+separated from by-product gases from petrochemical processes or sourced externally as merchant hydrogen
 (typically produced in dedicated plants for hydrogen production using steam methane reforming).[^9]
 
 [^1]: Oil Refinery Wikipedia page, https://en.wikipedia.org/wiki/Oil_refinery
@@ -110,6 +110,6 @@ Argonne National Laboratory, https://publications.anl.gov/anlpubs/2011/01/69026.
 
 [^11]: https://capterio.com/insights/why-flare-capture-projects-make-sound-esg-investments
 
-[^12]:IEA Methane Tracker 2021, (https://www.iea.org/articles/methane-tracker-data-explorer), License: CC BY 4.0. 
+[^12]:IEA Methane Tracker 2021, (https://www.iea.org/articles/methane-tracker-data-explorer), License: CC BY 4.0.
 
 [^13]: https://www.osti.gov/servlets/purl/7261027, Page No 41

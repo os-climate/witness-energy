@@ -60,14 +60,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  # ENERGY TECHNOLOGIES, June 2021
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
-                                 # 0.1025 kt/PJ (mean) at gas power plants in
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-                                 'CH4_emission_factor': 0.1025e-3 / 0.277,
-                                 'CH4_emission_factor_unit': 'Mt/TWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.0001 kt/PJ
-                                 'N2O_emission_factor': 0.0001e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # Source: U.S. Energy Information Administration, 2020
                                  # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
                                  # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
@@ -78,7 +70,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'full_load_hours': 8760,
-                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9# According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
+                                 f"{GlossaryEnergy.CopperResource}_needs": 1100 / 1e9  # According to the IEA, Gaz powered stations need 1100 kg of copper for each MW implemented. Computing the need in Mt/MW.,
                                  # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
@@ -93,23 +85,30 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     initial_production = (1 - share_ccgt) * 6346
     FLUE_GAS_RATIO = np.array([0.0350])
 
+    # 0.1025 kt/PJ (mean) at gas power plants in
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.0001 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.CH4, GlossaryEnergy.methane, 0.1025e-3 / 0.277),
+        (GlossaryEnergy.N2O, GlossaryEnergy.methane, 0.0001e-3 / 0.277),
+    ]
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-                      
+
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh', "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = GasElec(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = GasElec(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

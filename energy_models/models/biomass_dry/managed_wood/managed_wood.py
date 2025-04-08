@@ -32,6 +32,7 @@ class ManagedWood(BiomassDryTechno):
         self.production_mix = None
         self.price_mix = None
         self.mean_age_df = None
+
     def compute_other_streams_needs(self):
         self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
 

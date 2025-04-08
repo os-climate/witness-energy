@@ -18,6 +18,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.electricity_techno import (
     ElectricityTechno,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SolarPv(ElectricityTechno):
@@ -26,8 +27,9 @@ class SolarPv(ElectricityTechno):
         '''
         Compute required land for solar_pv
         '''
-        density_per_ha = self.techno_infos_dict['density_per_ha']
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:{GlossaryEnergy.Years}'] = self.years
+        density_per_ha = self.inputs['techno_infos_dict']['density_per_ha']
 
-        self.land_use[f'{self.name} (Gha)'] = \
-            self.production_detailed[f'{self.energy_name} ({self.product_unit})'] / \
+        self.outputs[f'{GlossaryEnergy.LandUseRequiredValue}:Land use'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             density_per_ha

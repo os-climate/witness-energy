@@ -35,9 +35,7 @@ class NuclearTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.resources_price = pd.DataFrame(
@@ -50,7 +48,6 @@ class NuclearTestCase(unittest.TestCase):
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.
 
-        
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: np.linspace(15., 40., len(years))})
 
@@ -85,9 +82,6 @@ class NuclearTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
-    def tearDown(self):
-        pass
-
     def test_01_nuclear_discipline(self):
         # TODO: test commented out bc needs to be updated with new database connector def
         self.name = 'Test'
@@ -96,6 +90,9 @@ class NuclearTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    'ns_electricity': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -119,7 +116,7 @@ class NuclearTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
+                       f'{self.name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{model_name_US}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
 
@@ -141,7 +138,7 @@ class NuclearTestCase(unittest.TestCase):
         disc_us = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{model_name_US}')[0]
 
-        # we have associated only ns_electricity_nuc to the database. It means that only values of variables in this namespace will be loaded from the json file 
+        # we have associated only ns_electricity_nuc to the database. It means that only values of variables in this namespace will be loaded from the json file
         with open(file_path, "r") as f:
             json_data = f.read()
 
@@ -149,20 +146,19 @@ class NuclearTestCase(unittest.TestCase):
         data_ref_europe = data_dict_json['Europe']
         data_ref_us = data_dict_json['US']
 
-        # check techno_infos_dict maturity is equal to the json value 
+        # check techno_infos_dict maturity is equal to the json value
         self.assertEqual(data_ref_europe['techno_infos_dict']['maturity'],
                          disc_europe.get_sosdisc_inputs('techno_infos_dict')['maturity'])
         self.assertEqual(data_ref_us['techno_infos_dict']['maturity'],
                          disc_us.get_sosdisc_inputs('techno_infos_dict')['maturity'])
 
-        # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable 
+        # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable
         self.assertNotEqual(data_ref_europe[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
                             disc_europe.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
                                 GlossaryEnergy.MarginValue].max())
         self.assertNotEqual(data_ref_us[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
                             disc_us.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
                                 GlossaryEnergy.MarginValue].max())
-
 
 
 def convert_to_editable_json(data):

@@ -28,13 +28,15 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                              GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine, 'BiogasFired',
-                             #'Geothermal',todo : removed because was using medium heat temperature
-                             GlossaryEnergy.CoalGen, 'OilGen', 'BiomassFired']
+                             # 'Geothermal',todo : removed because was using medium heat temperature
+                             GlossaryEnergy.CoalGen, 'OilGen',  # 'BiomassFired'
+                             ]
 TECHNOLOGIES_LIST = ['WindOffshore', GlossaryEnergy.WindOnshore, GlossaryEnergy.SolarPv, 'SolarThermal',
                      GlossaryEnergy.Hydropower, 'Nuclear', 'CombinedCycleGasTurbine', GlossaryEnergy.GasTurbine,
                      'BiogasFired',
-                     #'Geothermal',todo : removed because was using medium heat temperature
+                     # 'Geothermal',todo : removed because was using medium heat temperature
                      GlossaryEnergy.CoalGen, 'OilGen', 'BiomassFired']
+
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YearStartDefault, year_end=GlossaryEnergy.YearEndDefault,
@@ -45,7 +47,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -152,8 +154,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = GlossaryEnergy.electricity
-        electricity_name = f'EnergyMix.{self.energy_name}'
+        self.stream_name = GlossaryEnergy.electricity
+        electricity_name = f'EnergyMix.{self.stream_name}'
         years = np.arange(self.year_start, self.year_end + 1)
 
         # reference_data_name = 'Reference_aircraft_data'
@@ -228,8 +230,10 @@ class Study(EnergyMixStudyManager):
 
             values_dict.update(
                 {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
+f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

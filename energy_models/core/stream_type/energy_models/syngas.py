@@ -14,10 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy
-
-import numpy as np
-
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import (
     GaseousHydrogen,
@@ -52,39 +48,36 @@ class Syngas(EnergyType):
         # 'high_calorific_value': 13.22,
         'high_calorific_value_unit': 'kWh/kg',
     }
-
-    def __init__(self, name):
-        self.syngas_ratio_mean = None
-        self.syngas_ratio = {}
-        EnergyType.__init__(self, name)
-
-    def configure_parameters(self, inputs_dict):
-        EnergyType.configure_parameters(self, inputs_dict)
-
-    def configure_parameters_update(self, inputs_dict):
-        EnergyType.configure_parameters_update(self, inputs_dict)
-        for techno in self.subelements_list:
-            self.syngas_ratio[techno] = inputs_dict[f'{techno}.syngas_ratio'][0]
-        # Added to overwrite the definition of data energy dict input from energy type but with a deepcopy
-        self.data_energy_dict_input = deepcopy(inputs_dict['data_fuel_dict'])
+    def compute(self):
+        super().compute()
+        self.compute_syngas_ratio()
+        self.update_data_energy_dict()
 
     def compute_syngas_ratio(self):
         """
-        Method to compute syngas ratio using production by 
+        Method to compute syngas ratio using production by
         """
-        self.syngas_ratio_mean = np.zeros(len(self.years))
-        for techno in self.subelements_list:
-            #             self.mix_weights[techno] = self.production_by_techno[f'{self.name} {techno} ({GlossaryEnergy.energy_unit})'] / \
+        self.outputs['syngas_ratio'] = self.zeros_array
+        for techno in self.inputs[GlossaryEnergy.techno_list]:
+            #             self.outputs[f'techno_mix:{techno}'] = self.production_by_techno[f'{self.name} {techno} ({GlossaryEnergy.energy_unit})'] / \
             #                 self.production[f'{self.name}']
-            self.syngas_ratio_mean = np.add(self.syngas_ratio_mean, self.syngas_ratio[techno] *
-                                            self.mix_weights[techno].values / 100.0)
-        return self.syngas_ratio_mean
+            self.outputs[f'syngas_ratio_technos:{techno}'] = self.zeros_array + self.inputs[f'{techno}.syngas_ratio:syngas_ratio'][0]
+            self.outputs['syngas_ratio'] = self.np.add(self.outputs['syngas_ratio'], self.inputs[f'{techno}.syngas_ratio:syngas_ratio'][0] *
+                                            self.outputs[f'techno_mix:{techno}'] / 100.0)
+    def update_data_energy_dict(self):
+
+        self.inputs['data_fuel_dict']['molar_mass'] = compute_molar_mass(
+            self.outputs['syngas_ratio'] / 100.0)
+        self.inputs['data_fuel_dict']['high_calorific_value'] = compute_high_calorific_value(
+            self.outputs['syngas_ratio'] / 100.0)
+        self.inputs['data_fuel_dict']['calorific_value'] = compute_calorific_value(
+            self.outputs['syngas_ratio'] / 100.0)
 
 
 def compute_molar_mass(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the molar mass following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the molar mass following this ratio
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
     '''
@@ -95,8 +88,8 @@ def compute_molar_mass(syngas_ratio):
 
 def compute_calorific_value(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the calorific_value following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the calorific_value following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
@@ -112,8 +105,8 @@ def compute_calorific_value(syngas_ratio):
 
 def compute_high_calorific_value(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the calorific_value following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the calorific_value following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     syngas_ratio must be between 0 and 1 (not in %)
@@ -127,28 +120,10 @@ def compute_high_calorific_value(syngas_ratio):
     return calorific_value
 
 
-def compute_dcal_val_dsyngas_ratio(syngas_ratio, type_cal='calorific_value'):
-    calup = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict[type_cal] +
-             GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[type_cal])
-
-    caldown = (GaseousHydrogen.data_energy_dict['molar_mass'] +
-               syngas_ratio * CO.data_energy_dict['molar_mass'])
-
-    dcalup = CO.data_energy_dict['molar_mass'] * \
-             CO.data_energy_dict[type_cal]
-
-    dcaldown = CO.data_energy_dict['molar_mass']
-
-    dcalorific_val_dsyngas = (
-                                     dcalup * caldown - dcaldown * calup) / (caldown ** 2)
-
-    return dcalorific_val_dsyngas
-
-
 def compute_density(syngas_ratio):
     '''
-    syngas ratio is the molar ratio of CO over H2 
-    We compute the density following this ratio 
+    syngas ratio is the molar ratio of CO over H2
+    We compute the density following this ratio
     Ratio is on mol not kg !! So we need molar_mass ratio in the computation
     if ratio is equal to zero syngas is h2
     '''
