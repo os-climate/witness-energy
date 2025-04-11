@@ -65,12 +65,12 @@ class CCUSDiscTestCase(GenericDisciplinesTestClass):
 
         self.carbon_capture_prod = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            f"{GlossaryEnergy.carbon_captured} (Mt)": 10. * 1e3,
+            f"{GlossaryEnergy.carbon_captured}": 10. * 1e3,
         })
 
         self.carbon_storage_prod = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            f"{GlossaryEnergy.carbon_storage} (Mt)": 9.5 * 1e3,
+            f"{GlossaryEnergy.carbon_storage}": 9.5 * 1e3,
         })
 
         self.carbon_capture_land_use = pd.DataFrame({

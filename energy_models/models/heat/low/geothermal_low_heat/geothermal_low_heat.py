@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.base_techno_models.low_heat_techno import (
     lowheattechno,
 )
@@ -37,10 +36,10 @@ class GeothermalHeat(lowheattechno):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
         # TODO : geothermal produces carbon capture ?
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = carbon_production_factor * \
-                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
-                                                                                   f'{lowtemperatureheat.name} ({self.product_unit})'] / \
-                                                                                                                                      self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
+            carbon_production_factor * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.inputs['techno_infos_dict']['mean_temperature']

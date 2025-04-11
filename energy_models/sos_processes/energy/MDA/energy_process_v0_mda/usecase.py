@@ -99,8 +99,8 @@ class Study(StudyManager):
         self.dict_technos = self.study_v0.dict_technos
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
-            f'{self.study_name}.tolerance': 1.0e-7,
+            f'{self.study_name}.max_mda_iter': 200,
+            f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
