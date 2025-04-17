@@ -199,7 +199,6 @@ class Study(EnergyMixStudyManager):
         self.carbon_storage_availability_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years, GlossaryEnergy.carbon_captured: 100., GlossaryEnergy.carbon_storage: 100.})
 
-        utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.UtilisationRatioValue: 100.})
         if self.main_study:
             values_dict.update(
                 {
@@ -234,12 +233,10 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}.{GlossaryEnergy.TechnoFlueGasProductionValue}': refinery_fg_prod,
                     f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.TechnoProductionValue}': CAKOH_fg_prod,
                     f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.TechnoProductionValue}': aminescrubbing_fg_prod,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio,
-                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio,
-                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_fg_prod,
-                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.carbon_storage_availability_ratio,
-                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
-                    f'{self.study_name}.{ccus_name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}': directaircapturetechno_fg_prod,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.CCUSAvailabilityRatiosValue}': self.carbon_storage_availability_ratio,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
+                    f'{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.CalciumPotassiumScrubbing}.{GlossaryEnergy.UtilisationRatioValue}': utilisation_ratio_df,
                 })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
