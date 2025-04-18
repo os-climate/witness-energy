@@ -31,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = self.techno_list = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.carbon_captured]['value']
+        self.techno_list = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV[GlossaryEnergy.carbon_captured]['value']
         self.ccus_name = 'CCUS'
         self.associate_namespace = True
 

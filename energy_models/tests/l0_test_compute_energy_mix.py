@@ -61,7 +61,7 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
         self.resource_consumption_hydro = pd.DataFrame({'water (Mt)': np.linspace(8., 10., len(self.years))})
 
         self.production_hydro = pd.DataFrame({
-            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(28., 37., len(self.years))
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.linspace(28., 37., len(self.years))
         })
 
         self.prices_hydro = pd.DataFrame(
@@ -103,7 +103,7 @@ class EnergyMixTestCase(GenericDisciplinesTestClass):
 
         self.production_methane = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            f'{GlossaryEnergy.methane} (TWh)': np.linspace(2.6, 2300, len(self.years))})
+            f'{GlossaryEnergy.methane}': np.linspace(2.6, 2300, len(self.years))})
 
         self.cost_details = pd.DataFrame({GlossaryEnergy.methane:  np.linspace(193, 336, len(self.years)),
                                           'methane_wotaxes': np.linspace(193, 336, len(self.years)), })
