@@ -796,8 +796,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         carbon_captured: {
             stream_type: CCUS,
             value: [
-                f"{direct_air_capture}.{AmineScrubbing}",
-                f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
+                #f"{direct_air_capture}.{AmineScrubbing}",
+                #f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
                 f"{flue_gas_capture}.{CalciumLooping}",
                 f"{flue_gas_capture}.{ChilledAmmoniaProcess}",
                 f"{flue_gas_capture}.{CO2Membranes}",
@@ -896,8 +896,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         carbon_captured: {
             stream_type: CCUS,
             value: [
-                #f"{direct_air_capture}.{AmineScrubbing}",
-                #f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
+                f"{direct_air_capture}.{AmineScrubbing}",
+                f"{direct_air_capture}.{CalciumPotassiumScrubbing}",
                 f"{flue_gas_capture}.{CalciumLooping}",
                 f"{flue_gas_capture}.{ChilledAmmoniaProcess}",
                 f"{flue_gas_capture}.{CO2Membranes}",

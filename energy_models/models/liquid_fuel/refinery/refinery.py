@@ -89,7 +89,7 @@ class Refinery(LiquidFuelTechno):
     def compute_byproducts_production(self):
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
-            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{energy} ({self.product_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{energy}'] = \
                 self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] * \
                 self.inputs['techno_infos_dict']['product_break_down'][energy] / 11.66 * \
                 self.other_energy_dict[energy]['calorific_value']
