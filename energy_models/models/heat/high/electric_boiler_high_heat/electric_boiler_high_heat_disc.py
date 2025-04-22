@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import (
     HighHeatTechnoDiscipline,
 )
@@ -40,7 +39,7 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.ElectricBoilerHighHeat
-    energy_name = hightemperatureheat.name
+    stream_name = GlossaryEnergy.hightemperatureheat_energyname
 
     # Heat Producer [Online]
     # https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp
@@ -83,6 +82,4 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = ElectricBoilerHighHeat(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = ElectricBoilerHighHeat(self.techno_name)

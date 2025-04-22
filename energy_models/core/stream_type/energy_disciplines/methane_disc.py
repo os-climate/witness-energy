@@ -46,11 +46,11 @@ class MethaneDiscipline(EnergyDiscipline):
                                   'namespace': 'ns_methane', 'default': Methane.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    energy_name = Methane.name
+    stream_name = Methane.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = Methane(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = Methane(self.stream_name)
+

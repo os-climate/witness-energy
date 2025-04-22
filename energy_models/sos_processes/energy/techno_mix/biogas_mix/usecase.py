@@ -23,7 +23,6 @@ from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
-from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
@@ -39,7 +38,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -62,8 +61,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix = 'EnergyMix'
-        self.energy_name = BioGas.name
-        energy_name = f'{energy_mix}.{BioGas.name}'
+        self.stream_name = GlossaryEnergy.biogas
+        energy_name = f'{energy_mix}.{GlossaryEnergy.biogas}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -117,7 +116,9 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
                  f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

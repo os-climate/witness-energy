@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -64,6 +65,8 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # Whole Building Design Guide
     # https://www.wbdg.org/resources/biomass-electricity-generation
 
+    FLUE_GAS_RATIO = np.array([0.13])
+
     techno_infos_dict_default = {'maturity': 5,
                                  # IRENA (mean of 2% - 6%)
                                  'Opex_percentage': 0.04,
@@ -99,15 +102,12 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassFired(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassFired(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:

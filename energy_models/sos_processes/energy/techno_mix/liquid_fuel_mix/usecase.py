@@ -27,8 +27,8 @@ from energy_models.core.energy_process_builder import (
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
-TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch]
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery]#, GlossaryEnergy.FischerTropsch]
+TECHNOLOGIES_LIST = [GlossaryEnergy.Refinery]#, GlossaryEnergy.FischerTropsch]
 
 
 class Study(EnergyMixStudyManager):
@@ -41,7 +41,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -69,8 +69,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = LiquidFuel.name
-        energy_name = f'{energy_mix_name}.{self.energy_name}'
+        self.stream_name = LiquidFuel.name
+        energy_name = f'{energy_mix_name}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
 
@@ -78,7 +78,7 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.electricity: 16.0,
                                       GlossaryEnergy.CO2: 0.0,
                                       'crude oil': 38.0,
-                                      GlossaryEnergy.carbon_capture: 70.,
+                                      GlossaryEnergy.carbon_captured: 70.,
                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
                                       GlossaryEnergy.syngas: 50.0})
 
@@ -105,7 +105,7 @@ class Study(EnergyMixStudyManager):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4,
-             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533, GlossaryEnergy.carbon_capture: 0.})
+             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533, GlossaryEnergy.carbon_captured: 0.})
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -122,7 +122,9 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
             values_dict.update({
                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy. syngas}.{GlossaryEnergy.syngas_ratio}': np.ones(len(years)) * 0.33,
             })
@@ -146,4 +148,5 @@ class Study(EnergyMixStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

@@ -30,9 +30,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class CalciumPotassium(CCTechno):
 
     def compute_resources_needs(self):
-        self.cost_details[f'{GlossaryEnergy.PotassiumResource}_needs'] = self.compute_potassium_need() / self.techno_infos_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.PotassiumResource}_needs'] = self.compute_potassium_need() / self.inputs['techno_infos_dict'][
             GlossaryEnergy.EnergyEfficiency]
-        self.cost_details[f'{GlossaryEnergy.CalciumResource}_needs'] = self.compute_calcium_need() / self.techno_infos_dict[
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.CalciumResource}_needs'] = self.compute_calcium_need() / self.inputs['techno_infos_dict'][
             GlossaryEnergy.EnergyEfficiency]
 
     def get_heat_needs(self):
@@ -40,29 +40,18 @@ class CalciumPotassium(CCTechno):
         Get the heat needs for 1 kwh of the energy producted by the technology
         """
 
-        if 'heat_demand' in self.techno_infos_dict:
-            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
-                                                      self.techno_infos_dict['heat_demand'])
+        if 'heat_demand' in self.inputs['techno_infos_dict']:
+            heat_need = self.check_energy_demand_unit(self.inputs['techno_infos_dict']['heat_demand_unit'],
+                                                      self.inputs['techno_infos_dict']['heat_demand'])
 
         else:
             heat_need = 0.0
 
         return heat_need
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
-        self.cost_details[f'{Methane.name}_needs'] = self.get_heat_needs()
-
-    def compute_byproducts_production(self):
-
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'] = self.cost_details[
-                                                                                            f'{Methane.name}_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_unit})'] * \
-                                                                                        Methane.data_energy_dict[
-                                                                                            GlossaryEnergy.CO2PerUse] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value']
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_heat_needs()
 
     def compute_potassium_need(self):
         """
@@ -75,7 +64,7 @@ class CalciumPotassium(CCTechno):
         CO2_molar_mass = CarbonCapture.data_energy_dict['molar_mass']
 
         KOH_need = 2 * KOH_molar_mass / CO2_molar_mass * \
-                   (1 - self.techno_infos_dict['potassium_refound_efficiency'])
+                   (1 - self.inputs['techno_infos_dict']['potassium_refound_efficiency'])
 
         return KOH_need
 
@@ -90,6 +79,6 @@ class CalciumPotassium(CCTechno):
         CO2_molar_mass = CarbonCapture.data_energy_dict['molar_mass']
 
         CaO_need = (CaO_molar_mass / CO2_molar_mass) * \
-                   (1 - self.techno_infos_dict['calcium_refound_efficiency'])
+                   (1 - self.inputs['techno_infos_dict']['calcium_refound_efficiency'])
 
         return CaO_need

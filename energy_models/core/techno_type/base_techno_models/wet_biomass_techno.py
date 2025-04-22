@@ -20,7 +20,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class WetBiomassTechno(TechnoType):
-    energy_name = WetBiomass.name
+    stream_name = WetBiomass.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

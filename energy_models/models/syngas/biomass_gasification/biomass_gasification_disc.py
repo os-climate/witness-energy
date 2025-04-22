@@ -121,6 +121,4 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassGasification(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassGasification(self.techno_name)

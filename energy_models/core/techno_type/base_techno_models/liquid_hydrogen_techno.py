@@ -20,7 +20,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class LiquidHydrogenTechno(TechnoType):
-    energy_name = LiquidHydrogen.name
+    stream_name = LiquidHydrogen.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

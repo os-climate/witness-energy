@@ -21,8 +21,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -70,12 +68,8 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.ipcc.ch/site/assets/uploads/2018/02/ipcc_wg3_ar5_chapter7.pdf
                                  # Or for a simplified chart:
                                  # https://www.world-nuclear.org/information-library/energy-and-the-environment/carbon-dioxide-emissions-from-electricity.aspx
-                                 'CO2_from_production': 0.82,
+                                 'CO2_flue_gas_intensity_by_prod_unit': 0.82,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
-                                 # 0.0014 kt/PJ
-                                 'N2O_emission_factor': 0.0014e-3 / 0.277,
-                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
                                  # License: CC BY 4.0.
@@ -124,10 +118,20 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+
+    # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+    # 0.0014 kt/PJ
+    extra_ghg_from_external_source = [
+        (GlossaryEnergy.N2O, GlossaryEnergy.solid_fuel, 0.0014e-3 / 0.277),
+    ]
 
     FLUE_GAS_RATIO = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
+               "extra_ghg_from_external_source": {'type': 'list', 'unit': 'Mt/TWh',
+                                                  "default": extra_ghg_from_external_source,
+                                                  "description": "lifetime of a plant of the techno"},
                       }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -135,15 +139,12 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     _maturity = 'Research'
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CoalGen(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = CoalGen(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
@@ -166,25 +167,3 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         instanciated_chart.append(new_chart_copper)
 
         return instanciated_chart
-
-    def compute_sos_jacobian(self):
-        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
-
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (
-                                         self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[
-            f'{SolidFuel.name} ({self.techno_model.product_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
-            (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (consumption_gradient - dprod_name_dinvest))

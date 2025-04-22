@@ -57,18 +57,18 @@ years_optim = np.linspace(year_start, year_end, 8)  # np.arange(years_IEA[0], ye
 invest_year_start = 18.957  # G$
 
 name = 'usecase_witness_optim_nze_eval'
-model_name = f"WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.Hydropower}"
+model_name = f"MDO.WITNESS_Eval.WITNESS.EnergyMix.electricity.{GlossaryEnergy.Hydropower}"
 
 # recover the input data of the discipline from the iea nze scenario
 with open('dm_iea_nze.pkl', 'rb') as f:
             dm = pickle.load(f)
 f.close()
 inputs_dict = deepcopy(dm)
-inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsCO2EmissionsValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
-inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix.biogas.{GlossaryEnergy.TransportCostValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.CO2TaxesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.CO2TaxesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamsGHGEmissionsValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.StreamPricesValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.StreamPricesValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.ResourcesPriceValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryEnergy.ResourcesPriceValue}')})
+inputs_dict.update({f'{name}.{GlossaryEnergy.TransportCostValue}': inputs_dict.pop(f'usecase_witness_optim_nze_eval.MDO.WITNESS_Eval.WITNESS.EnergyMix.biogas.{GlossaryEnergy.TransportCostValue}')})
 
 
 def run_model(x: list, year_end: int = year_end):

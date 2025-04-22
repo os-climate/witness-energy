@@ -32,7 +32,6 @@ from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.one_invest import OneInvest
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -102,18 +101,15 @@ class OneInvestDiscipline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name:
+                    if energy == GlossaryEnergy.biomass_dry:
                         pass
                     else:
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
                             'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                            'visibility': 'Shared', 'namespace': 'ns_energy',
-                            'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                            'default': EnergyMix.stream_class_dict[energy].default_techno_list}
+                            'visibility': 'Shared', 'namespace': 'ns_energy',}
                         if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
-                            technology_list = self.get_sosdisc_inputs(
-                                f'{energy}.{GlossaryEnergy.techno_list}')
+                            technology_list = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.techno_list}')
                             # Add all invest_level outputs
                             if technology_list is not None:
                                 for techno in technology_list:
@@ -128,9 +124,7 @@ class OneInvestDiscipline(SoSWrapp):
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.techno_list}'] = {
                         'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                        'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS,
-                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                        'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                        'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS,}
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
@@ -153,7 +147,7 @@ class OneInvestDiscipline(SoSWrapp):
         output_dict = {'all_invest_df': all_invest_df}
 
         for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
-            if energy == BiomassDry.name:
+            if energy == GlossaryEnergy.biomass_dry:
                 pass
             else:
                 for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:

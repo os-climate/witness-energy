@@ -39,6 +39,3 @@ class CarbonStorage(BaseStream):
                         'high_calorific_value': 1.0,
                         'high_calorific_value_unit': 'kWh/kg'}
 
-    def configure_parameters(self, inputs_dict):
-        self.subelements_list = inputs_dict[GlossaryEnergy.techno_list]
-        BaseStream.configure_parameters(self, inputs_dict)

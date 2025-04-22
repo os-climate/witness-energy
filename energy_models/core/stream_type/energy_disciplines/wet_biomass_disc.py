@@ -48,14 +48,14 @@ class BiomassWetDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
-    energy_name = WetBiomass.name
+    stream_name = WetBiomass.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = WetBiomass(self.energy_name)
-        self.energy_model.configure_parameters(inputs_dict)
+        super().init_execution()
+        self.model = WetBiomass(self.stream_name)
+
 
     def run(self):
         super().run()
@@ -68,9 +68,9 @@ class BiomassWetDiscipline(EnergyDiscipline):
         cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
 
         outputs_dict = {GlossaryEnergy.StreamPricesValue: cost_details,
-                        GlossaryEnergy.StreamConsumptionValue: consumption / inputs_dict[
+                        GlossaryEnergy.StreamEnergyConsumptionValue: consumption / inputs_dict[
                             'scaling_factor_energy_consumption'],
-                        GlossaryEnergy.EnergyProductionValue: production / inputs_dict[
+                        GlossaryEnergy.StreamProductionValue: production / inputs_dict[
                             'scaling_factor_energy_production'],
                         'techno_mix': techno_mix}
 

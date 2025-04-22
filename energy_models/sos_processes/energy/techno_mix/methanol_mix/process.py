@@ -20,6 +20,7 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.methanol import Methanol
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.methanol_mix.usecase import (
     TECHNOLOGIES_LIST,
 )
@@ -46,6 +47,9 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_dict = {'ns_methanol': f'{ns_study}.{energy_mix}.{methanol_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}

@@ -42,7 +42,7 @@ class Study(EnergyMixStudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_name = None
+        self.stream_name = None
         self.bspline = bspline
 
     def get_investments(self):
@@ -70,8 +70,8 @@ class Study(EnergyMixStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
         energy_mix = 'EnergyMix'
-        self.energy_name = HydrotreatedOilFuel.name
-        energy_name = f'{energy_mix}.{self.energy_name}'
+        self.stream_name = HydrotreatedOilFuel.name
+        energy_name = f'{energy_mix}.{self.stream_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -126,7 +126,9 @@ class Study(EnergyMixStudyManager):
             values_dict.update(
                 {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.StreamsCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.CO2}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.CH4}_intensity_by_energy': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.N2O}_intensity_by_energy': energy_carbon_emissions,
 
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:

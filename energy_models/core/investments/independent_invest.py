@@ -55,7 +55,7 @@ class IndependentInvest(BaseInvest):
         techno_invest_sum = techno_invests.sum(axis=1).values
 
         energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryEnergy.Years: inputs_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years],
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
              GlossaryEnergy.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$
 
         return energy_investment_wo_tax
@@ -66,7 +66,6 @@ class IndependentInvest(BaseInvest):
         max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
         overspending = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
         max_budget_constraint_df = pd.DataFrame({
-            GlossaryEnergy.Years: inputs_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years],
             GlossaryEnergy.MaxBudgetConstraintValue: overspending / max_budget_constraint_ref
         })
         return max_budget_constraint_df
