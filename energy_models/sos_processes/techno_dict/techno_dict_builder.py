@@ -238,7 +238,7 @@ GlossaryEnergy.biomass_dry,
 # f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
 ]
 streams_to_have = [
-    GlossaryEnergy.carbon_capture,
+    GlossaryEnergy.carbon_captured,
     GlossaryEnergy.carbon_storage,
 ]
 

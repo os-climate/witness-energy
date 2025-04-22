@@ -35,9 +35,7 @@ class NuclearTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         years = np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1)
 
         self.resources_price = pd.DataFrame(
@@ -84,9 +82,6 @@ class NuclearTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
-    def tearDown(self):
-        pass
-
     def test_01_nuclear_discipline(self):
         # TODO: test commented out bc needs to be updated with new database connector def
         self.name = 'Test'
@@ -95,6 +90,9 @@ class NuclearTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   
                    'ns_electricity': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -118,7 +116,7 @@ class NuclearTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YearEndDefault,
                        f'{self.name}.{GlossaryEnergy.StreamPricesValue}': self.stream_prices,
-                       f'{self.name}.{GlossaryEnergy.StreamsCO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
+                       f'{self.name}.{GlossaryEnergy.StreamsGHGEmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years}),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.{model_name_US}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
 

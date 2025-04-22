@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -33,11 +32,14 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def get_builders(self):
         ns_study = self.ee.study_name
-        heat_name = hightemperatureheat.name
+        heat_name = GlossaryEnergy.hightemperatureheat_energyname
         energy_mix = 'EnergyMix'
         ns_dict = {'ns_heat_high': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}

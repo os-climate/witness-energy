@@ -27,12 +27,12 @@ class SMR(SyngasTechno):
 
     def compute_resources_needs(self):
         # need in kwh to produce 1kwh of syngas
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Water.name}_needs'] = self.get_theoretical_water_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # need in kg to produce 1kwh of syngas
-        self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{Methane.name}_needs'] = self.get_theoretical_CH4_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_theoretical_CH4_needs(self):
         '''
@@ -45,8 +45,8 @@ class SMR(SyngasTechno):
         mol_COH2 = 3.0
         methane_data = Methane.data_energy_dict
         methane_needs = mol_CH4 * methane_data['molar_mass'] * methane_data['calorific_value'] / \
-                        (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                         self.data_energy_dict['calorific_value'])
+                        (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                         self.inputs['data_energy_dict']['calorific_value'])
 
         return methane_needs
 
@@ -61,13 +61,13 @@ class SMR(SyngasTechno):
         mol_COH2 = 3.0
         water_data = Water.data_energy_dict
         water_needs = mol_H2O * water_data['molar_mass'] / \
-                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.inputs['data_energy_dict']['molar_mass'] *
+                       self.inputs['data_energy_dict']['calorific_value'])
 
         return water_needs
 
     def compute_byproducts_production(self):
-        # self.production[f'{highheattechno.energy_name} ({self.product_unit})'] = \
-        #     self.techno_infos_dict['high_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_unit})']
+        # self.production[f'{highheattechno.stream_name} ({self.product_unit})'] = \
+        #     self.inputs['techno_infos_dict']['high_heat_production'] * \
+        #     self.production[f'{self.stream_name} ({self.product_unit})']
         pass

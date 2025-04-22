@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import (
     CSTechno,
@@ -23,6 +22,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassBuryingFossilization(CSTechno):
-    def compute_other_streams_needs(self):
-        self.cost_details[f"{GlossaryEnergy.biomass_dry}_needs"] = BiomassDry.data_energy_dict['calorific_value'] /\
+    def compute_energies_needs(self):
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biomass_dry}_needs"] = BiomassDry.data_energy_dict['calorific_value'] /\
                                                                    BiomassDry.data_energy_dict[GlossaryEnergy.CO2PerUse]

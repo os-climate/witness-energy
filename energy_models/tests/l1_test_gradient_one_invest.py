@@ -40,9 +40,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
         ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefault
         self.energy_list = [
@@ -50,7 +48,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
             GlossaryEnergy.methane]
 
         self.ccs_list = [
-            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+            GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_mix = pd.DataFrame({
@@ -62,8 +60,8 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
             f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}': 0.5,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': 0.6,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}': 0.7,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 0.8,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 0.9,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 0.8,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 0.9,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}': 1.0,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}': 1.1, })
 
@@ -73,9 +71,6 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-
-    def tearDown(self):
-        pass
 
     def test_01_one_invest_analytic_grad(self):
         self.name = 'Energy'
@@ -109,7 +104,7 @@ class OneInvestJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [
                            GlossaryEnergy.WaterGasShift,
                            GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [
+                       f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.technologies_list}': [
                            f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,

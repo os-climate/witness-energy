@@ -42,7 +42,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = GlossaryEnergy.BiomassFermentation
-    energy_name = Ethanol.name
+    stream_name = Ethanol.name
 
     # Conversions
     pound_to_kg = 0.45359237
@@ -104,6 +104,4 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     DESC_OUT = EthanolTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = BiomassFermentation(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = BiomassFermentation(self.techno_name)

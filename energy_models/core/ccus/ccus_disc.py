@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import copy
 import logging
 
 import numpy as np
@@ -21,19 +22,20 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 from energy_models.core.ccus.ccus import CCUS
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class CCUS_Discipline(SoSWrapp):
+class CCUS_Discipline(AutodifferentiedDisc):
     # ontology information
     _ontology_data = {
         'label': 'Carbon Capture and Storage Model',
@@ -48,73 +50,51 @@ class CCUS_Discipline(SoSWrapp):
         'version': '',
     }
 
-    ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
-    DESC_IN = {
-        GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: {'type': 'int',
-                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [2000, 2300]},
-        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                               'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                        'carbon_capture needed by energy mix (Gt)': ('float', None, True),
-                                                                        }, },
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                           'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                    'carbon_capture from energy mix (Gt)': ('float', None, True), }, },
-        'co2_for_food': {
-            'type': 'dataframe', 'unit': 'Mt',
-            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True), f'{GlossaryEnergy.carbon_capture} for food (Mt)': ('float', None, True), }
-    }
-    }
+    ccs_list = CCUS.ccs_list
+
+    DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
+               GlossaryEnergy.EnergyMixCCSDemandsDfValue: GlossaryEnergy.EnergyMixCCSDemandsDf,
+               GlossaryEnergy.EnergyMixCCSConsumptionDfValue: GlossaryEnergy.EnergyMixCCSConsumptionDf,
+           }
 
     DESC_OUT = {
-        'co2_emissions_ccus': {'type': 'dataframe', 'unit': 'Mt'},
-        'carbon_storage_capacity (Gt)': {'type': 'dataframe', 'unit': 'Mt'},
-        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                  'namespace': GlossaryEnergy.NS_CCS},
-
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                      'namespace': 'ns_energy_study'},
+        GlossaryEnergy.CCUS_CO2EmissionsDfValue: GlossaryEnergy.CCUS_CO2EmissionsDf,
+        GlossaryEnergy.CCUSOutputValue: GlossaryEnergy.CCUSOutput,
+        f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyDemandDf),
+        f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyConsumptionValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyConsumptionDf),
+        f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.LandUseRequiredValue}": GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.StreamLandUseDf),
+        GlossaryEnergy.CCUSPriceValue: GlossaryEnergy.CCUSPrice,
+        GlossaryEnergy.CCUSAvailabilityRatiosValue: GlossaryEnergy.CCUSAvailabilityRatios,
+        f"{GlossaryEnergy.carbon_captured}_demand_breakdown": {"type": "dict"},
+        f"{GlossaryEnergy.carbon_storage}_demand_breakdown": {"type": "dict"},
+        "demands_df": {"type": "dataframe"},
     }
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.ccus_model = None
+        self.model = None
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.ccus_model = CCUS(GlossaryEnergy.ccus_type)
-        self.ccus_model.configure_parameters(inputs_dict)
+        self.model = CCUS(GlossaryEnergy.CCUS)
 
     def setup_sos_disciplines(self):
-
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        for ccs_name in self.ccs_list:
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionValue}'] = {
-                'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                'namespace': GlossaryEnergy.NS_CCS,
-                "dynamic_dataframe_columns": True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamConsumptionWithoutRatioValue}'] = {
-                'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                'namespace': GlossaryEnergy.NS_CCS,
-                "dynamic_dataframe_columns": True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
-                'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                'namespace': GlossaryEnergy.NS_CCS,
-                'dynamic_dataframe_columns': True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.StreamPricesValue}'] = {
-                'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                'namespace': GlossaryEnergy.NS_CCS,
-                'dynamic_dataframe_columns': True}
-            dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
-                'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                'namespace': GlossaryEnergy.NS_CCS,
-                "dynamic_dataframe_columns": True}
+        for ccs_stream in self.ccs_list:
+            vars_to_update_ccs_namespace = {
+                GlossaryEnergy.StreamEnergyConsumptionValue: GlossaryEnergy.StreamEnergyConsumption,
+                GlossaryEnergy.StreamEnergyDemandValue: GlossaryEnergy.StreamEnergyDemand,
+                GlossaryEnergy.StreamProductionValue: GlossaryEnergy.StreamProductionDf,
+                GlossaryEnergy.StreamPricesValue: GlossaryEnergy.StreamPrices,
+                GlossaryEnergy.LandUseRequiredValue: GlossaryEnergy.StreamLandUseDf,
+            }
+            for key, var_descr in vars_to_update_ccs_namespace.items():
+                copy_var_descr = copy.copy(var_descr)
+                copy_var_descr["namespace"] = GlossaryEnergy.NS_CCS
+                copy_var_descr["visibility"] = "Shared"
+                dynamic_inputs[f'{ccs_stream}.{key}'] = copy_var_descr
 
         self.update_default_values()
         self.add_inputs(dynamic_inputs),
@@ -130,58 +110,26 @@ class CCUS_Discipline(SoSWrapp):
                 if year_start is not None and year_end is not None:
                     default_co2_for_food = pd.DataFrame({
                         GlossaryEnergy.Years: np.arange(year_start, year_end + 1),
-                        f'{GlossaryEnergy.carbon_capture} for food (Mt)': 0.0})
+                        f'{GlossaryEnergy.carbon_captured} for food (Mt)': 0.0})
                     self.update_default_value('co2_for_food', 'in', default_co2_for_food)
 
-    def run(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.ccus_model.configure_parameters(inputs_dict)
-        self.ccus_model.compute()
-        self.store_sos_outputs_values(self.ccus_model.outputs_dict)
 
-    def compute_sos_jacobian(self):
-        year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-        years = np.arange(year_start, year_end + 1)
-        d_co2_emissions = self.ccus_model.grad_co2_emissions_ccus_Gt()
-        for input_var, list_gradients in d_co2_emissions.items():
-            for column, grad_value in list_gradients:
-                self.set_partial_derivative_for_other_types(
-                    ('co2_emissions_ccus_Gt', f'{GlossaryEnergy.carbon_storage} Limited by capture (Gt)'),
-                    (input_var, column),
-                    grad_value)
-
-        if GlossaryEnergy.carbon_capture in self.ccs_list:
-            self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'),
-                (f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}', GlossaryEnergy.carbon_capture),
-                np.identity(len(years)))
-        if GlossaryEnergy.carbon_storage in self.ccs_list:
-            self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'),
-                (f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}', GlossaryEnergy.carbon_storage),
-                np.identity(len(years)))
 
     def get_chart_filter_list(self):
-
         chart_filters = []
-        chart_list = ['CCS price', 'CO2 storage limited by capture']
+        chart_list = [
+            'Production',
+            'Demand and availabilities ratio',
+            'Energy consumption and demand',
+            'Price'
+        ]
 
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
-        price_unit_list = ['$/MWh', '$/t']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
-
-        year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-        years = list(np.arange(year_start, year_end + 1, 5))
-        chart_filters.append(ChartFilter(
-            'Years for energy mix', years, [year_start, year_end], GlossaryEnergy.Years))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
@@ -191,153 +139,105 @@ class CCUS_Discipline(SoSWrapp):
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     charts = chart_filter.selected_values
 
-        if 'CCS price' in charts:
-            new_chart = self.get_chart_CCS_price()
-            if new_chart is not None:
+        df_output = self.get_sosdisc_outputs(GlossaryEnergy.CCUSOutputValue)
+        years = df_output[GlossaryEnergy.Years]
+        energy_mix_consumption = self.get_sosdisc_inputs(GlossaryEnergy.EnergyMixCCSConsumptionDfValue)
+        if 'Production' in charts:
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.CCUSOutput["unit"], chart_name='CCUS sector production', y_min_zero=False)
+
+            serie = InstanciatedSeries(years, df_output[GlossaryEnergy.carbon_storage], 'Carbon storage capacity', 'lines')
+            new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(years, df_output[GlossaryEnergy.carbon_captured], 'Carbon captured', 'lines')
+            new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(years, - energy_mix_consumption[GlossaryEnergy.carbon_captured], 'Carbon captured reused by Energy sector', 'bar')
+            new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(years, df_output['Carbon captured to store (after direct usages)'], 'Carbon captured to store (after direct usages)', 'lines')
+            new_chart.series.append(serie)
+
+            serie = InstanciatedSeries(years, df_output['Carbon captured and stored'], 'Carbon captured and stored', 'lines')
+            new_chart.series.append(serie)
+
+            new_chart.post_processing_section_name = "Production"
+            instanciated_charts.append(new_chart)
+
+        if 'Demand and availabilities ratio' in charts:
+            ratios_df = self.get_sosdisc_outputs(GlossaryEnergy.CCUSAvailabilityRatiosValue)
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.CCUSAvailabilityRatios["unit"], chart_name='Availibility ratios (demand satisfaction)')
+
+
+            for stream in self.ccs_list:
+                serie = InstanciatedSeries(years, ratios_df[stream], self.pimp_string(stream), 'lines')
+                new_chart.series.append(serie)
+
+            new_chart.post_processing_section_name = 'Demand and availabilities ratio'
+            instanciated_charts.append(new_chart)
+
+        if 'Demand and availabilities ratio' in charts:
+            demands_df = self.get_sosdisc_outputs("demands_df")
+
+
+            for stream in self.ccs_list:
+                new_chart = TwoAxesInstanciatedChart(
+                    GlossaryEnergy.Years, GlossaryEnergy.CCUSOutput["unit"], chart_name=f'{self.pimp_string(stream)}: Demand vs production', stacked_bar=True)
+                serie = InstanciatedSeries(years, demands_df[stream], 'Demand', 'lines')
+                new_chart.series.append(serie)
+                serie = InstanciatedSeries(years, df_output[stream], 'Production', 'lines')
+                new_chart.series.append(serie)
+                demand_breakdown_dict = self.get_sosdisc_outputs(f"{stream}_demand_breakdown")
+                for key, value in demand_breakdown_dict.items():
+                    serie = InstanciatedSeries(years, value, "Demand component: " + key, 'bar')
+                    new_chart.series.append(serie)
+
+
+                new_chart.post_processing_section_name = 'Demand and availabilities ratio'
                 instanciated_charts.append(new_chart)
 
-        if 'CO2 storage limited by capture' in charts:
-            new_chart = self.get_chart_co2_limited_storage()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+        if 'Energy consumption and demand' in charts:
+            df_energies_demand = self.get_sosdisc_outputs(f"{GlossaryEnergy.CCUS}_{GlossaryEnergy.EnergyDemandValue}")
+            df_energies_consumption = self.get_sosdisc_outputs(f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.EnergyConsumptionValue}")
 
-        return instanciated_charts
+            # consumption
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyConsumptionDf["unit"],
+                                                 chart_name='CCUS energy consumption', stacked_bar=True)
+            for stream in df_energies_demand.columns:
+                if stream != GlossaryEnergy.Years:
+                    serie = InstanciatedSeries(years, df_energies_consumption[stream], self.pimp_string(stream), 'bar')
+                    new_chart.series.append(serie)
+            new_chart.post_processing_section_name = 'Energy consumption and demand'
+            instanciated_charts.append(new_chart)
 
-    def get_chart_CCS_price(self):
+            # demand
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.EnergyDemandDf["unit"], chart_name='CCUS energy demand', stacked_bar=True)
+            for stream in df_energies_demand.columns:
+                if stream != GlossaryEnergy.Years:
+                    serie = InstanciatedSeries(years, df_energies_demand[stream], self.pimp_string(stream), 'bar')
+                    new_chart.series.append(serie)
+            new_chart.post_processing_section_name = 'Energy consumption and demand'
+            instanciated_charts.append(new_chart)
 
-        ccs_prices = self.get_sosdisc_outputs('CCS_price')
-        years = list(ccs_prices[GlossaryEnergy.Years].values)
-        chart_name = 'CCS price'
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '[$/tCO2]', chart_name=chart_name, stacked_bar=True)
-        visible_line = True
+        if 'Price' in charts:
+            df_price = self.get_sosdisc_outputs(GlossaryEnergy.CCUSPriceValue)
+            mappping_legend = {
+                GlossaryEnergy.carbon_storage: 'Storage price component',
+                GlossaryEnergy.carbon_captured: 'Carbon capture price component',
+            }
 
-        carbon_capture_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.StreamPricesValue}')[
-            GlossaryEnergy.carbon_capture].values
-        carbon_storage_price = self.get_sosdisc_inputs(f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.StreamPricesValue}')[
-            GlossaryEnergy.carbon_storage].values
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.CCUSPrice["unit"], chart_name='CCUS price', stacked_bar=True)
+            serie = InstanciatedSeries(years, df_price["Captured and stored"], "Price per CO2 ton captured and stored", 'lines')
+            new_chart.series.append(serie)
+            for stream in self.ccs_list:
+                price_stream_df = self.get_sosdisc_inputs(f'{stream}.{GlossaryEnergy.StreamPricesValue}')
+                serie = InstanciatedSeries(years, price_stream_df[stream], mappping_legend[stream], 'bar')
+                new_chart.series.append(serie)
 
-        new_series = InstanciatedSeries(years, carbon_capture_price, 'Capture', 'bar', visible_line)
-        new_chart.series.append(new_series)
+            new_chart.post_processing_section_name = 'Price'
+            instanciated_charts.append(new_chart)
 
-        new_series = InstanciatedSeries(years, carbon_storage_price, 'Storage', 'bar', visible_line)
-        new_chart.series.append(new_series)
 
-        new_series = InstanciatedSeries(years, ccs_prices['ccs_price_per_tCO2'].values.tolist(), 'CCS price', 'lines', visible_line)
-        new_chart.series.append(new_series)
-
-        return new_chart
-
-    def get_chart_co2_to_store(self):
-        '''
-        Plot a graph to understand CO2 to store
-        '''
-        chart_name = 'CO2 emissions captured, used and to store'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
-        co2_for_food = self.get_sosdisc_inputs('co2_for_food')
-        carbon_capture_from_energy_mix = self.get_sosdisc_inputs('carbon_capture_from_energy_mix')
-        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs('co2_emissions_needed_by_energy_mix')
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions (Gt)',
-                                             chart_name=chart_name, stacked_bar=True)
-
-        x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit}) from CC technos'].values / 1.0e3).tolist(),
-            'CO2 captured from CC technos', 'bar')
-        new_chart.add_series(serie)
-        """
-        serie = InstanciatedSeries(
-            x_serie_1,
-            carbon_capture_from_energy_mix[f'{GlossaryEnergy.carbon_capture} from energy mix (Gt)'].values.tolist(),
-            'CO2 captured from energy mix', 'bar')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (-co2_emissions_needed_by_energy_mix[f'{GlossaryEnergy.carbon_capture} needed by energy mix (Gt)'].values).tolist(),
-            f'{GlossaryEnergy.carbon_capture} used by energy mix' ,'bar')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (-co2_for_food[f'{GlossaryEnergy.carbon_capture} for food (Mt)'].values / 1.0e3).tolist(), f'{GlossaryEnergy.carbon_capture} used for food', 'bar')
-        new_chart.add_series(serie)
-        """
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions[f'{GlossaryEnergy.carbon_capture} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
-        new_chart.add_series(serie)
-
-        return new_chart
-
-    def get_chart_co2_limited_storage(self):
-        '''
-        Plot a graph to understand storage
-        '''
-        chart_name = 'CO2 capture management'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
-        carbon_storage_capacity = self.get_sosdisc_outputs('carbon_storage_capacity (Gt)')
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '[Gt]', chart_name=chart_name, stacked_bar=True)
-
-        years = co2_emissions[GlossaryEnergy.Years].values.tolist()
-        serie = InstanciatedSeries(
-            years,
-            (co2_emissions[f'{GlossaryEnergy.carbon_capture} to be stored (Mt)'].values / 1.0e3).tolist(), 'CO2 captured to store')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            years,
-            (carbon_storage_capacity['carbon_storage_capacity (Gt)']).tolist(), 'CO2 storage capacity')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            years,
-            (co2_emissions[f'{GlossaryEnergy.carbon_storage} Limited by capture (Mt)'].values / 1.0e3).tolist(),
-            'CO2 captured and stored', 'bar')
-        new_chart.add_series(serie)
-        return new_chart
-
-    def get_chart_co2_emissions_sources(self):
-        '''
-        Plot all CO2 emissions sources
-        '''
-        chart_name = 'CO2 emissions sources'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions (Gt)',
-                                             chart_name=chart_name)
-
-        x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions['Total CO2 by use (Mt)'].values / 1.0e3).tolist(), 'CO2 by use (net production burned)')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions[f'Total {CarbonCapture.flue_gas_name} ({GlossaryEnergy.mass_unit})'].values / 1.0e3).tolist(),
-            'Flue gas from plants')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1, (co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
-            'Carbon capture from energy mix (FT or Sabatier)')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions[f'{GlossaryEnergy.carbon_capture} from energy mix (Mt)'].values / 1.0e3).tolist(),
-            'CO2 from energy mix (machinery fuels)')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions['CO2 emissions sources'].values / 1.0e3).tolist(), 'Total sources')
-        new_chart.add_series(serie)
-
-        return new_chart
+        return  instanciated_charts

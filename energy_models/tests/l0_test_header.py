@@ -29,9 +29,7 @@ class Testheader(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
 
         with open(os.path.join(os.path.dirname(__file__), "..", "..", "headers_ignore_config.json"), "r", encoding="utf-8") as f:

@@ -21,8 +21,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import (
     ElectricityTechnoDiscipline,
 )
@@ -106,15 +104,12 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = GasElec(self.techno_name)
-        self.techno_model.configure_parameters(inputs_dict)
+        self.model = GasElec(self.techno_name)
 
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        instanciated_chart = []
+        techno_consumption = self.get_sosdisc_outputs(GlossaryEnergy.TechnoEnergyConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
@@ -137,25 +132,3 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         instanciated_chart.append(new_chart_copper)
 
         return instanciated_chart
-
-    def compute_sos_jacobian(self):
-        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
-
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (
-                                         self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[
-            f'{Methane.name} ({self.techno_model.product_unit})']
-        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_unit})']
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_unit})'),
-            (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (consumption_gradient - dprod_name_dinvest))

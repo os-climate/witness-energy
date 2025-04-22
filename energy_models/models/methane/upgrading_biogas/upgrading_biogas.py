@@ -26,26 +26,25 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class UpgradingBiogas(MethaneTechno):
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
         # in kwh of fuel by kwh of H2
 
-        self.cost_details[f'{BioGas.name}_needs'] = self.get_biogas_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biogas}_needs'] = self.get_biogas_needs()
 
     def compute_resources_needs(self):
-        self.cost_details[f"{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss()
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss()
 
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.production_detailed[f'{GlossaryEnergy.carbon_capture} ({GlossaryEnergy.mass_unit})'] = co2_prod * \
-                                                                               self.production_detailed[
-                                                                                   f'{MethaneTechno.energy_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.carbon_captured} ({GlossaryEnergy.mass_unit})'] = \
+            co2_prod * self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
-        #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{MethaneTechno.energy_name} ({self.product_unit})']  # in TWH
+        # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
+        #     self.inputs['techno_infos_dict']['low_heat_production'] * \
+        #     self.production[f'{MethaneTechno.stream_name} ({self.product_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''
@@ -56,17 +55,16 @@ class UpgradingBiogas(MethaneTechno):
         mol_biogas = 1.0
         mol_CH4 = biogas_data['CH4_per_energy']
         biogas_needs = mol_biogas * biogas_data['molar_mass'] * biogas_data['calorific_value'] / \
-                       (mol_CH4 * self.data_energy_dict['molar_mass'] *
-                        self.data_energy_dict['calorific_value'])
-        return biogas_needs / self.techno_infos_dict['efficiency']
+                       (mol_CH4 * self.inputs['data_fuel_dict']['molar_mass'] *
+                        self.inputs['data_fuel_dict']['calorific_value'])
+        return biogas_needs / self.inputs['techno_infos_dict']['efficiency']
 
     def get_MEA_loss(self):
         '''
         MonoEthanolAmine needs are in kg/m^3
         '''
 
-        mea_loss = self.techno_infos_dict['MEA_needs'] / (
-                self.data_energy_dict['density'] * self.data_energy_dict['calorific_value'])
+        mea_loss = self.inputs['techno_infos_dict']['MEA_needs'] / (self.inputs['data_fuel_dict']['density'] * self.inputs['data_fuel_dict']['calorific_value'])
 
         return mea_loss
 
@@ -84,10 +82,10 @@ class UpgradingBiogas(MethaneTechno):
 
         if unit == 'kg/kWh':
             co2_prod = mol_CO2 * co2_data['molar_mass'] / \
-                       (mol_CH4 * self.data_energy_dict['molar_mass'] *
-                        self.data_energy_dict['calorific_value'])
+                       (mol_CH4 * self.inputs['data_fuel_dict']['molar_mass'] *
+                        self.inputs['data_fuel_dict']['calorific_value'])
         elif unit == 'kg/kg':
             co2_prod = mol_CO2 * co2_data['molar_mass'] / \
-                       (mol_CH4 * self.data_energy_dict['molar_mass'])
+                       (mol_CH4 * self.inputs['data_fuel_dict']['molar_mass'])
 
         return co2_prod

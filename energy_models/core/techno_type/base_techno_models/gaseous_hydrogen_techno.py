@@ -22,7 +22,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class GaseousHydrogenTechno(TechnoType):
-    energy_name = GaseousHydrogen.name
+    stream_name = GaseousHydrogen.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

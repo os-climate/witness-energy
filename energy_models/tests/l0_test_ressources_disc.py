@@ -27,13 +27,8 @@ class ResourcesDisc(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        
 
-        pass
-
-    def tearDown(self):
         pass
 
     def test_01_resources_discipline(self):

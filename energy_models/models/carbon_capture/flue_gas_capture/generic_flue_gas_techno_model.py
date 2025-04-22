@@ -21,35 +21,22 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class GenericFlueGasTechnoModel(CCTechno):
-    def __init__(self, name):
-        super().__init__(name)
-        self.flue_gas_ratio = None
-        self.fg_ratio_effect = None
+    def compute_energies_needs(self):
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency'] * self.compute_electricity_variation_from_fg_ratio(self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
 
-    def configure_parameters_update(self, inputs_dict):
+    def compute_capex(self):
+        capex = super().compute_capex()
+        capex *= self.compute_capex_variation_from_fg_ratio(
+            self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
 
-        CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[
-            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
-            <= self.year_end]
-        # To deal quickly with l0 test
-        if 'fg_ratio_effect' in inputs_dict:
-            self.fg_ratio_effect = inputs_dict['fg_ratio_effect']
-        else:
-            self.fg_ratio_effect = True
+        return capex
 
-    def compute_other_streams_needs(self):
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() / self.cost_details['efficiency'] * self.compute_electricity_variation_from_fg_ratio(self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-
-    def compute_capex(self, invest_list, data_config):
-        capex_calc_list = super().compute_capex(invest_list, data_config)
-        capex_calc_list *= self.compute_capex_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-
-        return capex_calc_list
-
-    def compute_streams_consumption(self):
+    def compute_energies_demand(self):
         # Consumption
-        self.consumption_detailed[f'{GlossaryEnergy.electricity} ({self.energy_unit})'] = self.cost_details[f'{GlossaryEnergy.electricity}_needs'] * \
-                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_unit})'] / self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'] = \
+            self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
+            self.compute_electricity_variation_from_fg_ratio(
+                self.inputs[f'{GlossaryEnergy.FlueGasMean}:{GlossaryEnergy.FlueGasMean}'], self.inputs['fg_ratio_effect'])
+

@@ -24,4 +24,6 @@ from energy_models.core.techno_type.techno_type import TechnoType
 class HydrotreatedOilFuelTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.energy_name = HydrotreatedOilFuel.name
+        self.stream_name = HydrotreatedOilFuel.name
+
+    

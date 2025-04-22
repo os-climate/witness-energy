@@ -247,7 +247,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         min3 = min(production_mix_df[name_non_energy].values.tolist())
         minimum = min(0, min1, min2, min3) * 0.8
 
-        chart_name = 'Production of Managed wood over the years'
+        chart_name = 'Production of Managed wood '
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Production of Managed wood (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
@@ -278,7 +278,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = 'Price of Managed wood technology over the years'
+        chart_name = 'Price of Managed wood technology '
 
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
@@ -311,7 +311,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
-        chart_name = 'Price of Managed wood technology over the years'
+        chart_name = 'Price of Managed wood technology '
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

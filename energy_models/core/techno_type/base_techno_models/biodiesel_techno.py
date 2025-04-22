@@ -22,4 +22,6 @@ from energy_models.core.techno_type.techno_type import TechnoType
 class BioDieselTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.energy_name = BioDiesel.name
+        self.stream_name = BioDiesel.name
+
+    

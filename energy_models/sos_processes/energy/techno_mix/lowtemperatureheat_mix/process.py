@@ -38,6 +38,9 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_dict = {'ns_heat_low': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}

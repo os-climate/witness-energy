@@ -41,7 +41,7 @@ def post_processing_filters(execution_engine, namespace):
 
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].discipline_wrapp.wrapper.energy_name
+        0].discipline_wrapp.wrapper.stream_name
     chart_list += [f'{energy} CO2 intensity']
     chart_list += [f'{energy} CO2 breakdown sankey']
     chart_list += [f'{energy} CO2 breakdown bar']
@@ -123,7 +123,7 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list.extend(chart_filter.selected_values)
     # ----
 
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper.stream_name
     if f'{energy} Figures table' in graphs_list:
         for year in YEAR_COMPARISON:
             new_table = get_comparision_data(execution_engine, namespace, year)
@@ -327,7 +327,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         index=idx,
         columns=['production', GlossaryEnergy.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
-                       0].discipline_wrapp.wrapper.energy_name]
+                       0].discipline_wrapp.wrapper.stream_name]
     total_carbon_emissions = None
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
@@ -337,12 +337,9 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * 1e3
             invest_techno = techno_disc.get_sosdisc_inputs(GlossaryEnergy.InvestLevelValue)[
-                                GlossaryEnergy.InvestValue].values * \
-                            techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
+                                GlossaryEnergy.InvestValue].values * 1e3
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs(
@@ -652,7 +649,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     '''
 
     energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].discipline_wrapp.wrapper
-    energy_list = [energy_disc.energy_name]
+    energy_list = [energy_disc.stream_name]
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
         GlossaryEnergy.YearStart), energy_disc.get_sosdisc_inputs(GlossaryEnergy.YearEnd) + 1, 1)
@@ -687,9 +684,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')
+                GlossaryEnergy.TechnoProductionValue)[f'{energy} ({GlossaryEnergy.energy_unit})'].values * 1e3
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs(

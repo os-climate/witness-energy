@@ -40,18 +40,16 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             ]
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+
         self.year_start = GlossaryEnergy.YearStartDefault
         self.year_end = GlossaryEnergy.YearEndDefaultValueGradientTest
         self.energy_list = [
             GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane]
         self.energy_list_bis = [
-            GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane, GlossaryEnergy.biomass_dry]
+            GlossaryEnergy.electricity, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.methane]
 
         self.ccs_list = [
-            GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
+            GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
         self.energy_mix = pd.DataFrame({
@@ -63,19 +61,30 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
             f'{GlossaryEnergy.methane}.{GlossaryEnergy.UpgradingBiogas}': 50.0,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}': 60.0,
             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.ElectrolysisAWE}': 70.0,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 80.0,
-            f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 90.0,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}': 80.0,
+            f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}': 90.0,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.DeepSalineFormation}': 100.0,
             f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.GeologicMineralization}': 110.0})
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-    def tearDown(self):
-        pass
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ReforestationInvestmentValue: np.linspace(5, 8, year_range)})
+
+        self.managed_wood_invest_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 2, year_range)})
+
+        self.unmanaged_wood_invest_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(2, 3, year_range)})
+
+        self.deforestation_invest_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(1.0, 0.1, year_range)})
+
+        self.crop_invest_df = pd.DataFrame(
+            {GlossaryEnergy.Years: self.years, "investment": np.linspace(0.5, 0.25, year_range)})
 
     def test_01_analytic_grad(self):
-        self.override_dump_jacobian = 1
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
@@ -102,7 +111,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
-                       f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}", GlossaryEnergy.biomass_dry]
+                       f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}"]
         max_budget = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.MaxBudgetValue: np.linspace(800, 970, len(self.years))
@@ -116,7 +125,7 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.biomass_dry}.{GlossaryEnergy.technologies_list}': [],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisAWE],
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
+                       f'{self.name}.{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
                                                                          f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                          GlossaryEnergy.GeologicMineralization],

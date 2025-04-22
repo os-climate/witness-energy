@@ -30,12 +30,12 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
     """
     def compute_resources_needs(self):
-        self.cost_details[f"{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.WaterResource}_needs"] = self.get_water_needs()
 
-    def compute_other_streams_needs(self):
+    def compute_energies_needs(self):
         # Efficiency ifor electrolysis means electric efficiency and is here to
         # compute the elec needs in kWh/kWh 1/efficiency
-        self.cost_details[f'{GlossaryEnergy.electricity}_needs'] = 1.0 / self.cost_details['efficiency']
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = 1.0 / self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:efficiency']
 
     def get_water_needs(self):
         '''
@@ -48,8 +48,8 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         mol_H2 = 1.0
         water_data = Water.data_energy_dict
         water_needs = mol_H20 * water_data['molar_mass'] / \
-                      (mol_H2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_H2 * self.inputs['data_fuel_dict']['molar_mass'] *
+                       self.inputs['data_fuel_dict']['calorific_value'])
 
         return water_needs
 
@@ -64,19 +64,20 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         mol_H2 = 2.0
         oxygen_data = Dioxygen.data_energy_dict
         water_needs = mol_O2 * oxygen_data['molar_mass'] / \
-                      (mol_H2 * self.data_energy_dict['molar_mass'] *
-                       self.data_energy_dict['calorific_value'])
+                      (mol_H2 * self.inputs['data_fuel_dict']['molar_mass'] *
+                       self.inputs['data_fuel_dict']['calorific_value'])
 
         return water_needs
 
     def compute_byproducts_production(self):
         o2_needs = self.get_oxygen_produced()
-        self.production_detailed[f'O2 ({GlossaryEnergy.mass_unit})'] = o2_needs / \
-                                                             self.data_energy_dict['calorific_value'] * \
-                                                             self.production_detailed[
-                                                                 f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})']
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:O2 ({GlossaryEnergy.mass_unit})'] = \
+            o2_needs / self.inputs['data_fuel_dict']['calorific_value'] * \
+            self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_unit})'] = \
+        # self.production[f'{lowheattechno.stream_name} ({self.product_unit})'] = \
         #     self.consumption[f'{GlossaryEnergy.electricity} ({self.product_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_unit})'] # in TWH
+        #     - self.production[f'{GaseousHydrogenTechno.stream_name} ({self.product_unit})'] # in TWH
+
+
