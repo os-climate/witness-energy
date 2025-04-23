@@ -43,6 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
         self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
 
     def get_builders(self):
 
