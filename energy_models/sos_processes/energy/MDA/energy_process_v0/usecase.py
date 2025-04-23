@@ -28,7 +28,6 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
-    INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS,
 )
 from energy_models.core.energy_study_manager import (
@@ -77,7 +76,7 @@ class Study(EnergyStudyManager):
             main_study=True,
             bspline=True,
             execution_engine=None,
-            invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
             energy_invest_input_in_abs_value=True,
     ):
         self.year_start = year_start
@@ -496,9 +495,13 @@ class Study(EnergyStudyManager):
         all_resource_ratio_usable_demand.update({resource: 0.0 for resource in EnergyMix.resource_list})
         all_resource_ratio_usable_demand = pd.DataFrame(all_resource_ratio_usable_demand)
 
-        invest_df = pd.DataFrame({
+        energy_invest_df = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.EnergyInvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)),
+            GlossaryEnergy.InvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)),
+        })
+        ccus_invest_df = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.InvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)) * 2/ 100.,
         })
 
         population_df = pd.DataFrame({
@@ -545,7 +548,8 @@ class Study(EnergyStudyManager):
             invest_percentage_per_techno = pd.DataFrame(invest_percentage_per_techno)
 
         values_dict = {
-            f"{self.study_name}.{GlossaryEnergy.EnergyInvestmentsValue}": invest_df,
+            f"{self.study_name}.{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}": energy_invest_df,
+            f"{self.study_name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}": ccus_invest_df,
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,

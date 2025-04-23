@@ -21,7 +21,9 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
     FunctionManagerDisc,
 )
 
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
+from energy_models.core.energy_process_builder import (
+    INVEST_DISCIPLINE_OPTIONS,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as Study_v0,
@@ -43,7 +45,7 @@ class Study(StudyManager):
             upper_bound_techno=100.0,
             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
             bspline=True,
-            invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
             energy_invest_input_in_abs_value=True,
             execution_engine=None,
             main_study: bool = True,

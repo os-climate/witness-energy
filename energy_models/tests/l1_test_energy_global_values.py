@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as Study_open,
@@ -56,7 +57,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = cls.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda', techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, use_resources_bool=False,)
+            repo, 'energy_process_v0_mda', techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, use_resources_bool=False, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1],)
         chain_builders.extend(builder)
 
         ns_dict = {'ns_crop': f'{cls.name}.{cls.agrimixname}.{ns_crop}',
@@ -69,7 +70,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         cls.ee.factory.set_builders_to_coupling_builder(chain_builders)
         cls.ee.configure()
         usecase = Study_open(execution_engine=cls.ee,
-                             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT)
+                             techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         usecase.study_name = cls.name
         values_dict = usecase.setup_usecase()
 
@@ -84,15 +85,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         values_dict[f'{cls.name}.{cls.energymixname}.resources_demand'] = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YearStartDefault, GlossaryEnergy.YearEndDefault + 1),},)
 
-        """
-        usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=GlossaryEnergy.YearStartDefault,
-                                       year_end=GlossaryEnergy.YearEndDefault)
-        usecase_agri.study_name = cls.name
-        usecase_agri.additional_ns = '.InvestmentDistribution'
-        values_dict_agri = usecase_agri.setup_usecase()
-        for dict_v in values_dict_agri:
-            values_dict.update(dict_v)
-        """
 
         cls.ee.load_study_from_input_dict(values_dict)
 

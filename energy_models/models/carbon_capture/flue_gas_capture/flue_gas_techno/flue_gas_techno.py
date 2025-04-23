@@ -52,7 +52,7 @@ class FlueGasTechno(GenericFlueGasTechnoModel):
     def compute_energies_demand(self):
         # Consumption
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CleanEnergy.name} ({self.ENERGY_UNIT})'] =\
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{CleanEnergy.name}'] =\
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.clean_energy}_needs'] * \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             self.compute_electricity_variation_from_fg_ratio(

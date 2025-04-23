@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import pandas as pd
 
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -34,58 +35,36 @@ class OneInvest(BaseInvest):
         # -- default value, can be changed if necessary
         self.distribution_list = None
         self.invest_mix = None
-        self.rescaling_factor = 1e2
+        self.years = None
+        self.outputs = {}
 
     def compute(self, inputs_dict):
-        '''
-        Compute all invests with invest_mix coefficients
-        '''
-        energy_investment = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue]
-        self.rescaling_factor = inputs_dict['scaling_factor_energy_investment']
-        energy_invest_df = pd.DataFrame({GlossaryEnergy.Years: energy_investment[GlossaryEnergy.Years].values,
-                                         GlossaryEnergy.EnergyInvestmentsValue: energy_investment[
-                                                                                    GlossaryEnergy.EnergyInvestmentsValue].values * self.rescaling_factor})
+        """Compute the investements in enrgy and ccs technos"""
+        self.outputs = {}
+        self.years = np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1,)
+        sector_streams  = {
+            GlossaryEnergy.EnergyMix: inputs_dict['energy_list'],
+            GlossaryEnergy.CCUS: inputs_dict['ccs_list'],
+        }
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.InvestmentDf['unit']][GlossaryEnergy.TechnoInvestDf['unit']]
+        for sector in [GlossaryEnergy.CCUS, GlossaryEnergy.EnergyMix]:
+            sector_cols = []
+            for stream in sector_streams[sector]:
+                sector_cols.extend([f"{stream}.{techno}" for techno in inputs_dict[f'{stream}.{GlossaryEnergy.techno_list}']])
 
-        self.compute_distribution_list(inputs_dict)
+            df_sector = inputs_dict[GlossaryEnergy.invest_mix][sector_cols]
+            df_normalized = df_sector.div(df_sector.sum(axis=1), axis=0)
 
-        all_invest_df, unit = self.get_invest_distrib(
-            energy_invest_df,
-            inputs_dict[GlossaryEnergy.invest_mix],
-            input_unit='G$',
-            output_unit='G$',
-            column_name=GlossaryEnergy.EnergyInvestmentsValue
-        )
+            invest_sector = inputs_dict[f"{sector}.{GlossaryEnergy.InvestmentsValue}"][GlossaryEnergy.InvestmentsValue].values
+            for stream in sector_streams[sector]:
+                for techno in inputs_dict[f'{stream}.{GlossaryEnergy.techno_list}']:
+                    self.outputs[f"{stream}.{techno}.{GlossaryEnergy.InvestLevelValue}"] = pd.DataFrame({
+                        GlossaryEnergy.Years: self.years,
+                        GlossaryEnergy.InvestValue: df_normalized[f'{stream}.{techno}'] * invest_sector * conversion_factor,
+                    })
 
-        return all_invest_df
-
-    def set_invest_mix(self, mix_df):
-        '''
-        Set the invest mix of the energy mix
-        '''
-        if not isinstance(self.distribution_list, list):
-            raise TypeError('energy_list must be defined as a list')
-        head_list = list(mix_df.columns)
-        try:
-            head_list.remove(GlossaryEnergy.Years)
-        except:
-            print('years not in dataframe')
-        if sorted(head_list) == sorted(self.distribution_list):
-            BaseInvest.set_invest_mix(self, mix_df)
-        else:
-            raise ValueError(str(sorted(head_list)) +
-                             ' should be equal to ' + str(sorted(self.distribution_list)))
-
-    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit,
-                           column_name=GlossaryEnergy.InvestValue):
-        self.set_invest_level(invest_level, input_unit, column_name)
-        self.set_invest_mix(invest_mix)
-        self.energy_list = self.distribution_list
-        invest_distrib, unit = self.get_distributed_invest(
-            self.distribution_list, output_unit)
-        return invest_distrib, unit
-
-    def get_invest_dict(self, invest_level, invest_mix, input_unit, output_unit):
-        invest_distrib, unit = self.get_invest_distrib(
-            invest_level, invest_mix, input_unit, output_unit)
-        invest_dict = invest_distrib.to_dict('list')
-        return invest_dict, unit
+        all_invests_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        for key, value in self.outputs.items():
+            key1 = key.replace(f'.{GlossaryEnergy.InvestLevelValue}', '')
+            all_invests_df[key1] = value[GlossaryEnergy.InvestValue].values
+        self.outputs["all_invest_df"] = all_invests_df

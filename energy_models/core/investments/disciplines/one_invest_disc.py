@@ -15,9 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import logging
+from copy import deepcopy
 
-import numpy as np
-import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
@@ -30,7 +29,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.one_invest import OneInvest
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -51,18 +49,14 @@ class OneInvestDiscipline(SoSWrapp):
     }
     energy_mix_name = EnergyMix.name
 
+    investments_df_variable = deepcopy(GlossaryEnergy.InvestmentDf)
+    investments_df_variable["namespace"] = GlossaryEnergy.NS_WITNESS
+
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
-        GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                                                'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                'int', [1900, GlossaryEnergy.YearEndDefaultCore], False),
-                                                                         GlossaryEnergy.EnergyInvestmentsValue: (
-                                                                         'float', None, True)},
-                                                'dataframe_edition_locked': False,
-                                                'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
-        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
-                                             'namespace': 'ns_public'},
+        f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
+        f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
                                     'dynamic_dataframe_columns': True},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
@@ -79,7 +73,7 @@ class OneInvestDiscipline(SoSWrapp):
     energy_name = "one_invest"
 
     DESC_OUT = {
-        'all_invest_df': {'type': 'dataframe', 'unit': 'G$'}
+        'all_invest_df': {'type': 'dataframe', 'unit': GlossaryEnergy.TechnoInvestDf['unit']}
     }
     _maturity = 'Research'
 
@@ -112,10 +106,11 @@ class OneInvestDiscipline(SoSWrapp):
                             technology_list = self.get_sosdisc_inputs(f'{energy}.{GlossaryEnergy.techno_list}')
                             # Add all invest_level outputs
                             if technology_list is not None:
+                                techno_invest_df_energy = deepcopy(GlossaryEnergy.TechnoInvestDf)
+                                techno_invest_df_energy["namespace"] = "ns_energy"
+                                techno_invest_df_energy["visibility"] = 'Shared'
                                 for techno in technology_list:
-                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                        'type': 'dataframe', 'unit': 'G$',
-                                        'visibility': 'Shared', 'namespace': 'ns_energy', }
+                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = techno_invest_df_energy
 
         if GlossaryEnergy.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
@@ -129,11 +124,12 @@ class OneInvestDiscipline(SoSWrapp):
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
                             f'{ccs}.{GlossaryEnergy.techno_list}')
+                        techno_invest_df_ccs = deepcopy(GlossaryEnergy.TechnoInvestDf)
+                        techno_invest_df_ccs["namespace"] = GlossaryEnergy.NS_CCS
+                        techno_invest_df_ccs["visibility"] = 'Shared'
                         if technology_list is not None:
                             for techno in technology_list:
-                                dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                                    'namespace': GlossaryEnergy.NS_CCS}
+                                dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = techno_invest_df_ccs
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -142,58 +138,14 @@ class OneInvestDiscipline(SoSWrapp):
 
         input_dict = self.get_sosdisc_inputs()
 
-        all_invest_df = self.one_invest_model.compute(input_dict)
+        self.one_invest_model.compute(input_dict)
 
-        output_dict = {'all_invest_df': all_invest_df}
 
-        for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
-            if energy == GlossaryEnergy.biomass_dry:
-                pass
-            else:
-                for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
-                    output_dict[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = pd.DataFrame(
-                        {GlossaryEnergy.Years: input_dict[GlossaryEnergy.EnergyInvestmentsValue][
-                            GlossaryEnergy.Years].values,
-                         GlossaryEnergy.InvestValue: all_invest_df[f'{energy}.{techno}'].values})
-
-        self.store_sos_outputs_values(output_dict)
+        self.store_sos_outputs_values(self.one_invest_model.outputs)
 
     def compute_sos_jacobian(self):
 
-        inputs_dict = self.get_sosdisc_inputs()
-
-        scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
-        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
-                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
-        norm_mix = compute_norm_mix(
-            inputs_dict[GlossaryEnergy.invest_mix], self.one_invest_model.distribution_list)
-
-        for techno in self.one_invest_model.distribution_list:
-            grad_energy = inputs_dict[GlossaryEnergy.invest_mix][techno].values / \
-                          norm_mix.values
-            self.set_partial_derivative_for_other_types(
-                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
-                (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
-                scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
-
-            grad_techno_mix = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
-                                  GlossaryEnergy.EnergyInvestmentsValue].values * scaling_factor_energy_investment * (
-                                      norm_mix.values - inputs_dict[GlossaryEnergy.invest_mix][
-                                  techno].values) / norm_mix.values ** 2
-            self.set_partial_derivative_for_other_types(
-                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
-                (GlossaryEnergy.invest_mix, techno),
-                np.identity(len(years)) * grad_techno_mix[:, np.newaxis])
-            for techno_other in self.one_invest_model.distribution_list:
-                if techno != techno_other:
-                    grad_techno_mix_other = -inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
-                        GlossaryEnergy.EnergyInvestmentsValue].values * scaling_factor_energy_investment * \
-                                            inputs_dict[GlossaryEnergy.invest_mix][techno].values / \
-                                            norm_mix.values ** 2
-                    self.set_partial_derivative_for_other_types(
-                        (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
-                        (GlossaryEnergy.invest_mix, techno_other),
-                        np.identity(len(years)) * grad_techno_mix_other[:, np.newaxis])
+        pass
 
     def get_chart_filter_list(self):
 
@@ -202,11 +154,6 @@ class OneInvestDiscipline(SoSWrapp):
         chart_filters.append(ChartFilter(
             'Charts Investments', chart_list, chart_list, 'charts_invest'))
 
-        year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-        years = list(np.arange(year_start, year_end + 1, 5))
-        chart_filters.append(ChartFilter(
-            'Years for invest mix', years, [year_start, year_end], GlossaryEnergy.Years))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -224,49 +171,67 @@ class OneInvestDiscipline(SoSWrapp):
                 if chart_filter.filter_key == GlossaryEnergy.Years:
                     pass
 
-        if 'Invest Distribution' in charts:
-            all_invest_df = self.get_sosdisc_outputs(
-                'all_invest_df')
+        energy_streams = self.get_sosdisc_inputs("energy_list")
+        ccs_streams = self.get_sosdisc_inputs("ccs_list")
 
-            chart_name = 'Distribution of investments on each energy '
+        instanciated_charts.append(self.get_streams_invests(
+            chart_name="Invests in energy",
+            stream_list=energy_streams,
+            post_proc_section="Energy investments",
+            key_chart=True
+        ))
+        instanciated_charts.append(self.get_streams_invests(
+            chart_name="Invests in CCUS",
+            stream_list=ccs_streams,
+            post_proc_section="CCUS investments",
+            key_chart=True
+        ))
 
-            new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                        chart_name=chart_name, stacked_bar=True)
-            energy_list = self.get_sosdisc_inputs(
-                GlossaryEnergy.energy_list)
-            ccs_list = self.get_sosdisc_inputs(
-                GlossaryEnergy.ccs_list)
-            for energy in energy_list + ccs_list:
-                techno_list = [
-                    col for col in all_invest_df.columns if col.startswith(f'{energy}.')]
-                short_df = all_invest_df[techno_list]
-                chart_name = f'Distribution of investments for {energy} '
-                new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                            chart_name=chart_name, stacked_bar=True)
+        for stream in energy_streams:
+            instanciated_charts.append(self.get_one_streams_detail(
+                chart_name=f"Investments in {stream} technologies",
+                stream_name=stream,
+                post_proc_section="Energy investments"
+            ))
 
-                for techno in techno_list:
-                    serie = InstanciatedSeries(
-                        all_invest_df[GlossaryEnergy.Years].values.tolist(),
-                        short_df[techno].values.tolist(), techno, 'bar')
+        for stream in ccs_streams:
+            instanciated_charts.append(self.get_one_streams_detail(
+                chart_name=f"Investments in {stream} technologies",
+                stream_name=stream,
+                post_proc_section="CCUS investments"
+            ))
 
-                    new_chart_techno.series.append(serie)
-                instanciated_charts.append(new_chart_techno)
-                invest = short_df.sum(axis=1).values
-                # Add total price
-                serie = InstanciatedSeries(
-                    all_invest_df[GlossaryEnergy.Years].values.tolist(),
-                    invest.tolist(), energy, 'bar')
 
-                new_chart_energy.series.append(serie)
-
-            instanciated_charts.insert(0, new_chart_energy)
-
-        #             for year in years_list:
-        #                 values = [all_invest_df.loc[all_invest_df[GlossaryEnergy.Years]
-        #                                             == year][[
-        #                                                 col for col in all_invest_df.columns if col.startswith(f'{energy}.')]].sum(axis=1).values[0] for energy in energy_list + ccs_list]
-        #                 if sum(values) != 0.0:
-        #                     pie_chart = InstanciatedPieChart(
-        #                         f'Energy investments in {year}', energy_list + ccs_list, values)
-        #                     instanciated_charts.append(pie_chart)
         return instanciated_charts
+
+    def get_streams_invests(self, chart_name: str,
+                            stream_list: list[str], post_proc_section, key_chart:bool):
+        all_invests = self.get_sosdisc_outputs("all_invest_df")
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TechnoInvestDf['unit'],
+                                             stacked_bar=True,
+                                             chart_name=chart_name)
+
+        for stream in stream_list:
+            stream_cols = [col for col in all_invests.columns if col.startswith(f'{stream}.')]
+            stream_invest = all_invests[stream_cols].sum(axis=1)
+
+            new_series = InstanciatedSeries(all_invests[GlossaryEnergy.Years], stream_invest, stream, 'bar', True)
+            new_chart.series.append(new_series)
+        new_chart.post_processing_section_name = post_proc_section
+        new_chart.post_processing_is_key_chart = key_chart
+        return new_chart
+
+    def get_one_streams_detail(self, chart_name: str, stream_name: str, post_proc_section):
+        all_invests = self.get_sosdisc_outputs("all_invest_df")
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TechnoInvestDf['unit'],
+                                             stacked_bar=True,
+                                             chart_name=chart_name)
+
+        stream_cols = [col for col in all_invests.columns if col.startswith(f'{stream_name}.')]
+        stream_invest = all_invests[stream_cols].sum(axis=1)
+
+        new_series = InstanciatedSeries(all_invests[GlossaryEnergy.Years], stream_invest, stream_name, 'bar', True)
+        new_chart.series.append(new_series)
+
+        new_chart.post_processing_section_name = post_proc_section
+        return new_chart
