@@ -273,7 +273,7 @@ class FuelDiscipline(SoSWrapp):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix '
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
+            GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name, y_min_zero=True)
 
         for energy in [GlossaryEnergy.fuel] + self.energy_list:
             display_energy_name = energy.split(".")[-1].replace("_", " ")
@@ -342,8 +342,7 @@ class FuelDiscipline(SoSWrapp):
             display_energy_name = energy.split(".")[-1].replace("_", " ")
             legend_title = f'{display_energy_name} production'.replace(
                 "(TWh)", "")
-            energy_prod_twh = energy_production[f'{energy} (TWh)'].values * \
-                              1e3
+            energy_prod_twh = energy_production[f'{energy}'].values * 1e3
             serie = InstanciatedSeries(energy_production[GlossaryEnergy.Years].values.tolist(),
                                        energy_prod_twh.tolist(),
                                        legend_title,

@@ -35,10 +35,11 @@ class Nuclear(ElectricityTechno):
         self.outputs[f"{GlossaryEnergy.SpecificCostsForProductionValue}:Total"] = self.zeros_array + waste_disposal_cost
 
     def compute_byproducts_production(self):
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] =\
+        # TWh
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname}'] =\
             24000000.00 * self.outputs[f'{GlossaryEnergy.TechnoResourceDemandsValue}:{GlossaryEnergy.UraniumResource} ({GlossaryEnergy.mass_unit})']
 
-        # self.production[f'{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
+        # self.production[f'{GlossaryEnergy.hightemperatureheat_energyname}'] = (self.inputs['techno_infos_dict']['heat_recovery_factor'] * \
         #       self.production[f'{self.stream_name} ({self.product_unit})']) / \
         #       self.inputs['techno_infos_dict']['efficiency']
 

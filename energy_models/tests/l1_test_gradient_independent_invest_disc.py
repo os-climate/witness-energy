@@ -144,9 +144,9 @@ class IndependentInvestDisciplineJacobianCase(AbstractJacobianUnittest):
                                         f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno
                                         in
                                         all_technos_list] +
-                                    [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}',
-                                     f'{self.name}.{GlossaryEnergy.MaxBudgetConstraintValue}',
-                                     f'{self.name}.{GlossaryEnergy.EnergyInvestmentsMinimizationObjective}'],
+                                    [f'{self.name}.{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}',
+                                     f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}',
+                                     f'{self.name}.{GlossaryEnergy.MaxBudgetConstraintValue}',],
                             local_data=disc.local_data,
                             location=dirname(__file__),
                             discipline=disc,
