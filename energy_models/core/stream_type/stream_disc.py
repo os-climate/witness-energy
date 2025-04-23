@@ -226,7 +226,7 @@ class StreamDiscipline(AutodifferentiedDisc):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
         chart_name = f'Detailed prices of {self.stream_name} mix '
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name
+            GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name, y_min_zero=True
         )
 
         serie = InstanciatedSeries(

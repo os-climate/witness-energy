@@ -34,38 +34,74 @@ class IndependentInvest(BaseInvest):
         BaseInvest.__init__(self, name)
         # -- default value, can be changed if necessary
 
-        self.invest_mix = None
+        self.inputs = {}
+        self.years = None
+        self.outputs = {}
 
     def compute(self, inputs_dict):
+
         """compute"""
-        energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
-        energy_invest_objective = self.compute_energy_invest_objective(energy_investment_wo_tax)
-        max_budget_constraint = self.compute_max_budget_constraint(energy_investment_wo_tax, inputs_dict)
-        return energy_investment_wo_tax, energy_invest_objective, max_budget_constraint
+        self.inputs = inputs_dict
+        self.years = np.arange(self.inputs[GlossaryEnergy.YearStart], self.inputs[GlossaryEnergy.YearEnd] + 1)
 
-    def compute_energy_invest_objective(self, energy_investment_wo_tax):
-        energy_invest_objective = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.sum()
-        return np.array([energy_invest_objective])
+        self.compute_technos_invest()
+        self.compute_total_energy_invests()
+        self.compute_total_ccus_invests()
+        self.compute_max_budget_constraint()
 
-    def compute_energy_investment_wo_tax(self, inputs_dict: dict):
-        """computes investments in the energy sector (without tax)"""
-        self.compute_distribution_list(inputs_dict)
 
-        techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
-        techno_invest_sum = techno_invests.sum(axis=1).values
+    def compute_technos_invest(self):
+        conversion_factor_2 = GlossaryEnergy.conversion_dict[GlossaryEnergy.invest_mix_df['unit']][
+            GlossaryEnergy.TechnoInvestDf['unit']]
+        for energy in self.inputs[GlossaryEnergy.energy_list] + self.inputs[GlossaryEnergy.ccs_list]:
+            for techno in self.inputs[f'{energy}.{GlossaryEnergy.techno_list}']:
+                self.outputs[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = pd.DataFrame({
+                    GlossaryEnergy.Years: self.years,
+                    GlossaryEnergy.InvestValue: self.inputs[GlossaryEnergy.invest_mix][
+                                                    f'{energy}.{techno}'].values * conversion_factor_2
+                })
 
-        energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
-             GlossaryEnergy.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$
+    def compute_total_energy_invests(self):
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.invest_mix_df['unit']][GlossaryEnergy.InvestmentDf['unit']]
+        energy_technos = []
+        for energy in self.inputs[GlossaryEnergy.energy_list]:
+            energy_technos.extend(
+                [f"{energy}.{techno}" for techno in self.inputs[f'{energy}.{GlossaryEnergy.techno_list}']])
 
-        return energy_investment_wo_tax
+        self.outputs[f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}"] = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.InvestmentsValue: self.inputs[GlossaryEnergy.invest_mix][energy_technos].sum(
+                axis=1) * conversion_factor,
+        })
 
-    def compute_max_budget_constraint(self, energy_investment_wo_tax: np.ndarray, inputs_dict: dict):
-        """should be negative"""
-        max_budget_constraint_ref = inputs_dict[GlossaryEnergy.MaxBudgetConstraintRefValue]
-        max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
-        overspending = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
-        max_budget_constraint_df = pd.DataFrame({
+    def compute_total_ccus_invests(self):
+        ccs_technos = []
+        for css_stream in self.inputs[GlossaryEnergy.ccs_list]:
+            ccs_technos.extend(
+                [f"{css_stream}.{techno}" for techno in self.inputs[f'{css_stream}.{GlossaryEnergy.techno_list}']])
+
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.invest_mix_df['unit']][GlossaryEnergy.InvestmentDf['unit']]
+
+        self.outputs[f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}"] = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.InvestmentsValue: self.inputs[GlossaryEnergy.invest_mix][ccs_technos].sum(
+                axis=1) * conversion_factor,
+        })
+
+    def compute_max_budget_constraint(self):
+        """Compute the constraint for maximal invests"""
+        conversion_factor = GlossaryEnergy.conversion_dict[GlossaryEnergy.MaxBudgetConstraintRef['unit']][GlossaryEnergy.InvestmentDf['unit']]
+        conversion_factor_2 = GlossaryEnergy.conversion_dict[GlossaryEnergy.MaxBudgetDf['unit']][GlossaryEnergy.InvestmentDf['unit']]
+
+
+        max_budget_constraint_ref = self.inputs[GlossaryEnergy.MaxBudgetConstraintRefValue] * conversion_factor
+        max_budget = self.inputs[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
+
+        overspending = self.outputs[f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}"][GlossaryEnergy.InvestmentsValue] \
+                       + self.outputs[f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}"][GlossaryEnergy.InvestmentsValue] \
+                       - max_budget * conversion_factor_2
+
+        self.outputs[GlossaryEnergy.MaxBudgetConstraintValue] = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
             GlossaryEnergy.MaxBudgetConstraintValue: overspending / max_budget_constraint_ref
         })
-        return max_budget_constraint_df

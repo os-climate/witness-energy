@@ -891,7 +891,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         chart_name = 'Capex'
         years = cost_details[GlossaryEnergy.Years]
         capex = cost_details[f'Capex_{self.techno_name}']
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name, y_min_zero=True)
         serie = InstanciatedSeries(years, capex, '', 'lines')
 
         new_chart.series.append(serie)

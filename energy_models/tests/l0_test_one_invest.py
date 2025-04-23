@@ -20,7 +20,6 @@ import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from energy_models.core.investments.one_invest import OneInvest
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -68,37 +67,6 @@ class TestOneInvest(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
-    def test_01_one_invest_model(self):
-        scaling_factor_energy_investment = 100
-        inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
-                       GlossaryEnergy.YearEnd: self.year_end,
-                       GlossaryEnergy.energy_list: self.energy_list,
-                       GlossaryEnergy.ccs_list: self.ccs_list,
-                       f'{GlossaryEnergy.electricity}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.SolarPv, GlossaryEnergy.WindOnshore, GlossaryEnergy.CoalGen],
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift, GlossaryEnergy.ElectrolysisAWE],
-                       f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.technologies_list}': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.AmineScrubbing}',
-                                                            f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
-                       f'{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation, GlossaryEnergy.GeologicMineralization],
-                       GlossaryEnergy.invest_mix: self.energy_mix,
-                       GlossaryEnergy.EnergyInvestmentsValue: self.energy_investment,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       'is_dev': False}
-        one_invest_model = OneInvest()
-        all_invest_df = one_invest_model.compute(inputs_dict)
-        norm_mix = self.energy_mix[[
-            col for col in self.energy_mix if col != GlossaryEnergy.Years]].sum(axis=1)
-
-        for column in all_invest_df.columns:
-            if column != GlossaryEnergy.Years:
-                invest_techno = all_invest_df[column].values
-                invest_theory = self.energy_investment[
-                                    GlossaryEnergy.EnergyInvestmentsValue].values * self.energy_mix[
-                                    column] / norm_mix * scaling_factor_energy_investment
-
-                self.assertListEqual(np.round(invest_techno, 8).tolist(
-                ), np.round(invest_theory, 8).tolist())
-
     def test_02_one_invest_disc(self):
 
         self.name = 'Energy'
@@ -122,10 +90,22 @@ class TestOneInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+        energy_mix_invest = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.InvestmentsValue: 10.,
+        })
+
+        ccus_invest = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.InvestmentsValue: 10.,
+        })
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
+                       f'{self.name}.{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}': energy_mix_invest,
+                       f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}': ccus_invest,
                        f'{self.name}.{GlossaryEnergy.electricity}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.SolarPv, GlossaryEnergy.WindOnshore, GlossaryEnergy.CoalGen],
                        f'{self.name}.{GlossaryEnergy.methane}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
                        f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.WaterGasShift,

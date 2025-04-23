@@ -42,6 +42,6 @@ class CoalGen(ElectricityTechno):
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:'
                 f'{self.stream_name}'] * (1.0 - elec_needs)
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname}'] = \
             self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{SolidFuel.name}'] - \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']
