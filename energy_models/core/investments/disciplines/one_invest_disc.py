@@ -57,8 +57,7 @@ class OneInvestDiscipline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
         f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
-        GlossaryEnergy.invest_mix: {'type': 'dataframe',
-                                    'dynamic_dataframe_columns': True},
+        GlossaryEnergy.invest_mix: GlossaryEnergy.invest_mix_df,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -139,7 +138,6 @@ class OneInvestDiscipline(SoSWrapp):
         input_dict = self.get_sosdisc_inputs()
 
         self.one_invest_model.compute(input_dict)
-
 
         self.store_sos_outputs_values(self.one_invest_model.outputs)
 

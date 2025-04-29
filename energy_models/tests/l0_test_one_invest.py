@@ -74,6 +74,7 @@ class TestOneInvest(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
                    'ns_public': self.name,
+                   'ns_invest': self.name,
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
@@ -114,7 +115,7 @@ class TestOneInvest(unittest.TestCase):
                                                                               f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.CalciumLooping}'],
                        f'{self.name}.{GlossaryEnergy.CCUS}.{GlossaryEnergy.carbon_storage}.{GlossaryEnergy.technologies_list}': [GlossaryEnergy.DeepSalineFormation,
                                                                                                                                  GlossaryEnergy.GeologicMineralization],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
+                       f'{self.name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.energy_investment}
 
         self.ee.load_study_from_input_dict(inputs_dict)
