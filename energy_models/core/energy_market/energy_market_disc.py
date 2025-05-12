@@ -56,7 +56,8 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
     DESC_OUT = {
         GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue: GlossaryEnergy.EnergyMarketRatioAvailabilities,
         GlossaryEnergy.EnergyMarketDemandsDfValue: GlossaryEnergy.EnergyMarketDemandsDf,
-        "sectors_demand_breakdown": {"type": 'dataframe', "description": "breakdown of global demand of energy between sectors", "unit": GlossaryEnergy.EnergyMixEnergiesDemandsDf['unit']}
+        "sectors_demand_breakdown": {"type": 'dataframe', "description": "breakdown of global demand of energy between sectors", "unit": GlossaryEnergy.EnergyMixEnergiesDemandsDf['unit']},
+        GlossaryEnergy.EnergyProdVsDemandObjective: GlossaryEnergy.EnergyProdVsDemandObjectiveVar
     }
 
     def __init__(self, sos_name, logger):

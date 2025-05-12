@@ -36,6 +36,8 @@ class EnergyMarket(DifferentiableModel):
         self.compute_total_energy_demand()
         self.compute_availability_ratios()
 
+        self.compute_prod_vs_demand_objective()
+
 
     def configure_parameters_update(self):
         """Configure parameters with possible update (variables that does change during the run)"""
@@ -91,6 +93,20 @@ class EnergyMarket(DifferentiableModel):
         self.outputs[f"{GlossaryEnergy.EnergyMarketDemandsDfValue}:Total"] = self.sum_cols(
             self.get_cols_output_dataframe(df_name=GlossaryEnergy.EnergyMarketDemandsDfValue, expect_years=True), index=self.years
         )
+
+    def compute_prod_vs_demand_objective(self):
+        self.outputs[f"{GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue}:{GlossaryEnergy.Years}"] = self.years
+        commun_unit = "PWh"
+        conversion_factor_demand = GlossaryEnergy.conversion_dict[GlossaryEnergy.EnergyDemandDf['unit']][commun_unit]
+        conversion_factor_prod = GlossaryEnergy.conversion_dict[GlossaryEnergy.EnergyMixNetProductionsDf['unit']][
+            commun_unit]
+        if self.inputs[GlossaryEnergy.SimplifiedMarketEnergyDemandValue]:
+            demand = self.outputs[f"{GlossaryEnergy.EnergyMarketDemandsDfValue}:Total"] * conversion_factor_demand
+            production = self.inputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:Total"] * conversion_factor_prod
+
+            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.mean(self.np.array((demand - production) / (demand + 1e-6)))
+        else:
+            raise NotImplementedError("Not implemetend !")
 
 
 

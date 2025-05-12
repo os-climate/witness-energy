@@ -57,6 +57,7 @@ class OneInvestDiscipline(SoSWrapp):
         GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         f"{GlossaryEnergy.CCUS}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
         f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}": deepcopy(investments_df_variable),
+        "a": {"type":"float", "default": 1., "namespace": "ns_energy", "visibility": "Shared"},
         GlossaryEnergy.invest_mix: GlossaryEnergy.invest_mix_df,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
