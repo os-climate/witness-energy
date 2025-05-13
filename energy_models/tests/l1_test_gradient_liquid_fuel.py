@@ -40,7 +40,7 @@ class LiquidFuelJacobianCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
 
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
@@ -140,6 +140,7 @@ class LiquidFuelJacobianCase(GenericDisciplinesTestClass):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
     def test_01_refinery_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'refinery'
         self.mod_path = 'energy_models.models.liquid_fuel.refinery.refinery_disc.RefineryDiscipline'
 

@@ -106,7 +106,19 @@ class EnergyMarket(DifferentiableModel):
 
             self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.mean(self.np.array((demand - production) / (demand + 1e-6)))
         else:
-            raise NotImplementedError("Not implemetend !")
+            ratios_per_energy = []
+            for column in self.get_colnames_output_dataframe(df_name=GlossaryEnergy.EnergyMarketDemandsDfValue,
+                                                             expect_years=True):
+                demand = self.outputs[f"{GlossaryEnergy.EnergyMarketDemandsDfValue}:{column}"] * conversion_factor_demand
+                production = self.inputs[
+                                 f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{column}"] * conversion_factor_prod
+                # differentiable en 0 :
+                energy_obj = self.np.sqrt(self.np.mean(self.np.array((demand - production) / (demand + 1e-6))) ** 2 + 1e-4)
+                ratios_per_energy.append(energy_obj)
+            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.mean(self.np.array(ratios_per_energy))
+
+
+
 
 
 
