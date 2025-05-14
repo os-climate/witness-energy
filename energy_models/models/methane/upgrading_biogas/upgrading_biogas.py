@@ -27,13 +27,13 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class UpgradingBiogas(MethaneTechno):
 
     def compute_energies_needs(self):
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] = self.get_electricity_needs() + self.zeros_array
         # in kwh of fuel by kwh of H2
 
-        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biogas}_needs'] = self.get_biogas_needs()
+        self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.biogas}_needs'] = self.get_biogas_needs() + self.zeros_array
 
     def compute_resources_needs(self):
-        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss()
+        self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.MonoEthanolAmineResource}_needs"] = self.get_MEA_loss() + self.zeros_array
 
     def compute_byproducts_production(self):
         # kg/kWh corresponds to Mt/TWh

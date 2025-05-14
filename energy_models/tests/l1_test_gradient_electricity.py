@@ -37,7 +37,7 @@ class ElectricityJacobianTestCase(GenericDisciplinesTestClass):
         self.name = "Test"
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
         self.stream_name = GlossaryEnergy.electricity
         self.year_start = GlossaryEnergy.YearStartDefault

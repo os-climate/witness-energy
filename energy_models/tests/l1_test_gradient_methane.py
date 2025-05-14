@@ -36,7 +36,7 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
         self.name = "Test"
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -121,5 +121,6 @@ class MethaneJacobianTestCase(GenericDisciplinesTestClass):
         self.mod_path = 'energy_models.models.methane.methanation.methanation_disc.MethanationDiscipline'
 
     def test_03_upgrading_biogas_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'upgrading_biogas'
         self.mod_path = 'energy_models.models.methane.upgrading_biogas.upgrading_biogas_disc.UpgradingBiogasDiscipline'
