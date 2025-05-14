@@ -53,7 +53,7 @@ class OneInvest(BaseInvest):
                 sector_cols.extend([f"{stream}.{techno}" for techno in inputs_dict[f'{stream}.{GlossaryEnergy.techno_list}']])
 
             df_sector = inputs_dict[GlossaryEnergy.invest_mix][sector_cols]
-            df_normalized = df_sector.div(df_sector.sum(axis=1), axis=0)
+            df_normalized = df_sector.div(df_sector.sum(axis=1) + 1e-9, axis=0)
 
             invest_sector = inputs_dict[f"{sector}.{GlossaryEnergy.InvestmentsValue}"][GlossaryEnergy.InvestmentsValue].values
             for stream in sector_streams[sector]:

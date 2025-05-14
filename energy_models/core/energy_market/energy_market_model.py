@@ -26,7 +26,7 @@ class EnergyMarket(DifferentiableModel):
     """Class Energy market"""
 
     def __init__(self, name, logger: logging.Logger):
-        super().__init__()
+        super().__init__(sosname=name)
         self.name = name
         self.logger = logger
 
@@ -104,7 +104,7 @@ class EnergyMarket(DifferentiableModel):
             demand = self.outputs[f"{GlossaryEnergy.EnergyMarketDemandsDfValue}:Total"] * conversion_factor_demand
             production = self.inputs[f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:Total"] * conversion_factor_prod
 
-            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.mean(self.np.array((demand - production) / (demand + 1e-6)))
+            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.array([self.np.mean((demand - production) / (demand + 1e-6))])
         else:
             ratios_per_energy = []
             for column in self.get_colnames_output_dataframe(df_name=GlossaryEnergy.EnergyMarketDemandsDfValue,
@@ -115,7 +115,7 @@ class EnergyMarket(DifferentiableModel):
                 # differentiable en 0 :
                 energy_obj = self.np.sqrt(self.np.mean(self.np.array((demand - production) / (demand + 1e-6))) ** 2 + 1e-4)
                 ratios_per_energy.append(energy_obj)
-            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.mean(self.np.array(ratios_per_energy))
+            self.outputs[GlossaryEnergy.EnergyProdVsDemandObjective]= self.np.array([self.np.mean(self.np.array(ratios_per_energy))])
 
 
 

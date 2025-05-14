@@ -185,10 +185,14 @@ class EnergyMarketDiscipline(AutodifferentiedDisc):
             ratios_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue)
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '%', chart_name="Availabilites ratios", y_min_zero=True)
 
-            for column in ratios_df.columns:
-                if column not in [GlossaryEnergy.Years, 'Total']:
-                    serie = InstanciatedSeries(years, ratios_df[column], self.pimp_string(column), 'lines')
-                    new_chart.add_series(serie)
+            if simplified_demand:
+                serie = InstanciatedSeries(years, ratios_df["Total"], "Total", 'lines')
+                new_chart.add_series(serie)
+            else:
+                for column in ratios_df.columns:
+                    if column not in [GlossaryEnergy.Years, 'Total']:
+                        serie = InstanciatedSeries(years, ratios_df[column], self.pimp_string(column), 'lines')
+                        new_chart.add_series(serie)
 
             new_chart.post_processing_section_name = "Production & Demand"
             new_chart.post_processing_is_key_chart = True
