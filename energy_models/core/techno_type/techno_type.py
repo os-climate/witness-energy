@@ -34,7 +34,7 @@ class TechnoType(DifferentiableModel):
     ENERGY_UNIT = "TWh"
 
     def __init__(self, name):
-        super().__init__()
+        super().__init__(sosname=name)
         self.years = None
         self.ratios_name_list = []
         self.name = name

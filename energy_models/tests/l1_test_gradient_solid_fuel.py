@@ -36,7 +36,7 @@ class SolidFuelJacobianTestCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.override_dump_jacobian = False
         self.show_graph = False
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
@@ -126,5 +126,6 @@ class SolidFuelJacobianTestCase(GenericDisciplinesTestClass):
         self.mod_path = 'energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc.CoalExtractionDiscipline'
 
     def test_02_pelletizing_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'pelletizing'
         self.mod_path = 'energy_models.models.solid_fuel.pelletizing.pelletizing_disc.PelletizingDiscipline'

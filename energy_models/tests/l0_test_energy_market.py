@@ -29,9 +29,12 @@ class EnergyMarketDiscTestCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.model_name = 'Energy market'
         self.mod_path = 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline'
-        self.ns_dict = {'ns_public': self.name, GlossaryEnergy.NS_ENERGY_MIX: self.name, GlossaryEnergy.NS_WITNESS: self.name, "ns_energy_market": self.name}
+        self.ns_dict = {'ns_public': self.name,
+                        GlossaryEnergy.NS_ENERGY_MIX: self.name,
+                        GlossaryEnergy.NS_FUNCTIONS: self.name,
+                        GlossaryEnergy.NS_WITNESS: self.name, "ns_energy_market": self.name}
         self.pickle_prefix = self.model_name
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.show_graphs = False
         self.override_dump_jacobian = False
         self.pickle_directory = dirname(__file__)

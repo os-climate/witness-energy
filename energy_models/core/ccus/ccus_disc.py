@@ -76,7 +76,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
         self.model = None
 
     def init_execution(self):
-        self.model = CCUS(GlossaryEnergy.CCUS)
+        self.model = CCUS(sosname=GlossaryEnergy.CCUS)
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}

@@ -29,7 +29,7 @@ class BaseStream(DifferentiableModel):
     default_techno_list = []
 
     def __init__(self, name):
-        super().__init__()
+        super().__init__(sosname=name)
         self.years = None
         self.name = name
         self.year_start = None
