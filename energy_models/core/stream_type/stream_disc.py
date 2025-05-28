@@ -224,7 +224,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix '
+        chart_name = f'Detailed prices of {self.pimp_string(self.stream_name)} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name, y_min_zero=True
         )
@@ -252,7 +252,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kg(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix '
+        chart_name = f'Detailed prices of {self.pimp_string(self.stream_name)} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
         total_price = energy_prices[self.stream_name] * \
