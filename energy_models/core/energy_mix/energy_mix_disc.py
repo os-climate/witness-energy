@@ -142,6 +142,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
     def get_chart_filter_list(self):
         chart_filters = []
         chart_list = [
+            'Stream Flow',
             'Production',
             'Price',
             'Emissions',
@@ -167,6 +168,24 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
             for chart_filter in filters:
                 if chart_filter.filter_key == "charts":
                     charts = chart_filter.selected_values
+
+        if "Stream Flow" in charts or True:
+
+            new_chart = self.get_chart_sankey_fluxes(
+                chart_name=f"Flow of energy streams (TWh)",
+                split_external=True,
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
+            new_chart.post_processing_is_key_chart = True
+            instanciated_charts.append(new_chart)
+
+            new_chart = self.get_chart_sankey_fluxes(
+                chart_name="Flow of energy streams (schematic)",
+                normalized_links=True,
+                split_external=True,
+            )
+            new_chart.post_processing_section_name = "Detailed Stream Flow"
+            instanciated_charts.append(new_chart)
 
         df_prod_brut = self.get_sosdisc_outputs(GlossaryEnergy.EnergyMixRawProductionValue)
         years = df_prod_brut[GlossaryEnergy.Years]
@@ -241,6 +260,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
                     new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = "Production"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
 
@@ -391,13 +411,16 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         # Get dataframes and put them in dictionary format
         for energy in energy_list:
             # Gets dataframes
-            ns_energy = self.get_ns_stream(energy)
+            #ns_energy = self.get_ns_stream(energy)
             consumption = self.get_sosdisc_inputs(
-                f"{ns_energy}.{GlossaryEnergy.StreamConsumptionValue}"
+                f"{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}"
             ).copy()
             production = self.get_sosdisc_inputs(
-                f"{ns_energy}.{GlossaryEnergy.EnergyProductionValue}"
+                f"{energy}.{GlossaryEnergy.StreamProductionValue}"
             ).copy()
+            for prod in production.columns:
+                if prod != GlossaryEnergy.Years and "(Gt)" not in prod:
+                    production[prod] *= 1e3
 
             # Add Years to dataframes
             if GlossaryEnergy.Years not in consumption.columns:
@@ -414,14 +437,13 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
 
         # Get Net Production
         production = self.get_sosdisc_outputs(
-            f"{GlossaryEnergy.StreamProductionDetailedValue}"
+            f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}"
         ).copy()
-        production.columns = [c.replace("production ", "") for c in production.columns]
-        consumption = pd.DataFrame({GlossaryEnergy.Years: years})
+        for prod in production.columns:
+            if prod != GlossaryEnergy.Years and "(Gt)" not in prod:
+                production[prod] *= 1e3
 
-        # Add Years to dataframes
-        if GlossaryEnergy.Years not in production.columns:
-            production[GlossaryEnergy.Years] = years
+        consumption = pd.DataFrame({GlossaryEnergy.Years: years})
 
         # Switch prod /consumption as we want the node to "consume" the available streams
         energy_dictionary["available<br>for final consumption"] = {
@@ -447,10 +469,10 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         # Filter out resources
         for dfs in energy_dictionary.values():
             dfs["input"] = dfs["input"][
-                [c for c in dfs["input"].columns if "(Mt)" not in c]
+                [c for c in dfs["input"].columns if "(Gt)" not in c]
             ]
             dfs["output"] = dfs["output"][
-                [c for c in dfs["output"].columns if "(Mt)" not in c]
+                [c for c in dfs["output"].columns if "(Gt)" not in c]
             ]
 
         # Remove units from all streams, to handle inconsistent naming
@@ -552,7 +574,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         df_emissions_intensity = self.get_sosdisc_outputs(f"{ghg}_intensity_by_energy")
         years = df_emissions_intensity[GlossaryEnergy.Years]
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.GHGIntensityEnergies['unit'],
-                                             chart_name=f'{ghg} emissions intensities of energies', y_min_zero=True)
+                                             chart_name=f'{ghg} emissions intensities of energies')
 
         for col in df_emissions_intensity.columns:
             if col != GlossaryEnergy.Years:
