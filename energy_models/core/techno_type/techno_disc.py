@@ -693,7 +693,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt/TWh', chart_name=chart_name, stacked_bar=True)
 
-        serie = InstanciatedSeries(ghg_intensity_scope_1[GlossaryEnergy.Years], ghg_intensity_scope_1[ghg],'Scope 1', 'bar')
+        serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_1[ghg], 'Scope 1',
+                                   'bar')
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_2[ghg], 'Scope 2', 'bar')
@@ -891,7 +892,7 @@ class TechnoDiscipline(AutodifferentiedDisc):
         chart_name = 'Capex'
         years = cost_details[GlossaryEnergy.Years]
         capex = cost_details[f'Capex_{self.techno_name}']
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name, y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, '$/MWh', chart_name=chart_name)
         serie = InstanciatedSeries(years, capex, '', 'lines')
 
         new_chart.series.append(serie)
@@ -970,7 +971,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_new_plant_production'], 'Maximal theoritical production (given investment)', 'lines')
+            production_detailed['max_theoritical_new_plant_production'],
+            'Maximal theoretical production (given investment)', 'lines')
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
@@ -978,16 +980,18 @@ class TechnoDiscipline(AutodifferentiedDisc):
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_historical_plants_production'], 'Initial plants maximal theoritical production', 'bar')
+            production_detailed['max_theoritical_historical_plants_production'],
+            'Initial plants maximal theoretical production', 'bar')
         )
 
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_new_plant_production'], 'New plants maximal theoritical production',
+            production_detailed['max_theoritical_new_plant_production'], 'New plants maximal v production',
             'bar')
         )
 
-        new_chart.annotation_upper_left = {'Maximal theoritical production': 'Assumed no limiting input (resource or energy) and techno used at 100%.'}
+        new_chart.annotation_upper_left = {
+            'Maximal theoretical production': 'Assumed no limiting input (resource or energy) and techno used at 100%.'}
         new_chart.post_processing_section_name = "Production & consumption"
 
         return new_chart

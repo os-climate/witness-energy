@@ -639,7 +639,7 @@ class TechnoType(DifferentiableModel):
         We must distinguish : CO2 from flue gas and CO2 not from flue gas
         """
 
-        self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.Years}'] = self.zeros_array
+        self.outputs[f'ghg_intensity_scope_1:{GlossaryEnergy.Years}'] = self.years
 
         # CO2
         # CO2 non flue gas
