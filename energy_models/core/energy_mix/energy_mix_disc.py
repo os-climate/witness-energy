@@ -172,7 +172,7 @@ class Energy_Mix_Discipline(AutodifferentiedDisc):
         if "Stream Flow" in charts or True:
 
             new_chart = self.get_chart_sankey_fluxes(
-                chart_name=f"Flow of energy streams (TWh)",
+                chart_name="Flow of energy streams (TWh)",
                 split_external=True,
             )
             new_chart.post_processing_section_name = "Detailed Stream Flow"
