@@ -161,6 +161,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     years = np.arange(year_start, year_end + 1)
                     default_resources = get_default_resources_CO2_emissions(years)
                     resources_co2_emissions_var["default"] = default_resources
+                    self.update_default_value(
+                        GlossaryEnergy.RessourcesCO2EmissionsValue, self.IO_TYPE_IN, default_resources)
                     dynamic_inputs.update({GlossaryEnergy.RessourcesCO2EmissionsValue: resources_co2_emissions_var})
 
                     resources_prices = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ResourcesPrice)
@@ -170,6 +172,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     years = np.arange(year_start, year_end + 1)
                     default_resources_prices = get_default_resources_prices(years)
                     resources_prices["default"] = default_resources_prices
+                    self.update_default_value(
+                        GlossaryEnergy.ResourcesPriceValue, self.IO_TYPE_IN, default_resources_prices)
                     dynamic_inputs.update({GlossaryEnergy.ResourcesPriceValue: resources_prices})
 
             values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.EnergiesUsedForProductionValue])
@@ -198,6 +202,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                         })
                         ccus_availability_ratios_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCUSAvailabilityRatios)
                         ccus_availability_ratios_var["default"] = default_ccs_ratios
+                        self.update_default_value(
+                            GlossaryEnergy.CCUSAvailabilityRatiosValue, self.IO_TYPE_IN, default_ccs_ratios)
                         dynamic_inputs[GlossaryEnergy.CCUSAvailabilityRatiosValue] = ccus_availability_ratios_var
                     if not values_dict['techno_is_ccus']:
                         # Energy techno
@@ -214,6 +220,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                         # CCUS techno
                         variable = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyMarketRatioAvailabilities)
                         variable["default"]  = pd.DataFrame({GlossaryEnergy.Years: years})
+                        self.update_default_value(
+                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN, variable)
                         dynamic_inputs[GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue] = variable
                 if values_dict[GlossaryEnergy.BoolApplyResourceRatio]:
                     resource_ratio_dict = dict(zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
