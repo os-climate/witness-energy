@@ -215,13 +215,15 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                                                                      "dynamic_dataframe_columns": True,
                                                                                      self.GRADIENTS: True,
                                                                                      }
-                    
+                        self.update_default_value(
+                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN,
+                            all_streams_demand_ratio_default)
                     else:
                         # CCUS techno
                         variable = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyMarketRatioAvailabilities)
                         variable["default"]  = pd.DataFrame({GlossaryEnergy.Years: years})
                         self.update_default_value(
-                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN, variable)
+                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN, variable["default"])
                         dynamic_inputs[GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue] = variable
                 if values_dict[GlossaryEnergy.BoolApplyResourceRatio]:
                     resource_ratio_dict = dict(zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
@@ -232,7 +234,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource',
                                                                             "dynamic_dataframe_columns": True}
-
+                    self.update_default_value(
+                        ResourceMixModel.RATIO_USABLE_DEMAND, self.IO_TYPE_IN, all_resource_ratio_usable_demand_default)
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.TechnoProductionDf,
