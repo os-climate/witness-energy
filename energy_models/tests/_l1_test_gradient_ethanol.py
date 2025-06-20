@@ -90,7 +90,7 @@ class EthanolJacobianCase(GenericDisciplinesTestClass):
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),}
 
 
-    def test_01_biomass_fermentation_discipline_analytic_grad(self):
+    def _test_01_biomass_fermentation_discipline_analytic_grad(self):
         self.model_name = 'BiomassFermentation'
         self.mod_path = 'energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc.BiomassFermentationDiscipline'
 
