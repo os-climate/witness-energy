@@ -36,7 +36,7 @@ class EthanolJacobianCase(GenericDisciplinesTestClass):
     def setUp(self):
         self.stream_name = 'ethanol'
         self.name = 'Test'
-        self.override_dump_jacobian = False
+        self.override_dump_jacobian = True
         self.show_graph = False
         self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
