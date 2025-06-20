@@ -132,9 +132,9 @@ class ElectricityDiscipline(EnergyDiscipline):
             GlossaryEnergy.YearStart), self.get_sosdisc_inputs(GlossaryEnergy.YearEnd) + 1))
         chart_name = 'Constraints'
         fig = go.Figure()
-        for key in constraints_dict.keys():
+        for key, value in constraints_dict.items():
             fig.add_trace(go.Scatter(x=list(years),
-                                     y=list(constraints_dict[key]), name=key,
+                                     y=list(value), name=key,
                                      mode='lines', ))
         fig.update_layout(title={'text': chart_name, 'x': 0.5, 'y': 0.95, 'xanchor': 'center', 'yanchor': 'top'},
                           xaxis_title=GlossaryEnergy.Years, yaxis_title='value of constraint')
