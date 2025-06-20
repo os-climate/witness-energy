@@ -75,11 +75,13 @@ class CCUS(DifferentiableModel):
                 self.inputs[f"{stream}.{GlossaryEnergy.LandUseRequiredValue}:Land use"] * conversion_factor
 
     def compute_emissions(self):
+        """Emissions are negative when carbon is captured. CO2 Emissions = - carbon captured. So then we just
+        add them in the GHG emission discipline"""
         input_unit = GlossaryEnergy.StreamProductionDf['unit']
         conversion_factor = GlossaryEnergy.conversion_dict[input_unit][GlossaryEnergy.CCUS_CO2EmissionsDf['unit']]
         self.outputs[f"{GlossaryEnergy.CCUS_CO2EmissionsDfValue}:{GlossaryEnergy.Years}"] = self.years
         self.outputs[f"{GlossaryEnergy.CCUS_CO2EmissionsDfValue}:{GlossaryEnergy.CO2}"] = \
-            self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured}"] * conversion_factor
+            - self.inputs[f"{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.StreamProductionValue}:{GlossaryEnergy.carbon_captured}"] * conversion_factor
 
     def compute_ccus_streams_ratios(self):
         """Availibility = min(1 , prod/ demand)"""

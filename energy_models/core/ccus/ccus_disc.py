@@ -162,6 +162,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
 
             serie = InstanciatedSeries(years, df_output['Carbon captured and stored'], 'Carbon captured and stored', 'lines')
             new_chart.series.append(serie)
+            new_chart.post_processing_is_key_chart = True
 
             new_chart.post_processing_section_name = "Production"
             instanciated_charts.append(new_chart)
@@ -237,6 +238,7 @@ class CCUS_Discipline(AutodifferentiedDisc):
                 new_chart.series.append(serie)
 
             new_chart.post_processing_section_name = 'Price'
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
 

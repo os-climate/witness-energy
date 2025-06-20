@@ -62,7 +62,7 @@ from energy_models.core.stream_type.resources_data_disc import (
 )
 from energy_models.glossaryenergy import GlossaryEnergy
 
-INVEST_DISC_NAME = "InvestmentDistribution"
+INVEST_DISC_NAME = "Energy Investment Plan"
 
 
 class Study(EnergyStudyManager):
