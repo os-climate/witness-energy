@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
+Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import warnings
 from os.path import dirname
 
@@ -90,7 +90,7 @@ class EthanolJacobianCase(GenericDisciplinesTestClass):
                     np.arange(GlossaryEnergy.YearStartDefault, self.year_end + 1)),}
 
 
-    def _test_01_biomass_fermentation_discipline_analytic_grad(self):
+    def test_01_biomass_fermentation_discipline_analytic_grad(self):
         self.model_name = 'BiomassFermentation'
         self.mod_path = 'energy_models.models.ethanol.biomass_fermentation.biomass_fermentation_disc.BiomassFermentationDiscipline'
 
