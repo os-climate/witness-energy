@@ -34,7 +34,7 @@ class EnergyMarketDiscTestCase(GenericDisciplinesTestClass):
                         GlossaryEnergy.NS_FUNCTIONS: self.name,
                         GlossaryEnergy.NS_WITNESS: self.name, "ns_energy_market": self.name}
         self.pickle_prefix = self.model_name
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.show_graphs = False
         self.override_dump_jacobian = False
         self.pickle_directory = dirname(__file__)

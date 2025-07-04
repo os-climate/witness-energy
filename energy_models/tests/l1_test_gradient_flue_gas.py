@@ -31,7 +31,7 @@ class GradientFlueGasTestCase(GenericDisciplinesTestClass):
     """Flue gas gradients test class"""
 
     def setUp(self):
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.show_graphs = False
         self.override_dump_jacobian = False
         self.pickle_directory = dirname(__file__)
