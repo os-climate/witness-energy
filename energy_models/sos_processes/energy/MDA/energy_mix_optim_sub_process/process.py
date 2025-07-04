@@ -16,18 +16,13 @@ limitations under the License.
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     INVEST_DISC_NAME,
 )
-from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
-from energy_models.sos_processes.witness_sub_process_builder import (
-    WITNESSSubProcessBuilder,
-)
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):

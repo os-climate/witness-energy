@@ -13,17 +13,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-import pandas as pd
 import numpy as np
-
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as subStudy
+import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from energy_models.glossaryenergy import GlossaryEnergy
-
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as subStudy,
+)
 from energy_models.sos_processes.techno_dict.data.techno_dicts import techno_dict_midway
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import FunctionManagerDisc
 
 INVEST_DISC_NAME = "InvestmentDistribution"
 
