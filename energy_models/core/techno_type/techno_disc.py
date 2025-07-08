@@ -161,6 +161,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     years = np.arange(year_start, year_end + 1)
                     default_resources = get_default_resources_CO2_emissions(years)
                     resources_co2_emissions_var["default"] = default_resources
+                    self.update_default_value(
+                        GlossaryEnergy.RessourcesCO2EmissionsValue, self.IO_TYPE_IN, default_resources)
                     dynamic_inputs.update({GlossaryEnergy.RessourcesCO2EmissionsValue: resources_co2_emissions_var})
 
                     resources_prices = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ResourcesPrice)
@@ -170,6 +172,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                     years = np.arange(year_start, year_end + 1)
                     default_resources_prices = get_default_resources_prices(years)
                     resources_prices["default"] = default_resources_prices
+                    self.update_default_value(
+                        GlossaryEnergy.ResourcesPriceValue, self.IO_TYPE_IN, default_resources_prices)
                     dynamic_inputs.update({GlossaryEnergy.ResourcesPriceValue: resources_prices})
 
             values_dict, go = self.collect_var_for_dynamic_setup([GlossaryEnergy.EnergiesUsedForProductionValue])
@@ -198,6 +202,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                         })
                         ccus_availability_ratios_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCUSAvailabilityRatios)
                         ccus_availability_ratios_var["default"] = default_ccs_ratios
+                        self.update_default_value(
+                            GlossaryEnergy.CCUSAvailabilityRatiosValue, self.IO_TYPE_IN, default_ccs_ratios)
                         dynamic_inputs[GlossaryEnergy.CCUSAvailabilityRatiosValue] = ccus_availability_ratios_var
                     if not values_dict['techno_is_ccus']:
                         # Energy techno
@@ -209,11 +215,15 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                                                                      "dynamic_dataframe_columns": True,
                                                                                      self.GRADIENTS: True,
                                                                                      }
-                    
+                        self.update_default_value(
+                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN,
+                            all_streams_demand_ratio_default)
                     else:
                         # CCUS techno
                         variable = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyMarketRatioAvailabilities)
                         variable["default"]  = pd.DataFrame({GlossaryEnergy.Years: years})
+                        self.update_default_value(
+                            GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue, self.IO_TYPE_IN, variable["default"])
                         dynamic_inputs[GlossaryEnergy.EnergyMarketRatioAvailabilitiesValue] = variable
                 if values_dict[GlossaryEnergy.BoolApplyResourceRatio]:
                     resource_ratio_dict = dict(zip(EnergyMix.resource_list, np.ones(len(years)) * 100.0))
@@ -224,7 +234,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource',
                                                                             "dynamic_dataframe_columns": True}
-
+                    self.update_default_value(
+                        ResourceMixModel.RATIO_USABLE_DEMAND, self.IO_TYPE_IN, all_resource_ratio_usable_demand_default)
         dynamic_outputs.update({
             GlossaryEnergy.TechnoPricesValue: GlossaryEnergy.get_techno_price_df(techno_name=self.techno_name),
             GlossaryEnergy.TechnoProductionValue: GlossaryEnergy.TechnoProductionDf,
@@ -693,7 +704,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mt/TWh', chart_name=chart_name, stacked_bar=True)
 
-        serie = InstanciatedSeries(ghg_intensity_scope_1[GlossaryEnergy.Years], ghg_intensity_scope_1[ghg],'Scope 1', 'bar')
+        serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_1[ghg], 'Scope 1',
+                                   'bar')
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(ghg_intensity_scope_2[GlossaryEnergy.Years], ghg_intensity_scope_2[ghg], 'Scope 2', 'bar')
@@ -970,7 +982,8 @@ class TechnoDiscipline(AutodifferentiedDisc):
 
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_new_plant_production'], 'Maximal theoritical production (given investment)', 'lines')
+            production_detailed['max_theoritical_new_plant_production'],
+            'Maximal theoretical production (given investment)', 'lines')
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
@@ -978,16 +991,18 @@ class TechnoDiscipline(AutodifferentiedDisc):
         )
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_historical_plants_production'], 'Initial plants maximal theoritical production', 'bar')
+            production_detailed['max_theoritical_historical_plants_production'],
+            'Initial plants maximal theoretical production', 'bar')
         )
 
         new_chart.series.append(InstanciatedSeries(
             production_detailed[GlossaryEnergy.Years],
-            production_detailed['max_theoritical_new_plant_production'], 'New plants maximal theoritical production',
+            production_detailed['max_theoritical_new_plant_production'], 'New plants maximal v production',
             'bar')
         )
 
-        new_chart.annotation_upper_left = {'Maximal theoritical production': 'Assumed no limiting input (resource or energy) and techno used at 100%.'}
+        new_chart.annotation_upper_left = {
+            'Maximal theoretical production': 'Assumed no limiting input (resource or energy) and techno used at 100%.'}
         new_chart.post_processing_section_name = "Production & consumption"
 
         return new_chart

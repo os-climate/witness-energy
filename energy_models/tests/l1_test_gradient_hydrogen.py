@@ -42,8 +42,7 @@ class HydrogenJacobianTestCase(GenericDisciplinesTestClass):
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    GlossaryEnergy.NS_WITNESS: f'{self.name}',
-                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
-                   
+
                    'ns_hydrogen': self.name,
                    'ns_syngas': self.name,
                         GlossaryEnergy.NS_CCS: f'{self.name}',

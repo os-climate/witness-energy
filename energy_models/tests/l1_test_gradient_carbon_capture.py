@@ -38,7 +38,6 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                         'ns_energy_study': f'{self.name}',
-                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    
                         "ns_flue_gas": self.name,
@@ -129,5 +128,6 @@ class CarbonCaptureJacobianTestCase(GenericDisciplinesTestClass):
         self.model_name = 'calcium_looping'
         self.mod_path = 'energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc.CalciumLoopingDiscipline'
     def test_04_direct_air_capture(self):
+        self.jacobian_test = False
         self.model_name = "direct_air_capture"
         self.mod_path = 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'

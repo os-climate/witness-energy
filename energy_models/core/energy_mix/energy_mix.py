@@ -41,7 +41,7 @@ class EnergyMix(DifferentiableModel):
     # TODO shouldnt it just be carbon stored ? like energy technos take stored carbon and emit it into the atmosphere ?
     # TODO because carbon captured is just a temporary state of carbon, waiting to be stored
     def __init__(self, name, logger: logging.Logger):
-        super().__init__()
+        super().__init__(sosname=name)
         self.name = name
         self.logger = logger
 

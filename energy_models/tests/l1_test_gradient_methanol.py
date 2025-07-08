@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import warnings
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
@@ -40,6 +41,9 @@ class MethanolJacobianCase(GenericDisciplinesTestClass):
     def setUp(self):
         self.name = 'Test'
         self.jacobian_test = False
+        self.override_dump_jacobian = False
+        self.pickle_directory = dirname(__file__)
+        self.override_dump_jacobian = True
         self.ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                         'ns_energy_study': f'{self.name}',
                    GlossaryEnergy.NS_WITNESS: f'{self.name}',

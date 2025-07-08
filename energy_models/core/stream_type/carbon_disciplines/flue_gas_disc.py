@@ -125,7 +125,7 @@ class FlueGasDiscipline(AutodifferentiedDisc):
 
     def init_execution(self):
         super().init_execution()
-        self.model = FlueGas(self.stream_name)
+        self.model = FlueGas(sosname=self.stream_name)
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}

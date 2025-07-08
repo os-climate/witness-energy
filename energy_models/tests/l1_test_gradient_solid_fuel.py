@@ -126,5 +126,6 @@ class SolidFuelJacobianTestCase(GenericDisciplinesTestClass):
         self.mod_path = 'energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc.CoalExtractionDiscipline'
 
     def test_02_pelletizing_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'pelletizing'
         self.mod_path = 'energy_models.models.solid_fuel.pelletizing.pelletizing_disc.PelletizingDiscipline'

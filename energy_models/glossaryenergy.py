@@ -246,6 +246,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
             GlossaryWitnessCore.Years: ("int", [1900, YearEndDefaultCore], False),
         },
     }
+    invest_mix_df = {'type': 'dataframe', 'unit': 'G$',
+     'dataframe_edition_locked': False,
+     'visibility': "Shared", 'namespace': 'ns_invest',
+     'dynamic_dataframe_columns': True
+     }
 
     ResourcesUsedForProductionValue = "Resources used for production"
     ResourcesUsedForProduction = {

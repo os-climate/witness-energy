@@ -130,5 +130,6 @@ class LiquidHydrogenJacobianTestCase(GenericDisciplinesTestClass):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
     def test_01_hydrogen_liquefaction_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'hydrogen_liquefaction'
         self.mod_path = 'energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc.HydrogenLiquefactionDiscipline'

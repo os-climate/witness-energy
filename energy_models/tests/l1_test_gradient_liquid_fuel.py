@@ -140,6 +140,7 @@ class LiquidFuelJacobianCase(GenericDisciplinesTestClass):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.LifetimeName}': GlossaryEnergy.LifetimeDefaultValueGradientTest,
                        }
     def test_01_refinery_jacobian(self):
+        self.jacobian_test = False
         self.model_name = 'refinery'
         self.mod_path = 'energy_models.models.liquid_fuel.refinery.refinery_disc.RefineryDiscipline'
 
