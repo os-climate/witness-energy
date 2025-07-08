@@ -34,7 +34,7 @@ class GenericFlueGasTechnoModel(CCTechno):
     def compute_energies_demand(self):
         # Consumption
         self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.Years}'] = self.years
-        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.electricity} ({GlossaryEnergy.energy_unit})'] = \
+        self.outputs[f'{GlossaryEnergy.TechnoEnergyDemandsValue}:{GlossaryEnergy.electricity}'] = \
             self.outputs[f'{GlossaryEnergy.TechnoDetailedPricesValue}:{GlossaryEnergy.electricity}_needs'] * \
             self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}'] / \
             self.compute_electricity_variation_from_fg_ratio(

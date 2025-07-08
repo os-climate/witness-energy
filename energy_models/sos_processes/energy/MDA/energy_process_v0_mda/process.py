@@ -16,6 +16,7 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
     PureCarbonSS,
@@ -33,6 +34,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+    def __init__(self, ee):
+        super(ProcessBuilder, self).__init__(ee)
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
 
     def get_builders(self):
         ns_study = self.ee.study_name

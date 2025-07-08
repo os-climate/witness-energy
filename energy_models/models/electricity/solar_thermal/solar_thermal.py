@@ -39,7 +39,7 @@ class SolarThermal(ElectricityTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname} ({self.product_unit})'] =\
+        self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{GlossaryEnergy.hightemperatureheat_energyname}'] =\
             ((1 - self.inputs['techno_infos_dict']['efficiency']) *
              self.outputs[f'{GlossaryEnergy.TechnoTargetProductionValue}:{self.stream_name}']) \
             / self.inputs['techno_infos_dict']['efficiency']

@@ -224,7 +224,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix '
+        chart_name = f'Detailed prices of {self.pimp_string(self.stream_name)} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, "Prices [$/MWh]", chart_name=chart_name
         )
@@ -252,7 +252,7 @@ class StreamDiscipline(AutodifferentiedDisc):
 
     def get_chart_energy_price_in_dollar_kg(self):
         energy_prices = self.get_sosdisc_outputs(GlossaryEnergy.StreamPricesValue)
-        chart_name = f'Detailed prices of {self.stream_name} mix '
+        chart_name = f'Detailed prices of {self.pimp_string(self.stream_name)} mix '
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/t]', chart_name=chart_name)
         total_price = energy_prices[self.stream_name] * \
@@ -349,6 +349,7 @@ class StreamDiscipline(AutodifferentiedDisc):
                 chart.series.append(new_series)
 
         chart.post_processing_section_name = "Production"
+        chart.post_processing_is_key_chart = True
         instanciated_charts.append(chart)
 
 
@@ -465,6 +466,9 @@ class StreamDiscipline(AutodifferentiedDisc):
         production = self.get_sosdisc_outputs(
             f"{GlossaryEnergy.StreamProductionValue}"
         ).copy()
+        for prod in production.columns:
+            if prod != GlossaryEnergy.Years and "(Gt)" not in prod:
+                production[prod] *= 1e3
         production.columns = [c.replace("production ", "") for c in production.columns]
         consumption = pd.DataFrame({GlossaryEnergy.Years: years})
 
@@ -495,13 +499,14 @@ class StreamDiscipline(AutodifferentiedDisc):
         }
 
         # Filter out resources
-        for dfs in techno_dictionary.values():
-            dfs["input"] = dfs["input"][
-                [c for c in dfs["input"].columns if "(Mt)" not in c]
-            ]
-            dfs["output"] = dfs["output"][
-                [c for c in dfs["output"].columns if "(Mt)" not in c]
-            ]
+        if not normalized_links:
+            for dfs in techno_dictionary.values():
+                dfs["input"] = dfs["input"][
+                    [c for c in dfs["input"].columns if "(Gt)" not in c]
+                ]
+                dfs["output"] = dfs["output"][
+                    [c for c in dfs["output"].columns if "(Gt)" not in c]
+                ]
 
         # Remove units from all streams, to handle inconsistent naming
         for actor in techno_dictionary:

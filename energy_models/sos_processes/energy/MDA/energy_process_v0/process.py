@@ -39,10 +39,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
-
+    EnergyMarketName = 'Energy market'
     def __init__(self, ee):
         super(ProcessBuilder, self).__init__(ee)
         self.techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
 
     def get_builders(self):
 
@@ -53,56 +54,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         carbon_storage = PureCarbonSS.stream_name
         builder_list = []
-        # use energy list to import the builders
-        for energy_name in self.energy_list:
-            dot_list = energy_name.split('.')
-            short_name = dot_list[-1]
-            if self.techno_dict[energy_name]['type'] != GlossaryEnergy.agriculture_type:
-                energy_builder_list = self.ee.factory.get_builder_from_process(
-                    'energy_models.sos_processes.energy.techno_mix',
-                    f'{short_name}_mix',
-                    techno_list=self.techno_dict[energy_name]['value'],
-                    invest_discipline=self.invest_discipline,
-                    associate_namespace=False,
-                )
-
-            builder_list.extend(energy_builder_list)
-
-        # Needed namespaces for the 3 disciplines below
-        # All other namespaces are specified in each subprocess
-        ns_dict = {
-            GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
-            'ns_energy': f'{ns_study}.{energy_mix}',
-            GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
-            'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
-            'ns_resource': f'{ns_study}.{energy_mix}.resource',
-            'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
-            'ns_energy_market': f'{self.ee.study_name}.Energy market',
-        }
-
-        # Add demand, energymix and resources discipline
-
-        mods_dict = {
-            energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-            "Energy market": 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline',
-        }
-
-        builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        builder_list.extend(builder_other_list)
-
-        if self.ccs_list:
-            mods_dict = {
-                GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
-            }
-
-            builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_other_list)
-
-
-        if self.use_resources_bool:
-            chain_builders_resource = self.ee.factory.get_builder_from_process(
-                'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
-            builder_list.extend(chain_builders_resource)
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
             ns_dict = {
@@ -113,6 +64,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 GlossaryEnergy.NS_CCS: f'{ns_study}.{GlossaryEnergy.CCUS}',
             }
             mods_dict = {
+                self.EnergyMarketName: 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline',
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
             }
 
@@ -132,10 +84,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             if not self.energy_invest_input_in_abs_value:
                 # add a discipline to handle correct investment split in case of mda (ie no optimizer to handle the split properly)
                 mods_dict = {
+                    self.EnergyMarketName: 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline',
                     INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.investments_redistribution_disc.InvestmentsRedistributionDisicpline',
                 }
             else:
                 mods_dict = {
+                    self.EnergyMarketName: 'energy_models.core.energy_market.energy_market_disc.EnergyMarketDiscipline',
                     INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
                 }
 
@@ -145,6 +99,57 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             raise Exception(
                 f'Wrong option for invest_discipline : {self.invest_discipline} should be in {INVEST_DISCIPLINE_OPTIONS}'
             )
+
+        # use energy list to import the builders
+        for energy_name in self.energy_list:
+            dot_list = energy_name.split('.')
+            short_name = dot_list[-1]
+            if self.techno_dict[energy_name]['type'] != GlossaryEnergy.agriculture_type:
+                energy_builder_list = self.ee.factory.get_builder_from_process(
+                    'energy_models.sos_processes.energy.techno_mix',
+                    f'{short_name}_mix',
+                    techno_list=self.techno_dict[energy_name]['value'],
+                    invest_discipline=self.invest_discipline,
+                    associate_namespace=False,
+                )
+
+                builder_list.extend(energy_builder_list)
+
+        # Needed namespaces for the 3 disciplines below
+        # All other namespaces are specified in each subprocess
+        ns_dict = {
+            GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
+            'ns_energy': f'{ns_study}.{energy_mix}',
+            GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+            'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+            'ns_resource': f'{ns_study}.{energy_mix}.resource',
+            'ns_invest': f'{self.ee.study_name}.{INVEST_DISC_NAME}',
+            'ns_energy_market': f'{self.ee.study_name}.{self.EnergyMarketName}',
+        }
+
+        # Add demand, energymix and resources discipline
+
+        mods_dict = {
+            energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+        }
+
+        builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+        builder_list.extend(builder_other_list)
+
+        if self.ccs_list:
+            mods_dict = {
+                GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+            }
+
+            builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+            builder_list.extend(builder_other_list)
+
+
+        if self.use_resources_bool:
+            chain_builders_resource = self.ee.factory.get_builder_from_process(
+                'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
+            builder_list.extend(chain_builders_resource)
+
 
         for ccs_name in self.ccs_list:
             dot_list = ccs_name.split('.')

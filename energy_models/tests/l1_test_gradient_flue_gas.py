@@ -43,7 +43,6 @@ class GradientFlueGasTestCase(GenericDisciplinesTestClass):
                    GlossaryEnergy.NS_WITNESS: self.name,
                    GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': f'{self.name}',
-                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    
                    'ns_flue_gas': f'{self.name}',

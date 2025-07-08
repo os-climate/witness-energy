@@ -6,6 +6,11 @@ Clean energy invest = Renewable + Nuclear and others + Low emission fuels + 70% 
 
 CarbonStorageTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/co2-capture-and-utilisation
 DirectAirCaptureTechno : https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture
-SolarPV: [https://www.iea.org/energy-system/renewables/solar-pv,]
+SolarPV: https://www.iea.org/reports/world-energy-investment-2024/overview-and-key-findings
 WindOnShore: https://about.bnef.com/blog/offshore-wind-investment-hit-all-time-high-in-2023/#:~:text=Offshore%20wind%20investment%20surged%20to,%2476.7%20billion%2C%20jumping%2079%25.
 WindOffShore: https://about.bnef.com/blog/offshore-wind-investment-hit-all-time-high-in-2023/#:~:text=Offshore%20wind%20investment%20surged%20to,%2476.7%20billion%2C%20jumping%2079%25.
+
+fossil gas : https://www.statista.com/statistics/1263326/global-oil-and-gas-investments-by-sector/
+coal electricity : https://www.spglobal.com/commodity-insights/en/news-research/latest-news/coal/052623-global-investment-in-coal-to-rise-10-in-2023-to-150-billion-iea
+
+nuclear : https://www.iea.org/reports/the-path-to-a-new-era-for-nuclear-energy/outlook-for-nuclear-investment
