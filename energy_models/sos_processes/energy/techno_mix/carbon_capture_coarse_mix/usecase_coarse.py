@@ -115,7 +115,7 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{GlossaryEnergy.ccs_list}': [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage],
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.energy_techno_list': fg_energy_techno_list,
+                       #f'{self.study_name}.{ccs_name}.{flue_gas_name}.energy_techno_list': fg_energy_techno_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_capture}.flue_gas_mean': flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.MarginValue}': margin,
