@@ -318,10 +318,11 @@ class EnergyMix(DifferentiableModel):
             self, output_varname: str, input_energies_varname: str, column_name: str, conversion_factor : float):
         self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
 
-        output_path = f"{output_varname}:{column_name}"
-        if output_path not in self.outputs:
-            self.outputs[output_path] = self.zeros_array
+
         for energy in self.inputs[GlossaryEnergy.energy_list]:
+            output_path = f"{output_varname}:{column_name}"
+            if output_path not in self.outputs:
+                self.outputs[output_path] = self.zeros_array
             self.outputs[output_path] += self.inputs[
                                              f'{energy}.{input_energies_varname}:{column_name}'] * conversion_factor
             if energy in self.ghg_emissions_per_kwh[column_name]:
@@ -341,16 +342,10 @@ class EnergyMix(DifferentiableModel):
             output_path = f"{output_varname}:{energy}"
             self.outputs[output_path] = self.inputs[f'{energy}.{input_energies_varname}:{input_colname}'] * conversion_factor
             if energy in self.ghg_emissions_per_kwh[input_colname]:
-                if energy in ['solid_fuel']:
-                    print('energy', energy)
-                    print('conversion_factor', conversion_factor)
-                    print('co2 avant', self.outputs[output_path])
-
                 co2_per_use = np.maximum(0.0, self.outputs[
                     f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
                               self.ghg_emissions_per_kwh[input_colname][energy]
-                if energy == 'methane':
-                    print('co2 per use', co2_per_use)
+
                 self.outputs[output_path] += co2_per_use
     def compute_energy_sector_ccs_demand(self):
         """Sums all demands of ccs streams of each energy"""
