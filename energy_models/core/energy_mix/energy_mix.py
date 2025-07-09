@@ -323,13 +323,14 @@ class EnergyMix(DifferentiableModel):
             output_path = f"{output_varname}:{column_name}"
             if output_path not in self.outputs:
                 self.outputs[output_path] = self.zeros_array
-            self.outputs[output_path] += self.inputs[
+
+            self.outputs[output_path] = self.outputs[output_path] + self.inputs[
                                              f'{energy}.{input_energies_varname}:{column_name}'] * conversion_factor
             if energy in self.ghg_emissions_per_kwh[column_name]:
                 co2_per_use = np.maximum(0.0, self.outputs[
                     f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
                               self.ghg_emissions_per_kwh[column_name][energy]
-                self.outputs[output_path] += co2_per_use
+                self.outputs[output_path] = self.outputs[output_path] + co2_per_use
 
     #     self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_emitted_by_energy[energy][
     #                                                    GlossaryEnergy.CO2PerUse] * np.maximum(
