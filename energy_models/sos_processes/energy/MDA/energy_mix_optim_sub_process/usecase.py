@@ -203,7 +203,7 @@ class Study(StudyManager):
                 })
 
                 if self.use_utilisation_ratio:
-                    array_utilization_ratio_var_name = f"EnergyMix.{energy}.{technology}.utilization_ratio_array"
+                    array_utilization_ratio_var_name = f"{energy}_{technology}_utilization_ratio_array"
                     value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
                     out_dict.update({
                         f"{self.study_name}.{self.coupling_name}.{array_utilization_ratio_var_name}": np.array(
