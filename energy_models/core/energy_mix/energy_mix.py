@@ -37,7 +37,47 @@ class EnergyMix(DifferentiableModel):
 
     energy_list = list(GlossaryEnergy.unit_dicts.keys())
     resource_list = ['natural_gas_resource', 'uranium_resource', 'coal_resource', 'oil_resource', 'copper_resource']  # , 'platinum_resource',]
-
+    # TODO  : need to compute it elsewhere in each energy, values found in each energy model
+    ghg_emissions_per_kwh = {'CO2': {
+        'methane': 2.75 / 15.4,
+        'hydrogen.gaseous_hydrogen': 0.0,
+        'hydrogen.liquid_hydrogen': 0.0,
+        'biogas': 83.6 / 277.78, 'syngas': 2.38 * 0.095 / 13.22,
+        'fuel.liquid_fuel': 3.15 / 12.83,
+        'fuel.hydrotreated_oil_fuel': 3.15 / 13.13,
+        'fuel.biodiesel': 2.85 / 11.17,
+        'fuel.ethanol': 1.91 / 8.25,
+        'solid_fuel': 1.91 / 6.97,
+        'electricity': 0.0,
+        'fossil': 0.3
+    },
+        'CH4': {
+            'methane': (0.08 + 0.195) * 1.e-3 / 0.277,
+            'hydrogen.gaseous_hydrogen': 0.0,
+            'hydrogen.liquid_hydrogen': 0.0,
+            'biogas': 0.0, 'syngas': 0.0,
+            'fuel.liquid_fuel': 0.0,
+            'fuel.hydrotreated_oil_fuel': 0.0,
+            'fuel.biodiesel': 0.0,
+            'fuel.ethanol': 0.0,
+            'solid_fuel': 0.0,
+            'electricity': 0.0,
+            'fossil': 0.0
+        },
+        'N2O': {
+            'methane': 0.0001e-3 / 0.277,
+            'hydrogen.gaseous_hydrogen': 0.0,
+            'hydrogen.liquid_hydrogen': 0.0,
+            'biogas': 0.0, 'syngas': 0.0,
+            'fuel.liquid_fuel': 0.006e-3 / 0.277 * (1.0 - 0.14 - 0.08),
+            'fuel.hydrotreated_oil_fuel': 0.0,
+            'fuel.biodiesel': 0.0,
+            'fuel.ethanol': 0.0,
+            'solid_fuel': 0.0014e-3 / 0.277,
+            'electricity': 0.0,
+            'fossil': 0.0
+        }
+    }
     # TODO shouldnt it just be carbon stored ? like energy technos take stored carbon and emit it into the atmosphere ?
     # TODO because carbon captured is just a temporary state of carbon, waiting to be stored
     def __init__(self, name, logger: logging.Logger):
@@ -278,12 +318,23 @@ class EnergyMix(DifferentiableModel):
             self, output_varname: str, input_energies_varname: str, column_name: str, conversion_factor : float):
         self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
 
+
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             output_path = f"{output_varname}:{column_name}"
             if output_path not in self.outputs:
                 self.outputs[output_path] = self.zeros_array
-            self.outputs[output_path] = self.outputs[output_path] + self.inputs[f'{energy}.{input_energies_varname}:{column_name}'] * conversion_factor
 
+            self.outputs[output_path] = self.outputs[output_path] + self.inputs[
+                                             f'{energy}.{input_energies_varname}:{column_name}'] * conversion_factor
+            if energy in self.ghg_emissions_per_kwh[column_name]:
+                co2_per_use = np.maximum(0.0, self.outputs[
+                    f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
+                              self.ghg_emissions_per_kwh[column_name][energy]
+                self.outputs[output_path] = self.outputs[output_path] + co2_per_use
+
+    #     self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_emitted_by_energy[energy][
+    #                                                    GlossaryEnergy.CO2PerUse] * np.maximum(
+    # 0.0, self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values)
     def _aggregate_column_from_all_energies(
             self, output_varname: str, input_energies_varname: str, input_colname: str, conversion_factor : float):
         self.outputs[f"{output_varname}:{GlossaryEnergy.Years}"] = self.years
@@ -291,7 +342,12 @@ class EnergyMix(DifferentiableModel):
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             output_path = f"{output_varname}:{energy}"
             self.outputs[output_path] = self.inputs[f'{energy}.{input_energies_varname}:{input_colname}'] * conversion_factor
+            if energy in self.ghg_emissions_per_kwh[input_colname]:
+                co2_per_use = np.maximum(0.0, self.outputs[
+                    f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
+                              self.ghg_emissions_per_kwh[input_colname][energy]
 
+                self.outputs[output_path] += co2_per_use
     def compute_energy_sector_ccs_demand(self):
         """Sums all demands of ccs streams of each energy"""
         self.outputs[f"{GlossaryEnergy.EnergyMixCCSDemandsDfValue}:{GlossaryEnergy.Years}"] = self.years

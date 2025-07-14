@@ -36,8 +36,7 @@
   "fuel.liquid_fuel": {
     "type": "energy",
     "value": [
-      "Refinery",
-      "FischerTropsch"
+      "Refinery"
     ]
   },
   "fuel.hydrotreated_oil_fuel": {

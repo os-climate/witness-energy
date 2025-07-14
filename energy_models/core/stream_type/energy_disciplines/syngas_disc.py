@@ -85,7 +85,13 @@ class SyngasDiscipline(EnergyDiscipline):
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'array', 'unit': '%', AutodifferentiedDisc.GRADIENTS: True,}
+                    dynamic_inputs[f'{techno}.syngas_ratio'] = {'type': 'dataframe', 'unit': '%', AutodifferentiedDisc.GRADIENTS: True,
+                                                                'dataframe_descriptor':
+                                                                    {GlossaryEnergy.Years: (
+                                                                    'int', [1900, GlossaryEnergy.YearEndDefaultCore],
+                                                                    False),
+                                                                     'syngas_ratio': ('float', None, True)}
+                                                                }
 
         return dynamic_inputs, dynamic_outputs
 
