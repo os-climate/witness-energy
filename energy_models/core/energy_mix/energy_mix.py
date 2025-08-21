@@ -341,12 +341,14 @@ class EnergyMix(DifferentiableModel):
         for energy in self.inputs[GlossaryEnergy.energy_list]:
             output_path = f"{output_varname}:{energy}"
             self.outputs[output_path] = self.inputs[f'{energy}.{input_energies_varname}:{input_colname}'] * conversion_factor
+            """
             if energy in self.ghg_emissions_per_kwh[input_colname]:
                 co2_per_use = np.maximum(0.0, self.outputs[
                     f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
                               self.ghg_emissions_per_kwh[input_colname][energy]
 
                 self.outputs[output_path] += co2_per_use
+            """
     def compute_energy_sector_ccs_demand(self):
         """Sums all demands of ccs streams of each energy"""
         self.outputs[f"{GlossaryEnergy.EnergyMixCCSDemandsDfValue}:{GlossaryEnergy.Years}"] = self.years
