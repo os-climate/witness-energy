@@ -347,7 +347,8 @@ class EnergyMix(DifferentiableModel):
                     f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}:{energy}"]) * \
                               self.ghg_emissions_per_kwh[input_colname][energy]
 
-                self.outputs[output_path] += co2_per_use
+                self.outputs[output_path] = self.outputs[output_path] + co2_per_use
+
     def compute_energy_sector_ccs_demand(self):
         """Sums all demands of ccs streams of each energy"""
         self.outputs[f"{GlossaryEnergy.EnergyMixCCSDemandsDfValue}:{GlossaryEnergy.Years}"] = self.years
