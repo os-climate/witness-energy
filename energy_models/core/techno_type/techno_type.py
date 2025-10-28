@@ -899,8 +899,13 @@ class TechnoType(DifferentiableModel):
             for energy in self.inputs[GlossaryEnergy.EnergiesUsedForProductionValue]:
                 if energy != GlossaryEnergy.biomass_dry:
                     ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * self.inputs[f'{ghg}_intensity_by_energy:{energy}']
-                    self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
-                    self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.outputs[f'ghg_intensity_scope_2:{ghg}'] + ghg_intensity
+
+                else :
+                    ghg_intensity = self.outputs[f"{GlossaryEnergy.TechnoDetailedPricesValue}:{energy}_needs"] * \
+                                    self.inputs[f'{GlossaryEnergy.RessourcesCO2EmissionsValue}:{energy}_resource']
+                self.outputs[f'ghg_intensity_scope_2_details_{ghg}:{energy}'] = ghg_intensity
+                self.outputs[f'ghg_intensity_scope_2:{ghg}'] = self.outputs[
+                                                                       f'ghg_intensity_scope_2:{ghg}'] + ghg_intensity
 
     def compute_newly_installed_capacity_resource_consumption(self):
         """

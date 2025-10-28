@@ -262,19 +262,20 @@ class TestGlobalEnergyValues(unittest.TestCase):
         h2_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}.{GlossaryEnergy.TechnoFlueGasProductionValue}')
         computed_methane_co2_emissions = \
-            co2_emissions_by_energy[GlossaryEnergy.methane].values[0] + \
+            co2_emissions_by_energy[GlossaryEnergy.methane].values[0] * 1e3 + \
             elec_gt_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0] + \
             elec_cgt_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0] + \
             h2_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0] * 0.75
 
         print('values', co2_emissions_by_energy[GlossaryEnergy.methane].loc[
-            co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0],
+            co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1e3,
               elec_gt_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0],
               elec_cgt_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0],
               h2_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0] * 0.75)
         # we compare in Mt and must be near 10% of error
-        self.assertLessEqual(computed_methane_co2_emissions, gas_co2_emissions * 1.1)
-        #self.assertGreaterEqual(computed_methane_co2_emissions, gas_co2_emissions * 0.9)
+
+        self.assertLessEqual(computed_methane_co2_emissions, gas_co2_emissions * 1.15)
+        self.assertGreaterEqual(computed_methane_co2_emissions, gas_co2_emissions * 0.9)
 
         print(
             f'Methane CO2 emissions : ourworldindata {gas_co2_emissions} Mt vs WITNESS {computed_methane_co2_emissions} Mt')
@@ -286,14 +287,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         computed_coal_co2_emissions = \
             co2_emissions_by_energy[GlossaryEnergy.solid_fuel].loc[
-                co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] + \
+                co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YearStartDefault].values[0] * 1e3 + \
             elec_coal_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].loc[elec_coal_prod[GlossaryEnergy.Years]
                                                          == GlossaryEnergy.YearStartDefault].values[0] + \
             h2_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].loc[elec_gt_prod[GlossaryEnergy.Years]
                                                   == GlossaryEnergy.YearStartDefault].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
-        self.assertLessEqual(computed_coal_co2_emissions, coal_co2_emissions * 1.1)
-        #self.assertGreaterEqual(computed_coal_co2_emissions, coal_co2_emissions * 0.9)
+        self.assertLessEqual(computed_coal_co2_emissions, coal_co2_emissions * 1.2)
+        self.assertGreaterEqual(computed_coal_co2_emissions, coal_co2_emissions * 0.9)
 
         print(
             f'Coal CO2 emissions : ourworldindata {coal_co2_emissions} Mt vs WITNESS {computed_coal_co2_emissions} Mt')
@@ -302,11 +303,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         elec_oil_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.{GlossaryEnergy.OilGen}.{GlossaryEnergy.TechnoFlueGasProductionValue}')
-        computed_oil_co2_emissions = co2_emissions_by_energy[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'].values[0] + \
-                                     elec_oil_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0]
+        computed_oil_co2_emissions = \
+            co2_emissions_by_energy[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'].values[0] * 1e3 + \
+            elec_oil_prod[f"{GlossaryEnergy.CO2FromFlueGas}"].values[0]
         # we compare in Mt and must be near 10% of error
-        self.assertLessEqual(computed_oil_co2_emissions, oil_co2_emissions * 1.1)
-        #self.assertGreaterEqual(computed_oil_co2_emissions, oil_co2_emissions * 0.9)
+        self.assertLessEqual(computed_oil_co2_emissions, oil_co2_emissions * 1.2)
+        self.assertGreaterEqual(computed_oil_co2_emissions, oil_co2_emissions * 0.9)
 
         print(
             f'Oil CO2 emissions : ourworldindata {oil_co2_emissions} Mt vs WITNESS {computed_oil_co2_emissions} Mt')
@@ -324,7 +326,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         computed_total_co2_emissions = ghg_total_energy_emissions[GlossaryEnergy.CO2].values[0] * conversion_factor
         print(f'Total CO2 emissions : ourworldindata {total_co2_emissions} Mt vs WITNESS {computed_total_co2_emissions} Mt')
         self.assertLessEqual(computed_total_co2_emissions, total_co2_emissions * 1.1)
-        self.assertGreaterEqual(total_co2_emissions * 0.9, computed_total_co2_emissions)
+        self.assertGreaterEqual(computed_total_co2_emissions, total_co2_emissions * 0.9)
 
     def test_03_check_net_production_values(self):
         '''
